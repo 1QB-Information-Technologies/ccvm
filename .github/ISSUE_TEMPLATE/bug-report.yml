@@ -11,8 +11,7 @@ body:
 
   - type: input
     attributes:
-      label: What version of qbitploblib is running?
-      description: Copy the output of `qbitploblib -v`
+      label: What version of ccvm is running?
 
   - type: input
     id:  Python version
