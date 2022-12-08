@@ -1,0 +1,55 @@
+name: 🐞 Report a bug
+description: Have you found a bug or issue?
+labels: ["bug"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Please do not report security vulnerabilities here**. The [Responsible Disclosure Program](https://auth0.com/responsible-disclosure-policy) details the procedure for disclosing security issues.
+
+
+  - type: input
+    attributes:
+      label: What version of qbitploblib is running?
+      description: Copy the output of `qbitploblib -v`
+
+  - type: input
+    id:  Python version
+    attributes:
+      label: Python version
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Provide a clear and concise description of the issue, including what you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Detail the steps taken to reproduce this error and, ideally, share a repo of a minimal reproducible example. State whether this issue can be reproduced consistently or if it is intermittent.
+      placeholder: |
+        1. Step 1...
+        2. Step 2...
+        3. ...
+ - type: textarea
+    attributes:
+      label: How often does it reproduce? Is there a required condition?
+  - type: textarea
+    attributes:
+      label: What is the expected behavior?
+      description: If possible, please provide text instead of a screenshot.
+  - type: textarea
+    attributes:
+      label: What do you see instead?
+      description: If possible, please provide text instead of a screenshot.
+  - type: textarea
+    attributes:
+      label: Additional information
+      description: Is there anything else you think we should know?
