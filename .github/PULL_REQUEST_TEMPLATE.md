@@ -1,4 +1,4 @@
-Please see the [contributing guidelines](https://github.com/<project-name>/master/CONTRIBUTING.md) for how to create and submit a high-quality PR for this repo.
+Please see the [contributing guidelines](https://github.com/ccvm/master/CONTRIBUTING.md) for how to create and submit a high-quality PR for this repo.
 
 ### Description
 
