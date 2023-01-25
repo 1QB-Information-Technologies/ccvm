@@ -38,5 +38,7 @@ succ_prob_plot_fig.savefig(PLOT_OUTPUT_DEST + "success_prob_plot_example.png", f
 
 #### Figures
 
-<img src="images/tts_plot_example.png" width="250">
-<img src="images/success_prob_plot_example.png" width="250">
+<p align="center">
+    <img src="ccvmplotlib/images/tts_plot_example.png" width="250" >
+    <img src="ccvmplotlib/images/success_prob_plot_example.png" width="250">
+</p>
