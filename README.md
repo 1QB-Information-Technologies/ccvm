@@ -30,14 +30,8 @@ The Coherent Continous-Variable Machine (CCVM) is a novel quantum optical networ
 
 3. View generated plots from where you launched the container
 
-<div style="display: flex;">
-    <div style="flex: 1;">
-        <img src="ccvmplotlib/images/tts_plot_example.png" width="250" >
-    </div>
-    <div style="flex: 1;">
-        <img src="ccvmplotlib/images/success_prob_plot_example.png" width="250">
-    </div>
-</div>
+<img src="ccvmplotlib/images/tts_plot_example.png" width="250" >
+<img src="ccvmplotlib/images/success_prob_plot_example.png" width="250">
 
 
 ##### Solve

@@ -38,11 +38,5 @@ succ_prob_plot_fig.savefig(PLOT_OUTPUT_DEST + "success_prob_plot_example.png", f
 
 #### Figures
 
-<div style="display: flex;">
-    <div style="flex: 1;">
-        <img src="images/tts_plot_example.png" width="250">
-    </div>
-    <div style="flex: 1;">
-        <img src="images/success_prob_plot_example.png" width="250">
-    </div>
-</div>
+<img src="images/tts_plot_example.png" width="250">
+<img src="images/success_prob_plot_example.png" width="250">
