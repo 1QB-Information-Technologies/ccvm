@@ -1,6 +1,6 @@
-# Contributing to ccvm
+# Contributing to CCVM
 
-A big welcome and thank you for considering contributing to ccvm!
+A big welcome and thank you for considering contributing to CCVM!
 
 Reading and following these guidelines will help us make the contribution process easy and effective for everyone involved. It also communicates that you agree to respect the time of the developers managing and developing these open source project. In return, we will reciprocate that respect by addressing your issue, assessing changes, and helping you finalize your pull requests.
 
@@ -14,8 +14,8 @@ Reading and following these guidelines will help us make the contribution proces
 
 Contributions are made to this repo via Issues and Pull Requests (PRs). A few general guidelines that cover both:
 
-- To report security vulnerabilities, please refer to our [security page](https:/github.com/1QB-Information-Technologies/SECURITY.md).
-- Search for [existing Issues](https://github.com/1QB-Information-Technologies/ccvm/issue) and PRs before creating your own.
+- To report security vulnerabilities, please refer to our [security page](https:/github.com/1QB-Information-Technologies/.github/SECURITY.md).
+- Search for [existing Issues](https://github.com/1QB-Information-Technologies/ccvm/issues) and PRs before creating your own.
 - We work hard to makes sure issues are handled in a timely manner but, depending on the impact, it could take a while to investigate the root cause. A friendly ping in the comment thread to the submitter or a contributor can help draw attention if your issue is blocking.
 
 ### Issues

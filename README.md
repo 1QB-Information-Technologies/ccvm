@@ -14,12 +14,11 @@ The Coherent Continous-Variable Machine (CCVM) is a novel quantum optical networ
 3. [Docs](#docs)
 4. [Contributing](#contributing)
 5. [References](#references)
+6. [License](#license)
 
-## Quickstart <a name="quickstart"></a>
+## Quickstart
 
-#### Using Docker
-
-##### Full Demo
+#### Solve & Plot
 
 1. Run container from anywhere
 
@@ -33,15 +32,15 @@ The Coherent Continous-Variable Machine (CCVM) is a novel quantum optical networ
 
 <div style="display: flex;">
     <div style="flex: 1;">
-        <img src="ccvmplotlib/images/tts_plot_example.png" width="350" >
+        <img src="ccvmplotlib/images/tts_plot_example.png" width="250" >
     </div>
     <div style="flex: 1;">
-        <img src="ccvmplotlib/images/success_prob_plot_example.png" width="350">
+        <img src="ccvmplotlib/images/success_prob_plot_example.png" width="250">
     </div>
 </div>
 
 
-##### Lightweight Example
+##### Solve
 
 
 1. Run container
@@ -53,7 +52,7 @@ The Coherent Continous-Variable Machine (CCVM) is a novel quantum optical networ
 `cd examples && python light-demo.py`
 
 
-## Usage <a name="usage"></a> (TODO)
+## Usage (TODO)
 
   
 
@@ -77,17 +76,16 @@ plot results
 ```
 
 
-## Docs <a name="docs"></a> (TODO)
+## Docs (TODO)
 
 Find our [documentation here](ccvm.readthedocs.io).
 
-Quick links:
-- [BoxQP Problem Class](problem_classes/README.md)
-- [ccvmplotlib](ccvmplotlib/README.md)
+Some additional quick links:
+- Problem Definition: [BoxQP Problem Class](problem_classes/README.md)
+- Plotting Library: [ccvmplotlib](ccvmplotlib/README.md)
 
 
-## Contributing <a name="contributing"></a>
-
+## Contributing
 We love pull requests and discussing novel ideas. Check out our [contribution guide](CONTRIBUTING.md) and feel free to improve CCVM. For major changes, please open an issue first to discuss what you would like to change.
 
 Thanks for considering contributing to our project! We appreciate your help and support.
@@ -100,4 +98,4 @@ This repo contains architectures and algorithms as discussed in the paper ["Non-
 
 ## License
 
-[APGLv3](https://choosealicense.com/licenses/agpl-3.0/)
+[APGLv3](https://github.com/1QB-Information-Technologies/ccvm/blob/main/LICENSE)
