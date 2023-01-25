@@ -1,0 +1,17 @@
+cff-version: 1.0.3
+message: If you use CCVM in your work, please cite the following paper:
+
+authors:
+- family-names: Khosravi
+  given-names: Farhad
+- family-names: Yildiz
+  given-names: Ugur
+- family-names: Scherer
+  given-names: Artur
+- family-names: Ronagh
+  given-names: Pooya
+title: "Non-convex Quadratic Programming Using Coherent Optical Networks"
+journal: arXiv
+year: 2022
+volume: abs/2209.04415
+doi: 10.48550/arxiv.2209.04415
