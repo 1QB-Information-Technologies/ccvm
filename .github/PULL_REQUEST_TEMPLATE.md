@@ -3,8 +3,6 @@ Please see the [contributing guidelines](https://github.com/ccvm/master/CONTRIBU
 ### Description
 
 > Describe the purpose of this PR along with any background information and the impacts of the proposed change. For the benefit of the community, please do not assume prior context.
->
-> Provide details that support your chosen implementation, including: breaking changes, alternatives considered, changes to the API, etc.
 
 
 ### References
@@ -19,11 +17,9 @@ Please see the [contributing guidelines](https://github.com/ccvm/master/CONTRIBU
 
 ### Testing
 
-> Describe how this can be tested by reviewers. Be specific about anything not tested and reasons why. If this library has unit and/or integration testing, tests should be added for new functionality and existing tests should complete without errors.
+> Describe how this can be tested by reviewers. Be specific about anything not tested and reasons why.
 >
-> Please include any manual steps for testing end-to-end or functionality not covered by unit/integration tests.
->
-> Also include details of the environment this PR was developed in (language/platform/browser version).
+> Please include details of the environment this PR was developed in.
 
 - [ ] This change adds test coverage for new/changed/fixed functionality
 
@@ -31,4 +27,4 @@ Please see the [contributing guidelines](https://github.com/ccvm/master/CONTRIBU
 
 - [ ] I have added documentation for new/changed functionality in this PR
 - [ ] All active GitHub checks for tests, formatting, and security are passing
-- [ ] The correct base branch is being used, if not `master`
+- [ ] The correct base branch is being used, if not `main`
