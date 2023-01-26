@@ -17,7 +17,7 @@ The Coherent Continous-Variable Machine (CCVM) is a novel quantum optical networ
 
 ## Quickstart
 
-#### Solve & Plot
+#### Using Docker
 
 1. Run container from anywhere
 
@@ -27,7 +27,7 @@ The Coherent Continous-Variable Machine (CCVM) is a novel quantum optical networ
 
 `cd examples && python ccvm-boxqp.py`
 
-3. View generated plots from where you launched the container
+3. View generated plots
 
 <p align="center">
     <img src="ccvmplotlib/images/tts_plot_example.png" width="250" >
