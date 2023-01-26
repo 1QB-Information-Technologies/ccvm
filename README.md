@@ -3,7 +3,6 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-green.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Maintainer](https://img.shields.io/badge/Maintainer-1QBit-blue)](http://1qbit.com/)
 [![Paper](https://img.shields.io/badge/Paper-arxiv-red)](https://arxiv.org/abs/2209.04415)
-[![Made With Love](https://img.shields.io/badge/Made%20With-Love-red.svg)](https://github.com/1QB-Information-Technologies/ccvm)
 
 The Coherent Continous-Variable Machine (CCVM) is a novel quantum optical network architecture built on NTT's Coherent Ising Machine (CIM). Here we demonstrate the application of CCVM on the Box-Constrained Quadratic Programming (BoxQP) problem by mapping the variables of problems into the random variables of CCVM.
 
