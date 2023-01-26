@@ -36,18 +36,6 @@ The Coherent Continous-Variable Machine (CCVM) is a novel quantum optical networ
 </p>
 
 
-##### Solve
-
-
-1. Run container
-
-`docker run -it quay.io/1qbit/ccvm:slim bash`
-
-2. Go into `examples/` and run `light-demo.py`
-
-`cd examples && python light-demo.py`
-
-
 ## Usage (TODO)
 
   
