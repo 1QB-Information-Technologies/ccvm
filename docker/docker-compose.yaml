@@ -1,0 +1,55 @@
+version: '3.8'
+services:
+
+  ccvm.1qb.it:
+    image: quay.io/1qbit/ccvm:latest
+    # build:
+    #   context: ../
+    #   dockerfile: docker/Dockerfile
+    restart: always
+    container_name: ccvm
+    volumes:
+      # - /dev/shm/:/dev/shm
+      - ../:/workspace
+    networks:
+      - ccvm-network
+    command: sleep infinity
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 20g
+    #     reservations:
+    #       memory: 20g
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [ gpu ]
+
+  ccvm-slim.1qb.it:
+    image: quay.io/1qbit/ccvm:latest
+    # build:
+    #   context: ../
+    #   dockerfile: docker/Dockerfile
+    restart: always
+    container_name: ccvm-slim
+    volumes:
+      # - /dev/shm/:/dev/shm
+      - ../:/workspace
+    networks:
+      - ccvm-network
+    command: sleep infinity
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 20g
+    #     reservations:
+    #       memory: 20g
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [ gpu ]
+
+networks:
+  ccvm-network:
+    name: ccvm-network
+    driver: bridge
