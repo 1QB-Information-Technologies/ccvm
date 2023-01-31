@@ -1,6 +1,10 @@
 .PHONY: up
 up:
-	docker compose -f docker/docker-compose.yaml up -d --no-recreate
+	docker compose -f docker/docker-compose.yaml up -d
+
+.PHONY: exec
+exec:
+	docker exec -it ccvm bash
 
 .PHONY: build
 build:
@@ -12,8 +16,8 @@ ps:
 
 .PHONY: restart
 restart:
-	docker compose -f docker/docker-compose.yaml down && docker compose -f docker/docker-compose.yaml up -d
+	docker compose -f docker/docker-compose.yaml down --remove-orphans && docker compose -f docker/docker-compose.yaml up -d
 
-.PHONY: stop
-stop:
+.PHONY: down
+down:
 	docker compose -f docker/docker-compose.yaml down --remove-orphans

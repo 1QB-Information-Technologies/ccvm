@@ -11,6 +11,8 @@ The Coherent Continous-Variable Machine (CCVM) is a novel quantum optical networ
 1. [Quickstart](#quickstart)
 2. [Usage](#usage)
 3. [Docs](#docs)
+    - [BoxQP Problem Definition](problem_classes/README.md)
+    - [ccvmplotlib](ccvmplotlib/README.md)
 4. [Contributing](#contributing)
 5. [References](#references)
 6. [License](#license)

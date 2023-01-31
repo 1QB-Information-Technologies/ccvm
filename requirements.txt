@@ -1,4 +1,4 @@
-setuptools==67.0.0
+setuptools==66.0.0
 future==0.18.2
 matplotlib==3.6.3
 numpy==1.24.1
@@ -6,5 +6,6 @@ pandas==1.5.2
 pytest==7.2.0
 scipy==1.10.0
 torch==1.13.1
+json-stream==1.5.2
 latex==0.7.0
 tqdm==4.64.1

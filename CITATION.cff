@@ -1,4 +1,4 @@
-cff-version: 1.0.3
+cff-version: 1.2.0
 message: If you use CCVM in your work, please cite the following paper:
 
 authors:
@@ -12,6 +12,8 @@ authors:
   given-names: Pooya
 title: "Non-convex Quadratic Programming Using Coherent Optical Networks"
 journal: arXiv
+date-released: 2023-02-xx
+version: 0.1.0
 year: 2022
 volume: abs/2209.04415
 doi: 10.48550/arxiv.2209.04415
