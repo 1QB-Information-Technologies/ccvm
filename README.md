@@ -4,7 +4,7 @@
 [![Maintainer](https://img.shields.io/badge/Maintainer-1QBit-blue)](http://1qbit.com/)
 [![Paper](https://img.shields.io/badge/Paper-arxiv-red)](https://arxiv.org/abs/2209.04415)
 
-The Coherent Continous-Variable Machine (CCVM) is a novel quantum optical network architecture built on NTT's Coherent Ising Machine (CIM). Here we demonstrate the application of CCVM on the Box-Constrained Quadratic Programming (BoxQP) problem by mapping the variables of problems into the random variables of CCVM.
+The Coherent Continous-Variable Machine (CCVM) is a novel coherent quantum optical network architecture built on NTT's Coherent Ising Machine (CIM) where the physical properties of optical pulses (e.g. mean-field amplitude, phase, intensity, etc.) represent the continuous variables of a given optimization problem. Various features of the optical device and programming techniques can be used to implement the constraints imposed by these optimization problems. Here we demonstrate the application of CCVM in solving the Box-Constrained Quadratic Programming (BoxQP) problem by mapping the variables of problems into the random variables of CCVM.
 
 ## Table of Contents
 
@@ -39,7 +39,7 @@ The Coherent Continous-Variable Machine (CCVM) is a novel quantum optical networ
 
 ## Usage (TODO)
 
-  
+
 
 #### Install dependenices
 
