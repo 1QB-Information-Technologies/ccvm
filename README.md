@@ -25,9 +25,9 @@ The Coherent Continous-Variable Machine (CCVM) is a novel quantum optical networ
 
 `docker run -it -v $(pwd):/workspace/examples/plots quay.io/1qbit/ccvm bash`
 
-2. Go into `examples/` and run `ccvm-boxqp.py`
+2. Go into `examples/` and run `ccvm_boxqp_plot.py`
 
-`cd examples && python ccvm-boxqp.py`
+`cd examples && python ccvm_boxqp_plot.py`
 
 3. View generated plots
 

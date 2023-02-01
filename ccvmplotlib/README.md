@@ -6,8 +6,8 @@
 
 - Time-To-Solve (TTS)
 - Success Probability
-- Time Evolution [TODO](https://github.com/1QB-Information-Technologies/ccvm/issues/28)
-- Density Dependent TTS [TODO](https://github.com/1QB-Information-Technologies/ccvm/issues/29)
+- Time Evolution [(TODO)](https://github.com/1QB-Information-Technologies/ccvm/issues/28)
+- Density Dependent TTS [(TODO)](https://github.com/1QB-Information-Technologies/ccvm/issues/29)
 
 ### Usage
 
