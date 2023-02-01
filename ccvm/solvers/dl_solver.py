@@ -5,35 +5,69 @@ import numpy as np
 import torch.distributions as tdist
 import time
 
-# The value used by the DLSolver when calculating a scaling value in super.get_scaling_factor()
 DL_SCALING_MULTIPLIER = 0.5
+"""The value used by the DLSolver when calculating a scaling value in
+super.get_scaling_factor()"""
 
 
 class DLSolver(CCVMSolver):
-    """The DLSolver class models the delay line coherent continuous-variable machine (DL-CCVM)."""
+    """The DLSolver class models the delay line coherent continuous-variable machine
+    (DL-CCVM)."""
 
-    def __init__(self, device, time_evolution_results=True, batch_size=1000):
+    def __init__(
+        self,
+        device,
+        problem_category="boxqp",
+        time_evolution_results=True,
+        batch_size=1000,
+    ):
+        """
+        Args:
+            device (str): The device to use for the solver. Can be "cpu" or "cuda".
+            problem_category (str): The category of problem to solve. Can be one of
+            "boxqp". Defaults to "boxqp".
+            time_evolution_results (bool): Whether to return the time evolution results
+            for each iteration during the solve. Defaults to True.
+            batch_size (int): The batch size of the problem. Defaults to 1000.
+
+        Raises:
+            ValueError: If the problem category is not supported by the solver.
+
+        Returns:
+            DLSolver: The DLSolver object.
+        """
         super().__init__(device)
         self.time_evolution_results = time_evolution_results
         self.batch_size = batch_size
         self._scaling_multiplier = DL_SCALING_MULTIPLIER
+        # Use the method selector to choose the problem-specific methods to use
+        self._method_selector(problem_category)
 
     def _validate_parameters(self, parameters):
-        """Validate the parameter key against the keys in the expected parameters for DL solver.
+        """Validate the parameter key against the keys in the expected parameters for
+        DLSolver.
 
-                :param parameters: The set of parameters that will be used by the solver when solving problems. The parameters must match the format
-               {
-                   <problem size>: <dict with set of keys: p (pump), scale, lr (learning rate), iter (iterations), nr (noise_ratio)
-               }
+        Args:
+            parameters (dict): The parameters to validate. The parameters must match the
+                format:
+                {
+                    <problem size>: <dict with set of keys:
+                            p (pump),
+                            lr (learning rate),
+                            iter (iterations),
+                            nr (noise_ratio)
+                        >
+                }
         For example:
                 {
-                    20: {"p": 2.0, "scale": None, "lr": 0.005, "iter": 15000, "nr": 10},
-                    30: {"p": 2.0, "scale": None, "lr": 0.005, "iter": 15000, "nr": 5},
+                    20: {"p": 2.0, "lr": 0.005, "iter": 15000, "nr": 10},
+                    30: {"p": 2.0, "lr": 0.005, "iter": 15000, "nr": 5},
                 }
-                :type parameters: dict
-                :raises ValueError: If the parameter key is not valid for this solver
+
+        Raises:
+            ValueError: If the parameter key is not valid for this solver.
         """
-        expected_dlparameter_key_set = set(["p", "scale", "lr", "iter", "nr"])
+        expected_dlparameter_key_set = set(["p", "lr", "iter", "nr"])
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
         for parameter_key in parameter_key_list:
@@ -46,49 +80,42 @@ class DLSolver(CCVMSolver):
                     + str(parameter_key.keys())
                 )
 
-    def compute_energy(self, confs, q_mat, c_vector, scaling_val):
-        """Compute energy of configuration by xJx + hx formula
+    def _method_selector(self, problem_category):
+        """Set methods relevant to this category of problem
 
-        :param confs: Configurations for which to compute energy
-        :type confs: torch.Tensor
-        :param q_mat: coefficients of the quadratic terms
-        :type torch.Tensor
-        :param c_vector:coefficients of the linear terms
-        :type torch.Tensor
-        :param scaling_val: scaling value of the coefficient
-        :type scaling_val: float
-        :return: Energy of configurations
-        :rtype: torch.Tensor
+        Args:
+            problem_category (str): The category of problem to solve. Can be one of "boxqp".
+
+        Raises:
+            ValueError: If the problem category is not supported by the solver.
         """
-        confs_pow = 0.5 * (confs + 1)
-        energy1 = (
-            torch.einsum("bi, ij, bj -> b", confs_pow, q_mat, confs_pow) * scaling_val
-        )
-        energy2 = torch.einsum("bi, i -> b", confs_pow, c_vector) * scaling_val
-        return 0.5 * energy1 + energy2
+        if problem_category.lower() == "boxqp":
+            self.calculate_grads = self._calculate_grads_boxqp
+            self.change_variables = self._change_variables_boxqp
+            self.fit_to_constraints = self._fit_to_constraints_boxqp
+        else:
+            raise ValueError(
+                "The given instance is not a valid problem category."
+                f" Given category: {problem_category}"
+            )
 
-    def calculate_grads(self, c, s, q_matrix, c_vector, p, rate, S=1):
+    def _calculate_grads_boxqp(self, c, s, q_matrix, c_vector, p, rate, S=1):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
         the SDE.
 
-        :param c: amplitudes
-        :type c: torch.Tensor
-        :param s: _description_
-        :type s: torch.Tensor
-        :param q_matrix: coefficients of the quadratic terms
-        :type q_matrix: torch.Tensor
-        :param c_vector: coefficients of the linear terms
-        :type c_vector: torch.Tensor
-        :param p: _description_
-        :type p: float
-        :param rate: _description_
-        :type rate: float
-        :type S: int
-        :param S: _description_
-        :return: grads
-        :rtype: torch.Tensor
+        Args:
+            c (torch.Tensor): TODO
+            s (torch.Tensor): TODO
+            q_matrix (torch.Tensor): The coefficient matrix of the quadratic terms.
+            c_vector (torch.Tensor): The coefficient vector of the linear terms.
+            p (float): TODO
+            rate (float): TODO
+            S (float): TODO Defaults to 1.
+
+        Returns:
+            tuple: The gradients of the c and s variables.
         """
 
         c_pow = torch.pow(c, 2)
@@ -109,15 +136,43 @@ class DLSolver(CCVMSolver):
         s_grads = -s_grad_1 + s_grad_2 - s_grad_3
         return c_grads, s_grads
 
-    def tune(self, instances, post_processor=None, pump_rate_flag=True, g=0.05):
-        """_summary_
+    def _change_variables_boxqp(self, c_variables):
+        """Perform a change of variables to enforce the box constraints.
 
-        :param instances: A list of the instances that will be used to tune the solver parameters.
-        :type instances: List[ccvm.problem.ProblemInstance]
-        :param post_processor: _description_
-        :type post_processor: PostProcessorType
-        :param noise_ratio: _description_
-        :type noise_ratio: _type_
+        Args:
+            c_variables (torch.Tensor): The variables to change.
+
+        Returns:
+            torch.Tensor: The changed variables.
+        """
+        return 0.5 * (c_variables + 1)
+
+    def _fit_to_constraints_boxqp(self, c):
+        """Clamps the values of c to be within the box constraints
+
+        Args:
+            c (torch.Tensor): The variables to clamp.
+
+        Returns:
+            torch.Tensor: The clamped variables.
+        """
+        c_clamped = torch.clamp(c, -1, 1)
+        return c_clamped
+
+    def tune(self, instances, post_processor=None, pump_rate_flag=True, g=0.05):
+        """Determines the best parameters for the solver to use by adjusting each
+        parameter over a number of iterations on the problems in the given set of
+        problems instances. The `parameter_key` attribute of the solver will be
+        updated with the best parameters found.
+
+        Args:
+            instances (list): A list of problem instances to tune the solver on.
+            post_processor (PostProcessorType): The post processor to use to process
+            the results of the solver. None if no post processing is desired.
+            Defaults to None.
+            pump_rate_flag (bool): Whether or not to scale the pump rate based on the
+            iteration number. If False, the pump rate will be 1.0. Defaults to True.
+            g (float): _description_ Defaults to 0.05.
         """
         # TODO: summary/descriptions
         # TODO: This implementation is a placeholder; full implementation is a
@@ -127,34 +182,30 @@ class DLSolver(CCVMSolver):
     def solve(self, instance, post_processor=None, pump_rate_flag=True, g=0.05):
         """Solves the given problem instance using the DL-CCVM solver.
 
-        :param instance: The problem to solve.
-        :type instance: ccvm.problem.ProblemInstance
-        :param post_processor: The post processor to use to process the results of the solver. None if no post processing is desired.
-        :type post_processor: PostProcessorType
-        :param pump_rate_flag: Whether or not to scale the pump rate based on the iteration number. If False, the pump rate will be 1.0.
-        :type pump_rate_flag: bool
-        :param g: _description_
-        :type g: float
-        :return: A dictionary containing the results of the solver. It contains these keys:
-            - "c_variables" (:py:class:`torch.Tensor`) - The final values for each
-            variable of the problem in the solution found by the solver
-            - "c_evolution" (:py:class:`torch.Tensor`) - The values for each
-            variable of the problem in the solution found by the solver in each
-            iteration without post-processing
-            - "objective_value" (:py:class:`torch.Tensor`) - The value of the objective function for the solution found by the solver
-            - "solve_time" (float) - The time taken (in seconds) to solve the problem
-            - "post_processing_time" (float) - The time taken (in seconds) to postprocess the solution
-        :rtype: dict
+        Args:
+            instance (ProblemInstance): The problem instance to solve.
+            post_processor (PostProcessorType): The post processor to use to process
+            the results of the solver. None if no post processing is desired.
+            Defaults to None.
+            pump_rate_flag (bool): Whether or not to scale the pump rate based on the
+            iteration number. If False, the pump rate will be 1.0. Defaults to True.
+            g (float): _description_ Defaults to 0.05.
+
+        Returns:
+            tuple: The solution to the problem instance and the timing values.
         """
-        # Get problem from problem instance
-        n = instance.N
+        # If the instance and the solver don't specify the same device type, raise
+        # an error
+        if instance.device != self.device:
+            raise ValueError(
+                f"The device type of the instance ({instance.device}) and the solver"
+                f" ({self.device}) must match."
+            )
+
+        # Get problem size from problem instance
+        N = instance.N
         q_mat = instance.q
         c_vector = instance.c
-
-        # If the instance and the solver don't specify the same device type, move the tensors to the device type of the solver
-        if instance.device != self.device:
-            q_mat = q_mat.to(self.device)
-            c_vector = c_vector.to(self.device)
 
         # Get solver setup variables
         batch_size = self.batch_size
@@ -163,20 +214,24 @@ class DLSolver(CCVMSolver):
 
         # Get parameters from parameter_key
         try:
-            p = self.parameter_key[n]["p"]
-            lr = self.parameter_key[n]["lr"]
-            n_iter = self.parameter_key[n]["iter"]
-            noise_ratio = self.parameter_key[n]["nr"]
+            p = self.parameter_key[N]["p"]
+            lr = self.parameter_key[N]["lr"]
+            n_iter = self.parameter_key[N]["iter"]
+            noise_ratio = self.parameter_key[N]["nr"]
         except KeyError as e:
             raise KeyError(
                 f"The parameter '{e.args[0]}' for the given instance size is not defined."
             ) from e
 
-        # Initialize tensor variables on the device that will be used to perform the calculations
-        c = torch.zeros((batch_size, n), dtype=torch.float).to(device)
-        s = torch.zeros((batch_size, n), dtype=torch.float).to(device)
+        # Start the timer for the solve
+        solve_time_start = time.time()
+
+        # Initialize tensor variables on the device that will be used to perform the
+        # calculations
+        c = torch.zeros((batch_size, N), dtype=torch.float).to(device)
+        s = torch.zeros((batch_size, N), dtype=torch.float).to(device)
         if time_evolution_results:
-            c_time = torch.zeros((batch_size, n, n_iter), dtype=torch.float).to(device)
+            c_time = torch.zeros((batch_size, N, n_iter), dtype=torch.float).to(device)
         else:
             c_time = None
         w_dist1 = tdist.Normal(
@@ -190,7 +245,6 @@ class DLSolver(CCVMSolver):
 
         # Perform the solve over the specified number of iterations
         pump_rate = 1
-        solve_time_start = time.time()
         for i in range(n_iter):
 
             noise_ratio_i = 1.0
@@ -200,19 +254,21 @@ class DLSolver(CCVMSolver):
                     noise_ratio_i = noise_ratio
 
             c_grads, s_grads = self.calculate_grads(c, s, q_mat, c_vector, p, pump_rate)
-            W1t = w_dist1.sample((n,)).transpose(0, 1) * np.sqrt(lr) * noise_ratio_i
-            W2t = w_dist2.sample((n,)).transpose(0, 1) * np.sqrt(lr) / noise_ratio_i
+            W1t = w_dist1.sample((N,)).transpose(0, 1) * np.sqrt(lr) * noise_ratio_i
+            W2t = w_dist2.sample((N,)).transpose(0, 1) * np.sqrt(lr) / noise_ratio_i
             c += lr * c_grads + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * W1t
             s += lr * s_grads + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * W2t
 
             if time_evolution_results:
-                # Update the record of the values at each iteration with the values found at this iteration
+                # Update the record of the values at each iteration with the values found
+                # at this iteration
                 c_time[:, :, i] = c
-        solve_time = time.time() - solve_time_start
 
-        # Clip the amplitudes
-        c = torch.clamp(c, -1, 1)
-        s = torch.clamp(s, -1, 1)  # TODO: this is not used
+        # Ensure variables are within any problem constraints
+        c = self.fit_to_constraints(c)
+
+        # Stop the timer for the solve
+        solve_time = time.time() - solve_time_start
 
         # Run the post processor on the results, if specified
         if post_processor:
@@ -227,7 +283,9 @@ class DLSolver(CCVMSolver):
             pp_time = 0.0
 
         # Calculate the objective value
-        objval = self.compute_energy(c_variables, q_mat, c_vector, instance.scaled_by)
+        # Perform a change of variables to enforce the box constraints
+        confs = self.change_variables(c_variables)
+        objval = instance.compute_energy(confs)
 
         return {
             "c_variables": c_variables,

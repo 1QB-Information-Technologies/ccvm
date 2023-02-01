@@ -1,6 +1,5 @@
-from ccvm.post_processor.PostProcessor import PostProcessor
-from ccvm.post_processor.utils import func_post, func_post_LBFGS, func_post_jac
-import numpy as np
+from ccvm.post_processor.PostProcessor import PostProcessor, MethodType
+from ccvm.post_processor.BoxQPModel import BoxQPModel
 import time
 import torch
 import tqdm
@@ -11,29 +10,28 @@ class PostProcessorLBFGS(PostProcessor):
 
     def __init__(self):
         self.pp_time = 0
+        self.method_type = MethodType.LBFGS
 
-    def postprocess(self, c, q_mat, c_vector, optim_iter=1, device="cpu"):
+    def postprocess(self, c, q_mat, c_vector, num_iter=1):
         """Post processing using LBFGS method.
 
-        :param c:
-        :type Tensor
-        :param q_mat: coefficients of the quadratic terms
-        :type Tensor
-        :param c_vector: coefficients of the linear terms
-        :type Tensor
-        :param optim_iter:
-        :type int
-        :param device:
-        :type str, defaults to cpu
-        :return: c_variables
-        :rtype: Tensor
+        Args:
+            c (torch.tensor): The values for each
+            variable of the problem in the solution found by the solver.
+            q_mat (torch.tensor): Coefficients of the quadratic terms.
+            c_vector (torch.tensor): Coefficients of the linear terms.
+            num_iter (int, optional): The number of iterations. Defaults to 1.
+
+        Returns:
+            torch.tensor: The values for each variable of the problem in the
+                solution found by the solver after post-processing.
         """
         start_time = time.time()
         (batch_size, size) = c.size()
         variables_pp = torch.zeros((batch_size, size))
         for bb in tqdm.tqdm(range(batch_size)):
-            model = BoxQP_LBFGS(c[bb])
-            for _ in range(optim_iter):
+            model = BoxQPModel(c[bb], self.method_type)
+            for _ in range(num_iter):
 
                 optimizer = torch.optim.LBFGS(model.parameters(), lr=0.001, max_iter=1)
 
@@ -49,13 +47,3 @@ class PostProcessorLBFGS(PostProcessor):
         end_time = time.time()
         self.pp_time = end_time - start_time
         return variables_pp
-
-
-class BoxQP_LBFGS(torch.nn.Module):
-    def __init__(self, c):
-        super().__init__()
-        self.params = torch.nn.Parameter(c)
-
-    def forward(self, q_mat, c_vector):
-        c_variables = self.params
-        return func_post_LBFGS(c_variables, q_mat, c_vector)

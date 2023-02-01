@@ -1,5 +1,5 @@
 from ccvm.post_processor.PostProcessor import PostProcessor
-from ccvm.post_processor.utils import func_post, func_post_hess, func_post_jac
+from scipy.optimize import minimize
 import numpy as np
 import time
 import torch
@@ -12,21 +12,18 @@ class PostProcessorTrustConstr(PostProcessor):
     def __init__(self):
         self.pp_time = 0
 
-    def postprocess(self, c, q_mat, c_vector, optim_iter=1, device="cpu"):
+    def postprocess(self, c, q_mat, c_vector):
         """Post processing using TrustConstr method.
 
-        :param c:
-        :type Tensor
-        :param q_mat: coefficients of the quadratic terms
-        :type Tensor
-        :param c_vector: coefficients of the linear terms
-        :type Tensor
-        :param optim_iter:
-        :type int
-        :param device:
-        :type str, defaults to cpu
-        :return: c_variables
-        :rtype: Tensor
+        Args:
+            c (torch.tensor): The values for each
+            variable of the problem in the solution found by the solver.
+            q_mat (torch.tensor): Coefficients of the quadratic terms.
+            c_vector (torch.tensor): Coefficients of the linear terms.
+
+        Returns:
+            torch.tensor: The values for each variable of the problem
+            in the solution found by the solver after post-processing.
         """
         start_time = time.time()
         c = np.array(c.cpu())
@@ -37,16 +34,31 @@ class PostProcessorTrustConstr(PostProcessor):
         for bb in tqdm.tqdm(range(batch_size)):
             c0 = c[bb]
             res = minimize(
-                func_post,
+                super().func_post,
                 c0,
                 args=(q_mat, c_vector),
                 method="trust-constr",
                 bounds=bounds,
-                jac=func_post_jac,
-                hess=func_post_hess,
+                jac=super().func_post_jac,
+                hess=self.func_post_hess,
                 options={"maxiter": 50, "gtol": 1e-6},
             )
             c_variables[bb] = res.x
         end_time = time.time()
         self.pp_time = end_time - start_time
-        return torch.Tensor(c_variables).to(device)
+        return torch.Tensor(c_variables)
+
+    def func_post_hess(c, *args):
+        """Calculates the Hessian of the objective function as a numpy
+            matrix. Providing it can improve the performance but it can
+            only be used with the numpy "trust-constr" post-processing method.
+
+        Args:
+            c (torch.tensor): The values for each variable of the problem
+                in the solution found by the solver.
+
+        Returns:
+            torch.tensor: objective function.
+        """
+        q_mat = np.array(args[0].cpu())
+        return 0.5 * q_mat

@@ -22,15 +22,19 @@ class CCVMSolver(ABC):
 
     :param device: Defines which GPU (or the CPU) to use.
     :type device: DeviceType
+    #TODO: Document the rest of the parameters
     """
 
     def __init__(self, device):
         if device not in DeviceType._value2member_map_:
             raise ValueError("Given device is not available")
         self.device = device
-        self._scaling_multiplier = 1
         self._is_tuned = False
+        self._scaling_multiplier = None
         self._parameter_key = None
+        self.calculate_grads = None
+        self.change_variables = None
+        self.fit_to_constraints = None
 
     ##################################
     # Properties                     #
@@ -76,20 +80,6 @@ class CCVMSolver(ABC):
     ##################################
     # Abstract Methods               #
     ##################################
-    @abstractmethod
-    def calculate_grads(self):
-        # TODO: description
-        pass
-
-    @abstractmethod
-    def compute_energy(self):
-        # TODO: description
-        pass
-
-    @abstractmethod
-    def calculate_grads(self):
-        # TODO: description
-        pass
 
     @abstractmethod
     def tune(self):
@@ -101,27 +91,32 @@ class CCVMSolver(ABC):
         # TODO: description
         pass
 
+    @abstractmethod
+    def _calculate_grads_boxqp(self, **kwargs):
+        # TODO: description
+        pass
+
+    @abstractmethod
+    def _change_variables_boxqp(self, **kwargs):
+        # TODO: description
+        pass
+
+    @abstractmethod
+    def _fit_to_constraints_boxqp(self, **kwargs):
+        # TODO: description
+        pass
+
     ##################################
     # Implemented Methods            #
     ##################################
 
-    def get_scaling_factor(self, N, q):
-        """Reads the `scale` value from the parameter_key for a problem of size N,
-        or uses a default calculation if provided scaling value is None.
-        :param N: the size of the instance to be scaled
-        :type N: int
+    def get_scaling_factor(self, q):
+        """Uses a default calculation to determine the amount by which the problem
+        coefficients should be scaled. The value may differ depending on the solver,
+        as some solvers have different scaling multipliers.
         :param q: the quadratic coefficients of the instance to be scaled
         :type q: torch.Tensor
         """
-        try:
-            if "scale" in self.parameter_key[N] and self.parameter_key[N]["scale"] is not None:
-                # Read the scaling value from the parameter key
-                scaling_val = self.parameter_key[N]["scale"]
-            else:
-                # Calculate the scaling value from the problem's quadratic terms
-                scaling_val = torch.sqrt(torch.sum(torch.abs(q))) * self._scaling_multiplier
-        except KeyError as e:
-            raise Exception(
-                f"The solver's parameter_key does not contain values for problem size N = {N}"
-            ) from e
+        # Calculate the scaling value from the problem's quadratic terms
+        scaling_val = torch.sqrt(torch.sum(torch.abs(q))) * self._scaling_multiplier
         return scaling_val

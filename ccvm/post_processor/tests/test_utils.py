@@ -1,11 +1,13 @@
 from unittest import TestCase
 from ccvm.post_processor.utils import *
+import torch
 
 
 class BoxQPTest(TestCase):
     def setUp(self):
         # TODO: Implementation
-        self.box_qp
+        c = torch.Tensor([0.5, 0.5])
+        self.box_qp = BoxQP(c)
 
     def test_forward_valid(self):
         """Test forward when given valid inputs"""

@@ -4,7 +4,7 @@ from ccvm.solvers.dl_solver import DLSolver
 
 class TestMFSolver(TestCase):
     def setUp(self):
-        dl_solver = DLSolver()
+        dl_solver = DLSolver(device="cpu", batch_size=1000, problem_category="boxqp")
 
     def test_validate_parameters_with_valid_inputs(self):
         """Test _validate_parameters return true when given valid parameters"""
