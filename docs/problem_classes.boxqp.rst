@@ -1,5 +1,5 @@
-ccvm package
-============
+problem\_classes.boxqp package
+==============================
 
 Subpackages
 -----------
@@ -7,15 +7,13 @@ Subpackages
 .. toctree::
    :maxdepth: 2
 
-   ccvm.post_processor
-   ccvm.solvers
-   ccvm.tests
+   problem_classes.boxqp.tests
 
 Submodules
 ----------
 
 
-.. automodule:: ccvm.solution_list
+.. automodule:: problem_classes.boxqp.problem_instance
    :members:
    :undoc-members:
    :show-inheritance:
@@ -23,7 +21,7 @@ Submodules
 Module contents
 ---------------
 
-.. automodule:: ccvm
+.. automodule:: problem_classes.boxqp
    :members:
    :undoc-members:
    :show-inheritance:

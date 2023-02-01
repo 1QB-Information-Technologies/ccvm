@@ -5,7 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    ccvmplotlib.problem_metadata
    ccvmplotlib.tests
@@ -14,14 +14,17 @@ Subpackages
 Submodules
 ----------
 
-ccvmplotlib.ccvmplotlib module
-------------------------------
 
 .. automodule:: ccvmplotlib.ccvmplotlib
    :members:
    :undoc-members:
    :show-inheritance:
 
+
+.. automodule:: ccvmplotlib.setup
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------

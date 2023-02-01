@@ -4,8 +4,6 @@ ccvm.tests package
 Submodules
 ----------
 
-ccvm.tests.test\_dl\_solver module
-----------------------------------
 
 .. automodule:: ccvm.tests.test_dl_solver
    :members:
