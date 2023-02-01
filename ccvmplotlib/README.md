@@ -6,13 +6,15 @@
 
 - Time-To-Solve (TTS)
 - Success Probability
+- Time Evolution [TODO](https://github.com/1QB-Information-Technologies/ccvm/issues/28)
+- Density Dependent TTS [TODO](https://github.com/1QB-Information-Technologies/ccvm/issues/29)
 
 ### Usage
 
 ```python
 from ccvmplotlib import ccvmplotlib
 
-SOLUTION_FILEPATH = "./examples/results/valid_.json"
+SOLUTION_FILEPATH = "./examples/results/valid_result.json"
 PLOT_OUTPUT_DEST = "./"
 
 # Generate TTS plot
@@ -39,6 +41,6 @@ succ_prob_plot_fig.savefig(PLOT_OUTPUT_DEST + "success_prob_plot_example.png", f
 #### Figures
 
 <p align="center">
-    <img src="ccvmplotlib/images/tts_plot_example.png" width="250" >
-    <img src="ccvmplotlib/images/success_prob_plot_example.png" width="250">
+    <img src="images/tts_plot_example.png" width="250" >
+    <img src="images/success_prob_plot_example.png" width="250">
 </p>
