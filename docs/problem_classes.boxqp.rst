@@ -18,8 +18,7 @@ Submodules
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
+  
 
 .. automodule:: problem_classes.boxqp
    :members:

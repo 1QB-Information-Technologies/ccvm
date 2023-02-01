@@ -34,8 +34,7 @@ Submodules
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
+  
 
 .. automodule:: ccvm.solvers
    :members:

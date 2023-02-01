@@ -66,8 +66,7 @@ Submodules
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
+  
 
 .. automodule:: ccvm.post_processor
    :members:

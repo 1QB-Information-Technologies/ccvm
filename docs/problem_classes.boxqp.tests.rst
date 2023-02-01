@@ -10,8 +10,7 @@ Submodules
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
+  
 
 .. automodule:: problem_classes.boxqp.tests
    :members:

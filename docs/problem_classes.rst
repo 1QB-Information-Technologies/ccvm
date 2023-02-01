@@ -9,8 +9,7 @@ Subpackages
 
    problem_classes.boxqp
 
-Module contents
----------------
+  
 
 .. automodule:: problem_classes
    :members:

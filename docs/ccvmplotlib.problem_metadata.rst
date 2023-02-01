@@ -22,8 +22,7 @@ Submodules
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
+  
 
 .. automodule:: ccvmplotlib.problem_metadata
    :members:
