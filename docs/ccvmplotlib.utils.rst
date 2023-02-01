@@ -1,7 +1,7 @@
 ccvmplotlib.utils package
 =========================
 
-Submodules
+Submodule
 ----------
 
 ccvmplotlib.utils.metric module
