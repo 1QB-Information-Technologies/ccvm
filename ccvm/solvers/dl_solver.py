@@ -173,9 +173,8 @@ class DLSolver(CCVMSolver):
             Defaults to None.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
             iteration number. If False, the pump rate will be 1.0. Defaults to True.
-            g (float): _description_ Defaults to 0.05.
+            g (float): The nonlinearity coefficient. Defaults to 0.05.
         """
-        # TODO: summary/descriptions
         # TODO: This implementation is a placeholder; full implementation is a
         #       future consideration
         self.is_tuned = True
@@ -190,7 +189,7 @@ class DLSolver(CCVMSolver):
             Defaults to None.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
             iteration number. If False, the pump rate will be 1.0. Defaults to True.
-            g (float): _description_ Defaults to 0.05.
+            g (float): The nonlinearity coefficient. Defaults to 0.05.
 
         Returns:
             tuple: The solution to the problem instance and the timing values.

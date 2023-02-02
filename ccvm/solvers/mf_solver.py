@@ -192,9 +192,8 @@ class MFSolver(CCVMSolver):
             post_processor (PostProcessorType): The post processor to use to process
             the results of the solver. None if no post processing is desired.
             Defaults to None.
-            g (float): _description_ Defaults to 0.01.
+            g (float): The nonlinearity coefficient. Defaults to 0.01.
         """
-        # TODO: summary/descriptions
         # TODO: This implementation is a placeholder; full implementation is a
         #       future consideration
         self.is_tuned = True
@@ -207,8 +206,10 @@ class MFSolver(CCVMSolver):
             instance (boxqp.boxqp.ProblemInstance): The problem to solve.
             post_processor (PostProcessorType): The post processor to use to process
             the results of the solver. None if no post processing is desired.
-            g (float, optional): _description_. Defaults to 0.01
-            pump_rate_flag (bool, optional): _description_. Defaults to True.
+            g (float, optional): The nonlinearity coefficient. Defaults to 0.01
+            pump_rate_flag (bool, optional): Whether or not to scale the pump rate based
+            on the iteration number. If False, the pump rate will be 1.0. Defaults to
+            True.
 
         Returns:
             dict: A dictionary containing the results of the solver. It contains
