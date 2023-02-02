@@ -26,10 +26,10 @@ services:
     #           capabilities: [ gpu ]
 
   # ccvm-slim:
-  #   image: quay.io/1qbit/ccvm:slim
-  #   # build:
-  #   #   context: ../
-  #   #   dockerfile: docker/Dockerfile-slim
+  #   # image: quay.io/1qbit/ccvm:slim
+  #   build:
+  #     context: ../
+  #     dockerfile: docker/Dockerfile-slim
   #   restart: always
   #   container_name: ccvm-slim
   #   volumes:
@@ -38,16 +38,16 @@ services:
   #   networks:
   #     - ccvm-network
   #   command: sleep infinity
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         memory: 20g
-  #       reservations:
-  #         memory: 20g
-  #         devices:
-  #           - driver: nvidia
-  #             count: 1
-  #             capabilities: [ gpu ]
+  #   # deploy:
+  #   #   resources:
+  #   #     limits:
+  #   #       memory: 20g
+  #   #     reservations:
+  #   #       memory: 20g
+  #   #       devices:
+  #   #         - driver: nvidia
+  #   #           count: 1
+  #   #           capabilities: [ gpu ]
 
 networks:
   ccvm-network:

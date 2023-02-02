@@ -18,7 +18,7 @@ class MFSolver(CCVMSolver):
         self,
         device,
         problem_category="boxqp",
-        time_evolution_results=True,
+        time_evolution_results=False,
         batch_size=1000,
     ):
         """
