@@ -21,15 +21,19 @@ The Coherent Continous-Variable Machine (CCVM) is a novel coherent quantum optic
 
 #### Using Docker
 
-1. Run container from anywhere
+##### 1. Run container from anywhere
 
-`docker run -it -v $(pwd):/workspace/examples/plots quay.io/1qbit/ccvm bash`
+```
+docker run -it -v $(pwd):/workspace/examples/plots quay.io/1qbit/ccvm bash
+```
 
-2. Go into `examples/` and run `ccvm_boxqp_plot.py`
+##### 2. Go into `examples/` and run `ccvm_boxqp_plot.py`
 
-`cd examples && python ccvm_boxqp_plot.py`
+````
+cd examples && python ccvm_boxqp_plot.py
+````
 
-3. View generated plots
+##### 3. View generated plots
 
 <p align="center">
     <img src="ccvmplotlib/images/tts_plot_example.png" width="250" >
@@ -37,29 +41,28 @@ The Coherent Continous-Variable Machine (CCVM) is a novel coherent quantum optic
 </p>
 
 
-## Usage (TODO)
+## Usage
 
 
+##### First, install using `pip`
 
-#### Install dependenices
+```
+pip install git+https://github.com/1QB-Information-Technologies/ccvm/
+```
 
-Run the following command to install dependencies:
-
-`pip install git+https://github.com/1QB-Information-Technologies/ccvm/`
-
-TODO: `pip install ccvm`
+TODO: publish on pip, update above to `pip install ccvm`
 
 
-#### Solve a BoxQP problem (TODO)
+### Solve a BoxQP problem
 
-#### 1. Add imports
+##### 1. Add imports
 
 ```python
 from problem_classes.boxqp.problem_instance import ProblemInstance
 from ccvm.solvers.dl_solver import DLSolver
 ```
 
-#### 2. Define a Solver
+##### 2. Define a Solver
 
 ```python
 solver = DLSolver(device="cpu", batch_size=100)  # or "cuda"
@@ -68,10 +71,9 @@ solver.parameter_key = {
 }
 ```
 
-#### 3. Load in Problem Instance
+##### 3. Load in Problem Instance
 
 ```python
-# Load problem instance from file
 boxqp_instance = ProblemInstance(
     instance_type="test",
     file_path="./test_instances/test020-100-10.in",
@@ -80,7 +82,7 @@ boxqp_instance = ProblemInstance(
 boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q))
 ```
 
-#### 4. Solve
+##### 4. Solve
 
 ```python
 solution = solver.solve(
@@ -96,9 +98,11 @@ solution.solve_time
 ```
 
 
-## Docs (TODO)
+## Docs
 
-Find our [documentation here](ccvm.readthedocs.io).
+Find our [documentation here](https://urban-chainsaw-9k39nm4.pages.github.io/index.html).
+
+* TODO: Update with public link
 
 Some additional quick links:
 - Problem Definition: [BoxQP Problem Class](problem_classes/README.md)
