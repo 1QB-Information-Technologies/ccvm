@@ -6,7 +6,7 @@ from ccvmplotlib.problem_metadata.problem_metadata_factory import (
     ProblemType,
     TTSType,
 )
-from ccvmplotlib.problem_metadata.boxqp_metadata import BoxQPMetadata
+from ..problem_metadata.boxqp_metadata import BoxQPMetadata
 
 # from ccvm.solvers.pmf_solver import PMFSolver
 

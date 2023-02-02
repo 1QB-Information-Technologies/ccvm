@@ -1,5 +1,6 @@
 from ccvm.solvers.ccvm_solver import CCVMSolver
 from ccvm.post_processor.PostProcessorFactory import PostProcessorFactory
+from ccvm.solution import Solution
 import torch
 import numpy as np
 import torch.distributions as tdist
@@ -18,7 +19,7 @@ class DLSolver(CCVMSolver):
         self,
         device,
         problem_category="boxqp",
-        time_evolution_results=True,
+        time_evolution_results=False,
         batch_size=1000,
     ):
         """
@@ -136,16 +137,16 @@ class DLSolver(CCVMSolver):
         s_grads = -s_grad_1 + s_grad_2 - s_grad_3
         return c_grads, s_grads
 
-    def _change_variables_boxqp(self, c_variables):
+    def _change_variables_boxqp(self, problem_variables):
         """Perform a change of variables to enforce the box constraints.
 
         Args:
-            c_variables (torch.Tensor): The variables to change.
+            problem_variables (torch.Tensor): The variables to change.
 
         Returns:
             torch.Tensor: The changed variables.
         """
-        return 0.5 * (c_variables + 1)
+        return 0.5 * (problem_variables + 1)
 
     def _fit_to_constraints_boxqp(self, c):
         """Clamps the values of c to be within the box constraints
@@ -276,21 +277,31 @@ class DLSolver(CCVMSolver):
                 post_processor
             )
 
-            c_variables = post_processor_object.postprocess(c, q_mat, c_vector)
+            problem_variables = post_processor_object.postprocess(c, q_mat, c_vector)
             pp_time = post_processor_object.pp_time
         else:
-            c_variables = c
+            problem_variables = c
             pp_time = 0.0
 
         # Calculate the objective value
         # Perform a change of variables to enforce the box constraints
-        confs = self.change_variables(c_variables)
+        confs = self.change_variables(problem_variables)
         objval = instance.compute_energy(confs)
 
-        return {
-            "c_variables": c_variables,
-            "c_evolution": c_time,
-            "objective_value": objval,
-            "solve_time": solve_time,
-            "post_processing_time": pp_time,
-        }
+        solution = Solution(
+            problem_size=N,
+            batch_size=batch_size,
+            instance_name=instance.name,
+            iter=n_iter,
+            objective_value=objval,
+            solve_time=solve_time,
+            pp_time=pp_time,
+            optimal_value=instance.optimal_sol,
+            variables={
+                "problem_variables": problem_variables,
+                "s": s,
+            },
+            device=device,
+        )
+
+        return solution

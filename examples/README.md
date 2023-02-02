@@ -2,7 +2,7 @@
 
 - `ccvm_boxqp_plot.py`: Solve BoxQP using CCVM w/ plot
 - `ccvm_boxqp.py`: Solve BoxQP using CCVM w/o plot
-- `benchmarking.py`: Benchmarking CCVM w/ Langevin (TODO)
+- `benchmarking.py`: Benchmarking CCVM against Langevin (TODO)
 
 ### Problem Instances
 

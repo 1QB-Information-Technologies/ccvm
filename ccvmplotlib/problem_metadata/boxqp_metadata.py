@@ -68,7 +68,7 @@ class BoxQPMetadata(ProblemMetadata):
         # populate percent gap list
         with open(solution_filepath, "r") as test_file:
             data_stream = json_stream.load(test_file)
-            for key in data_stream[0]["result_performance"]:
+            for key in data_stream[0]["solution_performance"]:
                 self.__percent_gap_list.append(key)
 
         # populate pd.DataFrame

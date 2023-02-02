@@ -1,4 +1,5 @@
 from ccvm.solvers.ccvm_solver import CCVMSolver
+from ccvm.solution import Solution
 from ccvm.post_processor.PostProcessorFactory import PostProcessorFactory
 import torch
 import numpy as np
@@ -212,7 +213,7 @@ class MFSolver(CCVMSolver):
         Returns:
             dict: A dictionary containing the results of the solver. It contains
             these keys:
-            - "c_variables" (:py:class:`torch.Tensor`) - The final values for each
+            - "problem_variables" (:py:class:`torch.Tensor`) - The final values for each
             variable of the problem in the solution found by the solver
             - "mu_evolution" (:py:class:`torch.Tensor`) - The values of mu at each
             iteration during the solve process
@@ -326,21 +327,31 @@ class MFSolver(CCVMSolver):
                 post_processor
             )
 
-            c_variables = post_processor_object.postprocess(
+            problem_variables = post_processor_object.postprocess(
                 mu_tilde.pow(2) / S**2, q_mat, c_vector, device=device
             )
             pp_time = post_processor_object.pp_time
         else:
-            c_variables = mu_tilde.pow(2) / S**2
+            problem_variables = mu_tilde.pow(2) / S**2
             pp_time = 0.0
 
-        objval = instance.compute_energy(c_variables)
+        objval = instance.compute_energy(problem_variables)
 
-        return {
-            "c_variables": c_variables,
-            "mu_evolution": mu_time,
-            "sigma_evolution": sigma_time,
-            "objective_value": objval,
-            "solve_time": solve_time,
-            "post_processing_time": pp_time,
-        }
+        solution = Solution(
+            problem_size=N,
+            batch_size=batch_size,
+            instance_name=instance.name,
+            iter=n_iter,
+            objective_value=objval,
+            solve_time=solve_time,
+            pp_time=pp_time,
+            optimal_value=instance.optimal_sol,
+            variables={
+                "problem_variables": problem_variables,
+                "mu": mu,
+                "sigma": sigma,
+            },
+            device=device,
+        )
+
+        return solution

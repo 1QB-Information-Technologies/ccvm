@@ -1,5 +1,5 @@
 from unittest import TestCase
-from boxqp.problem_instance import ProblemInstance
+from ..problem_instance import ProblemInstance
 
 
 class TestProblemInstance(TestCase):

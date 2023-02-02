@@ -3,58 +3,54 @@ import enum
 
 
 class DeviceType(enum.Enum):
+    """The devices that can be used by pytorch"""
+
     CPU_DEVICE = "cpu"
     CUDA_DEVICE = "cuda"
 
 
 class InstanceType(enum.Enum):
-    BASIC = "basic"
+    """Enumerate instance types."""
+
     TUNING = "tuning"
     TEST = "test"
 
 
 # TODO: Revisit for a potential factory pattern
 class ProblemInstance:
-    """Defines a BoxQP problem instance.
-
-    Attributes:
-    :param device: Defines which GPU (or the CPU) to use.
-    :type device: DeviceType, optional
-    :param instance_type: TODO
-    :type instance_type: ENUM, optional
-    :param file_path: Path to file of problem instance.
-    :type file_path: str, optional
-    :param file_delimiter: The type of delimiter used in the file.
-    :type file_delimiter: str, optional
-    :param name: The name of the problem instance. If not given, defaults to the
-    file name when an instance is loaded.
-    :type name: str, optional
-    :ivar N: TODO
-    :vartype N: int, optional
-    :ivar optimal_sol: TODO
-    :vartype optimal_sol: float, optional
-    :ivar optimality: TODO
-    :vartype optimality: bool, optional
-    :ivar sol_time_gb: TODO
-    :vartype sol_time_gb: np, optional
-    :ivar q: TODO
-    :vartype q: Tensor, optional
-    :ivar c: TODO
-    :vartype c: Tensor, optional
-    :ivar scaled_by: The amount the problem's terms have been scaled by, relative
-    to the data that was loaded in. If the problem was not scaled, the tensor will hold the value 1.
-    :vartype scaled_by: Tensor, optional
-    """
+    """Defines a BoxQP problem instance."""
 
     def __init__(
         self,
         device="cpu",
-        instance_type="basic",
+        instance_type="tuning",
         file_path=None,
         file_delimiter="\t",
         name=None,
     ):
-        """Constructor."""
+        """Problem instance constructor.
+
+        Args:
+            device (str, optional): Defines which GPU (or the CPU) to
+                use. Defaults to "cpu".
+            instance_type (str, optional): The type of the instance.
+                Defaults to "tuning".
+            file_path (str, optional): Path to file of problem instance.
+                Defaults to None.
+            file_delimiter (str, optional): The type of delimiter used in the
+                file. Defaults to "\t".
+            name (str, optional): The name of the problem instance. If not
+                given, defaults to the file name when an instance is loaded.
+
+        Attributes:
+            N (int): instance size. Defaults to None.
+            optimal_sol (float): the optimal solution to the problem. Defaults to None.
+            optimality (bool): indicates whether the solution is
+                optimal (True or False). Defaults to None.
+            q (torch.tensor): Q matrix of the QP problem. Defaults to None.
+            c (torch.tensor): c vector of the QP problem. Defaults to None.
+            scaled_by (float): scaling value of the coefficient. Defaults to 1.
+        """
         self.N = None
         self.optimal_sol = None
         self.optimality = None
@@ -74,21 +70,25 @@ class ProblemInstance:
             self.load_instance(
                 device=device, instance_type=instance_type, file_path=file_path
             )
+        self.problem_category = "boxqp"
 
     def load_instance(
-        self, device="cpu", instance_type="basic", file_path=None, file_delimiter=None
+        self, device="cpu", instance_type="tuning", file_path=None, file_delimiter=None
     ):
         """Loads in a box constraint problem from a file.
 
-        :param device: Device to use, one of: "cpu" or "cuda"
-        :type device: str, optional
-        :param instance_type: Type of instance
-        :type instance_type: str, optional
-        :param file_path: Path to instance file
-        :type file_path: str
-        :param file_delimiter: Delimiter used in the instance file. If not specified,
-        the file_delimiter value assigned at instance initialization will be used.
-        :type file_delimiter: str, optional
+        Args:
+            device (str, optional): Device to use. Defaults to "cpu".
+            instance_type (str, optional): The type of the instance.
+                Defaults to "tuning".
+            file_path (str, optional): Path to instance file. Defaults to None.
+            file_delimiter (str, optional): Delimiter used in the instance
+                file. If not specified, the file_delimiter value assigned at
+                instance initialization will be used.
+
+        Raises:
+            Exception: File path is not specified.
+            Exception: Error reading the instance file.
         """
         rval_q = None
         rval_c = None
@@ -115,20 +115,15 @@ class ProblemInstance:
                 # Read metadata from the first line
                 lines = stream.readlines()
                 instance_info = lines[0].split("\n")[0].split("\t")
-                if instance_type == "basic":
-                    # Save only the number of variables from the metadata
-                    N = int(instance_info[0])
-                    (optimality, optimal_sol, sol_time_gb) = (None, None, None)
 
+                # Save all metadata from the file
+                N = int(instance_info[0])
+                optimal_sol = float(instance_info[1])
+                if instance_info[2].lower() == "true":
+                    optimality = True
                 else:
-                    # Save all metadata from the file
-                    N = int(instance_info[0])
-                    optimal_sol = float(instance_info[1])
-                    if instance_info[2].lower() == "true":
-                        optimality = True
-                    else:
-                        optimality = False
-                    sol_time_gb = float(instance_info[3])
+                    optimality = False
+                sol_time_gb = float(instance_info[3])
 
                 # Initialize the q and c matrices
                 rval_q = torch.zeros((N, N), dtype=torch.float).to(device)
@@ -163,13 +158,29 @@ class ProblemInstance:
             # Remove the file extension and path, then name the instance after the file
             self.name = file_path.split("/")[-1].split(".")[0]
 
-    def scale_coefs(self, scaling_factor):
-        """Divides the coefficients of the problem stored in this instance by the given factor.
-        Note that consectutive calls to this function will stack, e.g. scaling the problem
-        by 4 twice would have the same result as scaling the original problem by 8.
+    def compute_energy(self, confs):
+        """Compute the objective value for the given BoxQP instance using
+        the formula '0.5 xQx + Vx', where 'x' is the vector of variables.
 
-        :param scaling_factor: The amount by which the coefficients should be scaled.
-        :type scaling_factor: Tensor
+        Args:
+            confs (torch.Tensor): Configurations for which to compute energy
+
+        Returns:
+            torch.Tensor: Energy of configurations.
+        """
+        energy1 = torch.einsum("bi, ij, bj -> b", confs, self.q, confs) * self.scaled_by
+        energy2 = torch.einsum("bi, i -> b", confs, self.c) * self.scaled_by
+        return 0.5 * energy1 + energy2
+
+    def scale_coefs(self, scaling_factor):
+        """Divides the coefficients of the problem stored in this instance by
+        the given factor. Note that consecutive calls to this function will
+        stack, e.g. scaling the problem by 4 twice would have the same result as
+        scaling the original problem by 16.
+
+        Args:
+            scaling_factor (torch.Tensor): The amount by which the
+            coefficients should be scaled.
         """
         self.q = self.q / scaling_factor
         self.c = self.c / scaling_factor
