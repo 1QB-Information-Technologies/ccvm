@@ -5,7 +5,7 @@ import math
 from typing import Any
 from matplotlib import cm
 
-from .problem_metadata.problem_metadata_factory import ProblemMetadataFactory
+from ccvmplotlib.problem_metadata import ProblemMetadataFactory
 
 
 TTS_UPPER_LIMIT = 1e20  # Approximate age of the universe in sec.
@@ -42,6 +42,7 @@ class ccvmplotlib:
         Keyword Args:
             ylim (Tuple[float, float]): Set the y-limits of a plot. (e.g. ylim =
             (lower_lim, upper_lim))
+
             show_plot (bool): When set to True, the plot will pop up in a new window
             when it is ready.
 

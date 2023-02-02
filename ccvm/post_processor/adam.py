@@ -1,19 +1,19 @@
-from ccvm.post_processor.PostProcessor import PostProcessor, MethodType
-from ccvm.post_processor.BoxQPModel import BoxQPModel
+from .post_processor import PostProcessor, MethodType
+from .box_qp_model import BoxQPModel
 import time
 import torch
 import tqdm
 
 
-class PostProcessorASGD(PostProcessor):
-    """A concrete class that implements the PostProcessor interface."""
+class PostProcessorAdam(PostProcessor):
+    """A concrete class that implements the PostProcessor interface ."""
 
     def __init__(self):
         self.pp_time = 0
-        self.method_type = MethodType.ASGD
+        self.method_type = MethodType.Adam
 
     def postprocess(self, c, q_mat, c_vector, num_iter=1, device="cpu"):
-        """Post processing using ASGD method.
+        """Post processing using Adam method.
 
         Args:
             c (torch.tensor): The values for each
@@ -25,13 +25,24 @@ class PostProcessorASGD(PostProcessor):
                 Defaults to "cpu".
 
         Returns:
-            torch.tensor: The values for each variable of the problem in the
-                solution found by the solver after post-processing.
+            torch.tensor: The values for each variable of the problem in
+                the solution found by the solver after post-processing.
         """
         start_time = time.time()
-        (batch_size, _) = c.size()
-        model = BoxQPModel(c, self.method_type)
-        optimizer = torch.optim.ASGD(model.parameters(), lr=0.01, lambd=0.001)
+
+        try:
+            if not torch.is_tensor(c):
+                raise TypeError("parameter c must be a tensor")
+            if not torch.is_tensor(q_mat):
+                raise TypeError("parameter q_mat must be a tensor")
+            if not torch.is_tensor(c_vector):
+                raise TypeError("parameter c_vector must be a tensor")
+            (batch_size, _) = c.size()
+            model = BoxQPModel(c, self.method_type)
+        except Exception as e:
+            raise e
+
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.01, betas=(0.9, 0.99))
         for _ in tqdm.tqdm(range(num_iter)):
             loss = model(q_mat, c_vector)
             loss.backward(torch.Tensor([1] * batch_size).to(device))

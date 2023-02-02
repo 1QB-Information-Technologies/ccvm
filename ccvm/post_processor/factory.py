@@ -1,9 +1,9 @@
-from ccvm.post_processor.PostProcessor import MethodType
-from ccvm.post_processor.PostProcessorAdam import PostProcessorAdam
-from ccvm.post_processor.PostProcessorASGD import PostProcessorASGD
-from ccvm.post_processor.PostProcessorBFGS import PostProcessorBFGS
-from ccvm.post_processor.PostProcessorLBFGS import PostProcessorLBFGS
-from ccvm.post_processor.PostProcessorTrustConstr import PostProcessorTrustConstr
+from .post_processor import MethodType
+from .adam import PostProcessorAdam
+from .asgd import PostProcessorASGD
+from .bfgs import PostProcessorBFGS
+from .lbfgs import PostProcessorLBFGS
+from .trust_constr import PostProcessorTrustConstr
 
 
 class PostProcessorFactory:

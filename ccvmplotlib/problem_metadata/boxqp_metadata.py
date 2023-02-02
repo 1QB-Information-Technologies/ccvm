@@ -1,9 +1,9 @@
-from .problem_metadata import (
+from ccvmplotlib.problem_metadata.problem_metadata import (
     ProblemType,
     TTSType,
     ProblemMetadata,
 )
-from ..utils.sampleTTSmetric import SampleTTSMetric
+from ccvmplotlib.utils.sampleTTSmetric import SampleTTSMetric
 
 import numpy as np
 import pandas as pd

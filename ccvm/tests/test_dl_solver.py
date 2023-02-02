@@ -1,5 +1,5 @@
 from unittest import TestCase
-from ..solvers.dl_solver import DLSolver
+from ccvm.solvers import DLSolver
 
 
 class TestMFSolver(TestCase):

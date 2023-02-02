@@ -1,19 +1,19 @@
-from ccvm.post_processor.PostProcessor import PostProcessor, MethodType
-from ccvm.post_processor.BoxQPModel import BoxQPModel
+from .post_processor import PostProcessor, MethodType
+from .box_qp_model import BoxQPModel
 import time
 import torch
 import tqdm
 
 
-class PostProcessorAdam(PostProcessor):
+class PostProcessorASGD(PostProcessor):
     """A concrete class that implements the PostProcessor interface."""
 
     def __init__(self):
         self.pp_time = 0
-        self.method_type = MethodType.Adam
+        self.method_type = MethodType.ASGD
 
     def postprocess(self, c, q_mat, c_vector, num_iter=1, device="cpu"):
-        """Post processing using Adam method.
+        """Post processing using ASGD method.
 
         Args:
             c (torch.tensor): The values for each
@@ -25,11 +25,11 @@ class PostProcessorAdam(PostProcessor):
                 Defaults to "cpu".
 
         Returns:
-            torch.tensor: The values for each variable of the problem in
-                the solution found by the solver after post-processing.
+            torch.tensor: The values for each variable of the problem in the
+                solution found by the solver after post-processing.
         """
         start_time = time.time()
-
+        
         try:
             if not torch.is_tensor(c):
                 raise TypeError("parameter c must be a tensor")
@@ -42,7 +42,7 @@ class PostProcessorAdam(PostProcessor):
         except Exception as e:
             raise e
 
-        optimizer = torch.optim.Adam(model.parameters(), lr=0.01, betas=(0.9, 0.99))
+        optimizer = torch.optim.ASGD(model.parameters(), lr=0.01, lambd=0.001)
         for _ in tqdm.tqdm(range(num_iter)):
             loss = model(q_mat, c_vector)
             loss.backward(torch.Tensor([1] * batch_size).to(device))

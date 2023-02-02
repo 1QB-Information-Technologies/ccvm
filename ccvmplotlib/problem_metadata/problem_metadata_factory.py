@@ -1,9 +1,9 @@
-from .problem_metadata import (
+from ccvmplotlib.problem_metadata.problem_metadata import (
     ProblemMetadata,
     TTSType,
     ProblemType,
 )
-from .boxqp_metadata import BoxQPMetadata
+from ccvmplotlib.problem_metadata import BoxQPMetadata
 
 
 class ProblemMetadataFactory:

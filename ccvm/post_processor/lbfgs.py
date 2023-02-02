@@ -1,5 +1,5 @@
-from ccvm.post_processor.PostProcessor import PostProcessor, MethodType
-from ccvm.post_processor.BoxQPModel import BoxQPModel
+from .post_processor import PostProcessor, MethodType
+from .box_qp_model import BoxQPModel
 import time
 import torch
 import tqdm
@@ -27,7 +27,17 @@ class PostProcessorLBFGS(PostProcessor):
                 solution found by the solver after post-processing.
         """
         start_time = time.time()
-        (batch_size, size) = c.size()
+        try:
+            if not torch.is_tensor(c):
+                raise TypeError("parameter c must be a tensor")
+            if not torch.is_tensor(q_mat):
+                raise TypeError("parameter q_mat must be a tensor")
+            if not torch.is_tensor(c_vector):
+                raise TypeError("parameter c_vector must be a tensor")
+            (batch_size, size) = c.size()
+        except Exception as e:
+            raise e
+
         variables_pp = torch.zeros((batch_size, size))
         for bb in tqdm.tqdm(range(batch_size)):
             model = BoxQPModel(c[bb], self.method_type)

@@ -45,7 +45,9 @@ The Coherent Continous-Variable Machine (CCVM) is a novel coherent quantum optic
 
 Run the following command to install dependencies:
 
-`pip install -r requirements.txt`
+`pip install git+https://github.com/1QB-Information-Technologies/ccvm/`
+
+TODO: `pip install ccvm`
 
 
 #### Solve a BoxQP problem (TODO)

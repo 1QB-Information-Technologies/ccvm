@@ -1,4 +1,4 @@
-from ccvm.post_processor.PostProcessor import PostProcessor
+from .post_processor import PostProcessor
 from scipy.optimize import minimize
 import numpy as np
 import time
@@ -26,11 +26,20 @@ class PostProcessorTrustConstr(PostProcessor):
             in the solution found by the solver after post-processing.
         """
         start_time = time.time()
-        c = np.array(c.cpu())
-        batch_size = np.shape(c)[0]
-        size = np.shape(c)[1]
-        bounds = ((0, 1.0),) * size
-        c_variables = np.zeros((batch_size, size))
+        try:
+            if not torch.is_tensor(c):
+                raise TypeError("parameter c must be a tensor")
+            if not torch.is_tensor(q_mat):
+                raise TypeError("parameter q_mat must be a tensor")
+            if not torch.is_tensor(c_vector):
+                raise TypeError("parameter c_vector must be a tensor")
+            c = np.array(c.cpu())
+            batch_size = np.shape(c)[0]
+            size = np.shape(c)[1]
+            bounds = ((0, 1.0),) * size
+            c_variables = np.zeros((batch_size, size))
+        except Exception as e:
+            raise e
         for bb in tqdm.tqdm(range(batch_size)):
             c0 = c[bb]
             res = minimize(

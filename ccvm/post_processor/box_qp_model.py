@@ -1,4 +1,4 @@
-from ccvm.post_processor.PostProcessor import MethodType
+from .post_processor import MethodType
 import torch
 
 
@@ -36,6 +36,13 @@ class BoxQPModel(torch.nn.Module):
         Returns:
             torch.tensor: Objective function.
         """
+        try:
+            if not torch.is_tensor(q_mat):
+                raise TypeError("parameter q_mat must be a tensor")
+            if not torch.is_tensor(c_vector):
+                raise TypeError("parameter c_vector must be a tensor")
+        except Exception as e:
+            raise e
         c_variables = self.params
         method_type = self.method_type
         if method_type == MethodType.LBFGS:
