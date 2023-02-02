@@ -21,8 +21,8 @@ if __name__ == "__main__":
 
     # Supply solver parameters for different problem sizes
     solver.parameter_key = {
-        10: {"p": 1.0, "lr": 0.001, "iter": 10000, "nr": 15},
-        20: {"p": 2.0, "lr": 0.005, "iter": 15000, "nr": 10},
+        10: {"pump": 1.0, "lr": 0.001, "iter": 10000, "nr": 15},
+        20: {"pump": 2.0, "lr": 0.005, "iter": 15000, "nr": 10},
     }
 
     metadata_list = MetadataList()

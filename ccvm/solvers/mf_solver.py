@@ -53,10 +53,10 @@ class MFSolver(CCVMSolver):
                 {
                     <problem size>:
                         <dict with set of keys:
-                            p (pump),
+                            pump,
                             feedback_scale,
                             j (measurement strength),
-                            S,
+                            S (enforced saturation value),
                             lr (learning rate),
                             iter (iterations)>
                 }
@@ -64,7 +64,7 @@ class MFSolver(CCVMSolver):
                 {
                     20:
                         {
-                            "p": 2.5,
+                            "pump": 2.5,
                             "feedback_scale": 400,
                             "j": 399,
                             "S": 20.0,
@@ -73,7 +73,7 @@ class MFSolver(CCVMSolver):
                         },
                     30:
                         {
-                            "p": 3.0,
+                            "pump": 3.0,
                             "feedback_scale": 250,
                             "j": 399,
                             "S": 20.0,
@@ -86,7 +86,7 @@ class MFSolver(CCVMSolver):
             ValueError: If the parameter key is not valid for this solver.
         """
         expected_mfparameter_key_set = set(
-            ["p", "feedback_scale", "j", "S", "lr", "iter"]
+            ["pump", "feedback_scale", "j", "S", "lr", "iter"]
         )
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
@@ -246,7 +246,7 @@ class MFSolver(CCVMSolver):
 
         # Get parameters from parameter_key
         try:
-            p = self.parameter_key[problem_size]["p"]
+            pump = self.parameter_key[problem_size]["pump"]
             lr = self.parameter_key[problem_size]["lr"]
             n_iter = self.parameter_key[problem_size]["iter"]
             j = self.parameter_key[problem_size]["j"]
@@ -298,7 +298,7 @@ class MFSolver(CCVMSolver):
             else:
                 j_i = 0.1
 
-            pump = p * pump_rate
+            instantaneous_pump = pump * pump_rate
 
             (grads_mu, grads_sigma) = self.calculate_grads(
                 mu,
@@ -306,7 +306,7 @@ class MFSolver(CCVMSolver):
                 sigma,
                 q_matrix,
                 v_vector,
-                pump,
+                instantaneous_pump,
                 Wt,
                 j_i,
                 g,

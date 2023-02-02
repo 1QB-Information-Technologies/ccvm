@@ -53,7 +53,7 @@ class DLSolver(CCVMSolver):
                 format:
                 {
                     <problem size>: <dict with set of keys:
-                            p (pump),
+                            pump (pump),
                             lr (learning rate),
                             iter (iterations),
                             nr (noise_ratio)
@@ -61,14 +61,14 @@ class DLSolver(CCVMSolver):
                 }
         For example:
                 {
-                    20: {"p": 2.0, "lr": 0.005, "iter": 15000, "nr": 10},
-                    30: {"p": 2.0, "lr": 0.005, "iter": 15000, "nr": 5},
+                    20: {"pump": 2.0, "lr": 0.005, "iter": 15000, "nr": 10},
+                    30: {"pump": 2.0, "lr": 0.005, "iter": 15000, "nr": 5},
                 }
 
         Raises:
             ValueError: If the parameter key is not valid for this solver.
         """
-        expected_dlparameter_key_set = set(["p", "lr", "iter", "nr"])
+        expected_dlparameter_key_set = set(["pump", "lr", "iter", "nr"])
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
         for parameter_key in parameter_key_list:
@@ -100,7 +100,7 @@ class DLSolver(CCVMSolver):
                 f" Given category: {problem_category}"
             )
 
-    def _calculate_grads_boxqp(self, c, s, q_matrix, v_vector, p, rate, S=1):
+    def _calculate_grads_boxqp(self, c, s, q_matrix, v_vector, pump, rate, S=1):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
@@ -111,7 +111,7 @@ class DLSolver(CCVMSolver):
             s (torch.Tensor): Quadrature amplitudes of the solver
             q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
             v_vector (torch.tensor): The V vector describing the BoxQP problem.
-            p (float): The maximum pump field strength
+            pump (float): The maximum pump field strength
             rate (float): The multiplier for the pump field strength at a given instance of time.
             S (float): The saturation value of the amplitudes. Defaults to 1.
 
@@ -122,15 +122,15 @@ class DLSolver(CCVMSolver):
         c_pow = torch.pow(c, 2)
         s_pow = torch.pow(s, 2)
 
-        if p > 1:
-            S = np.sqrt(p - 1)
+        if pump > 1:
+            S = np.sqrt(pump - 1)
 
         c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, q_matrix)
-        c_grad_2 = torch.einsum("cj,cj -> cj", -1 + (p * rate) - c_pow - s_pow, c)
+        c_grad_2 = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
         c_grad_3 = v_vector / 2 / S
 
         s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, q_matrix)
-        s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (p * rate) - c_pow - s_pow, s)
+        s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
         s_grad_3 = v_vector / 2 / S
 
         c_grads = -c_grad_1 + c_grad_2 - c_grad_3
@@ -214,7 +214,7 @@ class DLSolver(CCVMSolver):
 
         # Get parameters from parameter_key
         try:
-            p = self.parameter_key[problem_size]["p"]
+            pump = self.parameter_key[problem_size]["pump"]
             lr = self.parameter_key[problem_size]["lr"]
             n_iter = self.parameter_key[problem_size]["iter"]
             noise_ratio = self.parameter_key[problem_size]["nr"]
@@ -256,7 +256,7 @@ class DLSolver(CCVMSolver):
                     noise_ratio_i = noise_ratio
 
             c_grads, s_grads = self.calculate_grads(
-                c, s, q_matrix, v_vector, p, pump_rate
+                c, s, q_matrix, v_vector, pump, pump_rate
             )
             W1t = (
                 w_dist1.sample((problem_size,)).transpose(0, 1)
