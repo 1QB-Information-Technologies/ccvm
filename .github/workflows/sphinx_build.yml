@@ -38,6 +38,7 @@ jobs:
         run: |
           pip install sphinx sphinx_rtd_theme
           pip install sphinxcontrib.jquery
+          pip install myst-parser
           pip install -r requirements.txt
       - name: Sphinx build
         run: |
