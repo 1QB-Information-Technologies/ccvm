@@ -127,17 +127,17 @@ class MFSolver(CCVMSolver):
         function. Therefore, we need to modify and add linear part of the QP to
         the SDE.
         Args:
-            mu (torch.Tensor): mean-field amplitudes
-            mu_tilde (torch.Tensor): mean-field measured amplitudes
-            sigma (torch.Tensor): variance of the in-phase position operator
+            mu (torch.Tensor): Mean-field amplitudes
+            mu_tilde (torch.Tensor): Mean-field measured amplitudes
+            sigma (torch.Tensor): Variance of the in-phase position operator
             q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
             v_vector (torch.tensor): The V vector describing the BoxQP problem.
-            pump (float): instantaneous pump value
-            Wt (torch.Tensor): noise variable
-            j (float): measurement strength
-            g (float): saturation parameter
-            S (float): _description_
-            fs (float): feedback scale
+            pump (float): Instantaneous pump value
+            Wt (torch.Tensor): The Wiener process
+            j (float): The measurement strength
+            g (float): The nonlinearity coefficient
+            S (float): The enforced saturation value
+            fs (float): The coefficient of the feedback term.
 
         Returns:
             tuple: The gradients of the mean-field amplitudes and the variance.

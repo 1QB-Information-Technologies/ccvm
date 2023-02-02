@@ -107,16 +107,16 @@ class DLSolver(CCVMSolver):
         the SDE.
 
         Args:
-            c (torch.Tensor): TODO
-            s (torch.Tensor): TODO
-            q_matrix (torch.Tensor): The coefficient matrix of the quadratic terms.
-            v_vector (torch.Tensor): The coefficient vector of the linear terms.
-            p (float): TODO
-            rate (float): TODO
-            S (float): TODO Defaults to 1.
+            c (torch.Tensor): In-phase amplitudes of the solver
+            s (torch.Tensor): Quadrature amplitudes of the solver
+            q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
+            v_vector (torch.tensor): The V vector describing the BoxQP problem.
+            p (float): The maximum pump field strength
+            rate (float): The multiplier for the pump field strength at a given instance of time.
+            S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
-            tuple: The gradients of the c and s variables.
+            tuple: The calculated change in the variable amplitudes.
         """
 
         c_pow = torch.pow(c, 2)
