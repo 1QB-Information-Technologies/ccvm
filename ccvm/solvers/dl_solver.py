@@ -202,8 +202,8 @@ class DLSolver(CCVMSolver):
                 f" ({self.device}) must match."
             )
 
-        # Get problem size from problem instance
-        N = instance.N
+        # Get problem from problem instance
+        problem_size = instance.problem_size
         q_matrix = instance.q
         v_vector = instance.c
 
@@ -214,10 +214,10 @@ class DLSolver(CCVMSolver):
 
         # Get parameters from parameter_key
         try:
-            p = self.parameter_key[N]["p"]
-            lr = self.parameter_key[N]["lr"]
-            n_iter = self.parameter_key[N]["iter"]
-            noise_ratio = self.parameter_key[N]["nr"]
+            p = self.parameter_key[problem_size]["p"]
+            lr = self.parameter_key[problem_size]["lr"]
+            n_iter = self.parameter_key[problem_size]["iter"]
+            noise_ratio = self.parameter_key[problem_size]["nr"]
         except KeyError as e:
             raise KeyError(
                 f"The parameter '{e.args[0]}' for the given instance size is not defined."
@@ -228,10 +228,12 @@ class DLSolver(CCVMSolver):
 
         # Initialize tensor variables on the device that will be used to perform the
         # calculations
-        c = torch.zeros((batch_size, N), dtype=torch.float).to(device)
-        s = torch.zeros((batch_size, N), dtype=torch.float).to(device)
+        c = torch.zeros((batch_size, problem_size), dtype=torch.float).to(device)
+        s = torch.zeros((batch_size, problem_size), dtype=torch.float).to(device)
         if time_evolution_results:
-            c_time = torch.zeros((batch_size, N, n_iter), dtype=torch.float).to(device)
+            c_time = torch.zeros(
+                (batch_size, problem_size, n_iter), dtype=torch.float
+            ).to(device)
         else:
             c_time = None
         w_dist1 = tdist.Normal(
@@ -256,8 +258,16 @@ class DLSolver(CCVMSolver):
             c_grads, s_grads = self.calculate_grads(
                 c, s, q_matrix, v_vector, p, pump_rate
             )
-            W1t = w_dist1.sample((N,)).transpose(0, 1) * np.sqrt(lr) * noise_ratio_i
-            W2t = w_dist2.sample((N,)).transpose(0, 1) * np.sqrt(lr) / noise_ratio_i
+            W1t = (
+                w_dist1.sample((problem_size,)).transpose(0, 1)
+                * np.sqrt(lr)
+                * noise_ratio_i
+            )
+            W2t = (
+                w_dist2.sample((problem_size,)).transpose(0, 1)
+                * np.sqrt(lr)
+                / noise_ratio_i
+            )
             c += lr * c_grads + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * W1t
             s += lr * s_grads + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * W2t
 
@@ -290,7 +300,7 @@ class DLSolver(CCVMSolver):
         objval = instance.compute_energy(confs)
 
         solution = Solution(
-            problem_size=N,
+            problem_size=problem_size,
             batch_size=batch_size,
             instance_name=instance.name,
             iter=n_iter,

@@ -235,7 +235,7 @@ class MFSolver(CCVMSolver):
             )
 
         # Get problem from problem instance
-        N = instance.N
+        problem_size = instance.problem_size
         q_matrix = instance.q
         v_vector = instance.c
 
@@ -246,12 +246,12 @@ class MFSolver(CCVMSolver):
 
         # Get parameters from parameter_key
         try:
-            p = self.parameter_key[N]["p"]
-            lr = self.parameter_key[N]["lr"]
-            n_iter = self.parameter_key[N]["iter"]
-            j = self.parameter_key[N]["j"]
-            feedback_scale = self.parameter_key[N]["feedback_scale"]
-            S = self.parameter_key[N]["S"]
+            p = self.parameter_key[problem_size]["p"]
+            lr = self.parameter_key[problem_size]["lr"]
+            n_iter = self.parameter_key[problem_size]["iter"]
+            j = self.parameter_key[problem_size]["j"]
+            feedback_scale = self.parameter_key[problem_size]["feedback_scale"]
+            S = self.parameter_key[problem_size]["S"]
         except KeyError as e:
             raise KeyError(
                 f"The parameter '{e.args[0]}' for the given instance size is not"
@@ -263,14 +263,18 @@ class MFSolver(CCVMSolver):
 
         # Initialize tensor variables on the device that will be used to perform
         # the calculations
-        mu = torch.zeros((batch_size, N), dtype=torch.float).to(device)
-        sigma = torch.ones((batch_size, N), dtype=torch.float).to(device) * (1 / 4)
+        mu = torch.zeros((batch_size, problem_size), dtype=torch.float).to(device)
+        sigma = torch.ones((batch_size, problem_size), dtype=torch.float).to(device) * (
+            1 / 4
+        )
         mu_time = sigma_time = None
         if time_evolution_results:
-            mu_time = torch.zeros((batch_size, N, n_iter), dtype=torch.float).to(device)
-            sigma_time = torch.zeros((batch_size, N, n_iter), dtype=torch.float).to(
-                device
-            )
+            mu_time = torch.zeros(
+                (batch_size, problem_size, n_iter), dtype=torch.float
+            ).to(device)
+            sigma_time = torch.zeros(
+                (batch_size, problem_size, n_iter), dtype=torch.float
+            ).to(device)
 
         w_dist1 = tdist.Normal(
             torch.Tensor([0.0] * batch_size).to(device),
@@ -281,7 +285,7 @@ class MFSolver(CCVMSolver):
         pump_rate = 1
         for i in range(n_iter):
 
-            w1 = w_dist1.sample((N,)).transpose(0, 1)
+            w1 = w_dist1.sample((problem_size,)).transpose(0, 1)
             Wt = w1 / np.sqrt(lr)
             mu_tilde = mu + np.sqrt(1 / (4 * j)) * Wt
             mu_tilde_c = self.fit_to_constraints(mu_tilde, -S, S)
@@ -339,7 +343,7 @@ class MFSolver(CCVMSolver):
         objval = instance.compute_energy(problem_variables)
 
         solution = Solution(
-            problem_size=N,
+            problem_size=problem_size,
             batch_size=batch_size,
             instance_name=instance.name,
             iter=n_iter,

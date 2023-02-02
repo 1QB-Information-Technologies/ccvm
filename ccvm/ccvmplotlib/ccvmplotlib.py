@@ -89,7 +89,7 @@ class ccvmplotlib:
                 linewidth=4.0,
             )
 
-        plt.xlabel("Problem Size $N$", fontsize=fonts["xlabel"])
+        plt.xlabel("Problem Size $problem_size$", fontsize=fonts["xlabel"])
         plt.ylabel("TTS (seconds)", fontsize=fonts["ylabel"])
         plt.plot(
             [],
@@ -248,7 +248,7 @@ class ccvmplotlib:
             plt.ylim(lower_lim, upper_lim)  # limit on y values
 
         plt.yscale("log")
-        plt.xlabel("Problem Size, $N$", fontsize=fonts["xlabel"])
+        plt.xlabel("Problem Size, $problem_size$", fontsize=fonts["xlabel"])
         plt.ylabel("Success Probability", fontsize=fonts["ylabel"])
 
         plt.xticks(fontsize=fonts["xticks"])

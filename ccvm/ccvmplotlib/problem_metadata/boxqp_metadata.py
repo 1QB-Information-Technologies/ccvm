@@ -96,7 +96,7 @@ class BoxQPMetadata(ProblemMetadata):
             matching_df (pd.DataFrame): Filtered Data Frame with the solver parameter
             and the problem size.
             percent_gap (str): Percentage gap from the optimal solution.
-            problem_size (int): BoxQP problem size (N).
+            problem_size (int): BoxQP problem size (problem_size).
 
         Raises:
             AssertionError: Raises an error if an unsupported TTS type is given
@@ -147,7 +147,9 @@ class BoxQPMetadata(ProblemMetadata):
             plotting.
         """
         plotting_df = pd.DataFrame(
-            index=pd.Index(self.__problem_size_list, name="Problem Size (N)"),
+            index=pd.Index(
+                self.__problem_size_list, name="Problem Size (problem_size)"
+            ),
             columns=pd.MultiIndex.from_product(
                 [self.__percent_gap_list, self.__percentile_list],
                 names=["Optimality Type", "Percentile"],
