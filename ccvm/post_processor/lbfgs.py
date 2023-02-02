@@ -12,14 +12,14 @@ class PostProcessorLBFGS(PostProcessor):
         self.pp_time = 0
         self.method_type = MethodType.LBFGS
 
-    def postprocess(self, c, q_mat, c_vector, num_iter=1):
+    def postprocess(self, c, q_matrix, v_vector, num_iter=1):
         """Post processing using LBFGS method.
 
         Args:
             c (torch.tensor): The values for each
             variable of the problem in the solution found by the solver.
-            q_mat (torch.tensor): Coefficients of the quadratic terms.
-            c_vector (torch.tensor): Coefficients of the linear terms.
+            q_matrix (torch.tensor): Coefficients of the quadratic terms.
+            v_vector (torch.tensor): Coefficients of the linear terms.
             num_iter (int, optional): The number of iterations. Defaults to 1.
 
         Returns:
@@ -47,7 +47,7 @@ class PostProcessorLBFGS(PostProcessor):
 
                 def closure():
                     optimizer.zero_grad()
-                    loss = model(q_mat, c_vector)
+                    loss = model(q_matrix, v_vector)
                     loss.backward()
                     return loss
 

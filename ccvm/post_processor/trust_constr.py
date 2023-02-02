@@ -12,14 +12,14 @@ class PostProcessorTrustConstr(PostProcessor):
     def __init__(self):
         self.pp_time = 0
 
-    def postprocess(self, c, q_mat, c_vector):
+    def postprocess(self, c, q_matrix, v_vector):
         """Post processing using TrustConstr method.
 
         Args:
             c (torch.tensor): The values for each
             variable of the problem in the solution found by the solver.
-            q_mat (torch.tensor): Coefficients of the quadratic terms.
-            c_vector (torch.tensor): Coefficients of the linear terms.
+            q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
+            v_vector (torch.tensor): The V vector describing the BoxQP problem.
 
         Returns:
             torch.tensor: The values for each variable of the problem
@@ -45,7 +45,7 @@ class PostProcessorTrustConstr(PostProcessor):
             res = minimize(
                 super().func_post,
                 c0,
-                args=(q_mat, c_vector),
+                args=(q_matrix, v_vector),
                 method="trust-constr",
                 bounds=bounds,
                 jac=super().func_post_jac,
@@ -69,5 +69,5 @@ class PostProcessorTrustConstr(PostProcessor):
         Returns:
             torch.tensor: objective function.
         """
-        q_mat = np.array(args[0].cpu())
-        return 0.5 * q_mat
+        q_matrix = np.array(args[0].cpu())
+        return 0.5 * q_matrix

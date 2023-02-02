@@ -100,7 +100,7 @@ class DLSolver(CCVMSolver):
                 f" Given category: {problem_category}"
             )
 
-    def _calculate_grads_boxqp(self, c, s, q_matrix, c_vector, p, rate, S=1):
+    def _calculate_grads_boxqp(self, c, s, q_matrix, v_vector, p, rate, S=1):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
@@ -110,7 +110,7 @@ class DLSolver(CCVMSolver):
             c (torch.Tensor): TODO
             s (torch.Tensor): TODO
             q_matrix (torch.Tensor): The coefficient matrix of the quadratic terms.
-            c_vector (torch.Tensor): The coefficient vector of the linear terms.
+            v_vector (torch.Tensor): The coefficient vector of the linear terms.
             p (float): TODO
             rate (float): TODO
             S (float): TODO Defaults to 1.
@@ -127,11 +127,11 @@ class DLSolver(CCVMSolver):
 
         c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, q_matrix)
         c_grad_2 = torch.einsum("cj,cj -> cj", -1 + (p * rate) - c_pow - s_pow, c)
-        c_grad_3 = c_vector / 2 / S
+        c_grad_3 = v_vector / 2 / S
 
         s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, q_matrix)
         s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (p * rate) - c_pow - s_pow, s)
-        s_grad_3 = c_vector / 2 / S
+        s_grad_3 = v_vector / 2 / S
 
         c_grads = -c_grad_1 + c_grad_2 - c_grad_3
         s_grads = -s_grad_1 + s_grad_2 - s_grad_3
@@ -205,8 +205,8 @@ class DLSolver(CCVMSolver):
 
         # Get problem size from problem instance
         N = instance.N
-        q_mat = instance.q
-        c_vector = instance.c
+        q_matrix = instance.q
+        v_vector = instance.c
 
         # Get solver setup variables
         batch_size = self.batch_size
@@ -254,7 +254,9 @@ class DLSolver(CCVMSolver):
                 if (i + 1) / n_iter < 0.9:
                     noise_ratio_i = noise_ratio
 
-            c_grads, s_grads = self.calculate_grads(c, s, q_mat, c_vector, p, pump_rate)
+            c_grads, s_grads = self.calculate_grads(
+                c, s, q_matrix, v_vector, p, pump_rate
+            )
             W1t = w_dist1.sample((N,)).transpose(0, 1) * np.sqrt(lr) * noise_ratio_i
             W2t = w_dist2.sample((N,)).transpose(0, 1) * np.sqrt(lr) / noise_ratio_i
             c += lr * c_grads + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * W1t
@@ -277,7 +279,7 @@ class DLSolver(CCVMSolver):
                 post_processor
             )
 
-            problem_variables = post_processor_object.postprocess(c, q_mat, c_vector)
+            problem_variables = post_processor_object.postprocess(c, q_matrix, v_vector)
             pp_time = post_processor_object.pp_time
         else:
             problem_variables = c

@@ -10,14 +10,14 @@ class PostProcessorBFGS(PostProcessor):
     def __init__(self):
         self.pp_time = 0
 
-    def postprocess(self, c, q_mat, c_vector):
+    def postprocess(self, c, q_matrix, v_vector):
         """Post processing using BFGS method.
 
         Args:
             c (torch.tensor): The values for each
             variable of the problem in the solution found by the solver.
-            q_mat (torch.tensor): Coefficients of the quadratic terms.
-            c_vector (torch.tensor): Coefficients of the linear terms.
+            q_matrix (torch.tensor): Coefficients of the quadratic terms.
+            v_vector (torch.tensor): Coefficients of the linear terms.
 
         Returns:
             torch.tensor: The values for each variable of the problem
@@ -44,7 +44,7 @@ class PostProcessorBFGS(PostProcessor):
             res = minimize(
                 super().func_post,
                 c0,
-                args=(q_mat, c_vector),
+                args=(q_matrix, v_vector),
                 method="L-BFGS-B",
                 bounds=bounds,
                 jac=super().func_post_jac,

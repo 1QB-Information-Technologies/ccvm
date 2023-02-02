@@ -120,7 +120,7 @@ class MFSolver(CCVMSolver):
             )
 
     def _calculate_grads_boxqp(
-        self, mu, mu_tilde, sigma, q_matrix, c_vector, pump, Wt, j, g, S, fs
+        self, mu, mu_tilde, sigma, q_matrix, v_vector, pump, Wt, j, g, S, fs
     ):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
@@ -130,8 +130,8 @@ class MFSolver(CCVMSolver):
             mu (torch.Tensor): mean-field amplitudes
             mu_tilde (torch.Tensor): mean-field measured amplitudes
             sigma (torch.Tensor): variance of the in-phase position operator
-            q_matrix (torch.Tensor): The coefficient matrix of the quadratic terms.
-            c_vector (torch.Tensor): The coefficient vector of the linear terms.
+            q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
+            v_vector (torch.tensor): The V vector describing the BoxQP problem.
             pump (float): instantaneous pump value
             Wt (torch.Tensor): noise variable
             j (float): measurement strength
@@ -150,7 +150,7 @@ class MFSolver(CCVMSolver):
         mu_term2_1 = (
             -(torch.einsum("bi,ij -> bj", mu_tilde_pow, q_matrix)) * mu_tilde / S
         )
-        mu_term2_2 = -torch.einsum("j,bj -> bj", c_vector, mu_tilde / S)
+        mu_term2_2 = -torch.einsum("j,bj -> bj", v_vector, mu_tilde / S)
         mu_term3 = np.sqrt(j) * (sigma - 0.5) * Wt
 
         sigma_term1 = 2 * (-(1 + j) + pump - 3 * g**2 * mu_pow) * sigma
@@ -235,8 +235,8 @@ class MFSolver(CCVMSolver):
 
         # Get problem from problem instance
         N = instance.N
-        q_mat = instance.q
-        c_vector = instance.c
+        q_matrix = instance.q
+        v_vector = instance.c
 
         # Get solver setup variables
         batch_size = self.batch_size
@@ -299,8 +299,8 @@ class MFSolver(CCVMSolver):
                 mu,
                 mu_tilde_c,
                 sigma,
-                q_mat,
-                c_vector,
+                q_matrix,
+                v_vector,
                 pump,
                 Wt,
                 j_i,
@@ -328,7 +328,7 @@ class MFSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                mu_tilde.pow(2) / S**2, q_mat, c_vector, device=device
+                mu_tilde.pow(2) / S**2, q_matrix, v_vector, device=device
             )
             pp_time = post_processor_object.pp_time
         else:
