@@ -36,7 +36,7 @@ if __name__ == "__main__":
             device=solver.device,
         )
 
-        boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q))
+        boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 
         # Solve the problem
         solution = solver.solve(

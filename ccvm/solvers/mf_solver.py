@@ -236,8 +236,8 @@ class MFSolver(CCVMSolver):
 
         # Get problem from problem instance
         problem_size = instance.problem_size
-        q_matrix = instance.q
-        v_vector = instance.c
+        q_matrix = instance.q_matrix
+        v_vector = instance.v_vector
 
         # Get solver setup variables
         batch_size = self.batch_size
