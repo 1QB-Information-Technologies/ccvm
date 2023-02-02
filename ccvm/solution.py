@@ -13,7 +13,7 @@ class Solution:
         instance_name (str): The name of the problem instance.
         objective_value (torch.Tensor): The objective values of the solutions
             found by the solver.
-        iter (int): The iteration number for this problem size.
+        iterations (int): The iteration number for this problem size.
         solve_time (float): Time to solve the problem.
         pp_time (float):  Time to post-process the problem.
         optimal_value (float): The optimal objective value for the given problem instance.
@@ -40,7 +40,7 @@ class Solution:
     problem_size: int
     batch_size: int
     instance_name: str
-    iter: int
+    iterations: int
     objective_value: torch.Tensor = field(repr=False)
     solve_time: float
     pp_time: float

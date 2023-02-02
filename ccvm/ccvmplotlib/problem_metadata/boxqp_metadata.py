@@ -117,11 +117,11 @@ class BoxQPMetadata(ProblemMetadata):
                 success_prob * matching_df["batch_size"].values[row]
             )
             pp_time = float(matching_df["pp_time"].values[row])
-            n_iter = matching_df["iter"].values[row]
+            iterations = matching_df["iterations"].values[row]
             if super().TTS_type == TTSType.wallclock:
                 machine_time = float(matching_df["solve_time"].values[row])
             elif super().TTS_type == TTSType.physical:
-                machine_time = float(problem_size) * 10e-12 * n_iter + pp_time
+                machine_time = float(problem_size) * 10e-12 * iterations + pp_time
             else:
                 raise AssertionError(f'"{super().TTS_type}" is not supported.')
 

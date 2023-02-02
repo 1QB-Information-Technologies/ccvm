@@ -53,22 +53,22 @@ class DLSolver(CCVMSolver):
                 format:
                 {
                     <problem size>: <dict with set of keys:
-                            pump (pump),
+                            pump,
                             lr (learning rate),
-                            iter (iterations),
+                            iterations,
                             nr (noise_ratio)
                         >
                 }
         For example:
                 {
-                    20: {"pump": 2.0, "lr": 0.005, "iter": 15000, "nr": 10},
-                    30: {"pump": 2.0, "lr": 0.005, "iter": 15000, "nr": 5},
+                    20: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "nr": 10},
+                    30: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "nr": 5},
                 }
 
         Raises:
             ValueError: If the parameter key is not valid for this solver.
         """
-        expected_dlparameter_key_set = set(["pump", "lr", "iter", "nr"])
+        expected_dlparameter_key_set = set(["pump", "lr", "iterations", "nr"])
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
         for parameter_key in parameter_key_list:
@@ -216,7 +216,7 @@ class DLSolver(CCVMSolver):
         try:
             pump = self.parameter_key[problem_size]["pump"]
             lr = self.parameter_key[problem_size]["lr"]
-            n_iter = self.parameter_key[problem_size]["iter"]
+            iterations = self.parameter_key[problem_size]["iterations"]
             noise_ratio = self.parameter_key[problem_size]["nr"]
         except KeyError as e:
             raise KeyError(
@@ -232,7 +232,7 @@ class DLSolver(CCVMSolver):
         s = torch.zeros((batch_size, problem_size), dtype=torch.float).to(device)
         if time_evolution_results:
             c_time = torch.zeros(
-                (batch_size, problem_size, n_iter), dtype=torch.float
+                (batch_size, problem_size, iterations), dtype=torch.float
             ).to(device)
         else:
             c_time = None
@@ -247,12 +247,12 @@ class DLSolver(CCVMSolver):
 
         # Perform the solve over the specified number of iterations
         pump_rate = 1
-        for i in range(n_iter):
+        for i in range(iterations):
 
             noise_ratio_i = 1.0
             if pump_rate_flag:
-                pump_rate = (i + 1) / n_iter
-                if (i + 1) / n_iter < 0.9:
+                pump_rate = (i + 1) / iterations
+                if (i + 1) / iterations < 0.9:
                     noise_ratio_i = noise_ratio
 
             c_grads, s_grads = self.calculate_grads(
@@ -303,7 +303,7 @@ class DLSolver(CCVMSolver):
             problem_size=problem_size,
             batch_size=batch_size,
             instance_name=instance.name,
-            iter=n_iter,
+            iterations=iterations,
             objective_value=objval,
             solve_time=solve_time,
             pp_time=pp_time,

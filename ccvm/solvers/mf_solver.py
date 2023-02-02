@@ -58,7 +58,7 @@ class MFSolver(CCVMSolver):
                             j (measurement strength),
                             S (enforced saturation value),
                             lr (learning rate),
-                            iter (iterations)>
+                            iterations>
                 }
             For example:
                 {
@@ -69,7 +69,7 @@ class MFSolver(CCVMSolver):
                             "j": 399,
                             "S": 20.0,
                             "lr": 0.0025,
-                            "iter": 15000
+                            "iterations": 15000
                         },
                     30:
                         {
@@ -78,7 +78,7 @@ class MFSolver(CCVMSolver):
                             "j": 399,
                             "S": 20.0,
                             "lr": 0.0025,
-                            "iter": 15000
+                            "iterations": 15000
                         },
                 }
 
@@ -86,7 +86,7 @@ class MFSolver(CCVMSolver):
             ValueError: If the parameter key is not valid for this solver.
         """
         expected_mfparameter_key_set = set(
-            ["pump", "feedback_scale", "j", "S", "lr", "iter"]
+            ["pump", "feedback_scale", "j", "S", "lr", "iterations"]
         )
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
@@ -248,7 +248,7 @@ class MFSolver(CCVMSolver):
         try:
             pump = self.parameter_key[problem_size]["pump"]
             lr = self.parameter_key[problem_size]["lr"]
-            n_iter = self.parameter_key[problem_size]["iter"]
+            iterations = self.parameter_key[problem_size]["iterations"]
             j = self.parameter_key[problem_size]["j"]
             feedback_scale = self.parameter_key[problem_size]["feedback_scale"]
             S = self.parameter_key[problem_size]["S"]
@@ -270,10 +270,10 @@ class MFSolver(CCVMSolver):
         mu_time = sigma_time = None
         if time_evolution_results:
             mu_time = torch.zeros(
-                (batch_size, problem_size, n_iter), dtype=torch.float
+                (batch_size, problem_size, iterations), dtype=torch.float
             ).to(device)
             sigma_time = torch.zeros(
-                (batch_size, problem_size, n_iter), dtype=torch.float
+                (batch_size, problem_size, iterations), dtype=torch.float
             ).to(device)
 
         w_dist1 = tdist.Normal(
@@ -283,7 +283,7 @@ class MFSolver(CCVMSolver):
 
         # Perform the solve over the specified number of iterations
         pump_rate = 1
-        for i in range(n_iter):
+        for i in range(iterations):
 
             w1 = w_dist1.sample((problem_size,)).transpose(0, 1)
             Wt = w1 / np.sqrt(lr)
@@ -291,9 +291,9 @@ class MFSolver(CCVMSolver):
             mu_tilde_c = self.fit_to_constraints(mu_tilde, -S, S)
 
             if pump_rate_flag:
-                pump_rate = (i + 1) / n_iter
+                pump_rate = (i + 1) / iterations
 
-            if (i + 1) / n_iter < 0.8:
+            if (i + 1) / iterations < 0.8:
                 j_i = j
             else:
                 j_i = 0.1
@@ -346,7 +346,7 @@ class MFSolver(CCVMSolver):
             problem_size=problem_size,
             batch_size=batch_size,
             instance_name=instance.name,
-            iter=n_iter,
+            iterations=iterations,
             objective_value=objval,
             solve_time=solve_time,
             pp_time=pp_time,
