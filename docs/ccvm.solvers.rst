@@ -1,4 +1,4 @@
-ccvm.solvers package
+solvers
 ====================
 
 Submodules

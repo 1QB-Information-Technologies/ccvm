@@ -1,4 +1,4 @@
-ccvm.post\_processor package
+post\_processor
 ============================
 
 Subpackages

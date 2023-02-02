@@ -1,4 +1,4 @@
-ccvm.tests package
+tests
 ==================
 
 Submodules

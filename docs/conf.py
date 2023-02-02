@@ -21,12 +21,15 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
-    "sphinxcontrib.jquery"
+    "sphinxcontrib.jquery",
+    "myst_parser"
     
 ]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+
+add_module_names = False
 
 
 

@@ -1,4 +1,4 @@
-ccvmplotlib.tests package
+tests 
 =========================
 
 Submodules

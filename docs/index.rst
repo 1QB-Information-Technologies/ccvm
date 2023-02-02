@@ -6,11 +6,20 @@
 Welcome to ccvm's documentation!
 ================================
 
+
+
+.. include:: readme.md
+   :parser: myst_parser.sphinx_
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+
+  
    modules
+
+   
 
 
 

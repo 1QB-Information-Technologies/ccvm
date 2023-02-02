@@ -1,4 +1,4 @@
-problem\_classes.boxqp.tests package
+tests 
 ====================================
 
 Submodules

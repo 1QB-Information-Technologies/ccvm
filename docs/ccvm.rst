@@ -1,4 +1,4 @@
-ccvm package
+ccvm
 ============
 
 Subpackages
