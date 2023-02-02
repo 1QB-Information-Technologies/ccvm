@@ -1,1 +1,0 @@
-[{"problem_size": 20, "batch_size": 1000, "instance_name": "test020-100-10", "iter": 15000, "solve_time": 10.857273817062378, "pp_time": 0.0, "optimal_value": 799.560976, "solution_performance": {"optimal": 0.0, "one_percent": 0.092, "two_percent": 0.186, "three_percent": 0.238, "four_percent": 0.497, "five_percent": 0.597, "ten_percent": 0.963}}]

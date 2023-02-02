@@ -50,14 +50,47 @@ Run the following command to install dependencies:
 
 #### Solve a BoxQP problem (TODO)
 
+#### 1. Add imports
+
+```python
+from problem_classes.boxqp.problem_instance import ProblemInstance
+from ccvm.solvers.dl_solver import DLSolver
 ```
-define boxqp problem
 
-initialize solver
+#### 2. Define a Solver
 
-solve()
+```python
+solver = DLSolver(device="cpu", batch_size=100)  # or "cuda"
+solver.parameter_key = {
+    20: {"p": 2.0, "lr": 0.005, "iter": 15000, "nr": 10},
+}
+```
 
-plot results
+#### 3. Load in Problem Instance
+
+```python
+# Load problem instance from file
+boxqp_instance = ProblemInstance(
+    instance_type="test",
+    file_path="./test_instances/test020-100-10.in",
+    device=solver.device,
+)
+boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q))
+```
+
+#### 4. Solve
+
+```python
+solution = solver.solve(
+    instance=boxqp_instance,
+    post_processor=None,
+)
+
+solution.optimal_value
+# 799.560976
+
+solution.solve_time
+# 2.494919538497925
 ```
 
 
@@ -71,6 +104,7 @@ Some additional quick links:
 
 
 ## Contributing
+
 We love pull requests and discussing novel ideas. Check out our [contribution guide](CONTRIBUTING.md) and feel free to improve CCVM. For major changes, please open an issue first to discuss what you would like to change.
 
 Thanks for considering contributing to our project! We appreciate your help and support.
