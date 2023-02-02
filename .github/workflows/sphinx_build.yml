@@ -36,7 +36,7 @@ jobs:
             ${{ runner.os }}-pip-
       - name: Install dependencies
         run: |
-          pip install sphinx sphinx_rtd_theme
+          pip install sphinx furo
           pip install sphinxcontrib.jquery
           pip install myst-parser
           pip install -r requirements.txt
