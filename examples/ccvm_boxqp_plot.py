@@ -1,9 +1,9 @@
 import glob
 import os
-from ccvmplotlib import ccvmplotlib
-from problem_classes.boxqp.problem_instance import ProblemInstance
+from ccvm.ccvmplotlib import ccvmplotlib
+from ccvm.problem_classes.boxqp import ProblemInstance
 from ccvm.metadata_list import MetadataList
-from ccvm.solvers.dl_solver import DLSolver
+from ccvm.solvers import DLSolver
 
 
 METADATA_DIR = "./metadata"

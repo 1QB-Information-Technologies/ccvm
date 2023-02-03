@@ -1,12 +1,12 @@
 import unittest
 from unittest.mock import Mock
 from unittest import TestCase
-from ccvmplotlib.problem_metadata import (
+from ccvm.ccvmplotlib.problem_metadata import (
     ProblemMetadataFactory,
     ProblemType,
     TTSType,
 )
-from ccvmplotlib.problem_metadata import BoxQPMetadata
+from ccvm.ccvmplotlib.problem_metadata import BoxQPMetadata
 
 
 class TestProblemMetadataFactory(TestCase):

@@ -1,6 +1,6 @@
 # ccvmplotlib
 
-`ccvmplotlib` contains code for plotting results from [CCVM](ccvm.com). It extends [Matplotlib](https://matplotlib.org/) to generate visualizations for various problem classes supported by the CCVM architecture.
+`ccvmplotlib` contains code for plotting results from [CCVM](https://github.com/1QB-Information-Technologies/ccvm/). It extends [Matplotlib](https://matplotlib.org/) to generate visualizations for various problem classes supported by the CCVM architecture.
 
 ### Features
 
@@ -14,7 +14,7 @@
 ```python
 from ccvmplotlib import ccvmplotlib
 
-SOLUTION_FILEPATH = "./examples/results/valid_result.json"
+SOLUTION_FILEPATH = "./tests/results/valid_result.json"
 PLOT_OUTPUT_DEST = "./"
 
 # Generate TTS plot
