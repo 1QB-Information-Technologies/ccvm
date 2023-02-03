@@ -29,14 +29,14 @@ class PostProcessorASGD(PostProcessor):
                 solution found by the solver after post-processing.
         """
         start_time = time.time()
-        
+
         try:
             if not torch.is_tensor(c):
                 raise TypeError("parameter c must be a tensor")
-            if not torch.is_tensor(q_mat):
-                raise TypeError("parameter q_mat must be a tensor")
-            if not torch.is_tensor(c_vector):
-                raise TypeError("parameter c_vector must be a tensor")
+            if not torch.is_tensor(q_matrix):
+                raise TypeError("parameter q_matrix must be a tensor")
+            if not torch.is_tensor(v_vector):
+                raise TypeError("parameter v_vector must be a tensor")
             (batch_size, _) = c.size()
             model = BoxQPModel(c, self.method_type)
         except Exception as e:

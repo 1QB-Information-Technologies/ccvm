@@ -37,10 +37,10 @@ class BoxQPModel(torch.nn.Module):
             torch.tensor: Objective function.
         """
         try:
-            if not torch.is_tensor(q_mat):
-                raise TypeError("parameter q_mat must be a tensor")
-            if not torch.is_tensor(c_vector):
-                raise TypeError("parameter c_vector must be a tensor")
+            if not torch.is_tensor(q_matrix):
+                raise TypeError("parameter q_matrix must be a tensor")
+            if not torch.is_tensor(v_vector):
+                raise TypeError("parameter v_vector must be a tensor")
         except Exception as e:
             raise e
         c_variables = self.params
