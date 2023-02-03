@@ -111,17 +111,19 @@ class CCVMSolver(ABC):
     # Implemented Methods            #
     ##################################
 
-    def get_scaling_factor(self, q):
+    def get_scaling_factor(self, q_matrix):
         """Uses a default calculation to determine the amount by which the problem
         coefficients should be scaled. The value may differ depending on the solver,
         as some solvers have different scaling multipliers.
 
         Args:
-            q (torch.Tensor): The quadratic terms of the problem
+            q_matrix (torch.tensor): The Q matrix describing the BoxQP problem
 
         Returns:
             float: The recommended scaling factor to be use to scale the problem for this solver
         """
         # Calculate the scaling value from the problem's quadratic terms
-        scaling_val = torch.sqrt(torch.sum(torch.abs(q))) * self._scaling_multiplier
+        scaling_val = (
+            torch.sqrt(torch.sum(torch.abs(q_matrix))) * self._scaling_multiplier
+        )
         return scaling_val
