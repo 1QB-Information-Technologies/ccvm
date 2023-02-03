@@ -56,19 +56,19 @@ class DLSolver(CCVMSolver):
                             pump,
                             lr (learning rate),
                             iterations,
-                            nr (noise_ratio)
+                            noise_ratio
                         >
                 }
         For example:
                 {
-                    20: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "nr": 10},
-                    30: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "nr": 5},
+                    20: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "noise_ratio": 10},
+                    30: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "noise_ratio": 5},
                 }
 
         Raises:
             ValueError: If the parameter key is not valid for this solver.
         """
-        expected_dlparameter_key_set = set(["pump", "lr", "iterations", "nr"])
+        expected_dlparameter_key_set = set(["pump", "lr", "iterations", "noise_ratio"])
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
         for parameter_key in parameter_key_list:
@@ -217,7 +217,7 @@ class DLSolver(CCVMSolver):
             pump = self.parameter_key[problem_size]["pump"]
             lr = self.parameter_key[problem_size]["lr"]
             iterations = self.parameter_key[problem_size]["iterations"]
-            noise_ratio = self.parameter_key[problem_size]["nr"]
+            noise_ratio = self.parameter_key[problem_size]["noise_ratio"]
         except KeyError as e:
             raise KeyError(
                 f"The parameter '{e.args[0]}' for the given instance size is not defined."
