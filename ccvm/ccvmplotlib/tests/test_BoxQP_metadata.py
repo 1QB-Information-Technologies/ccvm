@@ -1,9 +1,9 @@
 import unittest
 from unittest import TestCase
-from ccvmplotlib.problem_metadata import (
+from ccvm.ccvmplotlib.problem_metadata import (
     ProblemType, TTSType
 )
-from ccvmplotlib.problem_metadata import BoxQPMetadata
+from ccvm.ccvmplotlib.problem_metadata import BoxQPMetadata
 
 
 class TestBoxQPMetadata(TestCase):
