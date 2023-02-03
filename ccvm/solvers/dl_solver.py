@@ -236,11 +236,11 @@ class DLSolver(CCVMSolver):
             ).to(device)
         else:
             c_time = None
-        w_dist1 = tdist.Normal(
+        wiener_dist_c = tdist.Normal(
             torch.Tensor([0.0] * batch_size).to(device),
             torch.Tensor([1.0] * batch_size).to(device),
         )
-        w_dist2 = tdist.Normal(
+        wiener_dist_s = tdist.Normal(
             torch.Tensor([0.0] * batch_size).to(device),
             torch.Tensor([1.0] * batch_size).to(device),
         )
@@ -258,18 +258,24 @@ class DLSolver(CCVMSolver):
             c_grads, s_grads = self.calculate_grads(
                 c, s, q_matrix, v_vector, pump, pump_rate
             )
-            W1t = (
-                w_dist1.sample((problem_size,)).transpose(0, 1)
+            wiener_increment_c = (
+                wiener_dist_c.sample((problem_size,)).transpose(0, 1)
                 * np.sqrt(lr)
                 * noise_ratio_i
             )
-            W2t = (
-                w_dist2.sample((problem_size,)).transpose(0, 1)
+            wiener_increment_s = (
+                wiener_dist_s.sample((problem_size,)).transpose(0, 1)
                 * np.sqrt(lr)
                 / noise_ratio_i
             )
-            c += lr * c_grads + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * W1t
-            s += lr * s_grads + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * W2t
+            c += (
+                lr * c_grads
+                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_c
+            )
+            s += (
+                lr * s_grads
+                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_s
+            )
 
             if time_evolution_results:
                 # Update the record of the values at each iteration with the values found

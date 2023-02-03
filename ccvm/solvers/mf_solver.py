@@ -120,7 +120,18 @@ class MFSolver(CCVMSolver):
             )
 
     def _calculate_grads_boxqp(
-        self, mu, mu_tilde, sigma, q_matrix, v_vector, pump, Wt, j, g, S, fs
+        self,
+        mu,
+        mu_tilde,
+        sigma,
+        q_matrix,
+        v_vector,
+        pump,
+        wiener_increment,
+        j,
+        g,
+        S,
+        fs,
     ):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
@@ -133,7 +144,7 @@ class MFSolver(CCVMSolver):
             q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
             v_vector (torch.tensor): The V vector describing the BoxQP problem.
             pump (float): Instantaneous pump value
-            Wt (torch.Tensor): The Wiener process
+            wiener_increment (torch.Tensor): The Wiener process
             j (float): The measurement strength
             g (float): The nonlinearity coefficient
             S (float): The enforced saturation value
@@ -151,7 +162,7 @@ class MFSolver(CCVMSolver):
             -(torch.einsum("bi,ij -> bj", mu_tilde_pow, q_matrix)) * mu_tilde / S
         )
         mu_term2_2 = -torch.einsum("j,bj -> bj", v_vector, mu_tilde / S)
-        mu_term3 = np.sqrt(j) * (sigma - 0.5) * Wt
+        mu_term3 = np.sqrt(j) * (sigma - 0.5) * wiener_increment
 
         sigma_term1 = 2 * (-(1 + j) + pump - 3 * g**2 * mu_pow) * sigma
         sigma_term2 = -2 * j * (sigma - 0.5).pow(2)
@@ -276,7 +287,7 @@ class MFSolver(CCVMSolver):
                 (batch_size, problem_size, iterations), dtype=torch.float
             ).to(device)
 
-        w_dist1 = tdist.Normal(
+        wiener_dist = tdist.Normal(
             torch.Tensor([0.0] * batch_size).to(device),
             torch.Tensor([1.0] * batch_size).to(device),
         )
@@ -285,9 +296,9 @@ class MFSolver(CCVMSolver):
         pump_rate = 1
         for i in range(iterations):
 
-            w1 = w_dist1.sample((problem_size,)).transpose(0, 1)
-            Wt = w1 / np.sqrt(lr)
-            mu_tilde = mu + np.sqrt(1 / (4 * j)) * Wt
+            wiener = wiener_dist.sample((problem_size,)).transpose(0, 1)
+            wiener_increment = wiener / np.sqrt(lr)
+            mu_tilde = mu + np.sqrt(1 / (4 * j)) * wiener_increment
             mu_tilde_c = self.fit_to_constraints(mu_tilde, -S, S)
 
             if pump_rate_flag:
@@ -307,7 +318,7 @@ class MFSolver(CCVMSolver):
                 q_matrix,
                 v_vector,
                 instantaneous_pump,
-                Wt,
+                wiener_increment,
                 j_i,
                 g,
                 S,
