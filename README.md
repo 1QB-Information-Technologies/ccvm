@@ -60,6 +60,7 @@ TODO: publish on pip, update above to `pip install ccvm`
 ```python
 from ccvm.problem_classes.boxqp import ProblemInstance
 from ccvm.solvers import DLSolver
+import torch
 ```
 
 ##### 2. Define a Solver
@@ -90,11 +91,14 @@ solution = solver.solve(
     post_processor=None,
 )
 
-solution.optimal_value
-# 799.560976
+print(f"The best known solution to this problem is {solution.optimal_value}")
+# The best known solution to this problem is 799.560976
 
-solution.solve_time
-# 2.494919538497925
+print(f"The best objective value found by the solver was {torch.max(-solution.objective_value)}")
+# The best objective value found by the solver was 798.1630859375
+
+print(f"The solve process took {solution.solve_time} seconds")
+# The solve process took 229.25447297096252 seconds
 ```
 
 
