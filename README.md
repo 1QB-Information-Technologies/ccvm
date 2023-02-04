@@ -14,8 +14,8 @@ The Coherent Continous-Variable Machine (CCVM) is a novel coherent quantum optic
 1. [Quickstart](#quickstart)
 2. [Usage](#usage)
 3. [Docs](#docs)
-    - [BoxQP Problem Definition](problem_classes/README.md)
-    - [ccvmplotlib](ccvmplotlib/README.md)
+    - [BoxQP Problem Definition](ccvm/problem_classes/README.md)
+    - [ccvmplotlib](ccvm/ccvmplotlib/README.md)
 4. [Contributing](#contributing)
 5. [References](#references)
 6. [License](#license)
@@ -58,8 +58,8 @@ TODO: publish on pip, update above to `pip install ccvm`
 ##### 1. Add imports
 
 ```python
-from ccvm.problem_classes.boxqp.problem_instance import ProblemInstance
-from ccvm.solvers.dl_solver import DLSolver
+from ccvm.problem_classes.boxqp import ProblemInstance
+from ccvm.solvers import DLSolver
 ```
 
 ##### 2. Define a Solver
@@ -105,8 +105,8 @@ Find our [documentation here](https://urban-chainsaw-9k39nm4.pages.github.io/ind
 * TODO: Update with public link
 
 Some additional quick links:
-- Problem Definition: [BoxQP Problem Class](problem_classes/README.md)
-- Plotting Library: [ccvmplotlib](ccvmplotlib/README.md)
+- Problem Definition: [BoxQP Problem Class](ccvm/problem_classes/README.md)
+- Plotting Library: [ccvmplotlib](ccvm/ccvmplotlib/README.md)
 
 
 ## Contributing
