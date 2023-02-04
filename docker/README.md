@@ -1,5 +1,21 @@
 # Docker
 
+## Run
+
+To use our pre-built image, you will first need access to our quay.io repo.
+
+##### 1. Run container from anywhere
+
+```
+docker run -it -v $(pwd):/workspace/examples/plots quay.io/1qbit/ccvm bash
+```
+
+##### 2. Go into `examples/` and run `ccvm_boxqp_plot.py`
+
+````
+cd examples && python ccvm_boxqp_plot.py
+````
+
 ## Images
 
 #### Base Image

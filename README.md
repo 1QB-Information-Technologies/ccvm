@@ -1,3 +1,4 @@
+
 # Coherent Continous-Variable Machine
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-green.svg)](https://www.gnu.org/licenses/agpl-3.0)
@@ -9,6 +10,7 @@ The Coherent Continous-Variable Machine (CCVM) is a novel coherent quantum optic
 
 ## Table of Contents
 
+0. [Requirements](#requirements)
 1. [Quickstart](#quickstart)
 2. [Usage](#usage)
 3. [Docs](#docs)
@@ -18,48 +20,45 @@ The Coherent Continous-Variable Machine (CCVM) is a novel coherent quantum optic
 5. [References](#references)
 6. [License](#license)
 
+### Requirements
+
+- Python 3.10
+- ... (TODO)
+
 ## Quickstart
 
-#### Using Docker
 
-##### 1. Run container from anywhere
-
-```
-docker run -it -v $(pwd):/workspace/examples/plots quay.io/1qbit/ccvm bash
-```
-
-##### 2. Go into `examples/` and run `ccvm_boxqp_plot.py`
-
-````
-cd examples && python ccvm_boxqp_plot.py
-````
-
-##### 3. View generated plots
-
-<p align="center">
-    <img src="ccvmplotlib/images/tts_plot_example.png" width="250" >
-    <img src="ccvmplotlib/images/success_prob_plot_example.png" width="250">
-</p>
-
-
-## Usage
-
-
-##### First, install using `pip`
+1. Once you have cloned the repo, install dependencies using
 
 ```
-pip install git+https://github.com/1QB-Information-Technologies/ccvm/
+ pip install . --user
 ```
 
 TODO: publish on pip, update above to `pip install ccvm`
 
+
+2. Go into `examples/` and run demo scripts
+    - `ccvm_boxqp.py`: Solve BoxQP using CCVM w/o plotting
+    - `ccvm_boxqp_plot.py`: Solve BoxQP using CCVM w/ plotting
+        - Note: Plotting requires [LaTex packages](https://www.latex-project.org/get/#tex-distributions) to be installed.
+
+3. View generated plots
+
+<p align="center">
+    <img src="ccvm/ccvmplotlib/images/tts_plot_example.png" width="250" >
+    <img src="ccvm/ccvmplotlib/images/success_prob_plot_example.png" width="250">
+</p>
+
+(Note: The images displayed here reflect the full set of problem instances)
+
+## Usage
 
 ### Solve a BoxQP problem
 
 ##### 1. Add imports
 
 ```python
-from problem_classes.boxqp.problem_instance import ProblemInstance
+from ccvm.problem_classes.boxqp.problem_instance import ProblemInstance
 from ccvm.solvers.dl_solver import DLSolver
 ```
 
