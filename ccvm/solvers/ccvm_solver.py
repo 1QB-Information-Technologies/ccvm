@@ -10,17 +10,6 @@ class DeviceType(enum.Enum):
     CUDA_DEVICE = "cuda"
 
 
-class PostProcessorType:
-    """The post processors available to be used by the solver"""
-
-    # TODO: Move this to the file with the post processor class
-    BFGS = "BFGS"
-    ADAM = "Adam"
-    LBFGS = "LBFGS"
-    ASGD = "ASGD"
-    TRUST_CONSTR = "trust-constr"
-
-
 class CCVMSolver(ABC):
     """The base class for all solvers. This class should not be used directly; one of
     the subclasses should be used.
