@@ -5,7 +5,7 @@ import math
 from typing import Any
 from matplotlib import cm
 
-from ccvmplotlib.problem_metadata import ProblemMetadataFactory
+from ccvm.ccvmplotlib.problem_metadata import ProblemMetadataFactory
 
 
 TTS_UPPER_LIMIT = 1e20  # Approximate age of the universe in sec.
