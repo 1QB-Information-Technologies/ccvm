@@ -39,7 +39,7 @@ def ivariance(iterator: iter) -> float:
     n = 0
     for e in iterator:
         sum_ += e
-        sum_2 += e ** 2
+        sum_2 += e**2
         n += 1
 
-    return (sum_2 - (sum_ ** 2 / n)) / n
+    return (sum_2 - (sum_**2 / n)) / n

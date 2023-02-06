@@ -12,14 +12,14 @@ class PostProcessorAdam(PostProcessor):
         self.pp_time = 0
         self.method_type = MethodType.Adam
 
-    def postprocess(self, c, q_mat, c_vector, num_iter=1, device="cpu"):
+    def postprocess(self, c, q_matrix, v_vector, num_iter=1, device="cpu"):
         """Post processing using Adam method.
 
         Args:
             c (torch.tensor): The values for each
             variable of the problem in the solution found by the solver.
-            q_mat (torch.tensor): Coefficients of the quadratic terms.
-            c_vector (torch.tensor): Coefficients of the linear terms.
+            q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
+            v_vector (torch.tensor): The V vector describing the BoxQP problem.
             num_iter (int, optional): The number of iterations. Defaults to 1.
             device (str, optional): Defines which GPU (or the CPU) to use.
                 Defaults to "cpu".
@@ -33,10 +33,10 @@ class PostProcessorAdam(PostProcessor):
         try:
             if not torch.is_tensor(c):
                 raise TypeError("parameter c must be a tensor")
-            if not torch.is_tensor(q_mat):
-                raise TypeError("parameter q_mat must be a tensor")
-            if not torch.is_tensor(c_vector):
-                raise TypeError("parameter c_vector must be a tensor")
+            if not torch.is_tensor(q_matrix):
+                raise TypeError("parameter q_matrix must be a tensor")
+            if not torch.is_tensor(v_vector):
+                raise TypeError("parameter v_vector must be a tensor")
             (batch_size, _) = c.size()
             model = BoxQPModel(c, self.method_type)
         except Exception as e:
@@ -44,7 +44,7 @@ class PostProcessorAdam(PostProcessor):
 
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01, betas=(0.9, 0.99))
         for _ in tqdm.tqdm(range(num_iter)):
-            loss = model(q_mat, c_vector)
+            loss = model(q_matrix, v_vector)
             loss.backward(torch.Tensor([1] * batch_size).to(device))
             optimizer.step()
             optimizer.zero_grad()

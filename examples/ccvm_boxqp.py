@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     # Supply solver parameters for different problem sizes
     solver.parameter_key = {
-        20: {"p": 2.0, "lr": 0.005, "iter": 15000, "nr": 10},
+        20: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "noise_ratio": 10},
     }
 
     # Load test instances to solve
@@ -25,7 +25,7 @@ if __name__ == "__main__":
             device=solver.device,
         )
 
-        boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q))
+        boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 
         # Solve the problem
         solution = solver.solve(

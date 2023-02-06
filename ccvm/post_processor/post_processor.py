@@ -29,10 +29,10 @@ class PostProcessor(ABC):
         Returns:
             torch.tensor: Objective function.
         """
-        q_mat = np.array(args[0].cpu())
-        c_vector = np.array(args[1].cpu())
-        energy1 = np.einsum("i, ij, j", c, q_mat, c)
-        energy2 = np.einsum("i, i", c, c_vector)
+        q_matrix = np.array(args[0].cpu())
+        v_vector = np.array(args[1].cpu())
+        energy1 = np.einsum("i, ij, j", c, q_matrix, c)
+        energy2 = np.einsum("i, i", c, v_vector)
         return 0.5 * energy1 + energy2
 
     def func_post_jac(self, c, *args):
@@ -50,8 +50,8 @@ class PostProcessor(ABC):
         Returns:
             torch.tensor: Objective function.
         """
-        q_mat = np.array(args[0].cpu())
-        c_vector = np.array(args[1].cpu())
-        energy1_jac = np.einsum("ij,j->i", q_mat, c)
-        energy2_jac = c_vector
+        q_matrix = np.array(args[0].cpu())
+        v_vector = np.array(args[1].cpu())
+        energy1_jac = np.einsum("ij,j->i", q_matrix, c)
+        energy2_jac = v_vector
         return energy1_jac + energy2_jac

@@ -14,8 +14,8 @@ class TestBoxQPModel(TestCase):
         self.N = 20
         self.M = 100
         self.c = torch.FloatTensor(self.M, self.N)
-        self.q_mat = torch.FloatTensor(self.N, self.N)
-        self.c_vector = torch.FloatTensor(self.N)
+        self.q_matrix = torch.FloatTensor(self.N, self.N)
+        self.v_vector = torch.FloatTensor(self.N)
 
     def setUp(self):
         self.logger.info("Test %s Started" % (self._testMethodName))
@@ -34,14 +34,14 @@ class TestBoxQPModel(TestCase):
                 Provided: {method_type}. Valid methods are {MethodType.Adam},
                 {MethodType.ASGD} and {MethodType.LBFGS}.""",
         ):
-            self.boxqp.forward(self.q_mat, self.c_vector)
+            self.boxqp.forward(self.q_matrix, self.v_vector)
 
     def test_valid_boxqp_adam(self):
         "Test a valid tensor is returned when correct parameters are passed to forward function for adam post-processor"
 
         method_type = MethodType.Adam
         self.boxqp = BoxQPModel(self.c, method_type)
-        output = self.boxqp.forward(self.q_mat, self.c_vector)
+        output = self.boxqp.forward(self.q_matrix, self.v_vector)
         assert torch.is_tensor(output)
 
     def test_valid_boxqp_asgd(self):
@@ -50,5 +50,5 @@ class TestBoxQPModel(TestCase):
 
         method_type = MethodType.ASGD
         self.boxqp = BoxQPModel(self.c, method_type)
-        output = self.boxqp.forward(self.q_mat, self.c_vector)
+        output = self.boxqp.forward(self.q_matrix, self.v_vector)
         assert torch.is_tensor(output)

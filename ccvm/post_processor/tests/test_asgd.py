@@ -14,8 +14,8 @@ class TestPostProcessorASGD(TestCase):
         self.N = 20
         self.M = 100
         self.c = torch.FloatTensor(self.M, self.N)
-        self.q_mat = torch.FloatTensor(self.N, self.N)
-        self.c_vector = torch.FloatTensor(self.N)
+        self.q_matrix = torch.FloatTensor(self.N, self.N)
+        self.v_vector = torch.FloatTensor(self.N)
 
     def setUp(self):
         self.logger.info("Test %s Started" % (self._testMethodName))
@@ -28,7 +28,7 @@ class TestPostProcessorASGD(TestCase):
         updated correctly
         """
         output_tensor = self.post_processor.postprocess(
-            self.c, self.q_mat, self.c_vector
+            self.c, self.q_matrix, self.v_vector
         )
         # check output is a tensor
         assert torch.is_tensor(output_tensor)
@@ -46,29 +46,29 @@ class TestPostProcessorASGD(TestCase):
         """
         invalid_c = "dummy-c"
         with self.assertRaisesRegex(TypeError, "parameter c must be a tensor"):
-            self.post_processor.postprocess(invalid_c, self.q_mat, self.c_vector)
+            self.post_processor.postprocess(invalid_c, self.q_matrix, self.v_vector)
 
     def test_postprocess_invalid_qmat_parameter(self):
 
         """Test postprocess when qmat value is not a tensor"""
         invalid_qmat = "dummy-qmat"
 
-        with self.assertRaisesRegex(TypeError, "parameter q_mat must be a tensor"):
-            self.post_processor.postprocess(self.c, invalid_qmat, self.c_vector)
+        with self.assertRaisesRegex(TypeError, "parameter q_matrix must be a tensor"):
+            self.post_processor.postprocess(self.c, invalid_qmat, self.v_vector)
 
     def test_postprocess_invalid_c_vector_parameter(self):
 
-        """Test postprocess when c_vector value is not a tensor"""
-        invalid_c_vector = "dummy-c_vector"
+        """Test postprocess when v_vector value is not a tensor"""
+        invalid_c_vector = "dummy-v_vector"
 
-        with self.assertRaisesRegex(TypeError, "parameter c_vector must be a tensor"):
-            self.post_processor.postprocess(self.c, self.q_mat, invalid_c_vector)
+        with self.assertRaisesRegex(TypeError, "parameter v_vector must be a tensor"):
+            self.post_processor.postprocess(self.c, self.q_matrix, invalid_c_vector)
 
     def test_postprocess_error_for_invalid_c_dimension(self):
 
         """Test postprocess when parameter dimensions are inconsistent.
-        We expect to be given an MxN tensor for c, an NxN tensor for q_mat, and
-        a tensor of size N for the c_vector. If any of these are not the correct
+        We expect to be given an MxN tensor for c, an NxN tensor for q_matrix, and
+        a tensor of size N for the v_vector. If any of these are not the correct
         size, we expect an exception to be raised
         """
 
@@ -76,7 +76,7 @@ class TestPostProcessorASGD(TestCase):
         incompatible_dimension = 9
         c = torch.FloatTensor(self.M, incompatible_dimension)
         try:
-            self.post_processor.postprocess(c, self.q_mat, self.c_vector)
+            self.post_processor.postprocess(c, self.q_matrix, self.v_vector)
         except Exception:
             pass
         else:
@@ -85,14 +85,14 @@ class TestPostProcessorASGD(TestCase):
     def test_postprocess_error_for_invalid_c_vector_shape(self):
 
         """Test postprocess when parameter dimensions are inconsistent.
-        We expect to be given an MxN tensor for c, an NxN tensor for q_mat, and
-        a tensor of size N for the c_vector. If any of these are not the correct
+        We expect to be given an MxN tensor for c, an NxN tensor for q_matrix, and
+        a tensor of size N for the v_vector. If any of these are not the correct
         size, we expect an exception to be raised
         """
         N = self.N
-        c_vector = torch.FloatTensor(N, N)
+        v_vector = torch.FloatTensor(N, N)
         try:
-            self.post_processor.postprocess(self.c, self.q_mat, c_vector)
+            self.post_processor.postprocess(self.c, self.q_matrix, v_vector)
         except Exception:
             pass
         else:

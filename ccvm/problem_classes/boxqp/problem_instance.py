@@ -43,20 +43,20 @@ class ProblemInstance:
                 given, defaults to the file name when an instance is loaded.
 
         Attributes:
-            N (int): instance size. Defaults to None.
+            problem_size (int): instance size. Defaults to None.
             optimal_sol (float): the optimal solution to the problem. Defaults to None.
             optimality (bool): indicates whether the solution is
                 optimal (True or False). Defaults to None.
-            q (torch.tensor): Q matrix of the QP problem. Defaults to None.
-            c (torch.tensor): c vector of the QP problem. Defaults to None.
+            q_matrix (torch.tensor): Q matrix of the QP problem. Defaults to None.
+            v_vector (torch.tensor): V vector of the QP problem. Defaults to None.
             scaled_by (float): scaling value of the coefficient. Defaults to 1.
         """
-        self.N = None
+        self.problem_size = None
         self.optimal_sol = None
         self.optimality = None
         self.sol_time_gb = None
-        self.q = None
-        self.c = None
+        self.q_matrix = None
+        self.v_vector = None
         self.scaled_by = 1
         self.device = device
         self.instance_type = instance_type
@@ -91,8 +91,8 @@ class ProblemInstance:
             Exception: Error reading the instance file.
         """
         rval_q = None
-        rval_c = None
-        N = None
+        rval_v = None
+        problem_size = None
 
         # Raise an exception if the file path was neither given as a load_instance
         # parameter nor upon initialization
@@ -117,7 +117,7 @@ class ProblemInstance:
                 instance_info = lines[0].split("\n")[0].split("\t")
 
                 # Save all metadata from the file
-                N = int(instance_info[0])
+                problem_size = int(instance_info[0])
                 optimal_sol = float(instance_info[1])
                 if instance_info[2].lower() == "true":
                     optimality = True
@@ -125,19 +125,21 @@ class ProblemInstance:
                     optimality = False
                 sol_time_gb = float(instance_info[3])
 
-                # Initialize the q and c matrices
-                rval_q = torch.zeros((N, N), dtype=torch.float).to(device)
-                rval_c = torch.zeros((N,), dtype=torch.float).to(device)
+                # Initialize the q_matrix and v_vector matrices
+                rval_q = torch.zeros(
+                    (problem_size, problem_size), dtype=torch.float
+                ).to(device)
+                rval_v = torch.zeros((problem_size,), dtype=torch.float).to(device)
 
-                # Read in the c matrix
-                line_data_c = lines[1].split("\n")[0].split(file_delimiter)
-                for idx in range(0, N):
-                    rval_c[idx] = -torch.Tensor([float(line_data_c[idx])])
+                # Read in the v_vector matrix
+                line_data_v = lines[1].split("\n")[0].split(file_delimiter)
+                for idx in range(0, problem_size):
+                    rval_v[idx] = -torch.Tensor([float(line_data_v[idx])])
 
-                # Read in the q matrix
+                # Read in the q_matrix matrix
                 for idx, line in enumerate(lines[2:]):
                     line_data = line.split("\n")[0].split(file_delimiter)
-                    for j, value in enumerate(line_data[:N]):
+                    for j, value in enumerate(line_data[:problem_size]):
                         rval_q[idx, j] = -torch.Tensor([float(value)])
             except Exception as e:
                 raise Exception("Error reading instance file: " + str(e))
@@ -145,12 +147,12 @@ class ProblemInstance:
         # set class variables
         self.device = device
         self.instance_type = instance_type
-        self.N = N
+        self.problem_size = problem_size
         self.optimal_sol = optimal_sol
         self.optimality = optimality
         self.sol_time_gb = sol_time_gb
-        self.q = rval_q
-        self.c = rval_c
+        self.q_matrix = rval_q
+        self.v_vector = rval_v
         self.scaled_by = 1
 
         # Set the name of the instance if the user has not set it
@@ -168,8 +170,11 @@ class ProblemInstance:
         Returns:
             torch.Tensor: Energy of configurations.
         """
-        energy1 = torch.einsum("bi, ij, bj -> b", confs, self.q, confs) * self.scaled_by
-        energy2 = torch.einsum("bi, i -> b", confs, self.c) * self.scaled_by
+        energy1 = (
+            torch.einsum("bi, ij, bj -> b", confs, self.q_matrix, confs)
+            * self.scaled_by
+        )
+        energy2 = torch.einsum("bi, i -> b", confs, self.v_vector) * self.scaled_by
         return 0.5 * energy1 + energy2
 
     def scale_coefs(self, scaling_factor):
@@ -182,6 +187,6 @@ class ProblemInstance:
             scaling_factor (torch.Tensor): The amount by which the
             coefficients should be scaled.
         """
-        self.q = self.q / scaling_factor
-        self.c = self.c / scaling_factor
+        self.q_matrix = self.q_matrix / scaling_factor
+        self.v_vector = self.v_vector / scaling_factor
         self.scaled_by *= scaling_factor

@@ -53,22 +53,22 @@ class DLSolver(CCVMSolver):
                 format:
                 {
                     <problem size>: <dict with set of keys:
-                            p (pump),
+                            pump,
                             lr (learning rate),
-                            iter (iterations),
-                            nr (noise_ratio)
+                            iterations,
+                            noise_ratio
                         >
                 }
         For example:
                 {
-                    20: {"p": 2.0, "lr": 0.005, "iter": 15000, "nr": 10},
-                    30: {"p": 2.0, "lr": 0.005, "iter": 15000, "nr": 5},
+                    20: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "noise_ratio": 10},
+                    30: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "noise_ratio": 5},
                 }
 
         Raises:
             ValueError: If the parameter key is not valid for this solver.
         """
-        expected_dlparameter_key_set = set(["p", "lr", "iter", "nr"])
+        expected_dlparameter_key_set = set(["pump", "lr", "iterations", "noise_ratio"])
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
         for parameter_key in parameter_key_list:
@@ -100,38 +100,38 @@ class DLSolver(CCVMSolver):
                 f" Given category: {problem_category}"
             )
 
-    def _calculate_grads_boxqp(self, c, s, q_matrix, c_vector, p, rate, S=1):
+    def _calculate_grads_boxqp(self, c, s, q_matrix, v_vector, pump, rate, S=1):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
         the SDE.
 
         Args:
-            c (torch.Tensor): TODO
-            s (torch.Tensor): TODO
-            q_matrix (torch.Tensor): The coefficient matrix of the quadratic terms.
-            c_vector (torch.Tensor): The coefficient vector of the linear terms.
-            p (float): TODO
-            rate (float): TODO
-            S (float): TODO Defaults to 1.
+            c (torch.Tensor): In-phase amplitudes of the solver
+            s (torch.Tensor): Quadrature amplitudes of the solver
+            q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
+            v_vector (torch.tensor): The V vector describing the BoxQP problem.
+            pump (float): The maximum pump field strength
+            rate (float): The multiplier for the pump field strength at a given instance of time.
+            S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
-            tuple: The gradients of the c and s variables.
+            tuple: The calculated change in the variable amplitudes.
         """
 
         c_pow = torch.pow(c, 2)
         s_pow = torch.pow(s, 2)
 
-        if p > 1:
-            S = np.sqrt(p - 1)
+        if pump > 1:
+            S = np.sqrt(pump - 1)
 
         c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, q_matrix)
-        c_grad_2 = torch.einsum("cj,cj -> cj", -1 + (p * rate) - c_pow - s_pow, c)
-        c_grad_3 = c_vector / 2 / S
+        c_grad_2 = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
+        c_grad_3 = v_vector / 2 / S
 
         s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, q_matrix)
-        s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (p * rate) - c_pow - s_pow, s)
-        s_grad_3 = c_vector / 2 / S
+        s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
+        s_grad_3 = v_vector / 2 / S
 
         c_grads = -c_grad_1 + c_grad_2 - c_grad_3
         s_grads = -s_grad_1 + s_grad_2 - s_grad_3
@@ -173,9 +173,8 @@ class DLSolver(CCVMSolver):
             Defaults to None.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
             iteration number. If False, the pump rate will be 1.0. Defaults to True.
-            g (float): _description_ Defaults to 0.05.
+            g (float): The nonlinearity coefficient. Defaults to 0.05.
         """
-        # TODO: summary/descriptions
         # TODO: This implementation is a placeholder; full implementation is a
         #       future consideration
         self.is_tuned = True
@@ -190,7 +189,7 @@ class DLSolver(CCVMSolver):
             Defaults to None.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
             iteration number. If False, the pump rate will be 1.0. Defaults to True.
-            g (float): _description_ Defaults to 0.05.
+            g (float): The nonlinearity coefficient. Defaults to 0.05.
 
         Returns:
             tuple: The solution to the problem instance and the timing values.
@@ -203,10 +202,10 @@ class DLSolver(CCVMSolver):
                 f" ({self.device}) must match."
             )
 
-        # Get problem size from problem instance
-        N = instance.N
-        q_mat = instance.q
-        c_vector = instance.c
+        # Get problem from problem instance
+        problem_size = instance.problem_size
+        q_matrix = instance.q_matrix
+        v_vector = instance.v_vector
 
         # Get solver setup variables
         batch_size = self.batch_size
@@ -215,10 +214,10 @@ class DLSolver(CCVMSolver):
 
         # Get parameters from parameter_key
         try:
-            p = self.parameter_key[N]["p"]
-            lr = self.parameter_key[N]["lr"]
-            n_iter = self.parameter_key[N]["iter"]
-            noise_ratio = self.parameter_key[N]["nr"]
+            pump = self.parameter_key[problem_size]["pump"]
+            lr = self.parameter_key[problem_size]["lr"]
+            iterations = self.parameter_key[problem_size]["iterations"]
+            noise_ratio = self.parameter_key[problem_size]["noise_ratio"]
         except KeyError as e:
             raise KeyError(
                 f"The parameter '{e.args[0]}' for the given instance size is not defined."
@@ -229,36 +228,54 @@ class DLSolver(CCVMSolver):
 
         # Initialize tensor variables on the device that will be used to perform the
         # calculations
-        c = torch.zeros((batch_size, N), dtype=torch.float).to(device)
-        s = torch.zeros((batch_size, N), dtype=torch.float).to(device)
+        c = torch.zeros((batch_size, problem_size), dtype=torch.float).to(device)
+        s = torch.zeros((batch_size, problem_size), dtype=torch.float).to(device)
         if time_evolution_results:
-            c_time = torch.zeros((batch_size, N, n_iter), dtype=torch.float).to(device)
+            c_time = torch.zeros(
+                (batch_size, problem_size, iterations), dtype=torch.float
+            ).to(device)
         else:
             c_time = None
-        w_dist1 = tdist.Normal(
+        wiener_dist_c = tdist.Normal(
             torch.Tensor([0.0] * batch_size).to(device),
             torch.Tensor([1.0] * batch_size).to(device),
         )
-        w_dist2 = tdist.Normal(
+        wiener_dist_s = tdist.Normal(
             torch.Tensor([0.0] * batch_size).to(device),
             torch.Tensor([1.0] * batch_size).to(device),
         )
 
         # Perform the solve over the specified number of iterations
         pump_rate = 1
-        for i in range(n_iter):
+        for i in range(iterations):
 
             noise_ratio_i = 1.0
             if pump_rate_flag:
-                pump_rate = (i + 1) / n_iter
-                if (i + 1) / n_iter < 0.9:
+                pump_rate = (i + 1) / iterations
+                if (i + 1) / iterations < 0.9:
                     noise_ratio_i = noise_ratio
 
-            c_grads, s_grads = self.calculate_grads(c, s, q_mat, c_vector, p, pump_rate)
-            W1t = w_dist1.sample((N,)).transpose(0, 1) * np.sqrt(lr) * noise_ratio_i
-            W2t = w_dist2.sample((N,)).transpose(0, 1) * np.sqrt(lr) / noise_ratio_i
-            c += lr * c_grads + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * W1t
-            s += lr * s_grads + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * W2t
+            c_grads, s_grads = self.calculate_grads(
+                c, s, q_matrix, v_vector, pump, pump_rate
+            )
+            wiener_increment_c = (
+                wiener_dist_c.sample((problem_size,)).transpose(0, 1)
+                * np.sqrt(lr)
+                * noise_ratio_i
+            )
+            wiener_increment_s = (
+                wiener_dist_s.sample((problem_size,)).transpose(0, 1)
+                * np.sqrt(lr)
+                / noise_ratio_i
+            )
+            c += (
+                lr * c_grads
+                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_c
+            )
+            s += (
+                lr * s_grads
+                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_s
+            )
 
             if time_evolution_results:
                 # Update the record of the values at each iteration with the values found
@@ -277,7 +294,7 @@ class DLSolver(CCVMSolver):
                 post_processor
             )
 
-            problem_variables = post_processor_object.postprocess(c, q_mat, c_vector)
+            problem_variables = post_processor_object.postprocess(c, q_matrix, v_vector)
             pp_time = post_processor_object.pp_time
         else:
             problem_variables = c
@@ -289,10 +306,10 @@ class DLSolver(CCVMSolver):
         objval = instance.compute_energy(confs)
 
         solution = Solution(
-            problem_size=N,
+            problem_size=problem_size,
             batch_size=batch_size,
             instance_name=instance.name,
-            iter=n_iter,
+            iterations=iterations,
             objective_value=objval,
             solve_time=solve_time,
             pp_time=pp_time,

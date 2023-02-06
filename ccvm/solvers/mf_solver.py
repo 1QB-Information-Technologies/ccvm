@@ -53,32 +53,32 @@ class MFSolver(CCVMSolver):
                 {
                     <problem size>:
                         <dict with set of keys:
-                            p (pump),
+                            pump,
                             feedback_scale,
                             j (measurement strength),
-                            S,
+                            S (enforced saturation value),
                             lr (learning rate),
-                            iter (iterations)>
+                            iterations>
                 }
             For example:
                 {
                     20:
                         {
-                            "p": 2.5,
+                            "pump": 2.5,
                             "feedback_scale": 400,
                             "j": 399,
                             "S": 20.0,
                             "lr": 0.0025,
-                            "iter": 15000
+                            "iterations": 15000
                         },
                     30:
                         {
-                            "p": 3.0,
+                            "pump": 3.0,
                             "feedback_scale": 250,
                             "j": 399,
                             "S": 20.0,
                             "lr": 0.0025,
-                            "iter": 15000
+                            "iterations": 15000
                         },
                 }
 
@@ -86,7 +86,7 @@ class MFSolver(CCVMSolver):
             ValueError: If the parameter key is not valid for this solver.
         """
         expected_mfparameter_key_set = set(
-            ["p", "feedback_scale", "j", "S", "lr", "iter"]
+            ["pump", "feedback_scale", "j", "S", "lr", "iterations"]
         )
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
@@ -120,24 +120,35 @@ class MFSolver(CCVMSolver):
             )
 
     def _calculate_grads_boxqp(
-        self, mu, mu_tilde, sigma, q_matrix, c_vector, pump, Wt, j, g, S, fs
+        self,
+        mu,
+        mu_tilde,
+        sigma,
+        q_matrix,
+        v_vector,
+        pump,
+        wiener_increment,
+        j,
+        g,
+        S,
+        fs,
     ):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
         the SDE.
         Args:
-            mu (torch.Tensor): mean-field amplitudes
-            mu_tilde (torch.Tensor): mean-field measured amplitudes
-            sigma (torch.Tensor): variance of the in-phase position operator
-            q_matrix (torch.Tensor): The coefficient matrix of the quadratic terms.
-            c_vector (torch.Tensor): The coefficient vector of the linear terms.
-            pump (float): instantaneous pump value
-            Wt (torch.Tensor): noise variable
-            j (float): measurement strength
-            g (float): saturation parameter
-            S (float): _description_
-            fs (float): feedback scale
+            mu (torch.Tensor): Mean-field amplitudes
+            mu_tilde (torch.Tensor): Mean-field measured amplitudes
+            sigma (torch.Tensor): Variance of the in-phase position operator
+            q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
+            v_vector (torch.tensor): The V vector describing the BoxQP problem.
+            pump (float): Instantaneous pump value
+            wiener_increment (torch.Tensor): The Wiener process
+            j (float): The measurement strength
+            g (float): The nonlinearity coefficient
+            S (float): The enforced saturation value
+            fs (float): The coefficient of the feedback term.
 
         Returns:
             tuple: The gradients of the mean-field amplitudes and the variance.
@@ -150,8 +161,8 @@ class MFSolver(CCVMSolver):
         mu_term2_1 = (
             -(torch.einsum("bi,ij -> bj", mu_tilde_pow, q_matrix)) * mu_tilde / S
         )
-        mu_term2_2 = -torch.einsum("j,bj -> bj", c_vector, mu_tilde / S)
-        mu_term3 = np.sqrt(j) * (sigma - 0.5) * Wt
+        mu_term2_2 = -torch.einsum("j,bj -> bj", v_vector, mu_tilde / S)
+        mu_term3 = np.sqrt(j) * (sigma - 0.5) * wiener_increment
 
         sigma_term1 = 2 * (-(1 + j) + pump - 3 * g**2 * mu_pow) * sigma
         sigma_term2 = -2 * j * (sigma - 0.5).pow(2)
@@ -192,9 +203,8 @@ class MFSolver(CCVMSolver):
             post_processor (PostProcessorType): The post processor to use to process
             the results of the solver. None if no post processing is desired.
             Defaults to None.
-            g (float): _description_ Defaults to 0.01.
+            g (float): The nonlinearity coefficient. Defaults to 0.01.
         """
-        # TODO: summary/descriptions
         # TODO: This implementation is a placeholder; full implementation is a
         #       future consideration
         self.is_tuned = True
@@ -207,8 +217,10 @@ class MFSolver(CCVMSolver):
             instance (boxqp.boxqp.ProblemInstance): The problem to solve.
             post_processor (PostProcessorType): The post processor to use to process
             the results of the solver. None if no post processing is desired.
-            g (float, optional): _description_. Defaults to 0.01
-            pump_rate_flag (bool, optional): _description_. Defaults to True.
+            g (float, optional): The nonlinearity coefficient. Defaults to 0.01
+            pump_rate_flag (bool, optional): Whether or not to scale the pump rate based
+            on the iteration number. If False, the pump rate will be 1.0. Defaults to
+            True.
 
         Returns:
             dict: A dictionary containing the results of the solver. It contains
@@ -234,9 +246,9 @@ class MFSolver(CCVMSolver):
             )
 
         # Get problem from problem instance
-        N = instance.N
-        q_mat = instance.q
-        c_vector = instance.c
+        problem_size = instance.problem_size
+        q_matrix = instance.q_matrix
+        v_vector = instance.v_vector
 
         # Get solver setup variables
         batch_size = self.batch_size
@@ -245,12 +257,12 @@ class MFSolver(CCVMSolver):
 
         # Get parameters from parameter_key
         try:
-            p = self.parameter_key[N]["p"]
-            lr = self.parameter_key[N]["lr"]
-            n_iter = self.parameter_key[N]["iter"]
-            j = self.parameter_key[N]["j"]
-            feedback_scale = self.parameter_key[N]["feedback_scale"]
-            S = self.parameter_key[N]["S"]
+            pump = self.parameter_key[problem_size]["pump"]
+            lr = self.parameter_key[problem_size]["lr"]
+            iterations = self.parameter_key[problem_size]["iterations"]
+            j = self.parameter_key[problem_size]["j"]
+            feedback_scale = self.parameter_key[problem_size]["feedback_scale"]
+            S = self.parameter_key[problem_size]["S"]
         except KeyError as e:
             raise KeyError(
                 f"The parameter '{e.args[0]}' for the given instance size is not"
@@ -262,47 +274,51 @@ class MFSolver(CCVMSolver):
 
         # Initialize tensor variables on the device that will be used to perform
         # the calculations
-        mu = torch.zeros((batch_size, N), dtype=torch.float).to(device)
-        sigma = torch.ones((batch_size, N), dtype=torch.float).to(device) * (1 / 4)
+        mu = torch.zeros((batch_size, problem_size), dtype=torch.float).to(device)
+        sigma = torch.ones((batch_size, problem_size), dtype=torch.float).to(device) * (
+            1 / 4
+        )
         mu_time = sigma_time = None
         if time_evolution_results:
-            mu_time = torch.zeros((batch_size, N, n_iter), dtype=torch.float).to(device)
-            sigma_time = torch.zeros((batch_size, N, n_iter), dtype=torch.float).to(
-                device
-            )
+            mu_time = torch.zeros(
+                (batch_size, problem_size, iterations), dtype=torch.float
+            ).to(device)
+            sigma_time = torch.zeros(
+                (batch_size, problem_size, iterations), dtype=torch.float
+            ).to(device)
 
-        w_dist1 = tdist.Normal(
+        wiener_dist = tdist.Normal(
             torch.Tensor([0.0] * batch_size).to(device),
             torch.Tensor([1.0] * batch_size).to(device),
         )
 
         # Perform the solve over the specified number of iterations
         pump_rate = 1
-        for i in range(n_iter):
+        for i in range(iterations):
 
-            w1 = w_dist1.sample((N,)).transpose(0, 1)
-            Wt = w1 / np.sqrt(lr)
-            mu_tilde = mu + np.sqrt(1 / (4 * j)) * Wt
+            wiener = wiener_dist.sample((problem_size,)).transpose(0, 1)
+            wiener_increment = wiener / np.sqrt(lr)
+            mu_tilde = mu + np.sqrt(1 / (4 * j)) * wiener_increment
             mu_tilde_c = self.fit_to_constraints(mu_tilde, -S, S)
 
             if pump_rate_flag:
-                pump_rate = (i + 1) / n_iter
+                pump_rate = (i + 1) / iterations
 
-            if (i + 1) / n_iter < 0.8:
+            if (i + 1) / iterations < 0.8:
                 j_i = j
             else:
                 j_i = 0.1
 
-            pump = p * pump_rate
+            instantaneous_pump = pump * pump_rate
 
             (grads_mu, grads_sigma) = self.calculate_grads(
                 mu,
                 mu_tilde_c,
                 sigma,
-                q_mat,
-                c_vector,
-                pump,
-                Wt,
+                q_matrix,
+                v_vector,
+                instantaneous_pump,
+                wiener_increment,
                 j_i,
                 g,
                 S,
@@ -328,7 +344,7 @@ class MFSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                mu_tilde.pow(2) / S**2, q_mat, c_vector, device=device
+                mu_tilde.pow(2) / S**2, q_matrix, v_vector, device=device
             )
             pp_time = post_processor_object.pp_time
         else:
@@ -338,10 +354,10 @@ class MFSolver(CCVMSolver):
         objval = instance.compute_energy(problem_variables)
 
         solution = Solution(
-            problem_size=N,
+            problem_size=problem_size,
             batch_size=batch_size,
             instance_name=instance.name,
-            iter=n_iter,
+            iterations=iterations,
             objective_value=objval,
             solve_time=solve_time,
             pp_time=pp_time,
