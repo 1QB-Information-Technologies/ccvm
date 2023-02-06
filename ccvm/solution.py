@@ -11,7 +11,7 @@ class Solution:
         problem_size (int): The size of the problem solved.
         batch_size (int): The number of times a problem instance is solved simultaneously.
         instance_name (str): The name of the problem instance.
-        objective_value (torch.Tensor): The objective values of the solutions
+        objective_values (torch.Tensor): The objective values of the solutions
             found by the solver.
         iterations (int): The iteration number for this problem size.
         solve_time (float): Time to solve the problem.
@@ -23,7 +23,9 @@ class Solution:
                 variables found by the solver.
         device (str, optional): Device to use, one of: "cpu" or "cuda".
             Defaults to "cpu".
-        solution_performance (dict, optional): A dictionary contains the following fields
+
+    Attributes:
+        solution_performance (dict): A dictionary contains the following fields
             - optimal (float): The fraction of the solutions that were within the 0.1% of optimal value.
             - one_percent (float): The fraction of the solutions that were within the 1% of optimal value.
             - two_percent (float): The fraction of the solutions that were within the 2% of optimal value.
@@ -32,6 +34,7 @@ class Solution:
             - five_percent (float): The fraction of the solutions that were within the 5% of optimal value.
             - ten_percent (float): The fraction of the solutions that were within the 10% of optimal value.
             Defaults to None.
+        best_objective_value (float): The best objective value found by the solver.
     """
 
     # When repr field set to False, the fields will be excluded from string
@@ -41,13 +44,14 @@ class Solution:
     batch_size: int
     instance_name: str
     iterations: int
-    objective_value: torch.Tensor = field(repr=False)
+    objective_values: torch.Tensor = field(repr=False)
     solve_time: float
     pp_time: float
     optimal_value: float
     variables: dict = field(repr=False)
     device: str = field(default="cpu", repr=False)
     solution_performance: dict = None
+    best_objective_value: float = None
 
     def __post_init__(self):
         """Runs automatically after Solution initialization."""
@@ -55,15 +59,18 @@ class Solution:
         # Check that the values that came from the solver are on the specified device
         # Otherwise, move them to the specified device
         device = self.device
-        objective_value = self.objective_value
+        objective_values = self.objective_values
         for key, value in self.variables.items():
             if torch.is_tensor(value) and value.device != torch.device(device):
                 self.variables[key] = value.to(device)
 
-        if torch.is_tensor(objective_value) and objective_value.device != torch.device(
-            device
-        ):
-            self.objective_value = objective_value.to(device)
+        if torch.is_tensor(
+            objective_values
+        ) and objective_values.device != torch.device(device):
+            self.objective_values = objective_values.to(device)
+
+        # Find the best objective value
+        self.best_objective_value = torch.max(-self.objective_values).item()
 
         # Calculate and update solution_performance
         self.get_solution_stats()
@@ -72,10 +79,10 @@ class Solution:
         """A method that calculates the fraction of solutions that were optimal,
         within 1%, 2%, 3%, 4%, 5% and 10% of optimal value and update the
         solution."""
-        objective_value = -self.objective_value
+        objective_values = -self.objective_values
         device = self.device
-        one_tensor = torch.ones(objective_value.size()).to(device)
-        zero_tensor = torch.zeros(objective_value.size()).to(device)
+        one_tensor = torch.ones(objective_values.size()).to(device)
+        zero_tensor = torch.zeros(objective_values.size()).to(device)
 
         def fraction_below_threshold(gap_tensor, threshold):
             """Returns the fraction of the tensor's values that fall within the given threshold, rounded to 4 digits."""
@@ -83,7 +90,7 @@ class Solution:
             counter_tensor = torch.where(
                 gap_tensor <= threshold, one_tensor, zero_tensor
             ).to(device)
-            return round(counter_tensor.sum().item() / objective_value.size()[0], 4)
+            return round(counter_tensor.sum().item() / objective_values.size()[0], 4)
 
         (
             optimal,
@@ -96,9 +103,9 @@ class Solution:
         ) = (0, 0, 0, 0, 0, 0, 0)
 
         gap_tensor = (
-            (self.optimal_value - objective_value)
+            (self.optimal_value - objective_values)
             * 100
-            / torch.abs(objective_value).to(device)
+            / torch.abs(objective_values).to(device)
         )
         optimal = fraction_below_threshold(gap_tensor, 0.1)
         one_percent = fraction_below_threshold(gap_tensor, 1)
