@@ -1,4 +1,4 @@
-ccvmplotlib 
+ccvmplotlib package
 ===================
 
 Subpackages
@@ -14,19 +14,13 @@ Subpackages
 Submodules
 ----------
 
+.. toctree::
+   :maxdepth: 2
 
-.. automodule:: ccvmplotlib.ccvmplotlib
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   ccvmplotlib.ccvmplotlib
+   ccvmplotlib.setup
 
-
-.. automodule:: ccvmplotlib.setup
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-  
+   
 
 .. automodule:: ccvmplotlib
    :members:

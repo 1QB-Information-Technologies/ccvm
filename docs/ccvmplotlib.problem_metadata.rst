@@ -1,28 +1,17 @@
-problem\_metadata 
+problem\_metadata package
 =====================================
 
-Submodule
+Submodules
 ----------
 
+.. toctree::
+   :maxdepth: 2
 
-.. automodule:: ccvmplotlib.problem_metadata.boxqp_metadata
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   ccvmplotlib.problem_metadata.boxqp_metadata
+   ccvmplotlib.problem_metadata.problem_metadata
+   ccvmplotlib.problem_metadata.problem_metadata_factory
 
-
-.. automodule:: ccvmplotlib.problem_metadata.problem_metadata
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvmplotlib.problem_metadata.problem_metadata_factory
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-  
+   
 
 .. automodule:: ccvmplotlib.problem_metadata
    :members:

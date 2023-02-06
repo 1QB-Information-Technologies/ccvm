@@ -1,16 +1,15 @@
-tests
+ccvm.tests package
 ==================
 
 Submodules
 ----------
 
+.. toctree::
+   :maxdepth: 2
 
-.. automodule:: ccvm.tests.test_dl_solver
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   ccvm.tests.test_dl_solver
 
-  
+   
 
 .. automodule:: ccvm.tests
    :members:

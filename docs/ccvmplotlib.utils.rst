@@ -1,34 +1,18 @@
-utils
+utils package
 =========================
 
 Submodules
 ----------
 
+.. toctree::
+   :maxdepth: 2
 
-.. automodule:: ccvmplotlib.utils.metric
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   ccvmplotlib.utils.metric
+   ccvmplotlib.utils.mixins
+   ccvmplotlib.utils.sampleTTSmetric
+   ccvmplotlib.utils.utilities
 
-
-.. automodule:: ccvmplotlib.utils.mixins
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvmplotlib.utils.sampleTTSmetric
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvmplotlib.utils.utilities
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-  
+   
 
 .. automodule:: ccvmplotlib.utils
    :members:

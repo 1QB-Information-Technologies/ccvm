@@ -1,40 +1,17 @@
-solvers
+ccvm.solvers package
 ====================
 
 Submodules
 ----------
 
+.. toctree::
+   :maxdepth: 2
 
-.. automodule:: ccvm.solvers.bmf_solver
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   ccvm.solvers.ccvm_solver
+   ccvm.solvers.dl_solver
+   ccvm.solvers.mf_solver
 
-
-.. automodule:: ccvm.solvers.ccvm_solver
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.solvers.dl_solver
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.solvers.mf_solver
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.solvers.pmf_solver
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-  
+   
 
 .. automodule:: ccvm.solvers
    :members:

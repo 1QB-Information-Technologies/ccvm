@@ -1,52 +1,22 @@
-tests 
+tests
 ==================================
 
-Submodule
+Submodules
 ----------
 
+.. toctree::
+   :maxdepth: 2
 
-.. automodule:: ccvm.post_processor.tests.test_post_processor_ASGD
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   ccvm.post_processor.tests.test_adam
+   ccvm.post_processor.tests.test_asgd
+   ccvm.post_processor.tests.test_bfgs
+   ccvm.post_processor.tests.test_box_qp_model
+   ccvm.post_processor.tests.test_factory
+   ccvm.post_processor.tests.test_lbfgs
+   ccvm.post_processor.tests.test_trust_constr
+   ccvm.post_processor.tests.unit_test
 
-
-.. automodule:: ccvm.post_processor.tests.test_post_processor_Adam
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.post_processor.tests.test_post_processor_BFGS
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.post_processor.tests.test_post_processor_LBFGS
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.post_processor.tests.test_post_processor_TrustConstr
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.post_processor.tests.test_utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.post_processor.tests.unit_test
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-  
+   
 
 .. automodule:: ccvm.post_processor.tests
    :members:

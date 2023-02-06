@@ -1,16 +1,15 @@
-tests 
+problem\_classes.boxqp.tests package
 ====================================
 
 Submodules
 ----------
 
+.. toctree::
+   :maxdepth: 2
 
-.. automodule:: problem_classes.boxqp.tests.test_problem_instance
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   problem_classes.boxqp.tests.test_problem_instance
 
-  
+   
 
 .. automodule:: problem_classes.boxqp.tests
    :members:

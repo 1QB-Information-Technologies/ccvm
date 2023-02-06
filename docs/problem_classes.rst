@@ -1,4 +1,4 @@
-problem\_classes 
+problem\_classes package
 ========================
 
 Subpackages
@@ -9,7 +9,7 @@ Subpackages
 
    problem_classes.boxqp
 
-  
+   
 
 .. automodule:: problem_classes
    :members:

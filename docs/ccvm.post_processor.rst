@@ -12,61 +12,19 @@ Subpackages
 Submodules
 ----------
 
+.. toctree::
+   :maxdepth: 2
 
-.. automodule:: ccvm.post_processor.BoxQPModel
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   ccvm.post_processor.adam
+   ccvm.post_processor.asgd
+   ccvm.post_processor.bfgs
+   ccvm.post_processor.box_qp_model
+   ccvm.post_processor.factory
+   ccvm.post_processor.lbfgs
+   ccvm.post_processor.post_processor
+   ccvm.post_processor.trust_constr
 
-
-.. automodule:: ccvm.post_processor.PostProcessor
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.post_processor.PostProcessorASGD
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.post_processor.PostProcessorAdam
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.post_processor.PostProcessorBFGS
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.post_processor.PostProcessorFactory
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.post_processor.PostProcessorLBFGS
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.post_processor.PostProcessorTrustConstr
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: ccvm.post_processor.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-  
+   
 
 .. automodule:: ccvm.post_processor
    :members:

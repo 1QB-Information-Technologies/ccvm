@@ -1,4 +1,4 @@
-ccvm
+ccvm package
 ============
 
 Subpackages
@@ -14,13 +14,13 @@ Subpackages
 Submodules
 ----------
 
+.. toctree::
+   :maxdepth: 2
 
-.. automodule:: ccvm.solution_list
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   ccvm.metadata_list
+   ccvm.solution
 
-  
+   
 
 .. automodule:: ccvm
    :members:
