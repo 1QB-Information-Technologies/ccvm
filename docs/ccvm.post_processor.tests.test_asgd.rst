@@ -1,4 +1,4 @@
-test\_asgd   
+test\_asgd 
 ============================================
 
 .. automodule:: ccvm.post_processor.tests.test_asgd

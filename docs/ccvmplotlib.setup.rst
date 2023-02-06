@@ -1,4 +1,4 @@
-ccvmplotlib.setup   
+setup   
 ========================
 
 .. automodule:: ccvmplotlib.setup

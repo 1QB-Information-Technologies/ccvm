@@ -1,4 +1,4 @@
-   tests.test\_factory   
+test\_factory 
 ===============================================
 
 .. automodule:: ccvm.post_processor.tests.test_factory

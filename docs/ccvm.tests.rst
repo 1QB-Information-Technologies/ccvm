@@ -1,4 +1,4 @@
-ccvm.tests package
+tests
 ==================
 
 Submodules
@@ -9,7 +9,8 @@ Submodules
 
    ccvm.tests.test_dl_solver
 
-   
+
+---------------
 
 .. automodule:: ccvm.tests
    :members:

@@ -1,4 +1,4 @@
-ccvm\_solver   
+ccvm\_solver 
 ================================
 
 .. automodule:: ccvm.solvers.ccvm_solver

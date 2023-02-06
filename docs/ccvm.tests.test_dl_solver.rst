@@ -1,4 +1,4 @@
-test\_dl\_solver   
+test\_dl\_solver 
 ==================================
 
 .. automodule:: ccvm.tests.test_dl_solver

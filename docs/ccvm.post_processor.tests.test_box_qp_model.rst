@@ -1,4 +1,4 @@
-.test\_box\_qp\_model   
+test\_box\_qp\_model 
 ======================================================
 
 .. automodule:: ccvm.post_processor.tests.test_box_qp_model

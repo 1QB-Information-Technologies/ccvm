@@ -1,4 +1,4 @@
-test\_trust\_constr   
+test\_trust\_constr 
 =====================================================
 
 .. automodule:: ccvm.post_processor.tests.test_trust_constr

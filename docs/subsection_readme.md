@@ -1,8 +1,8 @@
 
-```{include} ../problem_classes/README.md
+```{include} ../ccvm/problem_classes/README.md
 ```
 
-```{include} ../ccvmplotlib/README.md
+```{include} ../ccvm/ccvmplotlib/README.md
 ```
 
 

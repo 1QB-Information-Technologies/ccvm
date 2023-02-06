@@ -1,4 +1,4 @@
-asgd 
+ asgd 
 ================================
 
 .. automodule:: ccvm.post_processor.asgd

@@ -1,4 +1,4 @@
-solution   
+solution 
 ====================
 
 .. automodule:: ccvm.solution

@@ -1,4 +1,4 @@
-ccvm.solvers package
+solvers
 ====================
 
 Submodules
@@ -11,7 +11,8 @@ Submodules
    ccvm.solvers.dl_solver
    ccvm.solvers.mf_solver
 
-   
+
+---------------
 
 .. automodule:: ccvm.solvers
    :members:

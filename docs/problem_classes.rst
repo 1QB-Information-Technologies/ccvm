@@ -1,4 +1,4 @@
-problem\_classes package
+problem\_classes
 ========================
 
 Subpackages

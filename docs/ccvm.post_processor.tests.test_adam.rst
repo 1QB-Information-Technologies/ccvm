@@ -1,4 +1,4 @@
- test\_adam   
+test\_adam 
 ============================================
 
 .. automodule:: ccvm.post_processor.tests.test_adam

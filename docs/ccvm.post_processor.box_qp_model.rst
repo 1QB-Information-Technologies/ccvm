@@ -1,4 +1,4 @@
-box\_qp\_model   
+ box\_qp\_model 
 ==========================================
 
 .. automodule:: ccvm.post_processor.box_qp_model

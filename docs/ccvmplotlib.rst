@@ -1,4 +1,4 @@
-ccvmplotlib package
+ccvmplotlib
 ===================
 
 Subpackages

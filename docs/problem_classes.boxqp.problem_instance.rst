@@ -1,4 +1,4 @@
-problem\_classes.boxqp.problem\_instance   
+problem\_instance   
 ===============================================
 
 .. automodule:: problem_classes.boxqp.problem_instance

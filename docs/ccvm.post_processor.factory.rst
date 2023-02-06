@@ -1,4 +1,4 @@
-factory   
+factory 
 ===================================
 
 .. automodule:: ccvm.post_processor.factory

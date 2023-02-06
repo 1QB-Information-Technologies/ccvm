@@ -1,4 +1,4 @@
-trust\_constr   
+trust\_constr 
 =========================================
 
 .. automodule:: ccvm.post_processor.trust_constr

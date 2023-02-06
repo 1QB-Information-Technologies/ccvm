@@ -1,4 +1,4 @@
-problem\_metadata package
+problem\_metadata
 =====================================
 
 Submodules
