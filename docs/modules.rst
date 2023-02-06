@@ -7,4 +7,4 @@ ccvm
    ccvm
    ccvmplotlib
    problem_classes
-   setup
+
