@@ -1,13 +1,6 @@
 post\_processor
 ============================
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 2
-
-   ccvm.post_processor.tests
 
 Submodules
 ----------

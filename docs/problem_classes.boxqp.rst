@@ -1,13 +1,6 @@
 boxqp
 ==============================
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 2
-
-   problem_classes.boxqp.tests
 
 Submodules
 ----------

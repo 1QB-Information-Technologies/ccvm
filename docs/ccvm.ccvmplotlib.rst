@@ -8,7 +8,6 @@ Subpackages
    :maxdepth: 2
 
    ccvm.ccvmplotlib.problem_metadata
-   ccvm.ccvmplotlib.tests
    ccvm.ccvmplotlib.utils
 
 Submodules

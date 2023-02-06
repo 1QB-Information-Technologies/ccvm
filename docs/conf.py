@@ -22,7 +22,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
     "sphinxcontrib.jquery",
-    "myst_parser"
+    "myst_parser",
 ]
 
 templates_path = ['_templates']
