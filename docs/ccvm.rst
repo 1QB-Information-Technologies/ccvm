@@ -11,7 +11,7 @@ Subpackages
    ccvm.post_processor
    ccvm.problem_classes
    ccvm.solvers
-   ccvm.tests
+
 
 Submodules
 ----------
