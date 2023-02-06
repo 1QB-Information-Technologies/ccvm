@@ -48,7 +48,7 @@ class ProblemInstance:
             optimality (bool): indicates whether the solution is
                 optimal (True or False). Defaults to None.
             q_matrix (torch.tensor): Q matrix of the QP problem. Defaults to None.
-            v_vector (torch.tensor): v_vector vector of the QP problem. Defaults to None.
+            v_vector (torch.tensor): V vector of the QP problem. Defaults to None.
             scaled_by (float): scaling value of the coefficient. Defaults to 1.
         """
         self.problem_size = None
@@ -91,7 +91,7 @@ class ProblemInstance:
             Exception: Error reading the instance file.
         """
         rval_q = None
-        rval_c = None
+        rval_v = None
         problem_size = None
 
         # Raise an exception if the file path was neither given as a load_instance
@@ -129,12 +129,12 @@ class ProblemInstance:
                 rval_q = torch.zeros(
                     (problem_size, problem_size), dtype=torch.float
                 ).to(device)
-                rval_c = torch.zeros((problem_size,), dtype=torch.float).to(device)
+                rval_v = torch.zeros((problem_size,), dtype=torch.float).to(device)
 
                 # Read in the v_vector matrix
-                line_data_c = lines[1].split("\n")[0].split(file_delimiter)
+                line_data_v = lines[1].split("\n")[0].split(file_delimiter)
                 for idx in range(0, problem_size):
-                    rval_c[idx] = -torch.Tensor([float(line_data_c[idx])])
+                    rval_v[idx] = -torch.Tensor([float(line_data_v[idx])])
 
                 # Read in the q_matrix matrix
                 for idx, line in enumerate(lines[2:]):
@@ -152,7 +152,7 @@ class ProblemInstance:
         self.optimality = optimality
         self.sol_time_gb = sol_time_gb
         self.q_matrix = rval_q
-        self.v_vector = rval_c
+        self.v_vector = rval_v
         self.scaled_by = 1
 
         # Set the name of the instance if the user has not set it
