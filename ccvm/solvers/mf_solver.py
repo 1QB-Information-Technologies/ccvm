@@ -56,7 +56,7 @@ class MFSolver(CCVMSolver):
                             pump,
                             feedback_scale,
                             j (measurement strength),
-                            S (enforced saturation value),
+                            S (enforced saturation value), can be scalar or a vector
                             lr (learning rate),
                             iterations>
                 }
@@ -263,6 +263,18 @@ class MFSolver(CCVMSolver):
             j = self.parameter_key[problem_size]["j"]
             feedback_scale = self.parameter_key[problem_size]["feedback_scale"]
             S = self.parameter_key[problem_size]["S"]
+
+            # If S is a 1-D vector, convert it to to a 2-D tensor
+            if torch.is_tensor(S):
+                if S.size() == problem_size:
+                    S = torch.outer(torch.ones(batch_size), S)
+
+                    # Prepare lower_clamp for fit_to_constraints()
+                    lower_clamp = torch.outer(torch.ones(batch_size), -S)
+                else:
+                    raise ValueError("Vector S size should be equal to problem size.")
+            else:  # S is scalar
+                lower_clamp = -S
         except KeyError as e:
             raise KeyError(
                 f"The parameter '{e.args[0]}' for the given instance size is not"
@@ -299,7 +311,7 @@ class MFSolver(CCVMSolver):
             wiener = wiener_dist.sample((problem_size,)).transpose(0, 1)
             wiener_increment = wiener / np.sqrt(lr)
             mu_tilde = mu + np.sqrt(1 / (4 * j)) * wiener_increment
-            mu_tilde_c = self.fit_to_constraints(mu_tilde, -S, S)
+            mu_tilde_c = self.fit_to_constraints(mu_tilde, lower_clamp, S)
 
             if pump_rate_flag:
                 pump_rate = (i + 1) / iterations
@@ -333,7 +345,7 @@ class MFSolver(CCVMSolver):
                 mu_time[:, :, i] = mu
                 sigma_time[:, :, i] = sigma
 
-        mu_tilde = self.fit_to_constraints(mu_tilde, -S, S)
+        mu_tilde = self.fit_to_constraints(mu_tilde, lower_clamp, S)
 
         solve_time = time.time() - solve_time_start
 
