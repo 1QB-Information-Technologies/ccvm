@@ -11,15 +11,9 @@ Welcome to ccvm's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Readme:
-
-   subsection_readme
-
-.. toctree::
-   :maxdepth: 2
    :caption: Contents:
 
-   modules
+   ccvm
 
 
 

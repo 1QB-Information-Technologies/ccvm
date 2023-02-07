@@ -1,6 +1,10 @@
 problem\_classes
 =============================
 
+.. include:: problem_class_readme.md
+   :parser: myst_parser.sphinx_
+
+
 Subpackages
 -----------
 

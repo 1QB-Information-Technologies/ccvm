@@ -1,6 +1,9 @@
 ccvmplotlib
 ========================
 
+.. include:: ccvmplotlib_readme.md
+   :parser: myst_parser.sphinx_
+
 Subpackages
 -----------
 
