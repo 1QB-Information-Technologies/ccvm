@@ -168,7 +168,7 @@ class DLSolver(CCVMSolver):
 
         Args:
             instances (list): A list of problem instances to tune the solver on.
-            post_processor (PostProcessorType): The post processor to use to process
+            post_processor (str): The name of the post processor to use to process
             the results of the solver. None if no post processing is desired.
             Defaults to None.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
@@ -184,7 +184,7 @@ class DLSolver(CCVMSolver):
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            post_processor (PostProcessorType): The post processor to use to process
+            post_processor (str): The name of the post processor to use to process
             the results of the solver. None if no post processing is desired.
             Defaults to None.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the

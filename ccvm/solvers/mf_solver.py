@@ -200,7 +200,7 @@ class MFSolver(CCVMSolver):
 
         Args:
             instances (list): A list of problem instances to tune the solver on.
-            post_processor (PostProcessorType): The post processor to use to process
+            post_processor (str): The name of the post processor to use to process
             the results of the solver. None if no post processing is desired.
             Defaults to None.
             g (float): The nonlinearity coefficient. Defaults to 0.01.
@@ -215,7 +215,7 @@ class MFSolver(CCVMSolver):
 
         Args:
             instance (boxqp.boxqp.ProblemInstance): The problem to solve.
-            post_processor (PostProcessorType): The post processor to use to process
+            post_processor (str): The name of the post processor to use to process
             the results of the solver. None if no post processing is desired.
             g (float, optional): The nonlinearity coefficient. Defaults to 0.01
             pump_rate_flag (bool, optional): Whether or not to scale the pump rate based

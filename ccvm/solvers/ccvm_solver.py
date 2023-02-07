@@ -4,25 +4,18 @@ import enum
 
 
 class DeviceType(enum.Enum):
+    """The devices that can be used by pytorch"""
+
     CPU_DEVICE = "cpu"
     CUDA_DEVICE = "cuda"
 
 
-class PostProcessorType:
-    # TODO: Move this to the file with the post processor class
-    BFGS = "BFGS"
-    ADAM = "Adam"
-    LBFGS = "LBFGS"
-    ASGD = "ASGD"
-    TRUST_CONSTR = "trust-constr"
-
-
 class CCVMSolver(ABC):
-    """Constructor method
+    """The base class for all solvers. This class should not be used directly; one of
+    the subclasses should be used.
 
-    :param device: Defines which GPU (or the CPU) to use.
-    :type device: DeviceType
-    #TODO: Document the rest of the parameters
+    Args:
+        device (DeviceType): The device that the solver will use to solve the problem.
     """
 
     def __init__(self, device):
@@ -41,41 +34,31 @@ class CCVMSolver(ABC):
     ##################################
     @property
     def is_tuned(self):
-        """Returns true if the current solver parameters were set by the tune() function.
-        :returns: is_tuned
-        :rtype: bool
-        """
+        """bool: True if the current solver parameters were set by the tune() function."""
         return self._is_tuned
 
     @property
     def parameter_key(self):
-        """The set of parameters that will be used by the solver when solving the problem.
-        :returns: parameter_key
-        :rtype: dict
+        """dict: The set of parameters that will be used by the solver when solving the problem.
+        Note: setting this parameter after calling tune() will overwrite tuned parameters.
         """
         return self._parameter_key
+
+    @parameter_key.setter
+    def parameter_key(self, parameters):
+        self._validate_parameters(parameters)
+        self._parameter_key = parameters
+        self._is_tuned = False
 
     @abstractmethod
     def _validate_parameters(self, parameters):
         """Validates the parameters to make sure the values in the dictionary are
            compatible with the solver
 
-        :param parameters: The parameters intended to be used by the solver when solving
-        :type parameters: dict
+        Args:
+            parameters (dict): The parameters to be validated
         """
         pass
-
-    @parameter_key.setter
-    def parameter_key(self, parameters):
-        """Manually set the value of the parameters that the solver will use when solving problems.
-           Note: setting this parameter after calling tune() will overwrite tuned parameters.
-
-        :param parameters: The set of parameters that will be used by the solver when solving the problem.
-        :type parameters: dict
-        """
-        self._validate_parameters(parameters)
-        self._parameter_key = parameters
-        self._is_tuned = False
 
     ##################################
     # Abstract Methods               #
@@ -83,40 +66,53 @@ class CCVMSolver(ABC):
 
     @abstractmethod
     def tune(self):
-        # TODO: description
+        """Determines the best parameters for the solver to use by adjusting each
+        parameter over a number of iterations on the problems in the given set of
+        problems instances. The `parameter_key` attribute of the solver will be
+        updated with the best parameters found.
+        Input parameters to this function are specific to each solver.
+        """
         pass
 
     @abstractmethod
     def solve(self):
-        # TODO: description
+        """Solves a given problem instance using the parameters in the solver's
+        `parameter_key`
+        """
         pass
 
     @abstractmethod
     def _calculate_grads_boxqp(self, **kwargs):
-        # TODO: description
+        """Calculates the gradients of the variables for the boxqp problem."""
         pass
 
     @abstractmethod
     def _change_variables_boxqp(self, **kwargs):
-        # TODO: description
+        """Performs a change of variables on the boxqp problem."""
         pass
 
     @abstractmethod
     def _fit_to_constraints_boxqp(self, **kwargs):
-        # TODO: description
+        """Fits the variables to the constraints for the boxqp problem."""
         pass
 
     ##################################
     # Implemented Methods            #
     ##################################
 
-    def get_scaling_factor(self, q):
+    def get_scaling_factor(self, q_matrix):
         """Uses a default calculation to determine the amount by which the problem
         coefficients should be scaled. The value may differ depending on the solver,
         as some solvers have different scaling multipliers.
-        :param q: the quadratic coefficients of the instance to be scaled
-        :type q: torch.Tensor
+
+        Args:
+            q_matrix (torch.tensor): The Q matrix describing the BoxQP problem
+
+        Returns:
+            float: The recommended scaling factor to be use to scale the problem for this solver
         """
         # Calculate the scaling value from the problem's quadratic terms
-        scaling_val = torch.sqrt(torch.sum(torch.abs(q))) * self._scaling_multiplier
+        scaling_val = (
+            torch.sqrt(torch.sum(torch.abs(q_matrix))) * self._scaling_multiplier
+        )
         return scaling_val
