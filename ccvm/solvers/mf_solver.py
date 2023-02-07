@@ -56,7 +56,7 @@ class MFSolver(CCVMSolver):
                             pump,
                             feedback_scale,
                             j (measurement strength),
-                            S (enforced saturation value), can be scalar or a vector
+                            S (enforced saturation value), can be scalar or a vector of size 'problem_size'.
                             lr (learning rate),
                             iterations>
                 }
@@ -183,8 +183,8 @@ class MFSolver(CCVMSolver):
 
         Args:
             mu_tilde (torch.Tensor): The mean-field measured amplitudes.
-            lower_clamp (float): The lower bound of the box constraints.
-            upper_clamp (float): The upper bound of the box constraints.
+            lower_clamp (float or torch.tensor): The lower bound of the box constraints.
+            upper_clamp (float or torch.tensor): The upper bound of the box constraints.
 
         Returns:
             torch.Tensor: The clamped values of mu_tilde, now within the box constraints.
@@ -268,13 +268,8 @@ class MFSolver(CCVMSolver):
             if torch.is_tensor(S):
                 if S.size() == problem_size:
                     S = torch.outer(torch.ones(batch_size), S)
-
-                    # Prepare lower_clamp for fit_to_constraints()
-                    lower_clamp = torch.outer(torch.ones(batch_size), -S)
                 else:
                     raise ValueError("Vector S size should be equal to problem size.")
-            else:  # S is scalar
-                lower_clamp = -S
         except KeyError as e:
             raise KeyError(
                 f"The parameter '{e.args[0]}' for the given instance size is not"
@@ -311,7 +306,7 @@ class MFSolver(CCVMSolver):
             wiener = wiener_dist.sample((problem_size,)).transpose(0, 1)
             wiener_increment = wiener / np.sqrt(lr)
             mu_tilde = mu + np.sqrt(1 / (4 * j)) * wiener_increment
-            mu_tilde_c = self.fit_to_constraints(mu_tilde, lower_clamp, S)
+            mu_tilde_c = self.fit_to_constraints(mu_tilde, -S, S)
 
             if pump_rate_flag:
                 pump_rate = (i + 1) / iterations
