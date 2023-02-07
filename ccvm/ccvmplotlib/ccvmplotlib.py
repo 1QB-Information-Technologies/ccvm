@@ -25,16 +25,16 @@ class ccvmplotlib:
 
     @staticmethod
     def plot_TTS(
-        solution_filepath: str,
+        metadata_filepath: str,
         problem: str,
         TTS_type: str,
         **kwargs: Any,
     ) -> matplotlib.figure.Figure:
-        """Plot a problem-specific Time-To-Solution result data solved by a CCVM
+        """Plot a problem-specific Time-To-Solution metadata solved by a CCVM
         solver.
 
         Args:
-            solution_filepath (str): A file path to solution data.
+            metadata_filepath (str): A file path to metadata.
             problem (str): A problem type.
             TTS_type (str): A Time-To-Solution type. It is either a CPU time or an
             optic device time.
@@ -56,7 +56,7 @@ class ccvmplotlib:
         problem_metadata = ProblemMetadataFactory.create_problem_metadata(
             problem, TTS_type
         )
-        problem_metadata.ingest_solution_data(solution_filepath)
+        problem_metadata.ingest_metadata(metadata_filepath)
         plotting_df = problem_metadata.generate_plot_data()
 
         x_data = plotting_df.index
@@ -159,7 +159,7 @@ class ccvmplotlib:
 
     @staticmethod
     def plot_success_prob(
-        solution_filepath: str,
+        metadata_filepath: str,
         problem: str,
         TTS_type: str,
         **kwargs: Any,
@@ -168,7 +168,7 @@ class ccvmplotlib:
         CCVM solver.
 
         Args:
-            solution_filepath (str): A file path to solution data.
+            metadata_filepath (str): A file path to solution data.
             problem (str): A problem type.
             TTS_type (str): A Time-To-Solution type. It is either a CPU time or an
             optic device time
@@ -189,7 +189,7 @@ class ccvmplotlib:
         problem_metadata = ProblemMetadataFactory.create_problem_metadata(
             problem, TTS_type
         )
-        problem_metadata.ingest_solution_data(solution_filepath)
+        problem_metadata.ingest_metadata(metadata_filepath)
         plotting_df = problem_metadata.generate_plot_data()
         x_data = plotting_df.index.tolist()
 

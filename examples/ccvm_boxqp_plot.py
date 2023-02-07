@@ -50,7 +50,7 @@ if __name__ == "__main__":
     metadata_filepath = metadata_list.save_metadata_to_file(METADATA_DIR)
 
     plot_fig = ccvmplotlib.plot_TTS(
-        solution_filepath=metadata_filepath,
+        metadata_filepath=metadata_filepath,
         problem="BoxQP",
         TTS_type="wallclock",
         show_plot=True,

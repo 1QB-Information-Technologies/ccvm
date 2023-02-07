@@ -57,22 +57,22 @@ class BoxQPMetadata(ProblemMetadata):
 
         return flattened_dict
 
-    def ingest_solution_data(self, solution_filepath: str) -> None:
-        """A method to ingest raw result data.
+    def ingest_metadata(self, metadata_filepath: str) -> None:
+        """A method to ingest raw metadata.
 
-        Take a file path to a solution data and convert them into a pandas.DataFrame.
+        Take a file path to metadata and convert them into a pandas.DataFrame.
 
         Args:
-            solution_filepath (str): A file path to solution data.
+            metadata_filepath (str): A file path to metadata.
         """
         # populate percent gap list
-        with open(solution_filepath, "r") as test_file:
+        with open(metadata_filepath, "r") as test_file:
             data_stream = json_stream.load(test_file)
             for key in data_stream[0]["solution_performance"]:
                 self.__percent_gap_list.append(key)
 
         # populate pd.DataFrame
-        with open(solution_filepath, "r") as test_file:
+        with open(metadata_filepath, "r") as test_file:
             data_stream = json_stream.load(test_file)
             for data in data_stream:
                 self.__df = pd.concat(

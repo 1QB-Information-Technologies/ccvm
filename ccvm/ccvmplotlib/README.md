@@ -14,12 +14,12 @@
 ```python
 from ccvmplotlib import ccvmplotlib
 
-SOLUTION_FILEPATH = "./tests/results/valid_result.json"
+METADATA_FILEPATH = "./tests/metadata/valid_metadata.json"
 PLOT_OUTPUT_DEST = "./"
 
 # Generate TTS plot
 tts_plot_fig = ccvmplotlib.plot_TTS(
-    solution_filepath=SOLUTION_FILEPATH,
+    metadata_filepath=METADATA_FILEPATH,
     problem="BoxQP",
     TTS_type="wallclock",
     show_plot=True
@@ -27,7 +27,7 @@ tts_plot_fig = ccvmplotlib.plot_TTS(
 
 # Generate success probability plot
 succ_prob_plot_fig = ccvmplotlib.plot_success_prob(
-    solution_filepath=SOLUTION_FILEPATH,
+    metadata_filepath=METADATA_FILEPATH,
     problem="BoxQP",
     TTS_type="wallclock",
     show_plot=True

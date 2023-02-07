@@ -110,8 +110,8 @@ class SampleTTSMetric(Metric):
             mean_TTS = mean_R99 * mean_tau
             std_TTS = (
                 (var_R99 * var_tau)
-                + (mean_R99 ** 2 * var_tau)
-                + (mean_tau ** 2 * var_R99)
+                + (mean_R99**2 * var_tau)
+                + (mean_tau**2 * var_R99)
             ) ** 0.5
 
         if self.failure_fill_in_value is not None:
