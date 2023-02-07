@@ -28,7 +28,7 @@ The Coherent Continous-Variable Machine (CCVM) is a novel coherent quantum optic
 ## Quickstart
 
 
-1. Once you have cloned the repo, install dependencies using
+1. Once you have cloned the repo, install dependencies by navigating into the top-level directory of the repository and running
 
 ```
  pip install . --user
@@ -90,11 +90,14 @@ solution = solver.solve(
     post_processor=None,
 )
 
-solution.optimal_value
-# 799.560976
+print(f"The best known solution to this problem is {solution.optimal_value}")
+# The best known solution to this problem is 799.560976
 
-solution.solve_time
-# 2.494919538497925
+print(f"The best objective value found by the solver was {solution.best_objective_value}")
+# The best objective value found by the solver was 798.1630859375
+
+print(f"The solve process took {solution.solve_time} seconds")
+# The solve process took 8.949262142181396 seconds
 ```
 
 

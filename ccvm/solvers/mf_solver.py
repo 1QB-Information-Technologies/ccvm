@@ -231,7 +231,7 @@ class MFSolver(CCVMSolver):
             iteration during the solve process
             - "sigma_evolution" (:py:class:`torch.Tensor`) - The values of sigma at
             each iteration during the solve process
-            - "objective_value" (:py:class:`torch.Tensor`) - The value of the objective
+            - "objective_values" (:py:class:`torch.Tensor`) - The value of the objective
             function for the solution found by the solver
             - "solve_time" (float) - The time taken (in seconds) to solve the problem
             - "post_processing_time" (float) - The time taken (in seconds) to postprocess
@@ -358,7 +358,7 @@ class MFSolver(CCVMSolver):
             batch_size=batch_size,
             instance_name=instance.name,
             iterations=iterations,
-            objective_value=objval,
+            objective_values=objval,
             solve_time=solve_time,
             pp_time=pp_time,
             optimal_value=instance.optimal_sol,

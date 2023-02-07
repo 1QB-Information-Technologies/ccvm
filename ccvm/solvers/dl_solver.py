@@ -310,7 +310,7 @@ class DLSolver(CCVMSolver):
             batch_size=batch_size,
             instance_name=instance.name,
             iterations=iterations,
-            objective_value=objval,
+            objective_values=objval,
             solve_time=solve_time,
             pp_time=pp_time,
             optimal_value=instance.optimal_sol,
