@@ -5,6 +5,7 @@ import torch
 import numpy as np
 import torch.distributions as tdist
 import time
+import os
 
 MF_SCALING_MULTIPLIER = 0.1
 """The value used by the MFSolver when calculating a scaling value in
@@ -18,7 +19,6 @@ class MFSolver(CCVMSolver):
         self,
         device,
         problem_category="boxqp",
-        time_evolution_results=False,
         batch_size=1000,
     ):
         """
@@ -26,8 +26,6 @@ class MFSolver(CCVMSolver):
             device (str): The device to use for the solver. Can be "cpu" or "cuda".
             problem_category (str): The category of problem to solve. Can be one
             of "boxqp". Defaults to "boxqp".
-            time_evolution_results (bool): Whether to return the time evolution
-            results for each iteration during the solve. Defaults to True.
             batch_size (int): The batch size of the problem. Defaults to 1000.
 
         Raises:
@@ -37,7 +35,6 @@ class MFSolver(CCVMSolver):
             DLSolver: The DLSolver object.
         """
         super().__init__(device)
-        self.time_evolution_results = time_evolution_results
         self.batch_size = batch_size
         self._scaling_multiplier = MF_SCALING_MULTIPLIER
         # Use the method selector to choose the problem-specific methods to use
@@ -192,6 +189,37 @@ class MFSolver(CCVMSolver):
         mu_tilde_clamped = torch.clamp(mu_tilde, lower_clamp, upper_clamp)
         return mu_tilde_clamped
 
+    def append_samples_to_file(
+        self, mu_sample, sigma_sample, problem_size, evolution_file_object
+    ):
+        """Saves samples of the mean-field amplitudes and the variance of the in-phase
+        position operator to a file.
+        The end file will have the following format:
+            `problem_size` number of rows containing the mu sample
+                each row contains one value per captured iteration
+            `problem_size` number of rows containing sigma sample
+                each row contains one value per captured iteration
+
+        Args:
+            mu_sample (torch.Tensor): The sample of mean-field amplitudes to add to the file.
+            sigma_sample (torch.Tensor): The sample of the variance of the in-phase position
+            operator to add to the file.
+            problem_size (int): The size of the problem being solved.
+            evolution_file_object (io.TextIOWrapper): The file object of the file to save
+            the samples to.
+        """
+        iterations = mu_sample.shape[1]
+        for nn in range(problem_size):
+            for ii in range(iterations):
+                evolution_file_object.write(str(round(mu_sample[nn, ii].item(), 4)))
+                evolution_file_object.write("\t")
+            evolution_file_object.write("\n")
+        for nn in range(problem_size):
+            for ii in range(iterations):
+                evolution_file_object.write(str(round(sigma_sample[nn, ii].item(), 4)))
+                evolution_file_object.write("\t")
+            evolution_file_object.write("\n")
+
     def tune(self, instances, post_processor, g=0.01):
         """Determines the best parameters for the solver to use by adjusting each
         parameter over a number of iterations on the problems in the given set of
@@ -209,7 +237,15 @@ class MFSolver(CCVMSolver):
         #       future consideration
         self.is_tuned = True
 
-    def solve(self, instance, post_processor=None, g=0.01, pump_rate_flag=True):
+    def solve(
+        self,
+        instance,
+        post_processor=None,
+        g=0.01,
+        pump_rate_flag=True,
+        evolution_timestep=None,
+        evolution_file=None,
+    ):
         """Solves the given problem instance using the tuned or specified
         parameters in the parameter key.
 
@@ -221,6 +257,15 @@ class MFSolver(CCVMSolver):
             pump_rate_flag (bool, optional): Whether or not to scale the pump rate based
             on the iteration number. If False, the pump rate will be 1.0. Defaults to
             True.
+            evolution_timestep (int): If set, the mu/sigma values will be sampled once
+            per number of iterations equivalent to the value of this variable. At the
+            end of the solve process, the best batch of sampled values will be written
+            to a file that can be specified by setting the evolution_file parameter.
+            Defaults to None, meaning no problem variables will be written to the file.
+            evolution_file (str): The file to save the best set of mu/sigma saamples to.
+            Only revelant when evolution_timestep is set. If a file already exists with
+            the same name, it will be overwritten. Defaults to None, which generates a
+            filename based on the problem instance name.
 
         Returns:
             dict: A dictionary containing the results of the solver. It contains
@@ -253,7 +298,6 @@ class MFSolver(CCVMSolver):
         # Get solver setup variables
         batch_size = self.batch_size
         device = self.device
-        time_evolution_results = self.time_evolution_results
 
         # Get parameters from parameter_key
         try:
@@ -269,6 +313,32 @@ class MFSolver(CCVMSolver):
                 " defined."
             ) from e
 
+        if evolution_timestep:
+            # Check that the value is valid
+            if evolution_timestep < 1:
+                raise ValueError(
+                    f"The evolution timestep must be greater than or equal to 1."
+                )
+            # Generate evolution file name
+            if evolution_file is None:
+                evolution_file = f"./{instance.name}_evolution.txt"
+
+            # Get the number of samples to save by dividing the number of iterations by
+            # the evolution timestep, adding one to account for the initial state, and
+            # adding one again if the division has a remainder to account for the final
+            # state
+            num_samples = int(iterations / evolution_timestep) + 1
+            if iterations % evolution_timestep != 0:
+                num_samples += 1
+            # Initialize tensors
+            mu_sample = torch.zeros(
+                (batch_size, problem_size, num_samples), device=device
+            )
+            sigma_sample = torch.zeros(
+                (batch_size, problem_size, num_samples), device=device
+            )
+            samples_taken = 0
+
         # Start timing the solve process
         solve_time_start = time.time()
 
@@ -278,15 +348,6 @@ class MFSolver(CCVMSolver):
         sigma = torch.ones((batch_size, problem_size), dtype=torch.float).to(device) * (
             1 / 4
         )
-        mu_time = sigma_time = None
-        if time_evolution_results:
-            mu_time = torch.zeros(
-                (batch_size, problem_size, iterations), dtype=torch.float
-            ).to(device)
-            sigma_time = torch.zeros(
-                (batch_size, problem_size, iterations), dtype=torch.float
-            ).to(device)
-
         wiener_dist = tdist.Normal(
             torch.Tensor([0.0] * batch_size).to(device),
             torch.Tensor([1.0] * batch_size).to(device),
@@ -327,11 +388,16 @@ class MFSolver(CCVMSolver):
             mu += lr * grads_mu
             sigma += lr * grads_sigma
 
-            if time_evolution_results:
-                # Update the record of the values at each iteration with the
-                # values found at this iteration
-                mu_time[:, :, i] = mu
-                sigma_time[:, :, i] = sigma
+            # If evolution_timestep is specified, save the values if this iteration
+            # aligns with the timestep or if this is the last iteration
+            if evolution_timestep and (
+                i % evolution_timestep == 0 or i + 1 >= iterations
+            ):
+                # Update the record of the sample values with the values found at
+                # this iteration
+                mu_sample[:, :, samples_taken] = mu
+                sigma_sample[:, :, samples_taken] = sigma
+                samples_taken += 1
 
         mu_tilde = self.fit_to_constraints(mu_tilde, -S, S)
 
@@ -353,6 +419,22 @@ class MFSolver(CCVMSolver):
 
         objval = instance.compute_energy(problem_variables)
 
+        if evolution_timestep:
+            # Write samples to file
+            # Overwrite file if it exists
+            open(evolution_file, "w")
+
+            # Get the indices of the best objective values over the sampled iterations
+            # to use to get and save the best sampled values of mu and sigma
+            batch_index = torch.argmax(-objval)
+            with open(evolution_file, "a") as evolution_file_obj:
+                self.append_samples_to_file(
+                    mu_sample=mu_sample[batch_index],
+                    sigma_sample=sigma_sample[batch_index],
+                    problem_size=problem_size,
+                    evolution_file_object=evolution_file_obj,
+                )
+
         solution = Solution(
             problem_size=problem_size,
             batch_size=batch_size,
@@ -369,5 +451,9 @@ class MFSolver(CCVMSolver):
             },
             device=device,
         )
+
+        # Add evolution filename to solution if it was generated
+        if evolution_timestep:
+            solution.evolution_file = evolution_file
 
         return solution
