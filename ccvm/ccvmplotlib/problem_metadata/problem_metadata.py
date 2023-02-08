@@ -55,8 +55,8 @@ class ProblemMetadata(ABC):
         return self.__TTS_type
 
     @abstractmethod
-    def ingest_solution_data(self) -> None:
-        """Take a file path to a solution data and convert them into a
+    def ingest_metadata(self) -> None:
+        """Take a file path to metadata and convert them into a
         pandas.DataFrame."""
 
     @abstractmethod
