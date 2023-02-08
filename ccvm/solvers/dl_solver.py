@@ -21,6 +21,7 @@ class DLSolver(CCVMSolver):
         problem_category="boxqp",
         time_evolution_results=False,
         batch_size=1000,
+        S=1,
     ):
         """
         Args:
@@ -30,7 +31,7 @@ class DLSolver(CCVMSolver):
             time_evolution_results (bool): Whether to return the time evolution results
             for each iteration during the solve. Defaults to True.
             batch_size (int): The batch size of the problem. Defaults to 1000.
-            S (int): TODO. Defaults to 1.
+            S (float or torch.tensor): Enforced saturation value. Defaults to 1.
 
         Raises:
             ValueError: If the problem category is not supported by the solver.
@@ -41,7 +42,7 @@ class DLSolver(CCVMSolver):
         super().__init__(device)
         self.time_evolution_results = time_evolution_results
         self.batch_size = batch_size
-        self.S = 1
+        self.S = S
         self._scaling_multiplier = DL_SCALING_MULTIPLIER
         # Use the method selector to choose the problem-specific methods to use
         self._method_selector(problem_category)
