@@ -5,7 +5,6 @@ import torch
 import numpy as np
 import torch.distributions as tdist
 import time
-import os
 
 MF_SCALING_MULTIPLIER = 0.1
 """The value used by the MFSolver when calculating a scaling value in
@@ -189,7 +188,7 @@ class MFSolver(CCVMSolver):
         mu_tilde_clamped = torch.clamp(mu_tilde, lower_clamp, upper_clamp)
         return mu_tilde_clamped
 
-    def append_samples_to_file(
+    def _append_samples_to_file(
         self, mu_sample, sigma_sample, problem_size, evolution_file_object
     ):
         """Saves samples of the mean-field amplitudes and the variance of the in-phase
@@ -262,7 +261,7 @@ class MFSolver(CCVMSolver):
             end of the solve process, the best batch of sampled values will be written
             to a file that can be specified by setting the evolution_file parameter.
             Defaults to None, meaning no problem variables will be written to the file.
-            evolution_file (str): The file to save the best set of mu/sigma saamples to.
+            evolution_file (str): The file to save the best set of mu/sigma samples to.
             Only revelant when evolution_timestep is set. If a file already exists with
             the same name, it will be overwritten. Defaults to None, which generates a
             filename based on the problem instance name.
@@ -313,6 +312,9 @@ class MFSolver(CCVMSolver):
                 " defined."
             ) from e
 
+        # Start timing the solve process
+        solve_time_start = time.time()
+
         if evolution_timestep:
             # Check that the value is valid
             if evolution_timestep < 1:
@@ -338,9 +340,6 @@ class MFSolver(CCVMSolver):
                 (batch_size, problem_size, num_samples), device=device
             )
             samples_taken = 0
-
-        # Start timing the solve process
-        solve_time_start = time.time()
 
         # Initialize tensor variables on the device that will be used to perform
         # the calculations
@@ -428,7 +427,7 @@ class MFSolver(CCVMSolver):
             # to use to get and save the best sampled values of mu and sigma
             batch_index = torch.argmax(-objval)
             with open(evolution_file, "a") as evolution_file_obj:
-                self.append_samples_to_file(
+                self._append_samples_to_file(
                     mu_sample=mu_sample[batch_index],
                     sigma_sample=sigma_sample[batch_index],
                     problem_size=problem_size,
