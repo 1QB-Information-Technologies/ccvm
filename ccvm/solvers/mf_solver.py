@@ -265,8 +265,9 @@ class MFSolver(CCVMSolver):
             S = self.parameter_key[problem_size]["S"]
 
             # If S is a 1-D tensor, convert it to to a 2-D tensor
-            if torch.is_tensor(S):
-                if S.size() == problem_size:
+            if torch.is_tensor(S) and S.ndim == 1:
+                # Dimension indexing in pytorch starts at 0
+                if S.size(dim=0) == problem_size:
                     S = torch.outer(torch.ones(batch_size), S)
                 else:
                     raise ValueError("Tensor S size should be equal to problem size.")

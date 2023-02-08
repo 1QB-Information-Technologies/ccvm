@@ -231,8 +231,9 @@ class DLSolver(CCVMSolver):
             ) from e
 
         # If S is a 1-D vector, convert it to to a 2-D tensor
-        if torch.is_tensor(S):
-            if S.size() == problem_size:
+        if torch.is_tensor(S) and S.ndim == 1:
+            # Dimension indexing in pytorch starts at 0
+            if S.size(dim=0) == problem_size:
                 S = torch.outer(torch.ones(batch_size), S)
             else:
                 raise ValueError("Vector S size should be equal to problem size.")
