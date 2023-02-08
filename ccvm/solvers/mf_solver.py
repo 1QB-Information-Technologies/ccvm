@@ -264,12 +264,12 @@ class MFSolver(CCVMSolver):
             feedback_scale = self.parameter_key[problem_size]["feedback_scale"]
             S = self.parameter_key[problem_size]["S"]
 
-            # If S is a 1-D vector, convert it to to a 2-D tensor
+            # If S is a 1-D tensor, convert it to to a 2-D tensor
             if torch.is_tensor(S):
                 if S.size() == problem_size:
                     S = torch.outer(torch.ones(batch_size), S)
                 else:
-                    raise ValueError("Vector S size should be equal to problem size.")
+                    raise ValueError("Tensor S size should be equal to problem size.")
         except KeyError as e:
             raise KeyError(
                 f"The parameter '{e.args[0]}' for the given instance size is not"
@@ -340,7 +340,7 @@ class MFSolver(CCVMSolver):
                 mu_time[:, :, i] = mu
                 sigma_time[:, :, i] = sigma
 
-        mu_tilde = self.fit_to_constraints(mu_tilde, lower_clamp, S)
+        mu_tilde = self.fit_to_constraints(mu_tilde, -S, S)
 
         solve_time = time.time() - solve_time_start
 
