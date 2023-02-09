@@ -188,33 +188,34 @@ class MFSolver(CCVMSolver):
         mu_tilde_clamped = torch.clamp(mu_tilde, lower_clamp, upper_clamp)
         return mu_tilde_clamped
 
-    def _append_samples_to_file(
-        self, mu_sample, sigma_sample, problem_size, evolution_file_object
-    ):
+    def _append_samples_to_file(self, mu_sample, sigma_sample, evolution_file_object):
         """Saves samples of the mean-field amplitudes and the variance of the in-phase
         position operator to a file.
-        The end file will have the following format:
-            `problem_size` number of rows containing the mu sample
-                each row contains one value per captured iteration
-            `problem_size` number of rows containing sigma sample
-                each row contains one value per captured iteration
+        The end file will contain the values of the mu_sample followed by the sigma_sample.
+        Each line corresponds to a row in the tensor, with tab-delineated values.
 
         Args:
             mu_sample (torch.Tensor): The sample of mean-field amplitudes to add to the file.
+            Expected Dimensions: problem_size x num_samples.
             sigma_sample (torch.Tensor): The sample of the variance of the in-phase position
-            operator to add to the file.
-            problem_size (int): The size of the problem being solved.
+            operator to add to the file. Expected Dimensions: problem_size x num_samples.
             evolution_file_object (io.TextIOWrapper): The file object of the file to save
             the samples to.
         """
-        iterations = mu_sample.shape[1]
-        for nn in range(problem_size):
-            for ii in range(iterations):
+        # Save the mu samples to the file
+        mu_rows = mu_sample.shape[0]  # problem_size
+        mu_columns = mu_sample.shape[1]  # num_samples
+        for nn in range(mu_rows):
+            for ii in range(mu_columns):
                 evolution_file_object.write(str(round(mu_sample[nn, ii].item(), 4)))
                 evolution_file_object.write("\t")
             evolution_file_object.write("\n")
-        for nn in range(problem_size):
-            for ii in range(iterations):
+
+        # Save the sigma samples to the file
+        sigma_rows = sigma_sample.shape[0]  # problem_size
+        sigma_columns = sigma_sample.shape[1]  # num_samples
+        for nn in range(sigma_rows):
+            for ii in range(sigma_columns):
                 evolution_file_object.write(str(round(sigma_sample[nn, ii].item(), 4)))
                 evolution_file_object.write("\t")
             evolution_file_object.write("\n")

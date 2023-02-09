@@ -156,32 +156,32 @@ class DLSolver(CCVMSolver):
         c_clamped = torch.clamp(c, -1, 1)
         return c_clamped
 
-    def _append_samples_to_file(
-        self, c_sample, s_sample, problem_size, evolution_file_object
-    ):
+    def _append_samples_to_file(self, c_sample, s_sample, evolution_file_object):
         """Saves samples of the amplitude values to a file.
-        The end file will have the following format:
-            `problem_size` number of rows containing the c sample
-                each row contains one value per captured iteration
-            `problem_size` number of rows containing s sample
-                each row contains one value per captured iteration
+        The end file will contain the values of the c_sample followed by the s_sample.
+        Each line corresponds to a row in the tensor, with tab-delineated values.
         Args:
             c_sample (torch.Tensor): The sample of in-phase amplitudes to add to the
-            file.
+            file. Expected Dimensions: problem_size x num_samples
             s_sample (torch.Tensor): The sample of quadrature amplitudes to add to the
-            file.
-            problem_size (int): The size of the problem being solved.
+            file. Expected Dimensions: problem_size x num_samples
             evolution_file_object (io.TextIOWrapper): The file object of the file to save
             the samples to.
         """
-        iterations = c_sample.shape[1]
-        for nn in range(problem_size):
-            for ii in range(iterations):
+        # Save the c samples to the file
+        c_rows = c_sample.shape[0]  # problem_size
+        c_columns = c_sample.shape[1]  # num_samples
+        for nn in range(c_rows):
+            for ii in range(c_columns):
                 evolution_file_object.write(str(round(c_sample[nn, ii].item(), 4)))
                 evolution_file_object.write("\t")
             evolution_file_object.write("\n")
-        for nn in range(problem_size):
-            for ii in range(iterations):
+
+        # Save the s samples to the file
+        s_rows = s_sample.shape[0]  # problem_size
+        s_columns = s_sample.shape[1]  # num_samples
+        for nn in range(s_rows):
+            for ii in range(s_columns):
                 evolution_file_object.write(str(round(s_sample[nn, ii].item(), 4)))
                 evolution_file_object.write("\t")
             evolution_file_object.write("\n")
