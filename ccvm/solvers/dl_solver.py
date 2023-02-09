@@ -230,13 +230,13 @@ class DLSolver(CCVMSolver):
                 f"The parameter '{e.args[0]}' for the given instance size is not defined."
             ) from e
 
-        # If S is a 1-D vector, convert it to to a 2-D tensor
+        # If S is a 1-D tensor, convert it to to a 2-D tensor
         if torch.is_tensor(S) and S.ndim == 1:
             # Dimension indexing in pytorch starts at 0
             if S.size(dim=0) == problem_size:
                 S = torch.outer(torch.ones(batch_size), S)
             else:
-                raise ValueError("Vector S size should be equal to problem size.")
+                raise ValueError("Tensor S size should be equal to problem size.")
 
         # Start the timer for the solve
         solve_time_start = time.time()
