@@ -21,6 +21,7 @@ class DLSolver(CCVMSolver):
         problem_category="boxqp",
         time_evolution_results=False,
         batch_size=1000,
+        S=1,
     ):
         """
         Args:
@@ -30,6 +31,7 @@ class DLSolver(CCVMSolver):
             time_evolution_results (bool): Whether to return the time evolution results
             for each iteration during the solve. Defaults to True.
             batch_size (int): The batch size of the problem. Defaults to 1000.
+            S (float or torch.tensor): Enforced saturation value. Defaults to 1.
 
         Raises:
             ValueError: If the problem category is not supported by the solver.
@@ -40,6 +42,7 @@ class DLSolver(CCVMSolver):
         super().__init__(device)
         self.time_evolution_results = time_evolution_results
         self.batch_size = batch_size
+        self.S = S
         self._scaling_multiplier = DL_SCALING_MULTIPLIER
         # Use the method selector to choose the problem-specific methods to use
         self._method_selector(problem_category)
@@ -148,16 +151,19 @@ class DLSolver(CCVMSolver):
         """
         return 0.5 * (problem_variables + 1)
 
-    def _fit_to_constraints_boxqp(self, c):
+    def _fit_to_constraints_boxqp(self, c, lower_clamp, upper_clamp):
         """Clamps the values of c to be within the box constraints
 
         Args:
             c (torch.Tensor): The variables to clamp.
+            lower_clamp (float or torch.tensor): The lower bound of the box constraints.
+            upper_clamp (float or torch.tensor): The upper bound of the box constraints.
 
         Returns:
             torch.Tensor: The clamped variables.
         """
-        c_clamped = torch.clamp(c, -1, 1)
+
+        c_clamped = torch.clamp(c, lower_clamp, upper_clamp)
         return c_clamped
 
     def tune(self, instances, post_processor=None, pump_rate_flag=True, g=0.05):
@@ -208,6 +214,7 @@ class DLSolver(CCVMSolver):
         v_vector = instance.v_vector
 
         # Get solver setup variables
+        S = self.S
         batch_size = self.batch_size
         device = self.device
         time_evolution_results = self.time_evolution_results
@@ -222,6 +229,14 @@ class DLSolver(CCVMSolver):
             raise KeyError(
                 f"The parameter '{e.args[0]}' for the given instance size is not defined."
             ) from e
+
+        # If S is a 1-D tensor, convert it to to a 2-D tensor
+        if torch.is_tensor(S) and S.ndim == 1:
+            # Dimension indexing in pytorch starts at 0
+            if S.size(dim=0) == problem_size:
+                S = torch.outer(torch.ones(batch_size), S)
+            else:
+                raise ValueError("Tensor S size should be equal to problem size.")
 
         # Start the timer for the solve
         solve_time_start = time.time()
@@ -283,7 +298,7 @@ class DLSolver(CCVMSolver):
                 c_time[:, :, i] = c
 
         # Ensure variables are within any problem constraints
-        c = self.fit_to_constraints(c)
+        c = self.fit_to_constraints(c, -S, S)
 
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start

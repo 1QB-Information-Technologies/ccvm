@@ -56,7 +56,7 @@ class MFSolver(CCVMSolver):
                             pump,
                             feedback_scale,
                             j (measurement strength),
-                            S (enforced saturation value),
+                            S (enforced saturation value), can be scalar or a vector of size 'problem_size'.
                             lr (learning rate),
                             iterations>
                 }
@@ -183,8 +183,8 @@ class MFSolver(CCVMSolver):
 
         Args:
             mu_tilde (torch.Tensor): The mean-field measured amplitudes.
-            lower_clamp (float): The lower bound of the box constraints.
-            upper_clamp (float): The upper bound of the box constraints.
+            lower_clamp (float or torch.tensor): The lower bound of the box constraints.
+            upper_clamp (float or torch.tensor): The upper bound of the box constraints.
 
         Returns:
             torch.Tensor: The clamped values of mu_tilde, now within the box constraints.
@@ -263,6 +263,14 @@ class MFSolver(CCVMSolver):
             j = self.parameter_key[problem_size]["j"]
             feedback_scale = self.parameter_key[problem_size]["feedback_scale"]
             S = self.parameter_key[problem_size]["S"]
+
+            # If S is a 1-D tensor, convert it to to a 2-D tensor
+            if torch.is_tensor(S) and S.ndim == 1:
+                # Dimension indexing in pytorch starts at 0
+                if S.size(dim=0) == problem_size:
+                    S = torch.outer(torch.ones(batch_size), S)
+                else:
+                    raise ValueError("Tensor S size should be equal to problem size.")
         except KeyError as e:
             raise KeyError(
                 f"The parameter '{e.args[0]}' for the given instance size is not"
