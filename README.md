@@ -25,6 +25,11 @@ The Coherent Continous-Variable Machine (CCVM) is a novel coherent quantum optic
 - Python 3.10
 - ... (TODO)
 
+### Supported opereating systems
+
+- MacOS
+- Ubuntu
+
 ## Quickstart
 
 
@@ -40,7 +45,23 @@ TODO: publish on pip, update above to `pip install ccvm`
 2. Go into `examples/` and run demo scripts
     - `ccvm_boxqp.py`: Solve BoxQP using CCVM w/o plotting
     - `ccvm_boxqp_plot.py`: Solve BoxQP using CCVM w/ plotting
-        - Note: Plotting requires [LaTex packages](https://www.latex-project.org/get/#tex-distributions) to be installed.
+        - Note: Plotting requires [LaTex
+          packages](https://www.latex-project.org/get/#tex-distributions) to be
+          installed.
+        - For Mac users, there is the [MacTeX](https://tug.org/mactex/) distribution.
+            - If you are familiar with Homebrew, you can use the following command:
+
+                ```
+                brew install --cask mactex
+                ```
+
+        - For Linux users, the recommanded LaTEX distribution is
+          [TexLive](https://www.tug.org/texlive/).
+            - To install from terminal, copy and paste this command:
+
+                ```
+                apt-get update && apt-get install -y texlive-full
+                ```
 
 3. View generated plots
 
