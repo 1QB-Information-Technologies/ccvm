@@ -133,6 +133,7 @@ class MFSolver(CCVMSolver):
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
         the SDE.
+
         Args:
             mu (torch.Tensor): Mean-field amplitudes
             mu_tilde (torch.Tensor): Mean-field measured amplitudes
@@ -243,7 +244,7 @@ class MFSolver(CCVMSolver):
         post_processor=None,
         g=0.01,
         pump_rate_flag=True,
-        evolution_timestep=None,
+        evolution_step_size=None,
         evolution_file=None,
     ):
         """Solves the given problem instance using the tuned or specified
@@ -257,13 +258,13 @@ class MFSolver(CCVMSolver):
             pump_rate_flag (bool, optional): Whether or not to scale the pump rate based
             on the iteration number. If False, the pump rate will be 1.0. Defaults to
             True.
-            evolution_timestep (int): If set, the mu/sigma values will be sampled once
+            evolution_step_size (int): If set, the mu/sigma values will be sampled once
             per number of iterations equivalent to the value of this variable. At the
             end of the solve process, the best batch of sampled values will be written
             to a file that can be specified by setting the evolution_file parameter.
             Defaults to None, meaning no problem variables will be written to the file.
             evolution_file (str): The file to save the best set of mu/sigma samples to.
-            Only revelant when evolution_timestep is set. If a file already exists with
+            Only revelant when evolution_step_size is set. If a file already exists with
             the same name, it will be overwritten. Defaults to None, which generates a
             filename based on the problem instance name.
 
@@ -316,23 +317,25 @@ class MFSolver(CCVMSolver):
         # Start timing the solve process
         solve_time_start = time.time()
 
-        if evolution_timestep:
+        if evolution_step_size:
             # Check that the value is valid
-            if evolution_timestep < 1:
+            if evolution_step_size < 1:
                 raise ValueError(
-                    f"The evolution timestep must be greater than or equal to 1."
+                    f"The evolution step size must be greater than or equal to 1."
                 )
             # Generate evolution file name
             if evolution_file is None:
                 evolution_file = f"./{instance.name}_evolution.txt"
 
-            # Get the number of samples to save by dividing the number of iterations by
-            # the evolution timestep, adding one to account for the initial state, and
-            # adding one again if the division has a remainder to account for the final
-            # state
-            num_samples = int(iterations / evolution_timestep) + 1
-            if iterations % evolution_timestep != 0:
+            # Get the number of samples to save
+            # Find the number of full steps that will be taken
+            num_steps = int(iterations / evolution_step_size)
+            # We will also capture the first iteration through
+            num_samples = num_steps + 1
+            # And capture the last iteration if the step size doesn't evenly divide
+            if iterations % evolution_step_size != 0:
                 num_samples += 1
+
             # Initialize tensors
             mu_sample = torch.zeros(
                 (batch_size, problem_size, num_samples), device=device
@@ -344,13 +347,13 @@ class MFSolver(CCVMSolver):
 
         # Initialize tensor variables on the device that will be used to perform
         # the calculations
-        mu = torch.zeros((batch_size, problem_size), dtype=torch.float).to(device)
-        sigma = torch.ones((batch_size, problem_size), dtype=torch.float).to(device) * (
-            1 / 4
-        )
+        mu = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        sigma = torch.ones(
+            (batch_size, problem_size), dtype=torch.float, device=device
+        ) * (1 / 4)
         wiener_dist = tdist.Normal(
-            torch.Tensor([0.0] * batch_size).to(device),
-            torch.Tensor([1.0] * batch_size).to(device),
+            torch.Tensor([0.0] * batch_size, device=device),
+            torch.Tensor([1.0] * batch_size, device=device),
         )
 
         # Perform the solve over the specified number of iterations
@@ -388,10 +391,10 @@ class MFSolver(CCVMSolver):
             mu += lr * grads_mu
             sigma += lr * grads_sigma
 
-            # If evolution_timestep is specified, save the values if this iteration
-            # aligns with the timestep or if this is the last iteration
-            if evolution_timestep and (
-                i % evolution_timestep == 0 or i + 1 >= iterations
+            # If evolution_step_size is specified, save the values if this iteration
+            # aligns with the step size or if this is the last iteration
+            if evolution_step_size and (
+                i % evolution_step_size == 0 or i + 1 >= iterations
             ):
                 # Update the record of the sample values with the values found at
                 # this iteration
@@ -419,7 +422,7 @@ class MFSolver(CCVMSolver):
 
         objval = instance.compute_energy(problem_variables)
 
-        if evolution_timestep:
+        if evolution_step_size:
             # Write samples to file
             # Overwrite file if it exists
             open(evolution_file, "w")
@@ -452,7 +455,7 @@ class MFSolver(CCVMSolver):
         )
 
         # Add evolution filename to solution if it was generated
-        if evolution_timestep:
+        if evolution_step_size:
             solution.evolution_file = evolution_file
 
         return solution

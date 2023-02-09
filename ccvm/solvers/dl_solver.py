@@ -160,6 +160,7 @@ class DLSolver(CCVMSolver):
         """Saves samples of the amplitude values to a file.
         The end file will contain the values of the c_sample followed by the s_sample.
         Each line corresponds to a row in the tensor, with tab-delineated values.
+
         Args:
             c_sample (torch.Tensor): The sample of in-phase amplitudes to add to the
             file. Expected Dimensions: problem_size x num_samples
@@ -211,7 +212,7 @@ class DLSolver(CCVMSolver):
         post_processor=None,
         pump_rate_flag=True,
         g=0.05,
-        evolution_timestep=None,
+        evolution_step_size=None,
         evolution_file=None,
     ):
         """Solves the given problem instance using the DL-CCVM solver.
@@ -224,13 +225,13 @@ class DLSolver(CCVMSolver):
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
             iteration number. If False, the pump rate will be 1.0. Defaults to True.
             g (float): The nonlinearity coefficient. Defaults to 0.05.
-            evolution_timestep (int): If set, the c/s values will be sampled once
+            evolution_step_size (int): If set, the c/s values will be sampled once
             per number of iterations equivalent to the value of this variable. At the
             end of the solve process, the best batch of sampled values will be written
             to a file that can be specified by setting the evolution_file parameter.
             Defaults to None, meaning no problem variables will be written to the file.
             evolution_file (str): The file to save the best set of c/s samples to.
-            Only revelant when evolution_timestep is set. If a file already exists with
+            Only revelant when evolution_step_size is set. If a file already exists with
             the same name, it will be overwritten. Defaults to None, which generates a
             filename based on the problem instance name.
 
@@ -268,43 +269,49 @@ class DLSolver(CCVMSolver):
         # Start the timer for the solve
         solve_time_start = time.time()
 
-        if evolution_timestep:
+        if evolution_step_size:
             # Check that the value is valid
-            if evolution_timestep < 1:
+            if evolution_step_size < 1:
                 raise ValueError(
-                    f"The evolution timestep must be greater than or equal to 1."
+                    f"The evolution step size must be greater than or equal to 1."
                 )
             # Generate evolution file name
             if evolution_file is None:
                 evolution_file = f"./{instance.name}_evolution.txt"
 
-            # Get the number of samples to save by dividing the number of iterations by
-            # the evolution timestep, adding one to account for the initial state, and
-            # adding one again if the division has a remainder to account for the final
-            # state
-            num_samples = int(iterations / evolution_timestep) + 1
-            if iterations % evolution_timestep != 0:
+            # Get the number of samples to save
+            # Find the number of full steps that will be taken
+            num_steps = int(iterations / evolution_step_size)
+            # We will also capture the first iteration through
+            num_samples = num_steps + 1
+            # And capture the last iteration if the step size doesn't evenly divide
+            if iterations % evolution_step_size != 0:
                 num_samples += 1
+
             # Initialize tensors
             c_sample = torch.zeros(
-                (batch_size, problem_size, num_samples), device=device
+                (batch_size, problem_size, num_samples),
+                dtype=torch.float,
+                device=device,
             )
             s_sample = torch.zeros(
-                (batch_size, problem_size, num_samples), device=device
+                (batch_size, problem_size, num_samples),
+                dtype=torch.float,
+                device=device,
             )
             samples_taken = 0
 
         # Initialize tensor variables on the device that will be used to perform the
         # calculations
-        c = torch.zeros((batch_size, problem_size), dtype=torch.float).to(device)
-        s = torch.zeros((batch_size, problem_size), dtype=torch.float).to(device)
+        c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         wiener_dist_c = tdist.Normal(
-            torch.Tensor([0.0] * batch_size).to(device),
-            torch.Tensor([1.0] * batch_size).to(device),
+            torch.Tensor([0.0] * batch_size, device=device),
+            torch.Tensor([1.0] * batch_size, device=device),
         )
         wiener_dist_s = tdist.Normal(
-            torch.Tensor([0.0] * batch_size).to(device),
-            torch.Tensor([1.0] * batch_size).to(device),
+            torch.Tensor([0.0] * batch_size, device=device),
+            torch.Tensor([1.0] * batch_size, device=device),
         )
 
         # Perform the solve over the specified number of iterations
@@ -314,7 +321,7 @@ class DLSolver(CCVMSolver):
             noise_ratio_i = 1.0
             if pump_rate_flag:
                 pump_rate = (i + 1) / iterations
-                if (i + 1) / iterations < 0.9:
+                if pump_rate < 0.9:
                     noise_ratio_i = noise_ratio
 
             c_grads, s_grads = self.calculate_grads(
@@ -339,10 +346,10 @@ class DLSolver(CCVMSolver):
                 + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_s
             )
 
-            # If evolution_timestep is specified, save the values if this iteration
-            # aligns with the timestep or if this is the last iteration
-            if evolution_timestep and (
-                i % evolution_timestep == 0 or i + 1 >= iterations
+            # If evolution_step_size is specified, save the values if this iteration
+            # aligns with the step size or if this is the last iteration
+            if evolution_step_size and (
+                i % evolution_step_size == 0 or i + 1 >= iterations
             ):
                 # Update the record of the sample values with the values found at
                 # this iteration
@@ -373,7 +380,7 @@ class DLSolver(CCVMSolver):
         confs = self.change_variables(problem_variables)
         objval = instance.compute_energy(confs)
 
-        if evolution_timestep:
+        if evolution_step_size:
             # Write samples to file
             # Overwrite file if it exists
             open(evolution_file, "w")
@@ -405,7 +412,7 @@ class DLSolver(CCVMSolver):
         )
 
         # Add evolution filename to solution if it was generated
-        if evolution_timestep:
+        if evolution_step_size:
             solution.evolution_file = evolution_file
 
         return solution
