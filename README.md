@@ -49,7 +49,8 @@ TODO: publish on pip, update above to `pip install ccvm`
           packages](https://www.latex-project.org/get/#tex-distributions) to be
           installed.
         - For Mac users, there is the [MacTeX](https://tug.org/mactex/) distribution.
-            - If you are familiar with Homebrew, you can use the following command:
+            - If you are familiar with [Homebrew](https://brew.sh/) and have it
+              installed already, you can install `MacTex` using this command:
 
                 ```
                 brew install --cask mactex
@@ -57,7 +58,7 @@ TODO: publish on pip, update above to `pip install ccvm`
 
         - For Linux users, the recommanded LaTEX distribution is
           [TexLive](https://www.tug.org/texlive/).
-            - To install from terminal, copy and paste this command:
+            - To install from the terminal, copy and paste this command:
 
                 ```
                 apt-get update && apt-get install -y texlive-full
