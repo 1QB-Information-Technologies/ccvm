@@ -23,12 +23,11 @@ The Coherent Continous-Variable Machine (CCVM) is a novel coherent quantum optic
 ### Requirements
 
 - Python 3.10
-- ... (TODO)
 
-### Supported opereating systems
+### Supported operating systems
 
-- MacOS
-- Ubuntu
+- MacOS (Monterey, Big Sur)
+- Ubuntu (20.04)
 
 ## Quickstart
 
@@ -56,7 +55,7 @@ TODO: publish on pip, update above to `pip install ccvm`
                 brew install --cask mactex
                 ```
 
-        - For Linux users, the recommanded LaTEX distribution is
+        - For Linux users, the recommended LaTEX distribution is
           [TexLive](https://www.tug.org/texlive/).
             - To install from the terminal, copy and paste this command:
 
