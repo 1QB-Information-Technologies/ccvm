@@ -385,7 +385,6 @@ class DLSolver(CCVMSolver):
                 self._append_samples_to_file(
                     c_sample=c_sample[batch_index],
                     s_sample=s_sample[batch_index],
-                    problem_size=problem_size,
                     evolution_file_object=evolution_file_obj,
                 )
 

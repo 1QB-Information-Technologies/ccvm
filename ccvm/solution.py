@@ -47,7 +47,7 @@ class Solution:
     pp_time: float
     optimal_value: float
     variables: dict = field(repr=False)
-    evolution_file: str = field(default=None, repr=False)
+    evolution_file: str = None
     device: str = field(default="cpu", repr=False)
     solution_performance: dict = None
 

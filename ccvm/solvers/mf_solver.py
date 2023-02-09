@@ -431,7 +431,6 @@ class MFSolver(CCVMSolver):
                 self._append_samples_to_file(
                     mu_sample=mu_sample[batch_index],
                     sigma_sample=sigma_sample[batch_index],
-                    problem_size=problem_size,
                     evolution_file_object=evolution_file_obj,
                 )
 
