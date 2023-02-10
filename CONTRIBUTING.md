@@ -48,6 +48,27 @@ In general, we follow the ["fork-and-pull" Git workflow](https://github.com/susa
 6. Push changes to your fork
 7. Open a PR in our repository and follow the PR template so that we can efficiently review the changes.
 
-### Tests (TODO)
+### Tests
 
-...
+One of the most important aspects of ensuring that the software performs as intended is tests.
+
+## PostProcessor Unittest
+
+1. Ensure Python 3 is installed and install the following dependencies:
+```
+pip3 install -r requirements.txt
+```
+2.  Add the 'ccvm'  folder to the PYTHONPATH environment variable:
+```
+/Users/saneergera/Desktop/latest/ccvm/ccvm
+```
+3. Run unittest
+```
+python3 ccvm/post_processor/tests/unit_test.py
+```
+
+
+
+
+
+
