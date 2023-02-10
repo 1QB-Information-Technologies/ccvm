@@ -23,7 +23,11 @@ The Coherent Continous-Variable Machine (CCVM) is a novel coherent quantum optic
 ### Requirements
 
 - Python 3.10
-- ... (TODO)
+
+### Supported operating systems
+
+- MacOS (Monterey, Big Sur)
+- Ubuntu (20.04)
 
 ## Quickstart
 
@@ -40,7 +44,24 @@ TODO: publish on pip, update above to `pip install ccvm`
 2. Go into `examples/` and run demo scripts
     - `ccvm_boxqp.py`: Solve BoxQP using CCVM w/o plotting
     - `ccvm_boxqp_plot.py`: Solve BoxQP using CCVM w/ plotting
-        - Note: Plotting requires [LaTex packages](https://www.latex-project.org/get/#tex-distributions) to be installed.
+        - Note: Plotting requires [LaTex
+          packages](https://www.latex-project.org/get/#tex-distributions) to be
+          installed.
+        - For Mac users, there is the [MacTeX](https://tug.org/mactex/) distribution.
+            - If you are familiar with [Homebrew](https://brew.sh/) and have it
+              installed already, you can install `MacTex` using this command:
+
+                ```
+                brew install --cask mactex
+                ```
+
+        - For Linux users, the recommended LaTEX distribution is
+          [TexLive](https://www.tug.org/texlive/).
+            - To install from the terminal, copy and paste this command:
+
+                ```
+                apt-get update && apt-get install -y texlive-full
+                ```
 
 3. View generated plots
 
@@ -100,6 +121,15 @@ print(f"The solve process took {solution.solve_time} seconds")
 # The solve process took 8.949262142181396 seconds
 ```
 
+## Known Issues
+The following is an known issue and may affect your use of CCVM. This will be addressed in the next update.
+- LaTex was not able to process the following string: `b'lp'`. [#52](https://github.com/1QB-Information-Technologies/ccvm/issues/52)
+    - A temporary fix is to install `cm-super` system-wide:
+        ```
+        sudo apt-get install cm-super
+        ```
+    - A permanent solution will be taking care by
+      [#54](https://github.com/1QB-Information-Technologies/ccvm/issues/54).
 
 ## Docs
 
