@@ -52,7 +52,7 @@ In general, we follow the ["fork-and-pull" Git workflow](https://github.com/susa
 
 One of the most important aspects of ensuring that the software performs as intended is tests.
 
-## PostProcessor Unittest
+## Setup
 
 1. Ensure Python 3 is installed and install the following dependencies:
 ```
