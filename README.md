@@ -121,6 +121,15 @@ print(f"The solve process took {solution.solve_time} seconds")
 # The solve process took 8.949262142181396 seconds
 ```
 
+## Known Issues
+The following is an known issue and may affect your use of CCVM. This will be addressed in the next update.
+- LaTex was not able to process the following string: `b'lp'`. [#52](https://github.com/1QB-Information-Technologies/ccvm/issues/52)
+    - A temporary fix is to install `cm-super` system-wide:
+        ```
+        sudo apt-get install cm-super
+        ```
+    - A permanent solution will be taking care by
+      [#54](https://github.com/1QB-Information-Technologies/ccvm/issues/54).
 
 ## Docs
 
