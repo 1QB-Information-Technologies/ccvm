@@ -62,13 +62,27 @@ pip3 install -r requirements.txt
 ```
 /Users/saneergera/Desktop/latest/ccvm/ccvm
 ```
-3. Run unittest
+
+## PostProcessor Unittest
+
+Run unittest
 ```
 python3 ccvm/post_processor/tests/unit_test.py
 ```
 
+## BoxQP Metadata Unittest
 
+Run unittest
+```
+python3 ccvm/post_processor/tests/test_BoxQP_metadata.py
+```
 
+## Problem Metadata Unittest
+
+Run unittest
+```
+python3 ccvm/post_processor/tests/test_problem_metadata_factory.py
+```
 
 
 
