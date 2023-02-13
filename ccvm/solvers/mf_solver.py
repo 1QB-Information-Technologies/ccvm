@@ -173,7 +173,7 @@ class MFSolver(CCVMSolver):
 
         return grads_mu, grads_sigma
 
-    def _change_variables_boxqp(self, problem_variables):
+    def _change_variables_boxqp(self, problem_variables, S):
         """Perform a change of variables to enforce the box constraints.
 
         Args:
@@ -182,7 +182,7 @@ class MFSolver(CCVMSolver):
         Returns:
             torch.Tensor: The changed variables.
         """
-        return 0.5 * (problem_variables + 1)
+        return 0.5 * (problem_variables / S + 1)
 
     def _fit_to_constraints_boxqp(self, mu_tilde, lower_clamp, upper_clamp):
         """Clamps the values of mu_tilde to be within the box constraints
@@ -310,18 +310,14 @@ class MFSolver(CCVMSolver):
         pump_rate = 1
         for i in range(iterations):
 
+            j_i = j * np.exp(-(i + 1) / iterations * 3.0)
             wiener = wiener_dist.sample((problem_size,)).transpose(0, 1)
             wiener_increment = wiener / np.sqrt(lr)
-            mu_tilde = mu + np.sqrt(1 / (4 * j)) * wiener_increment
+            mu_tilde = mu + np.sqrt(1 / (4 * j_i)) * wiener_increment
             mu_tilde_c = self.fit_to_constraints(mu_tilde, -S, S)
 
             if pump_rate_flag:
                 pump_rate = (i + 1) / iterations
-
-            if (i + 1) / iterations < 0.8:
-                j_i = j
-            else:
-                j_i = 0.1
 
             instantaneous_pump = pump * pump_rate + 1 + j_i
 
@@ -362,7 +358,7 @@ class MFSolver(CCVMSolver):
             )
             pp_time = post_processor_object.pp_time
         else:
-            problem_variables = self.change_variables(mu_tilde)
+            problem_variables = self.change_variables(mu_tilde, S)
             pp_time = 0.0
 
         objval = instance.compute_energy(problem_variables)
