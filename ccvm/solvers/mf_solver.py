@@ -112,6 +112,7 @@ class MFSolver(CCVMSolver):
         """
         if problem_category.lower() == "boxqp":
             self.calculate_grads = self._calculate_grads_boxqp
+            self.change_variables = self._change_variables_boxqp
             self.fit_to_constraints = self._fit_to_constraints_boxqp
         else:
             raise ValueError(
@@ -172,10 +173,16 @@ class MFSolver(CCVMSolver):
 
         return grads_mu, grads_sigma
 
-    def _change_variables_boxqp(self):
-        # MFSolver does not require a change of variables when solving the boxqp
-        # problem
-        pass
+    def _change_variables_boxqp(self, problem_variables):
+        """Perform a change of variables to enforce the box constraints.
+
+        Args:
+            problem_variables (torch.Tensor): The variables to change.
+
+        Returns:
+            torch.Tensor: The changed variables.
+        """
+        return 0.5 * (problem_variables + 1)
 
     def _fit_to_constraints_boxqp(self, mu_tilde, lower_clamp, upper_clamp):
         """Clamps the values of mu_tilde to be within the box constraints
@@ -283,7 +290,7 @@ class MFSolver(CCVMSolver):
         # the calculations
         mu = torch.zeros((batch_size, problem_size), dtype=torch.float).to(device)
         sigma = torch.ones((batch_size, problem_size), dtype=torch.float).to(device) * (
-            1 / 4
+            1 / 2
         )
         mu_time = sigma_time = None
         if time_evolution_results:
@@ -316,7 +323,7 @@ class MFSolver(CCVMSolver):
             else:
                 j_i = 0.1
 
-            instantaneous_pump = pump * pump_rate
+            instantaneous_pump = pump * pump_rate + 1 + j_i
 
             (grads_mu, grads_sigma) = self.calculate_grads(
                 mu,
@@ -351,11 +358,11 @@ class MFSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                mu_tilde.pow(2) / S ** 2, q_matrix, v_vector, device=device
+                self.change_variables(mu_tilde), q_matrix, v_vector, device=device
             )
             pp_time = post_processor_object.pp_time
         else:
-            problem_variables = mu_tilde.pow(2) / S ** 2
+            problem_variables = self.change_variables(mu_tilde)
             pp_time = 0.0
 
         objval = instance.compute_energy(problem_variables)
