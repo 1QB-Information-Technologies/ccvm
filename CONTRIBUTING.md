@@ -53,9 +53,9 @@ In general, we follow the ["fork-and-pull" Git workflow](https://github.com/susa
 Run our unit tests to ensure your changes does not affect other parts of the code.
 
 
-#### Run Unittest
+#### Run unit tests
 
-`pytest .`
+run `pytest .` from root directory 
 
 
 
