@@ -337,11 +337,12 @@ class MFSolver(CCVMSolver):
                 num_samples += 1
 
             # Initialize tensors
+            # Store on CPU to keep the memory usage lower on the GPU
             mu_sample = torch.zeros(
-                (batch_size, problem_size, num_samples), device=device
+                (batch_size, problem_size, num_samples), device="cpu"
             )
             sigma_sample = torch.zeros(
-                (batch_size, problem_size, num_samples), device=device
+                (batch_size, problem_size, num_samples), device="cpu"
             )
             samples_taken = 0
 
@@ -352,8 +353,8 @@ class MFSolver(CCVMSolver):
             (batch_size, problem_size), dtype=torch.float, device=device
         ) * (1 / 4)
         wiener_dist = tdist.Normal(
-            torch.Tensor([0.0] * batch_size, device=device),
-            torch.Tensor([1.0] * batch_size, device=device),
+            torch.tensor([0.0] * batch_size, device=device),
+            torch.tensor([1.0] * batch_size, device=device),
         )
 
         # Perform the solve over the specified number of iterations
