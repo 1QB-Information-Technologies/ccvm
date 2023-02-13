@@ -149,7 +149,7 @@ class ccvmplotlib:
             ncol=2,
         )
 
-        plt.xticks(fontsize=fonts["xticks"])
+        plt.xticks(fontsize=fonts["xticks"], rotation=45)
         plt.yticks(fontsize=fonts["yticks"])
         plt.tight_layout()
 
@@ -251,7 +251,7 @@ class ccvmplotlib:
         plt.xlabel("Problem Size, $N$", fontsize=fonts["xlabel"])
         plt.ylabel("Success Probability", fontsize=fonts["ylabel"])
 
-        plt.xticks(fontsize=fonts["xticks"])
+        plt.xticks(fontsize=fonts["xticks"], rotation=45)
         plt.yticks(fontsize=fonts["yticks"])
         plt.tight_layout()
 
