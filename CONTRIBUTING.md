@@ -50,39 +50,14 @@ In general, we follow the ["fork-and-pull" Git workflow](https://github.com/susa
 
 ### Tests
 
-One of the most important aspects of ensuring that the software performs as intended is tests.
+Run our unit tests to ensure your changes does not affect other parts of the code.
 
-## Setup
 
-1. Ensure Python 3 is installed and install the following dependencies:
-```
-pip3 install -r requirements.txt
-```
-2.  Add the 'ccvm'  folder to the PYTHONPATH environment variable:
-```
-/Users/saneergera/Desktop/latest/ccvm/ccvm
-```
+#### Run Unittest
 
-## PostProcessor Unittest
+python -m unittest
 
-Run unittest
-```
-python3 ccvm/post_processor/tests/unit_test.py
-```
 
-## BoxQP Metadata Unittest
-
-Run unittest
-```
-python3 ccvm/post_processor/tests/test_BoxQP_metadata.py
-```
-
-## Problem Metadata Unittest
-
-Run unittest
-```
-python3 ccvm/post_processor/tests/test_problem_metadata_factory.py
-```
 
 
 
