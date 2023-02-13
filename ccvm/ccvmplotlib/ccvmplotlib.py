@@ -89,7 +89,7 @@ class ccvmplotlib:
                 linewidth=4.0,
             )
 
-        plt.xlabel("Problem Size $N$", fontsize=fonts["xlabel"])
+        plt.xlabel("Problem Size, $N$", fontsize=fonts["xlabel"])
         plt.ylabel("TTS (seconds)", fontsize=fonts["ylabel"])
         plt.plot(
             [],
@@ -102,6 +102,7 @@ class ccvmplotlib:
         )
         plt.fill_between([], [], alpha=0.2, label="(IQR)")
 
+        # Configure the y-axis
         if "ylim" in kwargs:
             lower_lim = kwargs["ylim"][0]
             upper_lim = kwargs["ylim"][1]
@@ -149,7 +150,16 @@ class ccvmplotlib:
             ncol=2,
         )
 
-        plt.xticks(fontsize=fonts["xticks"], rotation=45)
+        # Make sure x-axis only has integer values
+        plt.xticks(
+            np.arange(
+                x_data.min(),
+                x_data.max() + 1,
+                1.0,
+            ),
+            fontsize=fonts["xticks"],
+        )
+
         plt.yticks(fontsize=fonts["yticks"])
         plt.tight_layout()
 
@@ -251,7 +261,7 @@ class ccvmplotlib:
         plt.xlabel("Problem Size, $N$", fontsize=fonts["xlabel"])
         plt.ylabel("Success Probability", fontsize=fonts["ylabel"])
 
-        plt.xticks(fontsize=fonts["xticks"], rotation=45)
+        plt.xticks(fontsize=fonts["xticks"])
         plt.yticks(fontsize=fonts["yticks"])
         plt.tight_layout()
 
