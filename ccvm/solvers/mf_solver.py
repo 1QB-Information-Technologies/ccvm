@@ -155,18 +155,17 @@ class MFSolver(CCVMSolver):
         """
 
         mu_pow = torch.pow(mu, 2)
-        mu_tilde_pow = torch.pow(mu_tilde, 2) / S**2
 
-        mu_term1 = (-(1 + j) + pump - g**2 * mu_pow) * mu
+        mu_term1 = (-(1 + j) + pump - g ** 2 * mu_pow) * mu
         mu_term2_1 = (
-            -(torch.einsum("bi,ij -> bj", mu_tilde_pow, q_matrix)) * mu_tilde / S
+            -(1 / 4) * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, q_matrix)) / S
         )
-        mu_term2_2 = -torch.einsum("j,bj -> bj", v_vector, mu_tilde / S)
+        mu_term2_2 = -v_vector / S / 2
         mu_term3 = np.sqrt(j) * (sigma - 0.5) * wiener_increment
 
-        sigma_term1 = 2 * (-(1 + j) + pump - 3 * g**2 * mu_pow) * sigma
+        sigma_term1 = 2 * (-(1 + j) + pump - 3 * g ** 2 * mu_pow) * sigma
         sigma_term2 = -2 * j * (sigma - 0.5).pow(2)
-        sigma_term3 = (1 + j) + 2 * g**2 * mu_pow
+        sigma_term3 = (1 + j) + 2 * g ** 2 * mu_pow
 
         grads_mu = mu_term1 + fs * (mu_term2_1 + mu_term2_2) + mu_term3
         grads_sigma = sigma_term1 + sigma_term2 + sigma_term3
@@ -352,11 +351,11 @@ class MFSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                mu_tilde.pow(2) / S**2, q_matrix, v_vector, device=device
+                mu_tilde.pow(2) / S ** 2, q_matrix, v_vector, device=device
             )
             pp_time = post_processor_object.pp_time
         else:
-            problem_variables = mu_tilde.pow(2) / S**2
+            problem_variables = mu_tilde.pow(2) / S ** 2
             pp_time = 0.0
 
         objval = instance.compute_energy(problem_variables)
