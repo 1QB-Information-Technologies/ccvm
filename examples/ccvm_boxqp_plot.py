@@ -10,7 +10,7 @@ METADATA_DIR = "./metadata"
 TEST_OUTPUT_DEST = f"{METADATA_DIR}/DL-CCVM_LGFGS_cpu_test.txt"
 TEST_INSTANCES_DIR = "./test_instances/"
 PLOT_OUTPUT_DIR = "./plots"
-PLOT_OUTPUT_DEST = f"{PLOT_OUTPUT_DIR}/DL-CCVM_LBFGS_cpu_plot.png"
+PLOT_OUTPUT_DEST = f"{PLOT_OUTPUT_DIR}/DL-CCVM_TTS_cpu_plot.png"
 
 
 if __name__ == "__main__":
