@@ -55,7 +55,7 @@ Run our unit tests to ensure your changes does not affect other parts of the cod
 
 #### Run Unittest
 
-pytest .
+`pytest .`
 
 
 
