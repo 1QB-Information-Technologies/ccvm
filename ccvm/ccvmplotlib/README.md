@@ -40,7 +40,16 @@ tts_plot_fig.savefig(PLOT_OUTPUT_DEST + "tts_plot_example.png", format="png")
 succ_prob_plot_fig.savefig(PLOT_OUTPUT_DEST + "success_prob_plot_example.png", format="png")
 ```
 
-#### Figures
+### Figures
+
+The plotting methods return a plot figure and a plot axis with the minimal styling (e.g. plot colors, logagrithmic y-scale, etc.), and this allows users to apply their own styling before saving the figure as a file.
+
+<p align="center">
+    <img src="images/tts_example_before_styling.png" width="250" >
+    <img src="images/succ_prob_example_before_styling.png" width="250">
+</p>
+
+However, a default styling method for each plot is provided and can be used as the example above.
 
 <p align="center">
     <img src="images/tts_plot_example.png" width="250" >
