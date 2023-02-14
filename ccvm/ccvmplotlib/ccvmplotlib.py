@@ -179,33 +179,25 @@ class ccvmplotlib:
         return (fig, ax)
 
     @staticmethod
-    def set_figsize(fig: matplotlib.figure.Figure, fig_width: float, fig_height: float) -> None:
-        fig.set_figwidth(fig_width)
-        fig.set_figheight(fig_height)
-
-    @staticmethod
-    def set_xlabel(ax: matplotlib.axes.Axes, xlabel: str, font_size: float = 36) -> None:
-        ax.set_xlabel(xlabel=xlabel, fontsize=font_size)
-
-    @staticmethod
-    def set_ylabel(ax: matplotlib.axes.Axes, ylabel: str, font_size: float = 36) -> None:
-        ax.set_ylabel(ylabel=ylabel, fontsize=font_size)
-
-    @staticmethod
-    def apply_default_styling(fig: matplotlib.figure.Figure, ax: matplotlib.axes.Axes) -> None:
-        # set figure size
-        fig.set_figwidth(7.7)
+    def set_default_figsize(fig: matplotlib.figure.Figure) -> None:
+        fig.set_figwidth(8.0)
         fig.set_figheight(7.0)
 
-        # set x & y labels
-        ax.set_xlabel("Problem Size, $N$", fontdict={'family':'serif', 'size':36})
-        ax.set_ylabel("TTS (seconds)", fontdict={'family':'serif', 'size':36})
+    @staticmethod
+    def set_default_xlabel(ax: matplotlib.axes.Axes, xlabel: str) -> None:
+        ax.set_xlabel(xlabel=xlabel, fontdict={'family':'serif', 'size':36})
 
-        # set x & y ticks
+    @staticmethod
+    def set_default_ylabel(ax: matplotlib.axes.Axes, ylabel: str) -> None:
+        ax.set_ylabel(ylabel=ylabel, fontdict={'family':'serif', 'size':36})
+
+    @staticmethod
+    def set_default_ticks(ax: matplotlib.axes.Axes) -> None:
         ax.tick_params(axis='x', labelsize=32)
         ax.tick_params(axis='y', labelsize=32)
 
-        # set legend
+    @staticmethod
+    def set_default_legend(ax: matplotlib.axes.Axes) -> None:
         handles, labels = plt.gca().get_legend_handles_labels()
         label_list = list(PERC_GAP_LABEL_MAP.values())
         label_list.extend(["(median)", "(IQR)"])
@@ -222,7 +214,8 @@ class ccvmplotlib:
             ncol=2,
         )
 
-        # set grid
+    @staticmethod
+    def set_default_grid(ax: matplotlib.axes.Axes) -> None:
         ax.grid(
             visible=True,
             which="major",
@@ -230,6 +223,45 @@ class ccvmplotlib:
             color="#666666",
             linestyle="--",
         )
+
+    @staticmethod
+    def apply_default_tts_styling(fig: matplotlib.figure.Figure, ax: matplotlib.axes.Axes) -> None:
+        # set figure size
+        ccvmplotlib.set_default_figsize(fig)
+
+        # set x & y labels
+        ccvmplotlib.set_default_xlabel(ax, "Problem Size, $N$")
+        ccvmplotlib.set_default_ylabel(ax, "TTS (seconds)")
+
+        # set x & y ticks
+        ccvmplotlib.set_default_ticks(ax)
+
+        # set legend
+        ccvmplotlib.set_default_legend(ax)
+
+        # set grid
+        ccvmplotlib.set_default_grid(ax)
+
+        # call tight layout
+        fig.tight_layout()
+
+    @staticmethod
+    def apply_default_succ_prob_styling(fig: matplotlib.figure.Figure, ax: matplotlib.axes.Axes) -> None:
+            # set figure size
+        ccvmplotlib.set_default_figsize(fig)
+
+        # set x & y labels
+        ccvmplotlib.set_default_xlabel(ax, "Problem Size, $N$")
+        ccvmplotlib.set_default_ylabel(ax, "Success Probability")
+
+        # set x & y ticks
+        ccvmplotlib.set_default_ticks(ax)
+
+        # set legend
+        ccvmplotlib.set_default_legend(ax)
+
+        # set grid
+        ccvmplotlib.set_default_grid(ax)
 
         # call tight layout
         fig.tight_layout()

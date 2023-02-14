@@ -18,20 +18,22 @@ METADATA_FILEPATH = "./tests/metadata/valid_metadata.json"
 PLOT_OUTPUT_DEST = "./"
 
 # Generate TTS plot
-tts_plot_fig = ccvmplotlib.plot_TTS(
+tts_plot_fig, tts_plot_ax = ccvmplotlib.plot_TTS(
     metadata_filepath=METADATA_FILEPATH,
     problem="BoxQP",
     TTS_type="wallclock",
-    show_plot=True
 )
 
 # Generate success probability plot
-succ_prob_plot_fig = ccvmplotlib.plot_success_prob(
+succ_prob_plot_fig, succ_prob_plot_ax = ccvmplotlib.plot_success_prob(
     metadata_filepath=METADATA_FILEPATH,
     problem="BoxQP",
     TTS_type="wallclock",
-    show_plot=True
 )
+
+# Apply default styling
+ccvmplotlib.apply_default_tts_styling(tts_plot_fig, tts_plot_ax)
+ccvmplotlib.apply_default_succ_prob_styling(succ_prob_plot_fig, succ_prob_plot_ax)
 
 # Save plots
 tts_plot_fig.savefig(PLOT_OUTPUT_DEST + "tts_plot_example.png", format="png")
