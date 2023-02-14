@@ -26,8 +26,9 @@ class ccvmplotlib:
         metadata_filepath: str,
         problem: str,
         TTS_type: str,
-        ax: matplotlib.axes.Axes | np.ndarray = None,
-    ) -> tuple[matplotlib.figure.Figure, matplotlib.axes.Axes | np.ndarray]:
+        fig: matplotlib.figure.Figure = None,
+        ax: matplotlib.axes.Axes = None,
+    ) -> tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]:
         """Plot a problem-specific Time-To-Solution metadata solved by a CCVM
         solver.
 
@@ -36,13 +37,15 @@ class ccvmplotlib:
             problem (str): A problem type.
             TTS_type (str): A Time-To-Solution type. It is either a CPU time or an
             optic device time.
-            ax (matplotlib.axes.Axes | np.ndarray, optional): _description_. Defaults to None.
+            fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure. Defaults to None.
+            ax (matplotlib.axes.Axes, optional): A pre-generated pyplot axis. Defaults to None.
 
         Raises:
             ValueError: Raises a ValueError when the plotting data is not valid.
 
         Returns:
-            tuple[matplotlib.figure.Figure, matplotlib.axes.Axes | np.ndarray]: _description_
+            tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and axis that has
+            the TTS plot with minimal styling.
         """
         problem_metadata = ProblemMetadataFactory.create_problem_metadata(
             problem, TTS_type
@@ -52,7 +55,7 @@ class ccvmplotlib:
 
         x_data = plotting_df.index
 
-        if not ax:
+        if not ax or not fig:
             fig, ax = plt.subplots()
 
         color_iter = cm.rainbow(np.linspace(0, 1, len(plotting_df.columns.levels[0])))
@@ -119,8 +122,9 @@ class ccvmplotlib:
         metadata_filepath: str,
         problem: str,
         TTS_type: str,
-        ax: matplotlib.axes.Axes | np.ndarray = None,
-    ) -> tuple[matplotlib.figure.Figure, matplotlib.axes.Axes | np.ndarray]:
+        fig: matplotlib.figure.Figure = None,
+        ax: matplotlib.axes.Axes = None,
+    ) -> tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]:
         """Plot a problem-specific success probability result data solved by a
         CCVM solver.
 
@@ -129,14 +133,15 @@ class ccvmplotlib:
             problem (str): A problem type.
             TTS_type (str): A Time-To-Solution type. It is either a CPU time or an
             optic device time
-            ax (matplotlib.axes.Axes | np.ndarray, optional): _description_. Defaults to None.
+            fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure. Defaults to None.
+            ax (matplotlib.axes.Axes, optional): A pre-generated pyplot axis. Defaults to None.
 
         Raises:
             ValueError: Raises a ValueError when the plotting data is invalid.
 
         Returns:
-            matplotlib.figure.Figure: A figure object of the plotted success
-            probability result data.
+            tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and axis that has
+            the success probability plot with minimal styling.
         """
         problem_metadata = ProblemMetadataFactory.create_problem_metadata(
             problem, TTS_type
@@ -145,7 +150,7 @@ class ccvmplotlib:
         plotting_df = problem_metadata.generate_plot_data()
         x_data = plotting_df.index.tolist()
 
-        if not ax:
+        if not ax or not fig:
             fig, ax = plt.subplots()
 
         color_iter = cm.rainbow(np.linspace(0, 1, len(plotting_df.columns.levels[0])))
@@ -178,24 +183,53 @@ class ccvmplotlib:
 
     @staticmethod
     def set_default_figsize(fig: matplotlib.figure.Figure) -> None:
+        """A method to set the figure size with default width and height values.
+
+        Args:
+            fig (matplotlib.figure.Figure): A pyplot figure to be resized.
+        """
         fig.set_figwidth(8.0)
         fig.set_figheight(7.0)
 
     @staticmethod
     def set_default_xlabel(ax: matplotlib.axes.Axes, xlabel: str) -> None:
+        """A method to set the x-label text. Also, it sets font and font size
+        with default values.
+
+        Args:
+            ax (matplotlib.axes.Axes): A pyplot axis to be set.
+            xlabel (str): x-label text.
+        """
         ax.set_xlabel(xlabel=xlabel, fontdict={'family':'serif', 'size':36})
 
     @staticmethod
     def set_default_ylabel(ax: matplotlib.axes.Axes, ylabel: str) -> None:
+        """A method to set the y-label text. Also, it sets font and font size
+        with default values.
+
+        Args:
+            ax (matplotlib.axes.Axes): A pyplot axis to be set.
+            ylabel (str): y-label text.
+        """
         ax.set_ylabel(ylabel=ylabel, fontdict={'family':'serif', 'size':36})
 
     @staticmethod
     def set_default_ticks(ax: matplotlib.axes.Axes) -> None:
+        """A method to set the x&y ticks with default font size.
+
+        Args:
+            ax (matplotlib.axes.Axes): A pyplot axis to be set.
+        """
         ax.tick_params(axis='x', labelsize=32)
         ax.tick_params(axis='y', labelsize=32)
 
     @staticmethod
     def set_default_legend(ax: matplotlib.axes.Axes) -> None:
+        """A method to set the legen with default configuration.
+
+        Args:
+            ax (matplotlib.axes.Axes): A pyplot axis to be set.
+        """
         handles, labels = plt.gca().get_legend_handles_labels()
         label_list = list(PERC_GAP_LABEL_MAP.values())
         label_list.extend(["(median)", "(IQR)"])
@@ -214,6 +248,11 @@ class ccvmplotlib:
 
     @staticmethod
     def set_default_grid(ax: matplotlib.axes.Axes) -> None:
+        """A method to set the grid with default configuration.
+
+        Args:
+            ax (matplotlib.axes.Axes): A pyplot axis to be set.
+        """
         ax.grid(
             visible=True,
             which="major",
@@ -224,6 +263,12 @@ class ccvmplotlib:
 
     @staticmethod
     def apply_default_tts_styling(fig: matplotlib.figure.Figure, ax: matplotlib.axes.Axes) -> None:
+        """A method to apply the default styling to a TTS plot.
+
+        Args:
+            fig (matplotlib.figure.Figure): A pyplot figure to be set.
+            ax (matplotlib.axes.Axes): A pyplot axis to be set.
+        """
         # set figure size
         ccvmplotlib.set_default_figsize(fig)
 
@@ -245,6 +290,12 @@ class ccvmplotlib:
 
     @staticmethod
     def apply_default_succ_prob_styling(fig: matplotlib.figure.Figure, ax: matplotlib.axes.Axes) -> None:
+        """A method to apply the default styling to a success probability plot.
+
+        Args:
+            fig (matplotlib.figure.Figure): A pyplot figure to be set.
+            ax (matplotlib.axes.Axes): A pyplot axis to be set.
+        """
         # set figure size
         ccvmplotlib.set_default_figsize(fig)
 
