@@ -42,7 +42,7 @@ succ_prob_plot_fig.savefig(PLOT_OUTPUT_DEST + "success_prob_plot_example.png", f
 
 ### Figures
 
-The plotting methods return a plot figure and a plot axis with the minimal styling (e.g. plot colors, logagrithmic y-scale, etc.), and this allows users to apply their own styling before saving the figure as a file.
+The plotting methods return a plot figure object and a plot axis object with minimal styling (e.g. plot colors, logagrithmic y-scale, etc.), and this allows users to apply their own styling before saving the figure as a file.
 
 <p align="center">
     <img src="images/tts_example_before_styling.png" width="250" >

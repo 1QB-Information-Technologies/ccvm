@@ -2,7 +2,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-from typing import Any
 from matplotlib import cm
 
 from ccvm.ccvmplotlib.problem_metadata import ProblemMetadataFactory
@@ -22,7 +21,6 @@ PERC_GAP_LABEL_MAP = {
 
 class ccvmplotlib:
     """A generic plotting library for a problem solved by a CCVM solver."""
-
     @staticmethod
     def plot_TTS(
         metadata_filepath: str,
@@ -247,7 +245,7 @@ class ccvmplotlib:
 
     @staticmethod
     def apply_default_succ_prob_styling(fig: matplotlib.figure.Figure, ax: matplotlib.axes.Axes) -> None:
-            # set figure size
+        # set figure size
         ccvmplotlib.set_default_figsize(fig)
 
         # set x & y labels
