@@ -10,13 +10,13 @@ from ccvm.ccvmplotlib.problem_metadata import ProblemMetadataFactory
 
 TTS_UPPER_LIMIT = 1e20  # Approximate age of the universe in sec.
 PERC_GAP_LABEL_MAP = {
-    "optimal": r"0.1\% gap",
-    "one_percent": r"1\% gap",
-    "two_percent": r"2\% gap",
-    "three_percent": r"3\% gap",
-    "four_percent": r"4\% gap",
-    "five_percent": r"5\% gap",
-    "ten_percent": r"10\% gap",
+    "optimal": r"0.1% gap",
+    "one_percent": r"1% gap",
+    "two_percent": r"2% gap",
+    "three_percent": r"3% gap",
+    "four_percent": r"4% gap",
+    "five_percent": r"5% gap",
+    "ten_percent": r"10% gap",
 }
 
 
@@ -28,8 +28,8 @@ class ccvmplotlib:
         metadata_filepath: str,
         problem: str,
         TTS_type: str,
-        **kwargs: Any,
-    ) -> matplotlib.figure.Figure:
+        ax: matplotlib.axes.Axes | np.ndarray = None,
+    ) -> tuple[matplotlib.figure.Figure, matplotlib.axes.Axes | np.ndarray]:
         """Plot a problem-specific Time-To-Solution metadata solved by a CCVM
         solver.
 
@@ -38,20 +38,13 @@ class ccvmplotlib:
             problem (str): A problem type.
             TTS_type (str): A Time-To-Solution type. It is either a CPU time or an
             optic device time.
-
-        Keyword Args:
-            ylim (Tuple[float, float]): Set the y-limits of a plot. (e.g. ylim =
-            (lower_lim, upper_lim))
-
-            show_plot (bool): When set to True, the plot will pop up in a new window
-            when it is ready.
+            ax (matplotlib.axes.Axes | np.ndarray, optional): _description_. Defaults to None.
 
         Raises:
             ValueError: Raises a ValueError when the plotting data is not valid.
 
         Returns:
-            matplotlib.figure.Figure: A figure object of the plotted Time-To-Solution
-            result data.
+            tuple[matplotlib.figure.Figure, matplotlib.axes.Axes | np.ndarray]: _description_
         """
         problem_metadata = ProblemMetadataFactory.create_problem_metadata(
             problem, TTS_type
@@ -61,15 +54,13 @@ class ccvmplotlib:
 
         x_data = plotting_df.index
 
-        figure = plt.figure(figsize=(7.7, 7.0))
-        plt.rc("text", usetex=True)
-        plt.rc("font", family="serif")
-        fonts = {"xlabel": 36, "ylabel": 36, "legend": 26, "xticks": 32, "yticks": 32}
+        if not ax:
+            fig, ax = plt.subplots()
 
         color_iter = cm.rainbow(np.linspace(0, 1, len(plotting_df.columns.levels[0])))
         for lvl0_column_name, color in zip(plotting_df.columns.levels[0], color_iter):
             # Plotting IQR
-            plt.fill_between(
+            ax.fill_between(
                 x_data,
                 list(plotting_df[lvl0_column_name, "25"]),
                 list(plotting_df[lvl0_column_name, "75"]),
@@ -77,7 +68,7 @@ class ccvmplotlib:
                 alpha=0.2,
             )
             # Plotting Median
-            plt.plot(
+            ax.plot(
                 x_data,
                 plotting_df[lvl0_column_name, "50"],
                 linestyle="-",
@@ -89,9 +80,7 @@ class ccvmplotlib:
                 linewidth=4.0,
             )
 
-        plt.xlabel("Problem Size, $N$", fontsize=fonts["xlabel"])
-        plt.ylabel("TTS (seconds)", fontsize=fonts["ylabel"])
-        plt.plot(
+        ax.plot(
             [],
             [],
             linestyle="-",
@@ -100,80 +89,40 @@ class ccvmplotlib:
             color="black",
             linewidth=4.0,
         )
-        plt.fill_between([], [], alpha=0.2, label="(IQR)")
+        ax.fill_between([], [], alpha=0.2, label="(IQR)")
 
-        # Configure the y-axis
-        if "ylim" in kwargs:
-            lower_lim = kwargs["ylim"][0]
-            upper_lim = kwargs["ylim"][1]
+        # Get max & min median TTS values
+        min_median = np.inf
+        max_median = -np.inf
+        for lvl0_column in plotting_df.columns.levels[0]:
+            min_median = min(min_median, np.min(plotting_df[lvl0_column, "50"]))
+            max_median = max(max_median, np.max(plotting_df[lvl0_column, "50"]))
+
+        if min_median >= TTS_UPPER_LIMIT:
+            raise ValueError(
+                f"TTS values are too large to plot. Please check the result data. Minimum TTS median value: {min_median}"
+            )
         else:
-            # Get max & min median TTS values
-            min_median = np.inf
-            max_median = -np.inf
-            for lvl0_column in plotting_df.columns.levels[0]:
-                min_median = min(min_median, np.min(plotting_df[lvl0_column, "50"]))
-                max_median = max(max_median, np.max(plotting_df[lvl0_column, "50"]))
+            upper_lim = 10 ** (
+                math.ceil(np.log10(min(min_median * (1e6), max_median))) + 1
+            )
+            lower_lim = 10 ** (math.floor(np.log10(min_median)) - 1)
 
-            if min_median >= TTS_UPPER_LIMIT:
-                raise ValueError(
-                    f"TTS values are too large to plot. Please check the result data. Minimum TTS median value: {min_median}"
-                )
-            else:
-                upper_lim = 10 ** (
-                    math.ceil(np.log10(min(min_median * (1e6), max_median))) + 1
-                )
-                lower_lim = 10 ** (math.floor(np.log10(min_median)) - 1)
-
-        plt.ylim(lower_lim, upper_lim)  # limit on y values
-        plt.yscale("log")  # log scale
-        plt.grid(
-            visible=True,
-            which="major",
-            axis="both",
-            color="#666666",
-            linestyle="--",
-        )  # grid lines on the graph
-
-        handles, labels = plt.gca().get_legend_handles_labels()
-        label_list = list(PERC_GAP_LABEL_MAP.values())
-        label_list.extend(["(median)", "(IQR)"])
-        legend_orders = []
-        for label in label_list:
-            try:
-                legend_orders.append(labels.index(label))
-            except Exception:
-                pass
-        plt.legend(
-            [handles[idx] for idx in legend_orders],
-            [labels[idx] for idx in legend_orders],
-            loc="best",
-            ncol=2,
-        )
+        ax.set_ylim(lower_lim, upper_lim)  # limit on y values
+        ax.set_yscale("log")  # log scale
 
         # Make sure x-axis only has integer values
-        plt.xticks(
-            np.arange(
-                x_data.min(),
-                x_data.max() + 1,
-                1.0,
-            ),
-            fontsize=fonts["xticks"],
-        )
+        ax.set_xticks(x_data)
 
-        plt.yticks(fontsize=fonts["yticks"])
-        plt.tight_layout()
-
-        if "show_plot" in kwargs and kwargs["show_plot"]:
-            plt.show()
-        return figure
+        return (fig, ax)
 
     @staticmethod
     def plot_success_prob(
         metadata_filepath: str,
         problem: str,
         TTS_type: str,
-        **kwargs: Any,
-    ) -> matplotlib.figure.Figure:
+        ax: matplotlib.axes.Axes | np.ndarray = None,
+    ) -> tuple[matplotlib.figure.Figure, matplotlib.axes.Axes | np.ndarray]:
         """Plot a problem-specific success probability result data solved by a
         CCVM solver.
 
@@ -182,12 +131,7 @@ class ccvmplotlib:
             problem (str): A problem type.
             TTS_type (str): A Time-To-Solution type. It is either a CPU time or an
             optic device time
-
-        Keyword Args:
-            ylim (Tuple[float, float]): Set the y-limits of a plot. (e.g. ylim =
-            (lower_lim, upper_lim))
-            show_plot (bool): When set to True, the plot will pop up in a new window
-            when it is ready.
+            ax (matplotlib.axes.Axes | np.ndarray, optional): _description_. Defaults to None.
 
         Raises:
             ValueError: Raises a ValueError when the plotting data is invalid.
@@ -203,10 +147,8 @@ class ccvmplotlib:
         plotting_df = problem_metadata.generate_plot_data()
         x_data = plotting_df.index.tolist()
 
-        figure = plt.figure(figsize=(7.7, 7.0))
-        plt.rc("text", usetex=True)
-        plt.rc("font", family="serif")
-        fonts = {"xlabel": 36, "ylabel": 36, "legend": 26, "xticks": 32, "yticks": 32}
+        if not ax:
+            fig, ax = plt.subplots()
 
         color_iter = cm.rainbow(np.linspace(0, 1, len(plotting_df.columns.levels[0])))
         max_succ_prob = -np.inf
@@ -214,7 +156,7 @@ class ccvmplotlib:
             max_succ_prob = max(
                 max_succ_prob, np.max(plotting_df[lvl0_column_name, "success_prob"])
             )
-            plt.plot(
+            ax.plot(
                 x_data,
                 plotting_df[lvl0_column_name, "success_prob"],
                 linestyle="-",
@@ -229,7 +171,59 @@ class ccvmplotlib:
                 "Success Probability values are all 0.0. Please check the result data."
             )
 
-        plt.grid(
+        ax.set_yscale("log")
+
+        # Make sure x-axis only has integer values
+        ax.set_xticks(x_data)
+
+        return (fig, ax)
+
+    @staticmethod
+    def set_figsize(fig: matplotlib.figure.Figure, fig_width: float, fig_height: float) -> None:
+        fig.set_figwidth(fig_width)
+        fig.set_figheight(fig_height)
+
+    @staticmethod
+    def set_xlabel(ax: matplotlib.axes.Axes, xlabel: str, font_size: float = 36) -> None:
+        ax.set_xlabel(xlabel=xlabel, fontsize=font_size)
+
+    @staticmethod
+    def set_ylabel(ax: matplotlib.axes.Axes, ylabel: str, font_size: float = 36) -> None:
+        ax.set_ylabel(ylabel=ylabel, fontsize=font_size)
+
+    @staticmethod
+    def apply_default_styling(fig: matplotlib.figure.Figure, ax: matplotlib.axes.Axes) -> None:
+        # set figure size
+        fig.set_figwidth(7.7)
+        fig.set_figheight(7.0)
+
+        # set x & y labels
+        ax.set_xlabel("Problem Size, $N$", fontdict={'family':'serif', 'size':36})
+        ax.set_ylabel("TTS (seconds)", fontdict={'family':'serif', 'size':36})
+
+        # set x & y ticks
+        ax.tick_params(axis='x', labelsize=32)
+        ax.tick_params(axis='y', labelsize=32)
+
+        # set legend
+        handles, labels = plt.gca().get_legend_handles_labels()
+        label_list = list(PERC_GAP_LABEL_MAP.values())
+        label_list.extend(["(median)", "(IQR)"])
+        legend_orders = []
+        for label in label_list:
+            try:
+                legend_orders.append(labels.index(label))
+            except Exception:
+                pass
+        ax.legend(
+            [handles[idx] for idx in legend_orders],
+            [labels[idx] for idx in legend_orders],
+            loc="best",
+            ncol=2,
+        )
+
+        # set grid
+        ax.grid(
             visible=True,
             which="major",
             axis="both",
@@ -237,35 +231,5 @@ class ccvmplotlib:
             linestyle="--",
         )
 
-        handles, labels = plt.gca().get_legend_handles_labels()
-        label_list = list(PERC_GAP_LABEL_MAP.values())
-        legend_orders = []
-        for label in label_list:
-            try:
-                legend_orders.append(labels.index(label))
-            except Exception:
-                pass
-        plt.legend(
-            [handles[idx] for idx in legend_orders],
-            [labels[idx] for idx in legend_orders],
-            loc="best",
-            ncol=2,
-        )
-
-        if "ylim" in kwargs:
-            upper_lim = kwargs["ylim"][0]
-            lower_lim = kwargs["ylim"][1]
-            plt.ylim(lower_lim, upper_lim)  # limit on y values
-
-        plt.yscale("log")
-        plt.xlabel("Problem Size, $N$", fontsize=fonts["xlabel"])
-        plt.ylabel("Success Probability", fontsize=fonts["ylabel"])
-
-        plt.xticks(fontsize=fonts["xticks"])
-        plt.yticks(fontsize=fonts["yticks"])
-        plt.tight_layout()
-
-        if "show_plot" in kwargs and kwargs["show_plot"]:
-            plt.show()
-
-        return figure
+        # call tight layout
+        fig.tight_layout()
