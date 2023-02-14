@@ -289,15 +289,16 @@ class DLSolver(CCVMSolver):
                 num_samples += 1
 
             # Initialize tensors
+            # Store on CPU to keep the memory usage lower on the GPU
             c_sample = torch.zeros(
                 (batch_size, problem_size, num_samples),
                 dtype=torch.float,
-                device=device,
+                device="cpu",
             )
             s_sample = torch.zeros(
                 (batch_size, problem_size, num_samples),
                 dtype=torch.float,
-                device=device,
+                device="cpu",
             )
             samples_taken = 0
 
@@ -306,12 +307,12 @@ class DLSolver(CCVMSolver):
         c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         wiener_dist_c = tdist.Normal(
-            torch.Tensor([0.0] * batch_size, device=device),
-            torch.Tensor([1.0] * batch_size, device=device),
+            torch.tensor([0.0] * batch_size, device=device),
+            torch.tensor([1.0] * batch_size, device=device),
         )
         wiener_dist_s = tdist.Normal(
-            torch.Tensor([0.0] * batch_size, device=device),
-            torch.Tensor([1.0] * batch_size, device=device),
+            torch.tensor([0.0] * batch_size, device=device),
+            torch.tensor([1.0] * batch_size, device=device),
         )
 
         # Perform the solve over the specified number of iterations
