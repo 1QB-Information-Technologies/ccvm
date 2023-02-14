@@ -1,3 +1,6 @@
+import sys
+sys.path.append("../")
+
 import glob
 import os
 from ccvm.ccvmplotlib import ccvmplotlib
@@ -5,6 +8,7 @@ from ccvm.problem_classes.boxqp import ProblemInstance
 from ccvm.metadata_list import MetadataList
 from ccvm.solvers import DLSolver
 
+import matplotlib.pyplot as plt
 
 METADATA_DIR = "./metadata"
 TEST_OUTPUT_DEST = f"{METADATA_DIR}/DL-CCVM_LGFGS_cpu_test.txt"
@@ -49,12 +53,14 @@ if __name__ == "__main__":
     # Save metadata to file
     metadata_filepath = metadata_list.save_metadata_to_file(METADATA_DIR)
 
-    plot_fig = ccvmplotlib.plot_TTS(
+    plot_fig, plot_ax = ccvmplotlib.plot_TTS(
         metadata_filepath=metadata_filepath,
         problem="BoxQP",
         TTS_type="wallclock",
-        show_plot=True,
     )
+
+    ccvmplotlib.apply_default_styling(plot_fig, plot_ax)    # apply default styling
+    plt.show()  # show plot in a new window
 
     # If PLOT_OUTPUT_DIR not exists, create the path
     if not os.path.isdir(PLOT_OUTPUT_DIR):
