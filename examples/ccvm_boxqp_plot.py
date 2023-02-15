@@ -1,6 +1,3 @@
-import sys
-sys.path.append("../")
-
 import glob
 import os
 from ccvm.ccvmplotlib import ccvmplotlib
