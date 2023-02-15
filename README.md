@@ -43,7 +43,7 @@ TODO: publish on pip, update above to `pip install ccvm`
 
 2. Go into `examples/` and run demo scripts
     - `ccvm_boxqp.py`: Solve BoxQP using CCVM w/o plotting
-    - `ccvm_boxqp_plot.py`: Solve BoxQP using CCVM w/ plotting
+    - `ccvm_boxqp_plot.py`: Solve BoxQP using CCVM w/ Time To Solution (TTS) plotting
         - Note: Plotting requires [LaTex
           packages](https://www.latex-project.org/get/#tex-distributions) to be
           installed.
@@ -64,13 +64,30 @@ TODO: publish on pip, update above to `pip install ccvm`
                 ```
 
 3. View generated plots
+    - The `ccvm_boxqp_plot.py` script solves a single problem instance, and will create an image of the resulting TTS plot in a `plots/` directory. The image, `DL-CCVM_TTS_cpu_plot.png`, will look something like this:
+
+<p align="center">
+    <img src="ccvm/ccvmplotlib/images/single_instance_TTS_plot.png" width="250" >
+</p>
+
+## Extending the Example
+
+4. Plotting Larger Data:
+    - The script above is a toy example that only plots a single problem instance.
+    - It can be extended to solve multiple problems over a range of sizes.
+    - When solution metadata is saved for multiple problems, the graph becomes more informative:
 
 <p align="center">
     <img src="ccvm/ccvmplotlib/images/tts_plot_example.png" width="250" >
-    <img src="ccvm/ccvmplotlib/images/success_prob_plot_example.png" width="250">
 </p>
 
-(Note: The images displayed here reflect the full set of problem instances)
+
+5. Other Types of Plots:
+    - ccvmplotlib can also plot the Success Probability data
+        - Example plot:
+<p align="center">
+    <img src="ccvm/ccvmplotlib/images/success_prob_plot_example.png" width="250">
+</p>
 
 ## Usage
 
