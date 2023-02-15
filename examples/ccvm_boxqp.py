@@ -1,6 +1,7 @@
 import glob
 from ccvm.problem_classes.boxqp import ProblemInstance
 from ccvm.solvers import DLSolver
+import time
 
 TEST_INSTANCES_DIR = "./test_instances/"
 
@@ -27,10 +28,30 @@ if __name__ == "__main__":
 
         boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 
+        # Start a timer
+        start_time = time.time()
         # Solve the problem
         solution = solver.solve(
             instance=boxqp_instance,
             post_processor=None,
+            evolution_step_size=1,
         )
+        # Stop the timer
+        end_time = time.time()
+        # Print the time
+        print(f"Time elapsed (variables on CPU): {end_time - start_time}")
+
+        # Start a timer
+        start_time = time.time()
+        # Solve the problem
+        solution = solver.solve_gpu_vars(
+            instance=boxqp_instance,
+            post_processor=None,
+            evolution_step_size=1,
+        )
+        # Stop the timer
+        end_time = time.time()
+        # Print the time
+        print(f"Time elapsed (variables on GPU): {end_time - start_time}")
 
         print(solution)

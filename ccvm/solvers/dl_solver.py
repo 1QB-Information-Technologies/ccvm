@@ -417,3 +417,215 @@ class DLSolver(CCVMSolver):
             solution.evolution_file = evolution_file
 
         return solution
+
+    def solve_gpu_vars(
+        self,
+        instance,
+        post_processor=None,
+        pump_rate_flag=True,
+        g=0.05,
+        evolution_step_size=None,
+        evolution_file=None,
+    ):
+        """Solves the given problem instance using the DL-CCVM solver.
+
+        Args:
+            instance (ProblemInstance): The problem instance to solve.
+            post_processor (PostProcessorType): The post processor to use to process
+            the results of the solver. None if no post processing is desired.
+            Defaults to None.
+            pump_rate_flag (bool): Whether or not to scale the pump rate based on the
+            iteration number. If False, the pump rate will be 1.0. Defaults to True.
+            g (float): The nonlinearity coefficient. Defaults to 0.05.
+            evolution_step_size (int): If set, the c/s values will be sampled once
+            per number of iterations equivalent to the value of this variable. At the
+            end of the solve process, the best batch of sampled values will be written
+            to a file that can be specified by setting the evolution_file parameter.
+            Defaults to None, meaning no problem variables will be written to the file.
+            evolution_file (str): The file to save the best set of c/s samples to.
+            Only revelant when evolution_step_size is set. If a file already exists with
+            the same name, it will be overwritten. Defaults to None, which generates a
+            filename based on the problem instance name.
+
+        Returns:
+            tuple: The solution to the problem instance and the timing values.
+        """
+        # If the instance and the solver don't specify the same device type, raise
+        # an error
+        if instance.device != self.device:
+            raise ValueError(
+                f"The device type of the instance ({instance.device}) and the solver"
+                f" ({self.device}) must match."
+            )
+
+        # Get problem from problem instance
+        problem_size = instance.problem_size
+        q_matrix = instance.q_matrix
+        v_vector = instance.v_vector
+
+        # Get solver setup variables
+        batch_size = self.batch_size
+        device = self.device
+
+        # Get parameters from parameter_key
+        try:
+            pump = self.parameter_key[problem_size]["pump"]
+            lr = self.parameter_key[problem_size]["lr"]
+            iterations = self.parameter_key[problem_size]["iterations"]
+            noise_ratio = self.parameter_key[problem_size]["noise_ratio"]
+        except KeyError as e:
+            raise KeyError(
+                f"The parameter '{e.args[0]}' for the given instance size is not defined."
+            ) from e
+
+        # Start the timer for the solve
+        solve_time_start = time.time()
+
+        if evolution_step_size:
+            # Check that the value is valid
+            if evolution_step_size < 1:
+                raise ValueError(
+                    f"The evolution step size must be greater than or equal to 1."
+                )
+            # Generate evolution file name
+            if evolution_file is None:
+                evolution_file = f"./{instance.name}_evolution.txt"
+
+            # Get the number of samples to save
+            # Find the number of full steps that will be taken
+            num_steps = int(iterations / evolution_step_size)
+            # We will also capture the first iteration through
+            num_samples = num_steps + 1
+            # And capture the last iteration if the step size doesn't evenly divide
+            if iterations % evolution_step_size != 0:
+                num_samples += 1
+
+            # Initialize tensors
+            # Store on CPU to keep the memory usage lower on the GPU
+            c_sample = torch.zeros(
+                (batch_size, problem_size, num_samples),
+                dtype=torch.float,
+                device=device,
+            )
+            s_sample = torch.zeros(
+                (batch_size, problem_size, num_samples),
+                dtype=torch.float,
+                device=device,
+            )
+            samples_taken = 0
+
+        # Initialize tensor variables on the device that will be used to perform the
+        # calculations
+        c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        wiener_dist_c = tdist.Normal(
+            torch.tensor([0.0] * batch_size, device=device),
+            torch.tensor([1.0] * batch_size, device=device),
+        )
+        wiener_dist_s = tdist.Normal(
+            torch.tensor([0.0] * batch_size, device=device),
+            torch.tensor([1.0] * batch_size, device=device),
+        )
+
+        # Perform the solve over the specified number of iterations
+        pump_rate = 1
+        for i in range(iterations):
+
+            noise_ratio_i = 1.0
+            if pump_rate_flag:
+                pump_rate = (i + 1) / iterations
+                if pump_rate < 0.9:
+                    noise_ratio_i = noise_ratio
+
+            c_grads, s_grads = self.calculate_grads(
+                c, s, q_matrix, v_vector, pump, pump_rate
+            )
+            wiener_increment_c = (
+                wiener_dist_c.sample((problem_size,)).transpose(0, 1)
+                * np.sqrt(lr)
+                * noise_ratio_i
+            )
+            wiener_increment_s = (
+                wiener_dist_s.sample((problem_size,)).transpose(0, 1)
+                * np.sqrt(lr)
+                / noise_ratio_i
+            )
+            c += (
+                lr * c_grads
+                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_c
+            )
+            s += (
+                lr * s_grads
+                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_s
+            )
+
+            # If evolution_step_size is specified, save the values if this iteration
+            # aligns with the step size or if this is the last iteration
+            if evolution_step_size and (
+                i % evolution_step_size == 0 or i + 1 >= iterations
+            ):
+                # Update the record of the sample values with the values found at
+                # this iteration
+                c_sample[:, :, samples_taken] = c
+                s_sample[:, :, samples_taken] = s
+                samples_taken += 1
+
+        # Ensure variables are within any problem constraints
+        c = self.fit_to_constraints(c)
+
+        # Stop the timer for the solve
+        solve_time = time.time() - solve_time_start
+
+        # Run the post processor on the results, if specified
+        if post_processor:
+            post_processor_object = PostProcessorFactory.create_postprocessor(
+                post_processor
+            )
+
+            problem_variables = post_processor_object.postprocess(c, q_matrix, v_vector)
+            pp_time = post_processor_object.pp_time
+        else:
+            problem_variables = c
+            pp_time = 0.0
+
+        # Calculate the objective value
+        # Perform a change of variables to enforce the box constraints
+        confs = self.change_variables(problem_variables)
+        objval = instance.compute_energy(confs)
+
+        if evolution_step_size:
+            # Write samples to file
+            # Overwrite file if it exists
+            open(evolution_file, "w")
+
+            # Get the indices of the best objective values over the sampled iterations
+            # to use to get and save the best sampled values of c and s
+            batch_index = torch.argmax(-objval)
+            with open(evolution_file, "a") as evolution_file_obj:
+                self._append_samples_to_file(
+                    c_sample=c_sample[batch_index],
+                    s_sample=s_sample[batch_index],
+                    evolution_file_object=evolution_file_obj,
+                )
+
+        solution = Solution(
+            problem_size=problem_size,
+            batch_size=batch_size,
+            instance_name=instance.name,
+            iterations=iterations,
+            objective_value=objval,
+            solve_time=solve_time,
+            pp_time=pp_time,
+            optimal_value=instance.optimal_sol,
+            variables={
+                "problem_variables": problem_variables,
+                "s": s,
+            },
+            device=device,
+        )
+
+        # Add evolution filename to solution if it was generated
+        if evolution_step_size:
+            solution.evolution_file = evolution_file
+
+        return solution
