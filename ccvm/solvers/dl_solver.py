@@ -124,11 +124,11 @@ class DLSolver(CCVMSolver):
         if pump > 1:
             S = np.sqrt(pump - 1)
 
-        c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, q_matrix)
+        c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, q_matrix) / S
         c_grad_2 = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
         c_grad_3 = v_vector / 2 / S
 
-        s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, q_matrix)
+        s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, q_matrix) / S
         s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
         s_grad_3 = v_vector / 2 / S
 
@@ -136,16 +136,17 @@ class DLSolver(CCVMSolver):
         s_grads = -s_grad_1 + s_grad_2 - s_grad_3
         return c_grads, s_grads
 
-    def _change_variables_boxqp(self, problem_variables):
+    def _change_variables_boxqp(self, problem_variables, S=1):
         """Perform a change of variables to enforce the box constraints.
 
         Args:
             problem_variables (torch.Tensor): The variables to change.
+            S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
             torch.Tensor: The changed variables.
         """
-        return 0.5 * (problem_variables + 1)
+        return 0.5 * (problem_variables / S + 1)
 
     def _fit_to_constraints_boxqp(self, c, lower_clamp, upper_clamp):
         """Clamps the values of c to be within the box constraints
@@ -334,11 +335,10 @@ class DLSolver(CCVMSolver):
         pump_rate = 1
         for i in range(iterations):
 
-            noise_ratio_i = 1.0
             if pump_rate_flag:
                 pump_rate = (i + 1) / iterations
-                if pump_rate < 0.9:
-                    noise_ratio_i = noise_ratio
+
+            noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
 
             c_grads, s_grads = self.calculate_grads(
                 c, s, q_matrix, v_vector, pump, pump_rate
@@ -355,11 +355,11 @@ class DLSolver(CCVMSolver):
             )
             c += (
                 lr * c_grads
-                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_c
+                + 2 * g * torch.sqrt(c ** 2 + s ** 2 + 0.5) * wiener_increment_c
             )
             s += (
                 lr * s_grads
-                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_s
+                + 2 * g * torch.sqrt(c ** 2 + s ** 2 + 0.5) * wiener_increment_s
             )
 
             # If evolution_step_size is specified, save the values if this iteration
@@ -385,7 +385,9 @@ class DLSolver(CCVMSolver):
                 post_processor
             )
 
-            problem_variables = post_processor_object.postprocess(c, q_matrix, v_vector)
+            problem_variables = post_processor_object.postprocess(
+                self.change_variables(c, S), q_matrix, v_vector
+            )
             pp_time = post_processor_object.pp_time
         else:
             problem_variables = c
@@ -393,7 +395,7 @@ class DLSolver(CCVMSolver):
 
         # Calculate the objective value
         # Perform a change of variables to enforce the box constraints
-        confs = self.change_variables(problem_variables)
+        confs = self.change_variables(problem_variables, S)
         objval = instance.compute_energy(confs)
 
         if evolution_step_size:
@@ -420,10 +422,7 @@ class DLSolver(CCVMSolver):
             solve_time=solve_time,
             pp_time=pp_time,
             optimal_value=instance.optimal_sol,
-            variables={
-                "problem_variables": problem_variables,
-                "s": s,
-            },
+            variables={"problem_variables": problem_variables, "s": s,},
             device=device,
         )
 
