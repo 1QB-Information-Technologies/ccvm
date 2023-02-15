@@ -173,11 +173,12 @@ class MFSolver(CCVMSolver):
 
         return grads_mu, grads_sigma
 
-    def _change_variables_boxqp(self, problem_variables, S):
+    def _change_variables_boxqp(self, problem_variables, S=1):
         """Perform a change of variables to enforce the box constraints.
 
         Args:
             problem_variables (torch.Tensor): The variables to change.
+            S (float or torch.tensor): The enforced saturation value
 
         Returns:
             torch.Tensor: The changed variables.
