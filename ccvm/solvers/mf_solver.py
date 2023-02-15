@@ -178,7 +178,7 @@ class MFSolver(CCVMSolver):
 
         Args:
             problem_variables (torch.Tensor): The variables to change.
-            S (float or torch.tensor): The enforced saturation value
+            S (float or torch.tensor): The enforced saturation value. Defaults to 1
 
         Returns:
             torch.Tensor: The changed variables.
@@ -355,7 +355,7 @@ class MFSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                self.change_variables(mu_tilde), q_matrix, v_vector, device=device
+                self.change_variables(mu_tilde, S), q_matrix, v_vector, device=device
             )
             pp_time = post_processor_object.pp_time
         else:
