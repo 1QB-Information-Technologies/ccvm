@@ -21,6 +21,7 @@ class Solution:
             Some fields might be solver-dependent, such as mu, sigma and s.
             - problem_variables (torch.Tensor): The values of the problem
                 variables found by the solver.
+        evolution_file (str, optional): The filename of the evolution file, if it exists.
         device (str, optional): Device to use, one of: "cpu" or "cuda".
             Defaults to "cpu".
 
@@ -49,6 +50,7 @@ class Solution:
     pp_time: float
     optimal_value: float
     variables: dict = field(repr=False)
+    evolution_file: str = None
     device: str = field(default="cpu", repr=False)
     solution_performance: dict = None
     best_objective_value: float = None
