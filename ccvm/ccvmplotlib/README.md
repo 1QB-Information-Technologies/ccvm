@@ -40,6 +40,40 @@ tts_plot_fig.savefig(PLOT_OUTPUT_DEST + "tts_plot_example.png", format="png")
 succ_prob_plot_fig.savefig(PLOT_OUTPUT_DEST + "success_prob_plot_example.png", format="png")
 ```
 
+Also, a pre-processed figure object and axis object can be passed to the plotting methods.
+
+```python
+# ...
+
+plot_fig1, plot_ax1 = plt.subplot()
+plot_fig2, plot_ax2 = plt.subplot()
+"""
+Do something with 'plot_fig1' and 'plot_ax1'
+...
+
+Do something with 'plot_fig2' and 'plot_ax2'
+...
+"""
+
+# Generate TTS plot by passing a fig and an ax object
+tts_plot_fig, tts_plot_ax = ccvmplotlib.plot_TTS(
+    metadata_filepath=METADATA_FILEPATH,
+    problem="BoxQP",
+    TTS_type="wallclock",
+    fig=plot_fig1,
+    ax=plot_ax1,
+)
+
+# Generate success probability plot by passing a fig and an ax object
+succ_prob_plot_fig, succ_prob_plot_ax = ccvmplotlib.plot_success_prob(
+    metadata_filepath=METADATA_FILEPATH,
+    problem="BoxQP",
+    TTS_type="wallclock",
+    fig=plot_fig2,
+    ax=plot_ax2,
+)
+```
+
 ### Figures
 
 The plotting methods return a plot figure object and a plot axis object with minimal styling (e.g. plot colors, logagrithmic y-scale, etc.), and this allows users to apply their own styling before saving the figure as a file.
