@@ -38,8 +38,7 @@ class Metric(StrDictMixIn, object):
             results (list[list]): List of result list.
 
         Raises:
-            ValueError: Raises an error if number of result for each problem is
-            different.
+            ValueError: Raises an error if number of result for each problem is different.
 
         Returns:
             int: Return the only number of results for every result in the given list.

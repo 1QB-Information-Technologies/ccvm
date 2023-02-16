@@ -202,9 +202,7 @@ class DLSolver(CCVMSolver):
 
         Args:
             instances (list): A list of problem instances to tune the solver on.
-            post_processor (str): The name of the post processor to use to process
-            the results of the solver. None if no post processing is desired.
-            Defaults to None.
+            post_processor (str): The name of the post processor to use to process the results of the solver. None if no post processing is desired. Defaults to None.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
             iteration number. If False, the pump rate will be 1.0. Defaults to True.
             g (float): The nonlinearity coefficient. Defaults to 0.05.
@@ -226,21 +224,12 @@ class DLSolver(CCVMSolver):
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            post_processor (str): The name of the post processor to use to process
-            the results of the solver. None if no post processing is desired.
-            Defaults to None.
+            post_processor (str): The name of the post processor to use to process the results of the solver. None if no post processing is desired. Defaults to None.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
             iteration number. If False, the pump rate will be 1.0. Defaults to True.
             g (float): The nonlinearity coefficient. Defaults to 0.05.
-            evolution_step_size (int): If set, the c/s values will be sampled once
-            per number of iterations equivalent to the value of this variable. At the
-            end of the solve process, the best batch of sampled values will be written
-            to a file that can be specified by setting the evolution_file parameter.
-            Defaults to None, meaning no problem variables will be written to the file.
-            evolution_file (str): The file to save the best set of c/s samples to.
-            Only revelant when evolution_step_size is set. If a file already exists with
-            the same name, it will be overwritten. Defaults to None, which generates a
-            filename based on the problem instance name.
+            evolution_step_size (int): If set, the c/s values will be sampled once per number of iterations equivalent to the value of this variable. At the end of the solve process, the best batch of sampled values will be written to a file that can be specified by setting the evolution_file parameter. Defaults to None, meaning no problem variables will be written to the file.
+            evolution_file (str): The file to save the best set of c/s samples to. Only revelant when evolution_step_size is set. If a file already exists with the same name, it will be overwritten. Defaults to None, which generates a filename based on the problem instance name.
 
         Returns:
             tuple: The solution to the problem instance and the timing values.

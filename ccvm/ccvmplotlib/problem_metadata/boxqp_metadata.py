@@ -93,8 +93,7 @@ class BoxQPMetadata(ProblemMetadata):
         the optimal type and problem size inputs.
 
         Args:
-            matching_df (pd.DataFrame): Filtered Data Frame with the solver parameter
-            and the problem size.
+            matching_df (pd.DataFrame): Filtered Data Frame with the solver parameter and the problem size.
             percent_gap (str): Percentage gap from the optimal solution.
             problem_size (int): BoxQP problem size (N).
 
@@ -102,8 +101,7 @@ class BoxQPMetadata(ProblemMetadata):
             AssertionError: Raises an error if an unsupported TTS type is given
 
         Returns:
-            list: Best known energy list, Time-To-Solve list, and success probability
-            list
+            list: Best known energy list, Time-To-Solve list, and success probability list
         """
         row_count = matching_df.shape[0]
         best_known_energy_arr = np.ones(row_count) * 10
@@ -143,8 +141,7 @@ class BoxQPMetadata(ProblemMetadata):
         probability plottings.
 
         Returns:
-            pd.DataFrame: A new processed dataframe for TTS and success probability
-            plotting.
+            pd.DataFrame: A new processed dataframe for TTS and success probability plotting.
         """
         plotting_df = pd.DataFrame(
             index=pd.Index(self.__problem_size_list, name="Problem Size (N)"),

@@ -36,22 +36,19 @@ class ccvmplotlib:
         Args:
             metadata_filepath (str): A file path to metadata.
             problem (str): A problem type.
-            TTS_type (str): A Time-To-Solution type. It is either a CPU time or an
-            optic device time.
+            TTS_type (str): A Time-To-Solution type. It is either a CPU time or an optic device time.
 
         Keyword Args:
             ylim (Tuple[float, float]): Set the y-limits of a plot. (e.g. ylim =
             (lower_lim, upper_lim))
 
-            show_plot (bool): When set to True, the plot will pop up in a new window
-            when it is ready.
+            show_plot (bool): When set to True, the plot will pop up in a new window when it is ready.
 
         Raises:
             ValueError: Raises a ValueError when the plotting data is not valid.
 
         Returns:
-            matplotlib.figure.Figure: A figure object of the plotted Time-To-Solution
-            result data.
+            matplotlib.figure.Figure: A figure object of the plotted Time-To-Solution result data.
         """
         problem_metadata = ProblemMetadataFactory.create_problem_metadata(
             problem, TTS_type
@@ -180,21 +177,18 @@ class ccvmplotlib:
         Args:
             metadata_filepath (str): A file path to solution data.
             problem (str): A problem type.
-            TTS_type (str): A Time-To-Solution type. It is either a CPU time or an
-            optic device time
+            TTS_type (str): A Time-To-Solution type. It is either a CPU time or an optic device time
 
         Keyword Args:
             ylim (Tuple[float, float]): Set the y-limits of a plot. (e.g. ylim =
             (lower_lim, upper_lim))
-            show_plot (bool): When set to True, the plot will pop up in a new window
-            when it is ready.
+            show_plot (bool): When set to True, the plot will pop up in a new window when it is ready.
 
         Raises:
             ValueError: Raises a ValueError when the plotting data is invalid.
 
         Returns:
-            matplotlib.figure.Figure: A figure object of the plotted success
-            probability result data.
+            matplotlib.figure.Figure: A figure object of the plotted success probability result data.
         """
         problem_metadata = ProblemMetadataFactory.create_problem_metadata(
             problem, TTS_type

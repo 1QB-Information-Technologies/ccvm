@@ -23,8 +23,7 @@ class MFSolver(CCVMSolver):
         """
         Args:
             device (str): The device to use for the solver. Can be "cpu" or "cuda".
-            problem_category (str): The category of problem to solve. Can be one
-            of "boxqp". Defaults to "boxqp".
+            problem_category (str): The category of problem to solve. Can be one of "boxqp". Defaults to "boxqp".
             batch_size (int): The batch size of the problem. Defaults to 1000.
 
         Raises:
@@ -236,9 +235,7 @@ class MFSolver(CCVMSolver):
 
         Args:
             instances (list): A list of problem instances to tune the solver on.
-            post_processor (str): The name of the post processor to use to process
-            the results of the solver. None if no post processing is desired.
-            Defaults to None.
+            post_processor (str): The name of the post processor to use to process the results of the solver. None if no post processing is desired. Defaults to None.
             g (float): The nonlinearity coefficient. Defaults to 0.01.
         """
         # TODO: This implementation is a placeholder; full implementation is a
@@ -262,18 +259,9 @@ class MFSolver(CCVMSolver):
             post_processor (str): The name of the post processor to use to process
             the results of the solver. None if no post processing is desired.
             g (float, optional): The nonlinearity coefficient. Defaults to 0.01
-            pump_rate_flag (bool, optional): Whether or not to scale the pump rate based
-            on the iteration number. If False, the pump rate will be 1.0. Defaults to
-            True.
-            evolution_step_size (int): If set, the mu/sigma values will be sampled once
-            per number of iterations equivalent to the value of this variable. At the
-            end of the solve process, the best batch of sampled values will be written
-            to a file that can be specified by setting the evolution_file parameter.
-            Defaults to None, meaning no problem variables will be written to the file.
-            evolution_file (str): The file to save the best set of mu/sigma samples to.
-            Only revelant when evolution_step_size is set. If a file already exists with
-            the same name, it will be overwritten. Defaults to None, which generates a
-            filename based on the problem instance name.
+            pump_rate_flag (bool, optional): Whether or not to scale the pump rate based on the iteration number. If False, the pump rate will be 1.0. Defaults to True.
+            evolution_step_size (int): If set, the mu/sigma values will be sampled once per number of iterations equivalent to the value of this variable. At the end of the solve process, the best batch of sampled values will be written to a file that can be specified by setting the evolution_file parameter.  Defaults to None, meaning no problem variables will be written to the file.
+            evolution_file (str): The file to save the best set of mu/sigma samples to. Only revelant when evolution_step_size is set. If a file already exists with the same name, it will be overwritten. Defaults to None, which generates a filename based on the problem instance name.
 
         Returns:
             dict: A dictionary containing the results of the solver. It contains
