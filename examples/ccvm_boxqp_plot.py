@@ -56,7 +56,7 @@ if __name__ == "__main__":
         TTS_type="wallclock",
     )
 
-    ccvmplotlib.apply_default_styling(plot_fig, plot_ax)    # apply default styling
+    ccvmplotlib.apply_default_tts_styling(plot_fig, plot_ax)    # apply default styling
     plt.show()  # show plot in a new window
 
     # If PLOT_OUTPUT_DIR not exists, create the path
