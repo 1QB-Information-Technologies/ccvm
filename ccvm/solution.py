@@ -87,7 +87,18 @@ class Solution:
         zero_tensor = torch.zeros(objective_values.size()).to(device)
 
         def fraction_below_threshold(gap_tensor, threshold):
-            """Returns the fraction of the tensor's values that fall within the given threshold, rounded to 4 digits."""
+            """Returns the fraction of the tensor's values that fall within the given threshold, rounded to 4 digits.
+
+            Args:
+                gap_tensor (torch.Tensor): The tensor of the percentage distances of the found
+                objective values from the optimal value of the problem objective function.
+                threshod (float): The specified percentage gap
+
+            Returns:
+                torch.Tensor: the fraction of the solved instances where the found solution
+                was within the speficied percentage gap from the optimal objective value.
+
+            """
 
             counter_tensor = torch.where(
                 gap_tensor <= threshold, one_tensor, zero_tensor
