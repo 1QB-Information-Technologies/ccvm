@@ -48,10 +48,9 @@ Also, a pre-processed figure object and axis object can be passed to the plottin
 plot_fig1, plot_ax1 = plt.subplots()
 plot_fig2, plot_ax2 = plt.subplots()
 """
-Do something with 'plot_fig1' and 'plot_ax1'
+Custom modification on 'plot_fig1' and 'plot_ax1' (e.g. plot_ax1.plot(...))
 ...
-
-Do something with 'plot_fig2' and 'plot_ax2'
+Custom modification on 'plot_fig2' and 'plot_ax2' (e.g. plot_ax2.plot(...))
 ...
 """
 
