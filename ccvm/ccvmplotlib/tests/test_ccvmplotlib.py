@@ -1,19 +1,20 @@
-# import matplotlib
-# import unittest
-# from unittest import TestCase
-# from ccvmplotlib.ccvmplotlib import ccvmplotlib
+import matplotlib
+import matplotlib.pyplot as plt
+import unittest
+from unittest import TestCase
+from ccvm.ccvmplotlib.ccvmplotlib import ccvmplotlib
 
 
-# TODO: Speed up tests
+# # TODO: Speed up tests
 # https://github.com/1QB-Information-Technologies/ccvm/issues/34
 # class TestCCVMPlotLib(TestCase):
 #     """Test ccvmplotlib class."""
 
 #     def setUp(self) -> None:
-#         self.valid_metadata_filepath = "ccvmplotlib/tests/metadata/valid_metadata.json"
+#         self.valid_metadata_filepath = "ccvm/ccvmplotlib/tests/metadata/valid_metadata.json"
 #         # Below is an invalid result data since all 'solution_performance' values
 #         # are set to 0.0.
-#         self.invalid_metadata_filepath = "ccvmplotlib/tests/metadata/invalid_metadata.json"
+#         self.invalid_metadata_filepath = "ccvm/ccvmplotlib/tests/metadata/invalid_metadata.json"
 #         self.valid_problem_type_str = "BoxQP"
 #         self.invalid_problem_type_str = "CCVM"
 #         self.valid_TTS_type_str = "wallclock"
@@ -21,13 +22,13 @@
 
 #     def test_plot_TTS_valid(self):
 #         """Test ccvmplotlib class plot_TTS method when valid inputs are given."""
-#         plot_fig = ccvmplotlib.plot_TTS(
+#         plot_fig, plot_ax = ccvmplotlib.plot_TTS(
 #             self.valid_metadata_filepath,
 #             self.valid_problem_type_str,
 #             self.valid_TTS_type_str,
 #         )
-
 #         self.assertIsInstance(plot_fig, matplotlib.figure.Figure)
+#         self.assertIsInstance(plot_ax, matplotlib.axes.Axes)
 
 #     def test_plot_TTS_invalid_metadata(self):
 #         """Test ccvmplotlib class plot_TTS method when an invalid result is
@@ -65,13 +66,13 @@
 #     def test_plot_success_prob_valid(self):
 #         """Test ccvmplotlib class plot_success_prob method when valid inputs are
 #         given."""
-#         plot_fig = ccvmplotlib.plot_success_prob(
+#         plot_fig, plot_ax = ccvmplotlib.plot_success_prob(
 #             self.valid_metadata_filepath,
 #             self.valid_problem_type_str,
 #             self.valid_TTS_type_str,
 #         )
-
 #         self.assertIsInstance(plot_fig, matplotlib.figure.Figure)
+#         self.assertIsInstance(plot_ax, matplotlib.axes.Axes)
 
 #     def test_plot_success_prob_invalid_metadata(self):
 #         """Test ccvmplotlib class plot_success_prob method when an invalid
