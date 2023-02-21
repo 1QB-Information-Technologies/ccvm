@@ -43,7 +43,8 @@ class DLSolver(CCVMSolver):
         # Use the method selector to choose the problem-specific methods to use
         self._method_selector(problem_category)
 
-    def _validate_parameters(self, parameters):
+    @CCVMSolver.parameter_key.setter
+    def parameter_key(self, parameters):
         """Validate the parameter key against the keys in the expected parameters for
         DLSolver.
 
@@ -79,6 +80,10 @@ class DLSolver(CCVMSolver):
                     + " Given keys: "
                     + str(parameter_key.keys())
                 )
+
+        # If we get here, the parameter key is valid
+        self._parameter_key = parameters
+        self._is_tuned = False
 
     def _method_selector(self, problem_category):
         """Set methods relevant to this category of problem

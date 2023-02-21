@@ -45,20 +45,25 @@ class CCVMSolver(ABC):
         return self._parameter_key
 
     @parameter_key.setter
-    def parameter_key(self, parameters):
-        self._validate_parameters(parameters)
-        self._parameter_key = parameters
-        self._is_tuned = False
-
     @abstractmethod
-    def _validate_parameters(self, parameters):
-        """Validates the parameters to make sure the values in the dictionary are
-           compatible with the solver
-
-        Args:
-            parameters (dict): The parameters to be validated
-        """
+    def parameter_key(self, parameters):
         pass
+
+    # @parameter_key.setter
+    # def parameter_key(self, parameters):
+    #     self._validate_parameters(parameters)
+    #     self._parameter_key = parameters
+    #     self._is_tuned = False
+
+    # @abstractmethod
+    # def _validate_parameters(self, parameters):
+    #     """Validates the parameters to make sure the values in the dictionary are
+    #        compatible with the solver
+
+    #     Args:
+    #         parameters (dict): The parameters to be validated
+    #     """
+    #     pass
 
     ##################################
     # Abstract Methods               #
