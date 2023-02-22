@@ -1,6 +1,6 @@
 import unittest
 from unittest import TestCase
-from boxqp.boxqp.problem_instance import ProblemInstance
+from ccvm.problem_classes.boxqp.problem_instance import ProblemInstance
 import os
 import torch
 
