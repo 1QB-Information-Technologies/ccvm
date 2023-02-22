@@ -120,6 +120,42 @@ print(f"The solve process took {solution.solve_time} seconds")
 # The solve process took 8.949262142181396 seconds
 ```
 
+### Add your own problem instance file
+
+In current folder structure, there are two folders inside the `examples` folder,
+`tuning_instances` and `test_instances`, which contains the random instances
+generated. The instances have the same properties except that different seed
+numbers have been used to generate them. The instances in the `tuning_instances`
+folder are used to tune the parameters of the solver. Then we used those parameters to
+solve the instances in the `test_instances` to make sure the performance of the solver is
+independet of the particular random instances generated.
+
+#### Format of the instance file
+
+The first line of each instance file contains these information:
+- instance size
+- optimmum solution
+- is the solution optimal (`True` or `False`)
+- the seed number used for generating the instance in `torch`.
+
+The second line contains the elements of the vector `V`, which describes the instance.
+
+The rest of the lines hold the `Q` matrix.
+
+You can specify a file delimiter in your choice. Then remember to
+provide it when initializing the ProblemInstance.
+
+```
+boxqp_instance = ProblemInstance(
+    instance_type="test",
+    file_path="./examples/test_instances/test020-100-10.in",
+    device=solver.device,
+    file_delimiter="YOUR CHOICE",
+)
+```
+
+If you don't provide it, the default file delimiter is tab (`\t`).
+
 ## Docs
 
 Find our [documentation here](https://urban-chainsaw-9k39nm4.pages.github.io/index.html).
