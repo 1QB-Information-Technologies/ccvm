@@ -48,6 +48,16 @@ In general, we follow the ["fork-and-pull" Git workflow](https://github.com/susa
 6. Push changes to your fork
 7. Open a PR in our repository and follow the PR template so that we can efficiently review the changes.
 
-### Tests (TODO)
+### Tests
 
-...
+Run our unit tests to ensure your changes does not affect other parts of the code.
+
+
+#### Run Unit Tests
+
+Run `pytest .` from the root directory.
+
+
+
+
+
