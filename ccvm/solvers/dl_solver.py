@@ -43,31 +43,38 @@ class DLSolver(CCVMSolver):
         # Use the method selector to choose the problem-specific methods to use
         self._method_selector(problem_category)
 
-    @CCVMSolver.parameter_key.setter
-    def parameter_key(self, parameters):
-        """Validate the parameter key against the keys in the expected parameters for
-        DLSolver.
+    @property
+    def parameter_key(self):
+        """The set of parameters that will be used by the solver when solving the problem.
 
-        Args:
-            parameters (dict): The parameters to validate. The parameters must match the
-                format:
-                {
-                    <problem size>: <dict with set of keys:
-                            pump,
-                            lr (learning rate),
-                            iterations,
-                            noise_ratio
-                        >
-                }
-        For example:
+        Note:
+            Setting this parameter after calling tune() will overwrite tuned parameters.
+
+        The parameter_key must match the following format:
+
+            * key: problem size (the number of variables in the problem).
+            * value: dict with these keys:
+                * pump (float),
+                * lr (float),
+                * iterations (int),
+                * noise_ratio (float)
+
+            With values, the parameter key might look like this::
+
                 {
                     20: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "noise_ratio": 10},
                     30: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "noise_ratio": 5},
                 }
 
         Raises:
-            ValueError: If the parameter key is not valid for this solver.
+            ValueError: If the parameter key does not contain the solver-specific
+                combination of keys described above.
         """
+        return self._parameter_key
+
+    @parameter_key.setter
+    def parameter_key(self, parameters):
+
         expected_dlparameter_key_set = set(["pump", "lr", "iterations", "noise_ratio"])
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size

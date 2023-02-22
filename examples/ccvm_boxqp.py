@@ -14,23 +14,24 @@ if __name__ == "__main__":
     solver.parameter_key = {
         20: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "noise_ratio": 10},
     }
+    print(solver.parameter_key)
 
-    # Load test instances to solve
-    test_instances_files = [f for f in glob.glob(TEST_INSTANCES_DIR + "*.in")]
-    for instance_file in test_instances_files:
-        # Load the problem from the problem file into the instance
-        boxqp_instance = ProblemInstance(
-            instance_type="test",
-            file_path=instance_file,
-            device=solver.device,
-        )
+    # # Load test instances to solve
+    # test_instances_files = [f for f in glob.glob(TEST_INSTANCES_DIR + "*.in")]
+    # for instance_file in test_instances_files:
+    #     # Load the problem from the problem file into the instance
+    #     boxqp_instance = ProblemInstance(
+    #         instance_type="test",
+    #         file_path=instance_file,
+    #         device=solver.device,
+    #     )
 
-        boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
+    #     boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 
-        # Solve the problem
-        solution = solver.solve(
-            instance=boxqp_instance,
-            post_processor=None,
-        )
+    #     # Solve the problem
+    #     solution = solver.solve(
+    #         instance=boxqp_instance,
+    #         post_processor=None,
+    #     )
 
-        print(solution)
+    #     print(solution)
