@@ -2,7 +2,7 @@ from unittest import TestCase
 from ccvm.solvers import DLSolver
 
 
-class TestMFSolver(TestCase):
+class TestDLSolver(TestCase):
     def setUp(self):
         dl_solver = DLSolver(device="cpu", batch_size=1000, problem_category="boxqp")
 
