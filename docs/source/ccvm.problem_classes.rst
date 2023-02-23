@@ -1,6 +1,7 @@
 problem\_classes
 =============================
 
+.. include:: README.rst
 
 
 Subpackages
@@ -11,7 +12,6 @@ Subpackages
 
    ccvm.problem_classes.boxqp
 
-   README
 
 
 ---------------
