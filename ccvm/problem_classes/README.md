@@ -18,7 +18,7 @@ The CCVM receives the `Q` matrix and the `V` vector of the BoxQP problem and imp
 
 ## Problem instance file
 
-In current folder structure, there are two folders inside the `examples` folder,
+In the current folder structure, there are two folders inside the `examples` folder,
 `tuning_instances` and `test_instances`, which contains the random instances
 generated. The instances have the same properties except that different seed
 numbers have been used to generate them. The instances in the `tuning_instances`
@@ -28,17 +28,17 @@ independet of the particular random instances generated.
 
 ### Format of the instance file
 
-The first line of each instance file contains these information:
+The first line of each instance file contains the following information, in this order:
 - instance size
-- optimmum solution
-- is the solution optimal (`True` or `False`)
+- optimum solution (example files used the Gurobi solver to determine these values)
+- whether the solution is optimal (`True` or `False`)
 - the seed number used for generating the instance in `torch`.
 
 The second line contains the elements of the vector `V`, which describes the instance.
 
-The rest of the lines hold the `Q` matrix.
+The rest of the lines hold the elements of the `Q` matrix.
 
-You can specify a file delimiter in your choice. Then remember to
+You can specify a file delimiter of your choice. Then remember to
 provide it when initializing the ProblemInstance.
 
 ```
