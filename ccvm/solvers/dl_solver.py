@@ -242,7 +242,7 @@ class DLSolver(CCVMSolver):
                 Defaults to None, which generates a filename based on the problem instance name.
 
         Returns:
-            tuple: The solution to the problem instance and the timing values.
+            solution (Solution): The solution to the problem instance.
         """
         # If the instance and the solver don't specify the same device type, raise
         # an error
@@ -354,11 +354,11 @@ class DLSolver(CCVMSolver):
             )
             c += (
                 lr * c_grads
-                + 2 * g * torch.sqrt(c ** 2 + s ** 2 + 0.5) * wiener_increment_c
+                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_c
             )
             s += (
                 lr * s_grads
-                + 2 * g * torch.sqrt(c ** 2 + s ** 2 + 0.5) * wiener_increment_s
+                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_s
             )
 
             # If evolution_step_size is specified, save the values if this iteration
@@ -421,7 +421,10 @@ class DLSolver(CCVMSolver):
             solve_time=solve_time,
             pp_time=pp_time,
             optimal_value=instance.optimal_sol,
-            variables={"problem_variables": problem_variables, "s": s,},
+            variables={
+                "problem_variables": problem_variables,
+                "s": s,
+            },
             device=device,
         )
 

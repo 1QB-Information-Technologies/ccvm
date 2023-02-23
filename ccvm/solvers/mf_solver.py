@@ -153,16 +153,16 @@ class MFSolver(CCVMSolver):
 
         mu_pow = torch.pow(mu, 2)
 
-        mu_term1 = (-(1 + j) + pump - g ** 2 * mu_pow) * mu
+        mu_term1 = (-(1 + j) + pump - g**2 * mu_pow) * mu
         mu_term2_1 = (
             -(1 / 4) * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, q_matrix)) / S
         )
         mu_term2_2 = -v_vector / S / 2
         mu_term3 = np.sqrt(j) * (sigma - 0.5) * wiener_increment
 
-        sigma_term1 = 2 * (-(1 + j) + pump - 3 * g ** 2 * mu_pow) * sigma
+        sigma_term1 = 2 * (-(1 + j) + pump - 3 * g**2 * mu_pow) * sigma
         sigma_term2 = -2 * j * (sigma - 0.5).pow(2)
-        sigma_term3 = (1 + j) + 2 * g ** 2 * mu_pow
+        sigma_term3 = (1 + j) + 2 * g**2 * mu_pow
 
         grads_mu = mu_term1 + fs * (mu_term2_1 + mu_term2_2) + mu_term3
         grads_sigma = sigma_term1 + sigma_term2 + sigma_term3
@@ -274,19 +274,7 @@ class MFSolver(CCVMSolver):
                 the problem instance name.
 
         Returns:
-            dict: A dictionary containing the results of the solver. It contains
-            these keys:
-            - "problem_variables" (:py:class:`torch.Tensor`) - The final values for each
-            variable of the problem in the solution found by the solver
-            - "mu_evolution" (:py:class:`torch.Tensor`) - The values of mu at each
-            iteration during the solve process
-            - "sigma_evolution" (:py:class:`torch.Tensor`) - The values of sigma at
-            each iteration during the solve process
-            - "objective_values" (:py:class:`torch.Tensor`) - The value of the objective
-            function for the solution found by the solver
-            - "solve_time" (float) - The time taken (in seconds) to solve the problem
-            - "post_processing_time" (float) - The time taken (in seconds) to postprocess
-            the solution
+            solution (Solution): The solution to the problem instance.
         """
         # If the instance and the solver don't specify the same device type, raise an
         # error
@@ -362,12 +350,11 @@ class MFSolver(CCVMSolver):
         # Initialize tensor variables on the device that will be used to perform
         # the calculations
 
-
         mu = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         sigma = torch.ones(
             (batch_size, problem_size), dtype=torch.float, device=device
         ) * (1 / 2)
-        
+
         wiener_dist = tdist.Normal(
             torch.tensor([0.0] * batch_size, device=device),
             torch.tensor([1.0] * batch_size, device=device),
