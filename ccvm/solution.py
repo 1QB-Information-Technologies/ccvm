@@ -92,7 +92,7 @@ class Solution:
             Args:
                 gap_tensor (torch.Tensor): The tensor of the percentage distances of the found
                 objective values from the optimal value of the problem objective function.
-                threshod (float): The specified percentage gap
+                threshold (float): The specified percentage gap
 
             Returns:
                 torch.Tensor: the fraction of the solved instances where the found solution
