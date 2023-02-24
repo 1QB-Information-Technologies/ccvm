@@ -39,26 +39,20 @@ class CCVMSolver(ABC):
 
     @property
     def parameter_key(self):
-        """dict: The set of parameters that will be used by the solver when solving the problem.
-        Note: setting this parameter after calling tune() will overwrite tuned parameters.
+        """The parameters that will be used by the solver when solving the problem.
+
+        Note:
+            Setting this parameter after calling tune() will overwrite tuned parameters.
+
+        This method should be overwritten by the subclass to ensure that the docstrings
+        in the final documentation are personalized for the subclassed solver.
+
+        The setter for this parameter must also be implemented in the subclass.
+
+        Returns:
+            dict: The parameter key.
         """
         return self._parameter_key
-
-    @parameter_key.setter
-    def parameter_key(self, parameters):
-        self._validate_parameters(parameters)
-        self._parameter_key = parameters
-        self._is_tuned = False
-
-    @abstractmethod
-    def _validate_parameters(self, parameters):
-        """Validates the parameters to make sure the values in the dictionary are
-           compatible with the solver
-
-        Args:
-            parameters (dict): The parameters to be validated
-        """
-        pass
 
     ##################################
     # Abstract Methods               #

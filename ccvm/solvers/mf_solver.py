@@ -40,24 +40,29 @@ class MFSolver(CCVMSolver):
         # Use the method selector to choose the problem-specific methods to use
         self._method_selector(problem_category)
 
-    def _validate_parameters(self, parameters):
-        """Validate the parameter key against the keys in the expected parameters
-        for MF solver.
+    @property
+    def parameter_key(self):
+        """The parameters that will be used by the solver when solving the problem.
 
-        Args:
-            parameters (dict): The parameters to validate. The parameters must
-            match the format:
-                {
-                    <problem size>:
-                        <dict with set of keys:
-                            pump,
-                            feedback_scale,
-                            j (measurement strength),
-                            S (enforced saturation value), can be scalar or a vector of size 'problem_size'.
-                            lr (learning rate),
-                            iterations>
-                }
-            For example:
+        Note:
+            Setting this parameter after calling tune() will overwrite tuned parameters.
+
+        The parameter_key must match the following format:
+
+            * key: problem size (the number of variables in the problem).
+            * value: dict with these keys:
+                * pump (float)
+                * feedback_scale (float)
+                * j (float)
+                    * The measurement strength
+                * S (float or vector of float with size 'problem_size')
+                    * The enforced saturation value
+                * lr (float)
+                    * The learning rate
+                * noise_ratio (float)
+
+            With values, the parameter key might look like this::
+
                 {
                     20:
                         {
@@ -80,8 +85,13 @@ class MFSolver(CCVMSolver):
                 }
 
         Raises:
-            ValueError: If the parameter key is not valid for this solver.
+            ValueError: If the parameter key does not contain the solver-specific
+                combination of keys described above.
         """
+        return self._parameter_key
+
+    @parameter_key.setter
+    def parameter_key(self, parameters):
         expected_mfparameter_key_set = set(
             ["pump", "feedback_scale", "j", "S", "lr", "iterations"]
         )
