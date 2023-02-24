@@ -18,8 +18,8 @@ class ProblemMetadataFactory:
 
         Args:
             problem (str): A problem type.
-            TTS_type (str): A Time-To-Solution type. It is either a CPU time or an
-            optic device time.
+            TTS_type (str): A Time-To-Solution type. It is either a CPU time or an 
+                optic device time.
 
         Raises:
             AssertionError: Raises an error if an unsupported problem is given.

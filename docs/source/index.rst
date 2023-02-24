@@ -16,7 +16,6 @@ Welcome to ccvm's documentation!
    ccvm
 
 
-
 Indices and tables
 ==================
 

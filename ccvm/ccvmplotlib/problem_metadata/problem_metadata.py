@@ -30,8 +30,8 @@ class ProblemMetadata(ABC):
 
         Args:
             problem (ProblemType): A problem type.
-            TTS_type (TTSType): A Time-To-Solution type. It is either a CPU time or an
-            optic device time
+            TTS_type (TTSType): A Time-To-Solution type. It is either a CPU time or an 
+                optic device time
         """
         self.__TTS_type = TTS_type
         self.__problem = problem

@@ -67,8 +67,8 @@ class SampleTTSMetric(Metric):
 
         Args:
             results (list[list]): A result for each problem.
-            best_known_energies (list): A best known energy for the problem associated
-            with each result.
+            best_known_energies (list): A best known energy for the problem associated 
+                with each result.
 
         Keyword Args:
             Captures additional named arguments passed to Metric.calc().
@@ -129,8 +129,7 @@ class SampleTTSMetric(Metric):
         at least once with 99% confidence.
 
         Args:
-            success_probability (float): The success probability for solutions given
-            best_known_energy.
+            success_probability (float): The success probability for solutions given best_known_energy.
 
         Raises:
             ValueError: Raises an error if the confidence value is out of range.
@@ -221,8 +220,7 @@ class SampleTTSMetric(Metric):
 
         Args:
             results (list): Results for each problem.
-            best_known_energies (list): A best known energy for the problem associated
-            with each result
+            best_known_energies (list): A best known energy for the problem associated with each result
 
         Returns:
             numpy.ndarray: A success probability for each problem.

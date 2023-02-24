@@ -45,7 +45,7 @@ class ccvmplotlib:
 
         Returns:
             tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and axis that has
-            the TTS plot with minimal styling.
+                the TTS plot with minimal styling.
         """
         problem_metadata = ProblemMetadataFactory.create_problem_metadata(
             problem, TTS_type
@@ -141,7 +141,7 @@ class ccvmplotlib:
 
         Returns:
             tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and axis that has
-            the success probability plot with minimal styling.
+                the success probability plot with minimal styling.
         """
         problem_metadata = ProblemMetadataFactory.create_problem_metadata(
             problem, TTS_type
