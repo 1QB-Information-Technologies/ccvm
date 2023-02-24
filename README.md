@@ -99,10 +99,19 @@ boxqp_instance = ProblemInstance(
     file_path="./examples/test_instances/test020-100-10.in",
     device=solver.device,
 )
+```
+
+##### 4. Scale Coefficients
+The solvers perform more reliably when the values of the coefficients are within some
+range. The ideal range varies depending on the solver. For best results the problem
+matrix should be passed to the solver's `get_scaling_factor()` method to determine the
+best scaling value for the problem/solver combination.
+
+```python
 boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 ```
 
-##### 4. Solve
+##### 5. Solve
 
 ```python
 solution = solver.solve(
