@@ -102,10 +102,10 @@ boxqp_instance = ProblemInstance(
 ```
 
 ##### 4. Scale Coefficients
-The solvers perform more reliably when the values of the coefficients are within some
-range. The ideal range varies depending on the solver. For best results the problem
-matrix should be passed to the solver's `get_scaling_factor()` method to determine the
-best scaling value for the problem/solver combination.
+The BoxQP problem matrix, Q, and vector, V, are normalized to obtain a uniform
+performance across different problem sizes and densities. The ideal range depends on the
+solver. For best results, Q should be passed to the solver's `get_scaling_factor()`
+method to determine the best scaling value for the problem/solver combination.
 
 ```python
 boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
