@@ -1,10 +1,10 @@
 from unittest import TestCase
-from ccvm.solvers import DLSolver
+from ccvm.solvers import MFSolver
 
 
-class TestDLSolver(TestCase):
+class TestMFSolver(TestCase):
     def setUp(self):
-        dl_solver = DLSolver(device="cpu", batch_size=1000, problem_category="boxqp")
+        mf_solver = MFSolver(device="cpu", batch_size=1000, problem_category="boxqp")
 
     def test_set_parameter_key_with_valid_inputs(self):
         """Test parameter_key sets given parameters when inputs are valid"""
