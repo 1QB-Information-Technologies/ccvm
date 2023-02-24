@@ -9,7 +9,8 @@ class Solution:
 
     Args:
         problem_size (int): The size of the problem solved.
-        batch_size (int): The number of times a problem instance is solved simultaneously.
+        batch_size (int): The number of times the problem instance was solved
+            simultaneously.
         instance_name (str): The name of the problem instance.
         objective_values (torch.Tensor): The objective values of the solutions
             found by the solver.
