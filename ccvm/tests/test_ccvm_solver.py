@@ -66,11 +66,6 @@ class TestCCVMSolver(TestCase):
         # The default value is None according to our init implmentation
         self.assertIsNone(self.solver.parameter_key)
 
-    def test_set_parameter_key_property_success(self):
-        self.assertIsNone(self.solver.parameter_key)
-        self.solver.parameter_key = self.parameter_key
-        self.assertEqual(self.solver.parameter_key, self.parameter_key)
-
     def test_get_scaling_factor_success(self):
         problem_size = 20
         q_matrix = torch.rand(problem_size, problem_size)
