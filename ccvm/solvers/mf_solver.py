@@ -41,7 +41,7 @@ class MFSolver(CCVMSolver):
 
     @property
     def parameter_key(self):
-        """The set of parameters that will be used by the solver when solving the problem.
+        """The parameters that will be used by the solver when solving the problem.
 
         Note:
             Setting this parameter after calling tune() will overwrite tuned parameters.
