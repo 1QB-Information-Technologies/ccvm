@@ -114,7 +114,7 @@ class ProblemInstance:
             try:
                 # Read metadata from the first line
                 lines = stream.readlines()
-                instance_info = lines[0].split("\n")[0].split("\t")
+                instance_info = lines[0].split("\n")[0].split(file_delimiter)
 
                 # Save all metadata from the file
                 problem_size = int(instance_info[0])
