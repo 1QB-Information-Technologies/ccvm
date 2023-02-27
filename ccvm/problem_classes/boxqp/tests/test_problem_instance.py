@@ -60,8 +60,11 @@ class TestProblemInstance(TestCase):
         instance_type = "tuning"
         problem_instance = ProblemInstance(
             device=self.device,
-            instance_type=instance_type,
-            file_path=self.file_path,
+            instance_type=instance_type
+        )
+
+        problem_instance.load_instance(
+            device=self.device, instance_type=instance_type, file_path=self.file_path,file_delimiter="\t"
         )
 
         expected_optimal_sol = 799.560976
