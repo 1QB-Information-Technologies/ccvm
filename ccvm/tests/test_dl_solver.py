@@ -16,17 +16,6 @@ class TestDLSolver(TestCase):
         # TODO: Implementation
         pass
 
-    def test_compute_energy_valid(self):
-        """Test that compute_energy return correct value when valid parameters are passed"""
-        # TODO: Implementation
-        pass
-
-    # TODO: More tests for compute_energy may be required once it has implemented error handling.
-    def test_compute_energy_invalid(self):
-        """Test that compute_energy raises the correct error when invalid parameters are passed"""
-        # TODO: Implementation
-        pass
-
     # TODO: Depending on the implementation, more test cases should be created.
     def test_tune(self):
         """Test that tune successfully tunes the parameters with no errors"""
@@ -46,7 +35,7 @@ class TestDLSolver(TestCase):
 
     # TODO: Depending on the implementation, more test cases should be created.
     def test_solve_success(self):
-        """Test that solve will be success when valid inputs are passed"""
+        """Test that solve will be successful when valid inputs are passed"""
         # TODO: Implementation
         pass
 

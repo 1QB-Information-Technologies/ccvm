@@ -107,6 +107,10 @@ class MFSolver(CCVMSolver):
                     + str(parameter_key.keys())
                 )
 
+        # If we get here, the parameter key is valid
+        self._parameter_key = parameters
+        self._is_tuned = False
+
     def _method_selector(self, problem_category):
         """Set methods relevant to this category of problem
 
@@ -162,7 +166,6 @@ class MFSolver(CCVMSolver):
         Returns:
             tuple: The gradients of the mean-field amplitudes and the variance.
         """
-
         mu_pow = torch.pow(mu, 2)
 
         mu_term1 = (-(1 + j) + pump - g**2 * mu_pow) * mu
@@ -227,7 +230,8 @@ class MFSolver(CCVMSolver):
         for nn in range(mu_rows):
             for ii in range(mu_columns):
                 evolution_file_object.write(str(round(mu_sample[nn, ii].item(), 4)))
-                evolution_file_object.write("\t")
+                if ii != mu_columns - 1:
+                    evolution_file_object.write("\t")
             evolution_file_object.write("\n")
 
         # Save the sigma samples to the file
@@ -236,7 +240,8 @@ class MFSolver(CCVMSolver):
         for nn in range(sigma_rows):
             for ii in range(sigma_columns):
                 evolution_file_object.write(str(round(sigma_sample[nn, ii].item(), 4)))
-                evolution_file_object.write("\t")
+                if ii != sigma_columns - 1:
+                    evolution_file_object.write("\t")
             evolution_file_object.write("\n")
 
     def tune(self, instances, post_processor, g=0.01):
