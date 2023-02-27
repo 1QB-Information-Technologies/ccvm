@@ -15,6 +15,10 @@ class InstanceType(enum.Enum):
     TUNING = "tuning"
     TEST = "test"
 
+    @classmethod
+    def has_value(cls, value):
+        return value in cls._value2member_map_
+
 
 # TODO: Revisit for a potential factory pattern
 class ProblemInstance:
@@ -59,16 +63,23 @@ class ProblemInstance:
         self.v_vector = None
         self.scaled_by = 1
         self.device = device
-        self.instance_type = instance_type
         self._custom_name = False
         self.file_delimiter = file_delimiter
+        instance_values = set(item.value for item in InstanceType)
+        if instance_type in instance_values:
+            self.instance_type = instance_type
+        else:
+            raise ValueError("instance_type must be tuning or test")
         if name:
             self.name = name
             self._custom_name = True
         if file_path:
             self.file_path = file_path
             self.load_instance(
-                device=device, instance_type=instance_type, file_path=file_path
+                device=device,
+                instance_type=instance_type,
+                file_path=file_path,
+                file_delimiter=file_delimiter,
             )
         self.problem_category = "boxqp"
 
@@ -135,7 +146,6 @@ class ProblemInstance:
                 line_data_v = lines[1].split("\n")[0].split(file_delimiter)
                 for idx in range(0, problem_size):
                     rval_v[idx] = -torch.Tensor([float(line_data_v[idx])])
-
                 # Read in the q_matrix matrix
                 for idx, line in enumerate(lines[2:]):
                     line_data = line.split("\n")[0].split(file_delimiter)
