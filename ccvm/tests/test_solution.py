@@ -1,20 +1,21 @@
-from unittest import TestCase
-from unittest.mock import patch
+import unittest
 from ccvm.solution import Solution
 import torch
 import os
 
 
-class TestSolution(TestCase):
+class TestSolution(unittest.TestCase):
     def setUp(self):
         self.problem_size = 10
         self.batch_size = 5
         self.instance_name = "test_instance"
-        self.objective_value = torch.tensor((10, 30, 50))
+        self.objective_value = torch.tensor((-1, -2, -3))
         self.solve_time = 2.0
         self.pp_time = 3.0
         self.optimal_value = 3.2
         self.device = "cpu"
+        self.evolution_file = "test"
+        self.iterations = 1
         self.variables = {"problem_variables": torch.tensor((10, 30, 50))}
 
     def test_save_file_invalid_tensor_name(self):
@@ -22,11 +23,13 @@ class TestSolution(TestCase):
             self.problem_size,
             self.batch_size,
             self.instance_name,
+            self.iterations,
             self.objective_value,
             self.solve_time,
             self.pp_time,
             self.optimal_value,
             self.variables,
+            self.evolution_file,
             self.device,
         )
 
@@ -41,11 +44,13 @@ class TestSolution(TestCase):
             self.problem_size,
             self.batch_size,
             self.instance_name,
+            self.iterations,
             self.objective_value,
             self.solve_time,
             self.pp_time,
             self.optimal_value,
             variable,
+            self.evolution_file,
             self.device,
         )
 
@@ -61,35 +66,41 @@ class TestSolution(TestCase):
             self.problem_size,
             self.batch_size,
             self.instance_name,
+            self.iterations,
             self.objective_value,
             self.solve_time,
             self.pp_time,
             self.optimal_value,
             self.variables,
+            self.evolution_file,
             self.device,
         )
+
+        expected_path = os.path.dirname(__file__) + "/problem_variables.pt"
 
         assert not os.path.exists(expected_path)
 
         solutions.save_tensor_to_file("problem_variables", os.path.dirname(__file__))
 
-        expected_path = os.path.dirname(__file__) + "/problem_variables.pt"
-
         assert os.path.exists(expected_path)
 
         os.remove(expected_path)
 
-    def test_solution_stats_no_solution_within_limit(self):
+    def test_solution_stats_objective_values_out_of_range(self):
         """Test the solution list is updated with valid solution"""
+
+        objective_value = torch.tensor((10, 30, 50))
         solutions = Solution(
             self.problem_size,
             self.batch_size,
             self.instance_name,
-            self.objective_value,
+            self.iterations,
+            objective_value,
             self.solve_time,
             self.pp_time,
             self.optimal_value,
             self.variables,
+            self.evolution_file,
             self.device,
         )
 
@@ -115,11 +126,13 @@ class TestSolution(TestCase):
             self.problem_size,
             self.batch_size,
             self.instance_name,
+            self.iterations,
             self.objective_value,
             self.solve_time,
             self.pp_time,
             self.optimal_value,
             self.variables,
+            self.evolution_file,
             self.device,
         )
 
@@ -136,6 +149,50 @@ class TestSolution(TestCase):
         }
 
         assert original_solution_stats == expected_solution_stats
+
+    def test_get_meta_dict(self):
+        """Test solution performance for values parameters with no impact on solution stats"""
+
+        solution = Solution(
+            self.problem_size,
+            self.batch_size,
+            self.instance_name,
+            self.iterations,
+            self.objective_value,
+            self.solve_time,
+            self.pp_time,
+            self.optimal_value,
+            self.variables,
+            self.evolution_file,
+            self.device,
+        )
+
+        expected_result = {
+            "problem_size": self.problem_size,
+            "batch_size":self.batch_size,
+            "instance_name": self.instance_name,
+            "iterations": self.iterations,
+            "solve_time": self.solve_time,
+            "pp_time": self.pp_time,
+            "optimal_value": self.optimal_value,
+            "evolution_file": self.evolution_file,
+            "solution_performance": {
+                "optimal": 0.0,
+                "one_percent": 0.0,
+                "two_percent": 0.0,
+                "three_percent": 0.0,
+                "four_percent": 0.0,
+                "five_percent": 0.0,
+                "ten_percent": 0.3333,
+            },
+            "best_objective_value": 3,
+        }
+
+       
+        actual_result = solution.get_metadata_dict()
+
+        assert actual_result == expected_result
+      
 
 
 if __name__ == "__main__":
