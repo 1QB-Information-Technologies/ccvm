@@ -1,18 +1,17 @@
-import unittest
 from unittest import TestCase
 from unittest.mock import patch
 from ccvm.solution import Solution
 import torch
 import os
 
-class TestResult(TestCase):
+
+class TestSolution(TestCase):
     def setUp(self):
         self.problem_size = 10
         self.batch_size = 5
         self.instance_name = "test_instance"
-        self.c_variables = torch.tensor((2000, 4000, 6000))
         self.objective_value = torch.tensor((10, 30, 50))
-        self.solve_time = self.pp_time = 2.0
+        self.solve_time = 2.0
         self.pp_time = 3.0
         self.optimal_value = 3.2
         self.device = "cpu"
@@ -23,7 +22,6 @@ class TestResult(TestCase):
             self.problem_size,
             self.batch_size,
             self.instance_name,
-            self.c_variables,
             self.objective_value,
             self.solve_time,
             self.pp_time,
@@ -43,7 +41,6 @@ class TestResult(TestCase):
             self.problem_size,
             self.batch_size,
             self.instance_name,
-            self.c_variables,
             self.objective_value,
             self.solve_time,
             self.pp_time,
@@ -64,7 +61,6 @@ class TestResult(TestCase):
             self.problem_size,
             self.batch_size,
             self.instance_name,
-            self.c_variables,
             self.objective_value,
             self.solve_time,
             self.pp_time,
@@ -73,7 +69,9 @@ class TestResult(TestCase):
             self.device,
         )
 
-        solutions.save_tensor_to_file("problem_variables",os.path.dirname(__file__))
+        assert not os.path.exists(expected_path)
+
+        solutions.save_tensor_to_file("problem_variables", os.path.dirname(__file__))
 
         expected_path = os.path.dirname(__file__) + "/problem_variables.pt"
 
@@ -81,14 +79,12 @@ class TestResult(TestCase):
 
         os.remove(expected_path)
 
-    
     def test_solution_stats_no_solution_within_limit(self):
         """Test the solution list is updated with valid solution"""
         solutions = Solution(
             self.problem_size,
             self.batch_size,
             self.instance_name,
-            self.c_variables,
             self.objective_value,
             self.solve_time,
             self.pp_time,
@@ -114,12 +110,11 @@ class TestResult(TestCase):
 
     def test_solution_stats_solutions_within_limit(self):
         """Test solution performance for values parameters with no impact on solution stats"""
-        self.objective_value = torch.tensor((-2, -4, -5))
+        self.objective_value = torch.tensor((-0.007, -3.09, -3.199))
         solution = Solution(
             self.problem_size,
             self.batch_size,
             self.instance_name,
-            self.c_variables,
             self.objective_value,
             self.solve_time,
             self.pp_time,
@@ -128,15 +123,13 @@ class TestResult(TestCase):
             self.device,
         )
 
-        solution.get_solution_stats()
-
         original_solution_stats = solution.solution_performance
 
         expected_solution_stats = {
-            "optimal": 0.6667,
-            "one_percent": 0.6667,
-            "two_percent": 0.6667,
-            "three_percent": 0.6667,
+            "optimal": 0.3333,
+            "one_percent": 0.3333,
+            "two_percent": 0.3333,
+            "three_percent": 0.3333,
             "four_percent": 0.6667,
             "five_percent": 0.6667,
             "ten_percent": 0.6667,
