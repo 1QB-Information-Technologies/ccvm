@@ -35,6 +35,39 @@ class TestProblemInstance(TestCase):
 
         assert problem_instance.file_delimiter == self.file_delimiter
 
+    def test_name_parameter(self):
+        """Test if constructor assigned a valid name """
+   
+        problem_instance = ProblemInstance(
+            device=self.device,
+            instance_type=self.instance_type,
+            file_path=self.file_path,
+            file_delimiter=self.file_delimiter,
+        )
+
+        expected_name = self.file_path.split("/")[-1].split(".")[0]
+        assert expected_name == problem_instance.name
+
+    def test_valid_delimiter_assignment(self):
+        """Test if constructor assigned a valid name """
+   
+        problem_instance = ProblemInstance(
+            device=self.device,
+            instance_type=self.instance_type,
+            file_path=self.file_path,
+        )
+
+        expected_file_delimiter="\t"
+
+        
+        assert expected_file_delimiter == problem_instance.file_delimiter
+
+
+   
+
+        expected_name = self.file_path.split("/")[-1].split(".")[0]
+        assert expected_name == problem_instance.name
+
     def test_constructor_with_invalid_file_path(self):
         """Test the constructor when invalid file path is provided"""
         invalid_file_path = "/test_instances/invalid.in"
@@ -59,12 +92,14 @@ class TestProblemInstance(TestCase):
         """Test load_instance when device is cpu and instance type is tuning"""
         instance_type = "tuning"
         problem_instance = ProblemInstance(
-            device=self.device,
-            instance_type=instance_type
+            device=self.device, instance_type=instance_type
         )
 
         problem_instance.load_instance(
-            device=self.device, instance_type=instance_type, file_path=self.file_path,file_delimiter="\t"
+            device=self.device,
+            instance_type=instance_type,
+            file_path=self.file_path,
+            file_delimiter="\t",
         )
 
         expected_optimal_sol = 799.560976
@@ -93,7 +128,11 @@ class TestProblemInstance(TestCase):
         ecpected_q_matrix = torch.FloatTensor([[41, 17.5], [2, 3]])
         expected_v_vecotr = torch.FloatTensor([[-31, -18.5], [-3.1, -3.7]])
 
+        expected_scaled_by = scaling_factor * 1
+
         problem_instance.scale_coefs(scaling_factor)
+
+        assert torch.equal(expected_scaled_by, problem_instance.scaled_by)
 
         assert torch.equal(ecpected_q_matrix, problem_instance.q_matrix)
 

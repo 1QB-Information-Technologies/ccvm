@@ -15,10 +15,7 @@ class InstanceType(enum.Enum):
     TUNING = "tuning"
     TEST = "test"
 
-    @classmethod
-    def has_value(cls, value):
-        return value in cls._value2member_map_
-
+    
 
 # TODO: Revisit for a potential factory pattern
 class ProblemInstance:
