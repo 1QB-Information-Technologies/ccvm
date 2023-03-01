@@ -87,7 +87,10 @@ class TestSolution(unittest.TestCase):
         os.remove(expected_path)
 
     def test_solution_stats_objective_values_out_of_range(self):
-        """Test the solution list is updated with valid solution"""
+        """Test the solution is updated with valid solution, even when the objective values 
+        are unreasonable (we would expect them to be negative and lower in absolute value than 
+        the optimal solution)
+        """
 
         objective_value = torch.tensor((10, 30, 50))
         solutions = Solution(
@@ -120,7 +123,8 @@ class TestSolution(unittest.TestCase):
         assert original_solution_stats == expected_solution_stats
 
     def test_solution_stats_solutions_within_limit(self):
-        """Test solution performance for values parameters with no impact on solution stats"""
+        """Test solution performance when objective values are close enough to the optimal solution 
+            to yield results in the solution stats"""
         self.objective_value = torch.tensor((-0.007, -3.09, -3.199))
         solution = Solution(
             self.problem_size,
@@ -169,7 +173,7 @@ class TestSolution(unittest.TestCase):
 
         expected_result = {
             "problem_size": self.problem_size,
-            "batch_size":self.batch_size,
+            "batch_size": self.batch_size,
             "instance_name": self.instance_name,
             "iterations": self.iterations,
             "solve_time": self.solve_time,
@@ -188,11 +192,9 @@ class TestSolution(unittest.TestCase):
             "best_objective_value": 3,
         }
 
-       
         actual_result = solution.get_metadata_dict()
 
         assert actual_result == expected_result
-      
 
 
 if __name__ == "__main__":
