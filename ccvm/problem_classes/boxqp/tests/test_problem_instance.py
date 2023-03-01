@@ -125,8 +125,8 @@ class TestProblemInstance(TestCase):
         )
 
         scaling_factor = torch.FloatTensor([[1, 2], [10, 10]])
-        ecpected_q_matrix = torch.FloatTensor([[41, 17.5], [2, 3]])
-        expected_v_vecotr = torch.FloatTensor([[-31, -18.5], [-3.1, -3.7]])
+        expected_q_matrix = torch.FloatTensor([[41, 17.5], [2, 3]])
+        expected_v_vector = torch.FloatTensor([[-31, -18.5], [-3.1, -3.7]])
 
         expected_scaled_by = scaling_factor * 1
 
@@ -134,9 +134,9 @@ class TestProblemInstance(TestCase):
 
         assert torch.equal(expected_scaled_by, problem_instance.scaled_by)
 
-        assert torch.equal(ecpected_q_matrix, problem_instance.q_matrix)
+        assert torch.equal(expected_q_matrix, problem_instance.q_matrix)
 
-        assert torch.equal(expected_v_vecotr, problem_instance.v_vector)
+        assert torch.equal(expected_v_vector, problem_instance.v_vector)
 
     def test_compute_energy_times(self):
         """Test compute energy returns the right tensor"""
