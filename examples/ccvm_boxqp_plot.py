@@ -37,6 +37,7 @@ if __name__ == "__main__":
             device=solver.device,
         )
 
+        # Scale the problem's coefficients for more stable optimization
         boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 
         # Solve the problem
@@ -56,7 +57,7 @@ if __name__ == "__main__":
         TTS_type="wallclock",
     )
 
-    ccvmplotlib.apply_default_tts_styling(plot_fig, plot_ax)    # apply default styling
+    ccvmplotlib.apply_default_tts_styling(plot_fig, plot_ax)  # apply default styling
     plt.show()  # show plot in a new window
 
     # If PLOT_OUTPUT_DIR not exists, create the path
