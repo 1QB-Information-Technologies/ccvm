@@ -8,11 +8,12 @@ import random
 
 class TestMFSolver(TestCase):
     def setUp(self):
+        """Set up each test case with a new MFSolver instance and some valid parameters"""
         self.mf_solver = MFSolver(
             device="cpu", batch_size=1000, problem_category="boxqp"
         )
-        self.problem_size = 2
         self.batch_size = 1000
+        self.problem_size = 2
         self.valid_parameters = {
             self.problem_size: {
                 "pump": 2.5,
@@ -25,14 +26,17 @@ class TestMFSolver(TestCase):
         }
 
     def mock_calculate_grads(self, *args, **kwargs):
+        """Mock the calculate_grads method to return dummy data"""
         return torch.zeros(self.batch_size, self.problem_size), torch.zeros(
             self.batch_size, self.problem_size
         )
 
     def mock_change_variables(self, *args, **kwargs):
+        """Mock the change_variables method to return dummy data"""
         return torch.zeros(self.batch_size, self.problem_size)
 
     def mock_fit_to_constraints(self, *args, **kwargs):
+        """Mock the fit_to_constraints method to return dummy data"""
         return torch.zeros(self.batch_size, self.problem_size)
 
     def test_set_parameter_key_with_valid_inputs(self):
@@ -77,7 +81,7 @@ class TestMFSolver(TestCase):
             == f"The given problem category is not valid. Given category: {invalid_problem_category}"
         )
 
-    def test_calculate_grads_valid(self):
+    def test_calculate_grads_boxqp_valid(self):
         """Test that calculate_grads returns correct data when valid parameters are passed"""
         batch_size = 3
         problem_size = 2
