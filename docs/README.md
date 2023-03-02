@@ -12,3 +12,5 @@ Due to the capabilities of Sphinx, a programme that automatically generates docu
 
 - It is necessary to convert all readme files that include mathematical formulas to rst format using an online converter
 - The new file must replace the old file in docs/source folder 
+- Generate documentation by running `sphinx-build docs/source _build` from root folder
+- Validate the documentation in `_build` folder 
