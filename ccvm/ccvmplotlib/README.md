@@ -1,6 +1,6 @@
 # ccvmplotlib
 
-`ccvmplotlib` contains code for plotting results from the[ccvm](https://github.com/1QB-Information-Technologies/ccvm/) package. It extends [Matplotlib](https://matplotlib.org/) to generate visualizations for various problem classes supported by the CCVM architecture.
+`ccvmplotlib` contains code for plotting results from the [ccvm](https://github.com/1QB-Information-Technologies/ccvm/) package. It extends [Matplotlib](https://matplotlib.org/) to generate visualizations for various problem classes supported by the CCVM architecture.
 
 ### Features
 
