@@ -1,13 +1,14 @@
 # ccvmplotlib
 
-`ccvmplotlib` contains code for plotting results from [CCVM](https://github.com/1QB-Information-Technologies/ccvm/). It extends [Matplotlib](https://matplotlib.org/) to generate visualizations for various problem classes supported by the CCVM architecture.
+`ccvmplotlib` contains code for plotting results from the[ccvm](https://github.com/1QB-Information-Technologies/ccvm/) package. It extends [Matplotlib](https://matplotlib.org/) to generate visualizations for various problem classes supported by the CCVM architecture.
 
 ### Features
 
-- Time-To-Solve (TTS)
-- Success Probability
-- Time Evolution [(TODO)](https://github.com/1QB-Information-Technologies/ccvm/issues/28)
-- Density Dependent TTS [(TODO)](https://github.com/1QB-Information-Technologies/ccvm/issues/29)
+- Time-to-Solution (TTS) Plotting
+- Success Probability Plotting
+- Future Features:
+    - Time Evolution Plotting ([issue #28](https://github.com/1QB-Information-Technologies/ccvm/issues/28))
+    - Density-Dependent TTS Plotting ([issue #29](https://github.com/1QB-Information-Technologies/ccvm/issues/29))
 
 ### Usage
 
