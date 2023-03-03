@@ -1,9 +1,9 @@
-from ccvm.ccvmplotlib.problem_metadata.problem_metadata import (
+from ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata import (
     ProblemMetadata,
     TTSType,
     ProblemType,
 )
-from ccvm.ccvmplotlib.problem_metadata import BoxQPMetadata
+from ccvm_simulators.ccvmplotlib.problem_metadata import BoxQPMetadata
 
 
 class ProblemMetadataFactory:
@@ -18,7 +18,7 @@ class ProblemMetadataFactory:
 
         Args:
             problem (str): A problem type.
-            TTS_type (str): A Time-To-Solution type. It is either a CPU time or an 
+            TTS_type (str): A Time-To-Solution type. It is either a CPU time or an
                 optic device time.
 
         Raises:

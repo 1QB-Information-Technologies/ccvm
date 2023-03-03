@@ -74,8 +74,8 @@ This software package includes solvers for continuous optimization problems. The
 ##### 1. Import Modules
 
 ```python
-from ccvm.problem_classes.boxqp import ProblemInstance
-from ccvm.solvers import DLSolver
+from ccvm_simulators.problem_classes.boxqp import ProblemInstance
+from ccvm_simulators.solvers import DLSolver
 ```
 
 ##### 2. Define a Solver

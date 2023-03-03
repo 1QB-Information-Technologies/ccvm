@@ -12,7 +12,7 @@ required = [str(ir.requirement) for ir in install_reqs]
 
 setup(
     name="ccvm-simulators",
-    version="0.1.0",
+    version="0.1.1",
     description="Solve continuous non-convex optimization problems with CCVM architectures and simulators",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",

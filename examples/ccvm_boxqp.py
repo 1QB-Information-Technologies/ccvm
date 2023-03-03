@@ -1,6 +1,6 @@
 import glob
-from ccvm.problem_classes.boxqp import ProblemInstance
-from ccvm.solvers import DLSolver
+from ccvm_simulators.problem_classes.boxqp import ProblemInstance
+from ccvm_simulators.solvers import DLSolver
 
 TEST_INSTANCES_DIR = "./test_instances/"
 
