@@ -34,7 +34,7 @@ This software package includes solvers for continuous optimization problems. The
 
 1. Once you have cloned the repository, install the package using `pip`.
 ```
- pip install ccvm
+ pip install ccvm-simulators
 ```
 
 2. Go into `examples/` and run the demo scripts.

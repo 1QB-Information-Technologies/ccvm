@@ -1,17 +1,19 @@
 from setuptools import setup, find_packages
 
-from pkg_resources import parse_requirements
+# from pkg_resources import parse_requirements
+from pip._internal.req import parse_requirements
+from pip._internal.network.session import PipSession
 
 # parse_requirements() returns generator of pip.req.InstallRequirement objects
-install_reqs = parse_requirements("requirements.txt")
+install_reqs = parse_requirements("requirements.txt", session=PipSession())
 
 # convert to list
-required = [str(ir) for ir in install_reqs]
+required = [str(ir.requirement) for ir in install_reqs]
 
 setup(
-    name="ccvm",
+    name="ccvm-simulators",
     version="0.1.0",
-    description="Solve continuous non-convex optimization problems with CCVM architectures and solvers",
+    description="Solve continuous non-convex optimization problems with CCVM architectures and simulators",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/1QB-Information-Technologies/ccvm",
