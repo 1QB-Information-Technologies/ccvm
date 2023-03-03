@@ -1,6 +1,3 @@
-Problem Classes
-===============
-
 BoxQP
 -----
 
