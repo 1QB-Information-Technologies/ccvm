@@ -32,7 +32,7 @@ This software package includes solvers for continuous optimization problems. The
 ## Quickstart
 
 
-1. Once you have cloned the repository, install the package using `pip`. 
+1. Once you have cloned the repository, install the package using `pip`.
 ```
  pip install ccvm
 ```
@@ -98,9 +98,9 @@ boxqp_instance = ProblemInstance(
 ```
 
 ##### 4. Scale the Coefficients
-The BoxQP problem matrix $Q$ and vector $V$ are normalized to obtain a uniform
+The BoxQP problem matrix Q and vector V are normalized to obtain a uniform
 performance across different problem sizes and densities. The ideal range depends on the
-solver. For best results, $Q$ should be passed to the solver's `get_scaling_factor()`
+solver. For best results, Q should be passed to the solver's `get_scaling_factor()`
 method to determine the best scaling value for the problem–solver combination.
 
 ```python
