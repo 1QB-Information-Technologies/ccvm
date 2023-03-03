@@ -1,81 +1,77 @@
 
-# Coherent Continous-Variable Machine
+# Coherent Continous-Variable Machine Simulators
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-green.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Maintainer](https://img.shields.io/badge/Maintainer-1QBit-blue)](http://1qbit.com/)
 [![Paper](https://img.shields.io/badge/Paper-arxiv-red)](https://arxiv.org/abs/2209.04415)
 [![Docs](https://img.shields.io/badge/Docs-Link-yellow)](https://urban-chainsaw-9k39nm4.pages.github.io/index.html)
 
-The Coherent Continous-Variable Machine (CCVM) is a novel coherent quantum optical network architecture built on NTT's Coherent Ising Machine (CIM) where the physical properties of optical pulses (e.g. mean-field amplitude, phase, intensity, etc.) represent the continuous variables of a given optimization problem. Various features of the optical device and programming techniques can be used to implement the constraints imposed by these optimization problems. Here we demonstrate the application of CCVM in solving the Box-Constrained Quadratic Programming (BoxQP) problem by mapping the variables of problems into the random variables of CCVM.
+This software package includes solvers for continuous optimization problems. The solvers are simulators of coherent continuous-variable machines (CCVM), which are novel coherent network computing architectures based on NTT Research’s coherent Ising machines (CIM). In CCVMs, the physical properties of optical pulses (e.g., mean-field quadrature amplitudes and phase) represent the continuous variables of a given optimization problem. Various features of CCVMs can be used along with programming techniques to implement the constraints imposed by such an optimization problem. Included are methods for solving box-constrained quadratic programming (BoxQP) problems using CCVM simulators by mapping the variables of the problems into the random variables of CCVMs.
 
 ## Table of Contents
 
 0. [Requirements](#requirements)
 1. [Quickstart](#quickstart)
 2. [Usage](#usage)
-3. [Docs](#docs)
+3. [Documentation](#docs)
     - [BoxQP Problem Definition](ccvm/problem_classes/README.md)
     - [ccvmplotlib](ccvm/ccvmplotlib/README.md)
 4. [Contributing](#contributing)
 5. [References](#references)
 6. [License](#license)
 
-### Requirements
+## Requirements
 
-- Python 3.10
+- Python (supported version: 3.10)
 
 ### Supported operating systems
 
-- MacOS (Monterey, Big Sur)
+- macOS (Monterey, Big Sur)
 - Ubuntu (20.04)
 
 ## Quickstart
 
 
-1. Once you have cloned the repo, install dependencies by navigating into the top-level directory of the repository and running
-
+1. Once you have cloned the repository, install the package using `pip`.
 ```
- pip install . --user
+ pip install ccvm
 ```
 
-TODO: publish on pip, update above to `pip install ccvm`
+2. Go into `examples/` and run the demo scripts.
+    - `ccvm_boxqp.py`: Solve a BoxQP problem using a CCVM simulator, w/o plotting
+    - `ccvm_boxqp_plot.py`: Solve a BoxQP problem using a CCVM simulator, w/ time-to-solution (TTS) plotting
 
-
-2. Go into `examples/` and run demo scripts
-    - `ccvm_boxqp.py`: Solve BoxQP using CCVM w/o plotting
-    - `ccvm_boxqp_plot.py`: Solve BoxQP using CCVM w/ Time To Solution (TTS) plotting
-
-3. View generated plots
-    - The `ccvm_boxqp_plot.py` script solves a single problem instance, and will create an image of the resulting TTS plot in a `plots/` directory. The image, `DL-CCVM_TTS_cpu_plot.png`, will look something like this:
+3. View the generated plot.
+    - The `ccvm_boxqp_plot.py` script solves a single problem instance, and will create an image of the resulting TTS plot in a `plots/` directory. The resulting output image, `DL-CCVM_TTS_cpu_plot.png`, will look something like this:
 
 <p align="center">
     <img src="ccvm/ccvmplotlib/images/single_instance_TTS_plot.png" width="250" >
 </p>
 
-## Extending the Example
+### Extending the Example
 
-4. Plotting Larger Data:
-    - The script above is a toy example that only plots a single problem instance.
-    - It can be extended to solve multiple problems over a range of sizes.
-    - When solution metadata is saved for multiple problems, the graph becomes more informative:
+4. Plotting larger datasets
+    - The `ccvm_boxqp_plot.py` script is a toy example that plots the TTS for only a single problem instance.
+    - It can be extended to solve multiple problems over a range of problem sizes.
+    - When solution metadata is saved for multiple problems, the graph becomes more informative, for example:
 
 <p align="center">
     <img src="ccvm/ccvmplotlib/images/tts_plot_example.png" width="250" >
 </p>
 
 
-5. Other Types of Plots:
-    - ccvmplotlib can also plot the Success Probability data
-        - Example plot:
+5. Other types of plots
+    - `ccvmplotlib` can also plot the success probability data, for example:
+
 <p align="center">
     <img src="ccvm/ccvmplotlib/images/success_prob_plot_example.png" width="250">
 </p>
 
 ## Usage
 
-### Solve a BoxQP problem
+### Solving a BoxQP Problem
 
-##### 1. Add imports
+##### 1. Import Modules
 
 ```python
 from ccvm.problem_classes.boxqp import ProblemInstance
@@ -91,7 +87,7 @@ solver.parameter_key = {
 }
 ```
 
-##### 3. Load in Problem Instance
+##### 3. Load a Problem Instance
 
 ```python
 boxqp_instance = ProblemInstance(
@@ -101,17 +97,17 @@ boxqp_instance = ProblemInstance(
 )
 ```
 
-##### 4. Scale Coefficients
-The BoxQP problem matrix, Q, and vector, V, are normalized to obtain a uniform
+##### 4. Scale the Coefficients
+The BoxQP problem matrix Q and vector V are normalized to obtain a uniform
 performance across different problem sizes and densities. The ideal range depends on the
 solver. For best results, Q should be passed to the solver's `get_scaling_factor()`
-method to determine the best scaling value for the problem/solver combination.
+method to determine the best scaling value for the problem–solver combination.
 
 ```python
 boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 ```
 
-##### 5. Solve
+##### 5. Solve the Problem Instance
 
 ```python
 solution = solver.solve(
@@ -125,31 +121,31 @@ print(f"The best known solution to this problem is {solution.optimal_value}")
 print(f"The best objective value found by the solver was {solution.best_objective_value}")
 # The best objective value found by the solver was 798.1630859375
 
-print(f"The solve process took {solution.solve_time} seconds")
-# The solve process took 8.949262142181396 seconds
+print(f"The solving process took {solution.solve_time} seconds")
+# The solving process took 8.949262142181396 seconds
 ```
 
-## Docs
+## Documentation
 
-Find our [documentation here](https://urban-chainsaw-9k39nm4.pages.github.io/index.html).
+The package documentation can be found [here](https://urban-chainsaw-9k39nm4.pages.github.io/index.html).
 
 * TODO: Update with public link
 
-Some additional quick links:
-- Problem Definition: [BoxQP Problem Class](ccvm/problem_classes/README.md)
-- Plotting Library: [ccvmplotlib](ccvm/ccvmplotlib/README.md)
+Additional links:
+- Problem definition: [BoxQP problem class](ccvm/problem_classes/README.md)
+- Plotting library: [ccvmplotlib](ccvm/ccvmplotlib/README.md)
 
 
 ## Contributing
 
-We love pull requests and discussing novel ideas. Check out our [contribution guide](CONTRIBUTING.md) and feel free to improve CCVM. For major changes, please open an issue first to discuss what you would like to change.
+We appreciate your pull requests and welcome opportunities to discuss new ideas. Check out our [contribution guide](CONTRIBUTING.md) and feel free to improve the `ccvm` package. For major changes, please open an issue first to discuss any suggestions for changes you might have.
 
-Thanks for considering contributing to our project! We appreciate your help and support.
+Thank you for considering making a  contribution to our project! We appreciate your help and support.
 
 
 ## References
 
-This repo contains architectures and algorithms as discussed in the paper ["Non-convex Quadratic Programming Using Coherent Optical Networks"](https://arxiv.org/abs/2209.04415) by Farhad Khosravi, Ugur Yildiz, Artur Scherer, and Pooya Ronagh.
+This repository contains architectures and simulators presented in the paper ["Non-convex Quadratic Programming Using Coherent Optical Networks"](https://arxiv.org/abs/2209.04415) by Farhad Khosravi, Ugur Yildiz, Artur Scherer, and Pooya Ronagh.
 
 
 ## License
