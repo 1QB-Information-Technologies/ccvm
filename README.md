@@ -138,7 +138,7 @@ Additional links:
 
 ## Contributing
 
-We appreciate your pull requests and welcome opportunities to discuss new ideas. Check out our [contribution guide](CONTRIBUTING.md) and feel free to improve the `ccvm` package. For major changes, please open an issue first to discuss any suggestions for changes you might have.
+We appreciate your pull requests and welcome opportunities to discuss new ideas. Check out our [contribution guide](CONTRIBUTING.md) and feel free to improve the `ccvm_simulators` package. For major changes, please open an issue first to discuss any suggestions for changes you might have.
 
 Thank you for considering making a  contribution to our project! We appreciate your help and support.
 
