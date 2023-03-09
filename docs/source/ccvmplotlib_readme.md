@@ -1,6 +1,6 @@
 
 
-```{include} ../../ccvm/ccvmplotlib/README.md
+```{include} ../../ccvm_simulators/ccvmplotlib/README.md
 ```
 
 

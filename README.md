@@ -4,7 +4,7 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-green.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Maintainer](https://img.shields.io/badge/Maintainer-1QBit-blue)](http://1qbit.com/)
 [![Paper](https://img.shields.io/badge/Paper-arxiv-red)](https://arxiv.org/abs/2209.04415)
-[![Docs](https://img.shields.io/badge/Docs-Link-yellow)](https://urban-chainsaw-9k39nm4.pages.github.io/index.html)
+[![Docs](https://img.shields.io/badge/Docs-Link-yellow)](https://1qb-information-technologies.github.io/ccvm/)
 
 This software package includes solvers for continuous optimization problems. The solvers are simulators of coherent continuous-variable machines (CCVM), which are novel coherent network computing architectures based on NTT Research’s coherent Ising machines (CIM). In CCVMs, the physical properties of optical pulses (e.g., mean-field quadrature amplitudes and phase) represent the continuous variables of a given optimization problem. Various features of CCVMs can be used along with programming techniques to implement the constraints imposed by such an optimization problem. Included are methods for solving box-constrained quadratic programming (BoxQP) problems using CCVM simulators by mapping the variables of the problems into the random variables of CCVMs.
 
@@ -14,8 +14,8 @@ This software package includes solvers for continuous optimization problems. The
 1. [Quickstart](#quickstart)
 2. [Usage](#usage)
 3. [Documentation](#docs)
-    - [BoxQP Problem Definition](ccvm/problem_classes/README.md)
-    - [ccvmplotlib](ccvm/ccvmplotlib/README.md)
+    - [BoxQP Problem Definition](ccvm_simulators/problem_classes/README.md)
+    - [ccvmplotlib](ccvm_simulators/ccvmplotlib/README.md)
 4. [Contributing](#contributing)
 5. [References](#references)
 6. [License](#license)
@@ -45,7 +45,7 @@ This software package includes solvers for continuous optimization problems. The
     - The `ccvm_boxqp_plot.py` script solves a single problem instance, and will create an image of the resulting TTS plot in a `plots/` directory. The resulting output image, `DL-CCVM_TTS_cpu_plot.png`, will look something like this:
 
 <p align="center">
-    <img src="ccvm/ccvmplotlib/images/single_instance_TTS_plot.png" width="250" >
+    <img src="ccvm_simulators/ccvmplotlib/images/single_instance_TTS_plot.png" width="250" >
 </p>
 
 ### Extending the Example
@@ -56,7 +56,7 @@ This software package includes solvers for continuous optimization problems. The
     - When solution metadata is saved for multiple problems, the graph becomes more informative, for example:
 
 <p align="center">
-    <img src="ccvm/ccvmplotlib/images/tts_plot_example.png" width="250" >
+    <img src="ccvm_simulators/ccvmplotlib/images/tts_plot_example.png" width="250" >
 </p>
 
 
@@ -64,7 +64,7 @@ This software package includes solvers for continuous optimization problems. The
     - `ccvmplotlib` can also plot the success probability data, for example:
 
 <p align="center">
-    <img src="ccvm/ccvmplotlib/images/success_prob_plot_example.png" width="250">
+    <img src="ccvm_simulators/ccvmplotlib/images/success_prob_plot_example.png" width="250">
 </p>
 
 ## Usage
@@ -127,13 +127,13 @@ print(f"The solving process took {solution.solve_time} seconds")
 
 ## Documentation
 
-The package documentation can be found [here](https://urban-chainsaw-9k39nm4.pages.github.io/index.html).
+The package documentation can be found [here](https://1qb-information-technologies.github.io/ccvm/).
 
 * TODO: Update with public link
 
 Additional links:
-- Problem definition: [BoxQP problem class](ccvm/problem_classes/README.md)
-- Plotting library: [ccvmplotlib](ccvm/ccvmplotlib/README.md)
+- Problem definition: [BoxQP problem class](ccvm_simulators/problem_classes/README.md)
+- Plotting library: [ccvmplotlib](ccvm_simulators/ccvmplotlib/README.md)
 
 
 ## Contributing
@@ -150,4 +150,4 @@ This repository contains architectures and simulators presented in the paper ["N
 
 ## License
 
-[APGLv3](https://github.com/1QB-Information-Technologies/ccvm/blob/main/LICENSE)
+[APGLv3](https://github.com/1QB-Information-Technologies/ccvm_simulators/blob/main/LICENSE)
