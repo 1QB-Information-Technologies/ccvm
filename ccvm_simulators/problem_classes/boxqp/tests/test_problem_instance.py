@@ -1,6 +1,6 @@
 import unittest
 from unittest import TestCase
-from ccvm.problem_classes.boxqp.problem_instance import ProblemInstance
+from ccvm_simulators.problem_classes.boxqp.problem_instance import ProblemInstance
 import os
 import torch
 
@@ -36,8 +36,8 @@ class TestProblemInstance(TestCase):
         assert problem_instance.file_delimiter == self.file_delimiter
 
     def test_name_parameter(self):
-        """Test if constructor assigned a valid name """
-   
+        """Test if constructor assigned a valid name"""
+
         problem_instance = ProblemInstance(
             device=self.device,
             instance_type=self.instance_type,
@@ -49,21 +49,17 @@ class TestProblemInstance(TestCase):
         assert expected_name == problem_instance.name
 
     def test_valid_delimiter_assignment(self):
-        """Test if constructor assigned a valid name """
-   
+        """Test if constructor assigned a valid name"""
+
         problem_instance = ProblemInstance(
             device=self.device,
             instance_type=self.instance_type,
             file_path=self.file_path,
         )
 
-        expected_file_delimiter="\t"
+        expected_file_delimiter = "\t"
 
-        
         assert expected_file_delimiter == problem_instance.file_delimiter
-
-
-   
 
         expected_name = self.file_path.split("/")[-1].split(".")[0]
         assert expected_name == problem_instance.name

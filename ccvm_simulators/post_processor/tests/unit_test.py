@@ -4,17 +4,17 @@
 # import uuid
 # import xmlrunner
 
-# from ccvm.post_processor.tests.test_adam import TestPostProcessorAdam
-# from ccvm.post_processor.tests.test_bfgs import TestPostProcessorBFGS
-# from ccvm.post_processor.tests.test_asgd import TestPostProcessorASGD
-# from ccvm.post_processor.tests.test_lbfgs import TestPostProcessorLBFGS
-# from ccvm.post_processor.tests.test_trust_constr import (
+# from ccvm_simulators.post_processor.tests.test_adam import TestPostProcessorAdam
+# from ccvm_simulators.post_processor.tests.test_bfgs import TestPostProcessorBFGS
+# from ccvm_simulators.post_processor.tests.test_asgd import TestPostProcessorASGD
+# from ccvm_simulators.post_processor.tests.test_lbfgs import TestPostProcessorLBFGS
+# from ccvm_simulators.post_processor.tests.test_trust_constr import (
 #     TestPostProcessorTrustConstr,
 # )
-# from ccvm.post_processor.tests.test_factory import (
+# from ccvm_simulators.post_processor.tests.test_factory import (
 #     TestPostProcessorFactory,
 # )
-# from ccvm.post_processor.tests.test_box_qp_model import TestBoxQPModel
+# from ccvm_simulators.post_processor.tests.test_box_qp_model import TestBoxQPModel
 
 # # import config
 

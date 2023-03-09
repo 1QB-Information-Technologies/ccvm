@@ -1,9 +1,9 @@
-from ccvm.ccvmplotlib.problem_metadata.problem_metadata import (
+from ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata import (
     ProblemType,
     TTSType,
     ProblemMetadata,
 )
-from ccvm.ccvmplotlib.utils.sampleTTSmetric import SampleTTSMetric
+from ccvm_simulators.ccvmplotlib.utils.sampleTTSmetric import SampleTTSMetric
 
 import numpy as np
 import pandas as pd
@@ -93,7 +93,7 @@ class BoxQPMetadata(ProblemMetadata):
         the optimal type and problem size inputs.
 
         Args:
-            matching_df (pd.DataFrame): Filtered Data Frame with the solver parameter 
+            matching_df (pd.DataFrame): Filtered Data Frame with the solver parameter
                 and the problem size.
             percent_gap (str): Percentage gap from the optimal solution.
             problem_size (int): BoxQP problem size (N).
@@ -102,7 +102,7 @@ class BoxQPMetadata(ProblemMetadata):
             AssertionError: Raises an error if an unsupported TTS type is given
 
         Returns:
-            list: Best known energy list, Time-To-Solve list, and success probability 
+            list: Best known energy list, Time-To-Solve list, and success probability
                 list
         """
         row_count = matching_df.shape[0]
@@ -143,7 +143,7 @@ class BoxQPMetadata(ProblemMetadata):
         probability plottings.
 
         Returns:
-            pd.DataFrame: A new processed dataframe for TTS and success probability 
+            pd.DataFrame: A new processed dataframe for TTS and success probability
                 plotting.
         """
         plotting_df = pd.DataFrame(

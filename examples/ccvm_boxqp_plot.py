@@ -1,9 +1,9 @@
 import glob
 import os
-from ccvm.ccvmplotlib import ccvmplotlib
-from ccvm.problem_classes.boxqp import ProblemInstance
-from ccvm.metadata_list import MetadataList
-from ccvm.solvers import DLSolver
+from ccvm_simulators.ccvmplotlib import ccvmplotlib
+from ccvm_simulators.problem_classes.boxqp import ProblemInstance
+from ccvm_simulators.metadata_list import MetadataList
+from ccvm_simulators.solvers import DLSolver
 
 import matplotlib.pyplot as plt
 

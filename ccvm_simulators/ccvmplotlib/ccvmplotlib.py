@@ -4,7 +4,7 @@ import numpy as np
 import math
 from matplotlib import cm
 
-from ccvm.ccvmplotlib.problem_metadata import ProblemMetadataFactory
+from ccvm_simulators.ccvmplotlib.problem_metadata import ProblemMetadataFactory
 
 
 TTS_UPPER_LIMIT = 1e20  # Approximate age of the universe in sec.
@@ -21,6 +21,7 @@ PERC_GAP_LABEL_MAP = {
 
 class ccvmplotlib:
     """A generic plotting library for a problem solved by a CCVM solver."""
+
     @staticmethod
     def plot_TTS(
         metadata_filepath: str,
@@ -200,7 +201,7 @@ class ccvmplotlib:
             ax (matplotlib.axes.Axes): A pyplot axis to be set.
             xlabel (str): x-label text.
         """
-        ax.set_xlabel(xlabel=xlabel, fontdict={'family':'serif', 'size':36})
+        ax.set_xlabel(xlabel=xlabel, fontdict={"family": "serif", "size": 36})
 
     @staticmethod
     def set_default_ylabel(ax: matplotlib.axes.Axes, ylabel: str) -> None:
@@ -211,7 +212,7 @@ class ccvmplotlib:
             ax (matplotlib.axes.Axes): A pyplot axis to be set.
             ylabel (str): y-label text.
         """
-        ax.set_ylabel(ylabel=ylabel, fontdict={'family':'serif', 'size':36})
+        ax.set_ylabel(ylabel=ylabel, fontdict={"family": "serif", "size": 36})
 
     @staticmethod
     def set_default_ticks(ax: matplotlib.axes.Axes) -> None:
@@ -220,8 +221,8 @@ class ccvmplotlib:
         Args:
             ax (matplotlib.axes.Axes): A pyplot axis to be set.
         """
-        ax.tick_params(axis='x', labelsize=32)
-        ax.tick_params(axis='y', labelsize=32)
+        ax.tick_params(axis="x", labelsize=32)
+        ax.tick_params(axis="y", labelsize=32)
 
     @staticmethod
     def set_default_legend(ax: matplotlib.axes.Axes) -> None:
@@ -262,7 +263,9 @@ class ccvmplotlib:
         )
 
     @staticmethod
-    def apply_default_tts_styling(fig: matplotlib.figure.Figure, ax: matplotlib.axes.Axes) -> None:
+    def apply_default_tts_styling(
+        fig: matplotlib.figure.Figure, ax: matplotlib.axes.Axes
+    ) -> None:
         """A method to apply the default styling to a TTS plot.
 
         Args:
@@ -289,7 +292,9 @@ class ccvmplotlib:
         fig.tight_layout()
 
     @staticmethod
-    def apply_default_succ_prob_styling(fig: matplotlib.figure.Figure, ax: matplotlib.axes.Axes) -> None:
+    def apply_default_succ_prob_styling(
+        fig: matplotlib.figure.Figure, ax: matplotlib.axes.Axes
+    ) -> None:
         """A method to apply the default styling to a success probability plot.
 
         Args:

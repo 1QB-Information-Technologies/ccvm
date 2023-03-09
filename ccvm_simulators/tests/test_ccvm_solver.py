@@ -1,5 +1,5 @@
 from unittest import TestCase
-from ccvm.solvers.ccvm_solver import CCVMSolver, DeviceType
+from ccvm_simulators.solvers.ccvm_solver import CCVMSolver, DeviceType
 import torch
 
 DUMMY_SCALING_MULTIPLIER = 0.1

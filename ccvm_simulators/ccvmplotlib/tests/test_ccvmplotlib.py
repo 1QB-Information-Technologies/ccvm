@@ -2,7 +2,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import unittest
 from unittest import TestCase
-from ccvm.ccvmplotlib.ccvmplotlib import ccvmplotlib
+from ccvm_simulators.ccvmplotlib.ccvmplotlib import ccvmplotlib
 
 
 # # TODO: Speed up tests

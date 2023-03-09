@@ -1,5 +1,5 @@
 import unittest
-from ccvm.solution import Solution
+from ccvm_simulators.solution import Solution
 import torch
 import os
 
@@ -87,8 +87,8 @@ class TestSolution(unittest.TestCase):
         os.remove(expected_path)
 
     def test_solution_stats_objective_values_out_of_range(self):
-        """Test the solution is updated with valid solution, even when the objective values 
-        are unreasonable (we would expect them to be negative and lower in absolute value than 
+        """Test the solution is updated with valid solution, even when the objective values
+        are unreasonable (we would expect them to be negative and lower in absolute value than
         the optimal solution)
         """
 
@@ -123,8 +123,8 @@ class TestSolution(unittest.TestCase):
         assert original_solution_stats == expected_solution_stats
 
     def test_solution_stats_solutions_within_limit(self):
-        """Test solution performance when objective values are close enough to the optimal solution 
-            to yield results in the solution stats"""
+        """Test solution performance when objective values are close enough to the optimal solution
+        to yield results in the solution stats"""
         self.objective_value = torch.tensor((-0.007, -3.09, -3.199))
         solution = Solution(
             self.problem_size,

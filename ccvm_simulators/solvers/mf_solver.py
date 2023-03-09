@@ -1,6 +1,6 @@
-from ccvm.solvers.ccvm_solver import CCVMSolver
-from ccvm.solution import Solution
-from ccvm.post_processor.factory import PostProcessorFactory
+from ccvm_simulators.solvers.ccvm_solver import CCVMSolver
+from ccvm_simulators.solution import Solution
+from ccvm_simulators.post_processor.factory import PostProcessorFactory
 import torch
 import numpy as np
 import torch.distributions as tdist

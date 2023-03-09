@@ -34,7 +34,7 @@ This software package includes solvers for continuous optimization problems. The
 
 1. Once you have cloned the repository, install the package using `pip`.
 ```
- pip install ccvm
+ pip install ccvm-simulators
 ```
 
 2. Go into `examples/` and run the demo scripts.
@@ -74,8 +74,8 @@ This software package includes solvers for continuous optimization problems. The
 ##### 1. Import Modules
 
 ```python
-from ccvm.problem_classes.boxqp import ProblemInstance
-from ccvm.solvers import DLSolver
+from ccvm_simulators.problem_classes.boxqp import ProblemInstance
+from ccvm_simulators.solvers import DLSolver
 ```
 
 ##### 2. Define a Solver
@@ -138,7 +138,7 @@ Additional links:
 
 ## Contributing
 
-We appreciate your pull requests and welcome opportunities to discuss new ideas. Check out our [contribution guide](CONTRIBUTING.md) and feel free to improve the `ccvm` package. For major changes, please open an issue first to discuss any suggestions for changes you might have.
+We appreciate your pull requests and welcome opportunities to discuss new ideas. Check out our [contribution guide](CONTRIBUTING.md) and feel free to improve the `ccvm_simulators` package. For major changes, please open an issue first to discuss any suggestions for changes you might have.
 
 Thank you for considering making a  contribution to our project! We appreciate your help and support.
 

@@ -1,5 +1,5 @@
 from unittest import TestCase, mock
-from ccvm.solvers import MFSolver
+from ccvm_simulators.solvers import MFSolver
 import torch
 import os
 import csv
