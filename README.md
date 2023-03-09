@@ -129,8 +129,6 @@ print(f"The solving process took {solution.solve_time} seconds")
 
 The package documentation can be found [here](https://1qb-information-technologies.github.io/ccvm/).
 
-* TODO: Update with public link
-
 Additional links:
 - Problem definition: [BoxQP problem class](ccvm_simulators/problem_classes/README.md)
 - Plotting library: [ccvmplotlib](ccvm_simulators/ccvmplotlib/README.md)
@@ -150,4 +148,4 @@ This repository contains architectures and simulators presented in the paper ["N
 
 ## License
 
-[APGLv3](https://github.com/1QB-Information-Technologies/ccvm_simulators/blob/main/LICENSE)
+[APGLv3](https://github.com/1QB-Information-Technologies/ccvm/blob/main/LICENSE)
