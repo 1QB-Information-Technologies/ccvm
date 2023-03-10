@@ -1,7 +1,7 @@
 factory 
 ===================================
 
-.. automodule:: ccvm.post_processor.factory
+.. automodule:: ccvm_simulators.post_processor.factory
    :members:
    :undoc-members:
    :show-inheritance:

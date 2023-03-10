@@ -1,7 +1,7 @@
 metadata\_list 
 ==========================
 
-.. automodule:: ccvm.metadata_list
+.. automodule:: ccvm_simulators.metadata_list
    :members:
    :undoc-members:
    :show-inheritance:

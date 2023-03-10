@@ -24,7 +24,7 @@ Submodules
 
 ---------------
 
-.. automodule:: ccvm.ccvmplotlib
+.. automodule:: ccvm_simulators.ccvmplotlib
    :members:
    :undoc-members:
    :show-inheritance:

@@ -14,7 +14,7 @@ Submodules
 
 ---------------
 
-.. automodule:: ccvm.solvers
+.. automodule:: ccvm_simulators.solvers
    :members:
    :undoc-members:
    :show-inheritance:

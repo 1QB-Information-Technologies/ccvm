@@ -19,7 +19,7 @@ Submodules
 
 ---------------
 
-.. automodule:: ccvm.post_processor.tests
+.. automodule:: ccvm_simulators.post_processor.tests
    :members:
    :undoc-members:
    :show-inheritance:

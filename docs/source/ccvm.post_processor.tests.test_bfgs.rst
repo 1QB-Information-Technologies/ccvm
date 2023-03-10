@@ -1,7 +1,7 @@
 test\_bfgs 
 ============================================
 
-.. automodule:: ccvm.post_processor.tests.test_bfgs
+.. automodule:: ccvm_simulators.post_processor.tests.test_bfgs
    :members:
    :undoc-members:
    :show-inheritance:

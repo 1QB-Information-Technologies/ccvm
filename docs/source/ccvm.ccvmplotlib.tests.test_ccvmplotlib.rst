@@ -1,7 +1,7 @@
 test\_ccvmplotlib 
 ===============================================
 
-.. automodule:: ccvm.ccvmplotlib.tests.test_ccvmplotlib
+.. automodule:: ccvm_simulators.ccvmplotlib.tests.test_ccvmplotlib
    :members:
    :undoc-members:
    :show-inheritance:
