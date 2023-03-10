@@ -1,7 +1,7 @@
 metric 
 ====================================
 
-.. automodule:: ccvm.ccvmplotlib.utils.metric
+.. automodule:: ccvm_simulators.ccvmplotlib.utils.metric
    :members:
    :undoc-members:
    :show-inheritance:

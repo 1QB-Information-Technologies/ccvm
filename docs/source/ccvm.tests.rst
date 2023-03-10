@@ -12,7 +12,7 @@ Submodules
 
 ---------------
 
-.. automodule:: ccvm.tests
+.. automodule:: ccvm_simulators.tests
    :members:
    :undoc-members:
    :show-inheritance:

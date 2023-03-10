@@ -12,7 +12,7 @@ Submodules
 
 ---------------
 
-.. automodule:: ccvm.problem_classes.boxqp.tests
+.. automodule:: ccvm_simulators.problem_classes.boxqp.tests
    :members:
    :undoc-members:
    :show-inheritance:

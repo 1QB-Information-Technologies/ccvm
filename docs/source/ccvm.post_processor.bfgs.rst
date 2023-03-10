@@ -1,7 +1,7 @@
  bfgs 
 ================================
 
-.. automodule:: ccvm.post_processor.bfgs
+.. automodule:: ccvm_simulators.post_processor.bfgs
    :members:
    :undoc-members:
    :show-inheritance:

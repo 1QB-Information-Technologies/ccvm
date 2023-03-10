@@ -16,7 +16,7 @@ Subpackages
 
 ---------------
 
-.. automodule:: ccvm.problem_classes
+.. automodule:: ccvm_simulators.problem_classes
    :members:
    :undoc-members:
    :show-inheritance:

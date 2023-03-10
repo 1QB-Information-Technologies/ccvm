@@ -14,7 +14,7 @@ Submodules
 
 ---------------
 
-.. automodule:: ccvm.ccvmplotlib.problem_metadata
+.. automodule:: ccvm_simulators.ccvmplotlib.problem_metadata
    :members:
    :undoc-members:
    :show-inheritance:

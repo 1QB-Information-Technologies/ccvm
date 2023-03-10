@@ -1,7 +1,7 @@
 sampleTTSmetric 
 =============================================
 
-.. automodule:: ccvm.ccvmplotlib.utils.sampleTTSmetric
+.. automodule:: ccvm_simulators.ccvmplotlib.utils.sampleTTSmetric
    :members:
    :undoc-members:
    :show-inheritance:
