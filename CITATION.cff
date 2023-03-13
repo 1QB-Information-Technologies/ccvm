@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use CCVM in your work, please cite the following paper"
+message: "If you use the `ccvm-simulators` package in your work, please cite the following paper:"
 authors:
 - family-names: Khosravi
   given-names: Farhad
