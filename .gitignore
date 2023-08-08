@@ -134,3 +134,11 @@ dmypy.json
 
 #sphinx docs
 _build
+
+#MC
+.vscode/settings.json
+.project
+.pydevproject
+.vscode/launch.json
+metadata/
+

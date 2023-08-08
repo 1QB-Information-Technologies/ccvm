@@ -1,11 +1,12 @@
 import glob
+import os, sys 
+# sys.path.insert(0, os.path.abspath("../"))
 from ccvm_simulators.problem_classes.boxqp import ProblemInstance
 from ccvm_simulators.solvers import DLSolver
 
 TEST_INSTANCES_DIR = "./test_instances/"
 
 if __name__ == "__main__":
-
     # Initialize solver
     batch_size = 1000
     solver = DLSolver(device="cpu", batch_size=batch_size)  # or "cuda"
