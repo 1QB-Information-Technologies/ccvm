@@ -130,23 +130,19 @@ class DLSolver(CCVMSolver):
         Returns:
             tuple: The calculated change in the variable amplitudes.
         """
-
-        c_pow = torch.pow(c, 2)
-        s_pow = torch.pow(s, 2)
-
-        if pump > 1:
-            S = np.sqrt(pump - 1)
-
+        
         c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, q_matrix) / S
-        c_grad_2 = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
+        # c_grad_2 = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
         c_grad_3 = v_vector / 2 / S
 
         s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, q_matrix) / S
-        s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
+        # s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
         s_grad_3 = v_vector / 2 / S
 
-        c_grads = -c_grad_1 + c_grad_2 - c_grad_3
-        s_grads = -s_grad_1 + s_grad_2 - s_grad_3
+        # c_grads = -c_grad_1 + c_grad_2 - c_grad_3
+        c_grads = -c_grad_1 - c_grad_3
+        # s_grads = -s_grad_1 + s_grad_2 - s_grad_3
+        s_grads = -s_grad_1 - s_grad_3
         return c_grads, s_grads
 
     def _change_variables_boxqp(self, problem_variables, S=1):
@@ -345,23 +341,30 @@ class DLSolver(CCVMSolver):
 
         # Pump rate update selection: time-dependent or constant
         if pump_rate_flag:
-            update_pump_rate = lambda i: (i + 1) / iterations  
+            pump_rate = lambda i: (i + 1) / iterations  
         else:
-            update_pump_rate = lambda i: 1.0
-        
+            pump_rate = lambda i: 1.0
+            
+        if pump > 1:
+            S = np.sqrt(pump - 1)
+                
         # Perform the solve over the specified number of iterations
         for i in range(iterations):
 
-            pump_rate = update_pump_rate(i)
+            rate = pump_rate(i)
 
             noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
+            
+            # Additional drift terms (moved from self._calculate_grads_boxqp)
+            c_pow = torch.pow(c, 2)
+            s_pow = torch.pow(s, 2)
+            c_drift = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
+            s_drift = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
 
-            # c_grads, s_grads = self.calculate_grads(
-            #     c, s, q_matrix, v_vector, pump, pump_rate
-            # )
             c_grads, s_grads = self.calculate_grads(
-                c, s, q_matrix, v_vector, pump, pump_rate
+                c, s, q_matrix, v_vector, pump, rate
             )
+            
             wiener_increment_c = (
                 wiener_dist_c.sample((problem_size,)).transpose(0, 1)
                 * np.sqrt(lr)
@@ -373,12 +376,12 @@ class DLSolver(CCVMSolver):
                 / noise_ratio_i
             )
             c += (
-                lr * c_grads
-                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_c
+                lr * (c_drift + c_grads)
+                + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_c
             )
             s += (
-                lr * s_grads
-                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_s
+                lr * (s_drift + s_grads)
+                + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_s
             )
 
             # If evolution_step_size is specified, save the values if this iteration
