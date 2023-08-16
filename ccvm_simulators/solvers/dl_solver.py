@@ -343,15 +343,22 @@ class DLSolver(CCVMSolver):
             torch.tensor([1.0] * batch_size, device=device),
         )
 
+        # Pump rate update selection: time-dependent or constant
+        if pump_rate_flag:
+            update_pump_rate = lambda i: (i + 1) / iterations  
+        else:
+            update_pump_rate = lambda i: 1.0
+        
         # Perform the solve over the specified number of iterations
-        pump_rate = 1
         for i in range(iterations):
 
-            if pump_rate_flag:
-                pump_rate = (i + 1) / iterations
+            pump_rate = update_pump_rate(i)
 
             noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
 
+            # c_grads, s_grads = self.calculate_grads(
+            #     c, s, q_matrix, v_vector, pump, pump_rate
+            # )
             c_grads, s_grads = self.calculate_grads(
                 c, s, q_matrix, v_vector, pump, pump_rate
             )
