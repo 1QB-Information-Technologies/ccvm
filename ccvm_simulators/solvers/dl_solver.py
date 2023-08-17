@@ -112,7 +112,7 @@ class DLSolver(CCVMSolver):
                 f" Given category: {problem_category}"
             )
 
-    def _calculate_grads_boxqp(self, c, s, q_matrix, v_vector, pump, rate, S=1):
+    def _calculate_grads_boxqp(self, c, s, q_matrix, v_vector, S=1):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
@@ -123,8 +123,6 @@ class DLSolver(CCVMSolver):
             s (torch.Tensor): Quadrature amplitudes of the solver
             q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
             v_vector (torch.tensor): The V vector describing the BoxQP problem.
-            pump (float): The maximum pump field strength
-            rate (float): The multiplier for the pump field strength at a given instance of time.
             S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
@@ -132,16 +130,14 @@ class DLSolver(CCVMSolver):
         """
         
         c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, q_matrix) / S
-        # c_grad_2 = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
+        # c_grad_2: moved into the main evolution loop in DLSolve.solve()
         c_grad_3 = v_vector / 2 / S
 
         s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, q_matrix) / S
-        # s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
+        # s_grad_2: moved into the main evolution loop in DLSolve.solve()
         s_grad_3 = v_vector / 2 / S
 
-        # c_grads = -c_grad_1 + c_grad_2 - c_grad_3
         c_grads = -c_grad_1 - c_grad_3
-        # s_grads = -s_grad_1 + s_grad_2 - s_grad_3
         s_grads = -s_grad_1 - s_grad_3
         return c_grads, s_grads
 
@@ -340,10 +336,12 @@ class DLSolver(CCVMSolver):
         )
 
         # Pump rate update selection: time-dependent or constant
+        pump_rate_i = lambda i: (i + 1) / iterations
+        pump_rate_c = lambda i: 1.0  # Constant 
         if pump_rate_flag:
-            pump_rate = lambda i: (i + 1) / iterations  
+            pump_rate = pump_rate_i  
         else:
-            pump_rate = lambda i: 1.0
+            pump_rate = pump_rate_c
             
         if pump > 1:
             S = np.sqrt(pump - 1)
@@ -355,15 +353,12 @@ class DLSolver(CCVMSolver):
 
             noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
             
+            c_grads, s_grads = self.calculate_grads(c, s, q_matrix, v_vector, S)
             # Additional drift terms (moved from self._calculate_grads_boxqp)
             c_pow = torch.pow(c, 2)
             s_pow = torch.pow(s, 2)
             c_drift = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
             s_drift = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
-
-            c_grads, s_grads = self.calculate_grads(
-                c, s, q_matrix, v_vector, pump, rate
-            )
             
             wiener_increment_c = (
                 wiener_dist_c.sample((problem_size,)).transpose(0, 1)
@@ -375,12 +370,15 @@ class DLSolver(CCVMSolver):
                 * np.sqrt(lr)
                 / noise_ratio_i
             )
+            
+            lr_c_drift = lr * (c_drift + c_grads)
             c += (
-                lr * (c_drift + c_grads)
+                lr_c_drift
                 + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_c
             )
+            lr_s_drift = lr * (s_drift + s_grads)
             s += (
-                lr * (s_drift + s_grads)
+                lr_s_drift
                 + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_s
             )
 
@@ -394,7 +392,7 @@ class DLSolver(CCVMSolver):
                 c_sample[:, :, samples_taken] = c
                 s_sample[:, :, samples_taken] = s
                 samples_taken += 1
-
+            
         # Ensure variables are within any problem constraints
         c = self.fit_to_constraints(c, -S, S)
 
