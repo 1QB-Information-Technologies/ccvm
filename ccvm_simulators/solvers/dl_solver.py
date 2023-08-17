@@ -353,12 +353,13 @@ class DLSolver(CCVMSolver):
 
             noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
             
-            c_grads, s_grads = self.calculate_grads(c, s, q_matrix, v_vector, S)
             # Additional drift terms (moved from self._calculate_grads_boxqp)
             c_pow = torch.pow(c, 2)
             s_pow = torch.pow(s, 2)
             c_drift = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
             s_drift = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
+            
+            c_grads, s_grads = self.calculate_grads(c, s, q_matrix, v_vector, S)
             
             wiener_increment_c = (
                 wiener_dist_c.sample((problem_size,)).transpose(0, 1)
