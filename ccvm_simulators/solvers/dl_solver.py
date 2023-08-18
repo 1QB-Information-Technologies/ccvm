@@ -596,9 +596,9 @@ class DLSolver(CCVMSolver):
         beta2 = adam_hyperparameters['beta2']
         epsilon=adam_hyperparameters['epsilon']
         # Initialize tensor variables for the first and second moments
-        m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        m_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)        
         v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        m_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         v_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         
         # Perform the solve with ADAM over the specified number of iterations
@@ -611,18 +611,17 @@ class DLSolver(CCVMSolver):
             c_grads, s_grads = self.calculate_grads(c, s, q_matrix, v_vector, S)
             
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
+            v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2)
             m_s = beta1 * m_s + (1.0 - beta1) * s_grads
-            
-            v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads,2)
-            v_s = beta2 * v_s + (1.0 - beta2) * torch.pow(s_grads,2)
+            v_s = beta2 * v_s + (1.0 - beta2) * torch.pow(s_grads, 2)
             
             # Bias corrected grads using 1st and 2nd moments
             mhat_c = m_c /(1.0 - beta1**(i+1))
-            mhat_s = m_s /(1.0 - beta1**(i+1))           
             vhat_c = v_c /(1.0 - beta2**(i+1))
+            mhat_s = m_s /(1.0 - beta1**(i+1))
             vhat_s = v_s /(1.0 - beta2**(i+1))
-            c_grads = - alpha * mhat_c / (torch.sqrt(vhat_c) + epsilon)
-            s_grads = - alpha * mhat_s / (torch.sqrt(vhat_s) + epsilon)
+            c_grads -= alpha * mhat_c / (torch.sqrt(vhat_c) + epsilon)
+            s_grads -= alpha * mhat_s / (torch.sqrt(vhat_s) + epsilon)
             
             # Additional drift terms (moved from self._calculate_grads_boxqp)
             c_pow = torch.pow(c, 2)
