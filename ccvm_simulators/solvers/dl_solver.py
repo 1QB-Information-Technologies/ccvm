@@ -607,6 +607,7 @@ class DLSolver(CCVMSolver):
 
             noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
             
+            # Calculate gradient
             c_grads, s_grads = self.calculate_grads(c, s, q_matrix, v_vector, S)
             
             # Update biased first and second moment estimates
@@ -619,8 +620,9 @@ class DLSolver(CCVMSolver):
             beta1i, beta2i = (1.0 - beta1**(i+1)), (1.0 - beta2**(i+1))
             mhat_c, vhat_c = m_c / beta1i, v_c / beta2i
             mhat_s, vhat_s = m_s / beta1i, v_s / beta2i
-            c_grads -= alpha * mhat_c / (torch.sqrt(vhat_c) + epsilon)
-            s_grads -= alpha * mhat_s / (torch.sqrt(vhat_s) + epsilon)
+            # Element-wise division
+            c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
+            s_grads -= alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
             
             # Additional drift terms (moved from self._calculate_grads_boxqp)
             c_pow = torch.pow(c, 2)
