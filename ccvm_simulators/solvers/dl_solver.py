@@ -574,12 +574,12 @@ class DLSolver(CCVMSolver):
         )
 
         # Pump rate update selection: time-dependent or constant
-        pump_rate_i = lambda i: (i + 1) / iterations
-        pump_rate_c = lambda i: 1.0  # Constant 
+        pump_rate_i = lambda i: pump * (i + 1) / iterations
+        pump_rate_c = lambda i: pump  # Constant 
         if pump_rate_flag:
-            pump_rate = pump_rate_i  
+            calc_pump_rate = pump_rate_i  
         else:
-            pump_rate = pump_rate_c
+            calc_pump_rate = pump_rate_c
             
         if pump > 1:
             S = np.sqrt(pump - 1)
@@ -588,14 +588,13 @@ class DLSolver(CCVMSolver):
         adam_hyperparameters = dict(
             beta1 = 0.9,
             beta2 = 0.999,
-            alpha = 0.001, 
-            epsilon=1e-8
+            alpha = 0.001,
         )
         alpha = adam_hyperparameters['alpha']
         beta1 = adam_hyperparameters['beta1']
         beta2 = adam_hyperparameters['beta2']
-        epsilon=adam_hyperparameters['epsilon']
-        # Initialize tensor variables for the first and second moments
+        epsilon = 1e-8
+        # Initialize first and second moment vectors for c and s
         m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)        
         v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         m_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
@@ -604,30 +603,30 @@ class DLSolver(CCVMSolver):
         # Perform the solve with ADAM over the specified number of iterations
         for i in range(iterations):
 
-            rate = pump_rate(i)
+            pump_rate = calc_pump_rate(i)
 
             noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
             
             c_grads, s_grads = self.calculate_grads(c, s, q_matrix, v_vector, S)
             
+            # Update biased first and second moment estimates
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
             v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2)
             m_s = beta1 * m_s + (1.0 - beta1) * s_grads
             v_s = beta2 * v_s + (1.0 - beta2) * torch.pow(s_grads, 2)
             
-            # Bias corrected grads using 1st and 2nd moments
-            mhat_c = m_c /(1.0 - beta1**(i+1))
-            vhat_c = v_c /(1.0 - beta2**(i+1))
-            mhat_s = m_s /(1.0 - beta1**(i+1))
-            vhat_s = v_s /(1.0 - beta2**(i+1))
+            # Compute bias corrected grads using 1st and 2nd moments
+            beta1i, beta2i = (1.0 - beta1**(i+1)), (1.0 - beta2**(i+1))
+            mhat_c, vhat_c = m_c / beta1i, v_c / beta2i
+            mhat_s, vhat_s = m_s / beta1i, v_s / beta2i
             c_grads -= alpha * mhat_c / (torch.sqrt(vhat_c) + epsilon)
             s_grads -= alpha * mhat_s / (torch.sqrt(vhat_s) + epsilon)
             
             # Additional drift terms (moved from self._calculate_grads_boxqp)
             c_pow = torch.pow(c, 2)
             s_pow = torch.pow(s, 2)
-            c_drift = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
-            s_drift = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
+            c_drift = torch.einsum("cj,cj -> cj", -1 + pump_rate - c_pow - s_pow, c)
+            s_drift = torch.einsum("cj,cj -> cj", -1 - pump_rate - c_pow - s_pow, s)
             
             wiener_increment_c = (
                 wiener_dist_c.sample((problem_size,)).transpose(0, 1)
