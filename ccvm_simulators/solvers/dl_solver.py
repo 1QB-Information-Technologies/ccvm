@@ -464,6 +464,7 @@ class DLSolver(CCVMSolver):
         g=0.05,
         evolution_step_size=None,
         evolution_file=None,
+        adam_hyperparam=None,
     ):
         """Solves the given problem instance using the DL-CCVM solver including ADAM algorithm.
 
@@ -483,6 +484,7 @@ class DLSolver(CCVMSolver):
                 Only revelant when evolution_step_size is set.
                 If a file already exists with the same name, it will be overwritten.
                 Defaults to None, which generates a filename based on the problem instance name.
+            adam_hyperparam (dict): Hyperparameters for adam algorithm. Defaults to None.
 
         Returns:
             solution (Solution): The solution to the problem instance.
@@ -585,14 +587,11 @@ class DLSolver(CCVMSolver):
             S = np.sqrt(pump - 1)
         
         # Hyperparameters for Adam algorithm
-        adam_hyperparameters = dict(
-            beta1 = 0.9,
-            beta2 = 0.999,
-            alpha = 0.001,
-        )
-        alpha = adam_hyperparameters['alpha']
-        beta1 = adam_hyperparameters['beta1']
-        beta2 = adam_hyperparameters['beta2']
+        if adam_hyperparam == None:
+            adam_hyperparam = dict(beta1=0.9, beta2=0.999, alpha=0.001)
+        alpha = adam_hyperparam['alpha']
+        beta1 = adam_hyperparam['beta1']
+        beta2 = adam_hyperparam['beta2']
         epsilon = 1e-8
         # Initialize first and second moment vectors for c and s
         m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)        
@@ -612,7 +611,7 @@ class DLSolver(CCVMSolver):
             
             # Update biased first and second moment estimates
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
-            v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2)
+            v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2) # Open issue: need to be avoided
             m_s = beta1 * m_s + (1.0 - beta1) * s_grads
             v_s = beta2 * v_s + (1.0 - beta2) * torch.pow(s_grads, 2)
             
@@ -621,7 +620,7 @@ class DLSolver(CCVMSolver):
             mhat_c, vhat_c = m_c / beta1i, v_c / beta2i
             mhat_s, vhat_s = m_s / beta1i, v_s / beta2i
             # Element-wise division
-            c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
+            c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon) # Open issue!
             s_grads -= alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
             
             # Additional drift terms (moved from self._calculate_grads_boxqp)
