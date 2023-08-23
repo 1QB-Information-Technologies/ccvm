@@ -37,8 +37,8 @@ if __name__ == "__main__":
         boxqp_instance.scale_coefs(adam_solver.get_scaling_factor(boxqp_instance.q_matrix))
         
         # Solve the problem
-        for alpha in [0.00001, 0.0001, 0.001, 0.01, 0.1]:
-            for beta1 in [0.8, 0.9]:
+        for alpha in [0.00001, 0.00005, 0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5]:
+            for beta1 in [0.4, 0.5, 0.6, 0.7, 0.8, 0.9]:
                 for beta2 in [0.999]:
                     
                     adam_hyperparameters = dict(alpha=alpha, beta1=beta1, beta2=beta2)
