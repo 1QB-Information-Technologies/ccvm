@@ -65,7 +65,7 @@ baseline=dict(
 )
 print(baseline)
 
-for beta2 in [0.999]:
+for beta2 in [0.8]: #[0.999]:
     for beta1 in [0.4, 0.5, 0.6, 0.7, 0.8, 0.9]:
         c = 0
         plt.rcParams.update({'font.size': 10})
@@ -79,7 +79,7 @@ for beta2 in [0.999]:
                 avg = sub_scatter(baseline, data, 'optimal')
                 plt.xscale('log')
                 plt.ylim([-0.1, 1.1])                
-                plt.ylabel(r'$\mathrm{optimal}$')
+                plt.ylabel(r'$\mathrm{optimal-rate}$')
                 plt.title(r'$\mathrm{optimal}$'+f'={avg:0.3f}')
                 plt.grid(True)
                 plt.xlabel(r'$\alpha$')
