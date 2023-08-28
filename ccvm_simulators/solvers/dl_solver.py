@@ -594,10 +594,17 @@ class DLSolver(CCVMSolver):
         beta2 = adam_hyperparam['beta2']
         epsilon = 1e-8
         # Initialize first and second moment vectors for c and s
-        m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)        
-        v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        
+        import warnings
+        warnings.warn("DL-CCVM-ADAM without 2nd moment estimate!")     
+        #=======================================================================
+        # v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        #=======================================================================
         m_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        v_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        #=======================================================================
+        # v_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        #=======================================================================
         
         # Perform the solve with ADAM over the specified number of iterations
         for i in range(iterations):
@@ -611,17 +618,29 @@ class DLSolver(CCVMSolver):
             
             # Update biased first and second moment estimates
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
-            v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2) # Open issue: need to be avoided
+            #===================================================================
+            # v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2) # Open issue: need to be avoided
+            #===================================================================
             m_s = beta1 * m_s + (1.0 - beta1) * s_grads
-            v_s = beta2 * v_s + (1.0 - beta2) * torch.pow(s_grads, 2)
+            #===================================================================
+            # v_s = beta2 * v_s + (1.0 - beta2) * torch.pow(s_grads, 2)
+            #===================================================================
             
             # Compute bias corrected grads using 1st and 2nd moments
             beta1i, beta2i = (1.0 - beta1**(i+1)), (1.0 - beta2**(i+1))
-            mhat_c, vhat_c = m_c / beta1i, v_c / beta2i
-            mhat_s, vhat_s = m_s / beta1i, v_s / beta2i
+            #===================================================================
+            # mhat_c, vhat_c = m_c / beta1i, v_c / beta2i
+            # mhat_s, vhat_s = m_s / beta1i, v_s / beta2i
+            #===================================================================
+            mhat_c = m_c / beta1i
+            mhat_s = m_s / beta1i
             # Element-wise division
-            c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon) # Open issue!
-            s_grads -= alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
+            #===================================================================
+            # c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon) # Open issue!
+            # s_grads -= alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
+            #===================================================================
+            c_grads -= alpha * mhat_c
+            s_grads -= alpha * mhat_s
             
             # Additional drift terms (moved from self._calculate_grads_boxqp)
             c_pow = torch.pow(c, 2)

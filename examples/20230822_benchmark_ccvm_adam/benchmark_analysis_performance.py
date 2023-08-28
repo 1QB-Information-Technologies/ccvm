@@ -23,7 +23,7 @@ def sub_scatter(baseline, data, subkey):
     return base
 
 ## Data analysis
-iterations = 15000
+iterations = 15000 #10000 #5000 #
 
 # Original method
 filename = f"{RESULTS_DIR}original_iter{iterations:06d}.pkl"
@@ -65,8 +65,8 @@ baseline=dict(
 )
 print(baseline)
 
-for beta2 in [0.8]: #[0.999]:
-    for beta1 in [0.4, 0.5, 0.6, 0.7, 0.8, 0.9]:
+for beta2 in [0.999, 0.8]: #
+    for beta1 in [0.9, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]:
         c = 0
         plt.rcParams.update({'font.size': 10})
         plt.figure(figsize=(12,4))
@@ -80,7 +80,7 @@ for beta2 in [0.8]: #[0.999]:
                 plt.xscale('log')
                 plt.ylim([-0.1, 1.1])                
                 plt.ylabel(r'$\mathrm{optimal-rate}$')
-                plt.title(r'$\mathrm{optimal}$'+f'={avg:0.3f}')
+                plt.title(r'$\overline{\mathrm{optimal}}$'+f'={avg:0.3f}')
                 plt.grid(True)
                 plt.xlabel(r'$\alpha$')
                 
@@ -89,7 +89,7 @@ for beta2 in [0.8]: #[0.999]:
                 plt.xscale('log')
                 plt.ylim([-0.1, 1.1])
                 # plt.ylabel(r'$\%01$')
-                plt.title(r'$\%01$'+f'={avg:0.3f}')
+                plt.title(r'$\overline{\%01}$'+f'={avg:0.3f}')
                 plt.grid(True)
                 plt.xlabel(r'$\alpha$')
                 
@@ -98,7 +98,7 @@ for beta2 in [0.8]: #[0.999]:
                 plt.xscale('log')
                 plt.ylim([-0.1, 1.1])                
                 # plt.ylabel(r'$\%02$')
-                plt.title(r'$\%02$'+f'={avg:0.3f}')
+                plt.title(r'$\overline{\%02}$'+f'={avg:0.3f}')
                 plt.grid(True)
                 plt.xlabel(r'$\alpha$')
                 
@@ -107,7 +107,7 @@ for beta2 in [0.8]: #[0.999]:
                 plt.xscale('log')
                 plt.ylim([-0.1, 1.1])
                 # plt.ylabel(r'$\%03$')
-                plt.title(r'$\%03$'+f'={avg:0.3f}')
+                plt.title(r'$\overline{\%03}$'+f'={avg:0.3f}')
                 plt.grid(True)
                 plt.xlabel(r'$\alpha$')
                 
@@ -116,7 +116,7 @@ for beta2 in [0.8]: #[0.999]:
                 plt.xscale('log')
                 plt.ylim([-0.1, 1.1])
                 # plt.ylabel(r'$\%04$')
-                plt.title(r'$\%04$'+f'={avg:0.3f}')
+                plt.title(r'$\overline{\%04}$'+f'={avg:0.3f}')
                 plt.grid(True)
                 plt.xlabel(r'$\alpha$')
                 
@@ -125,7 +125,7 @@ for beta2 in [0.8]: #[0.999]:
                 plt.xscale('log')
                 # plt.ylabel(r'$\%05$')
                 plt.ylim([-0.1, 1.1])
-                plt.title(r'$\%05$'+f'={avg:0.3f}')
+                plt.title(r'$\overline{\%05}$'+f'={avg:0.3f}')
                 plt.grid(True)
                 plt.xlabel(r'$\alpha$')
                 
@@ -134,7 +134,7 @@ for beta2 in [0.8]: #[0.999]:
                 plt.xscale('log')
                 plt.ylim([-0.1, 1.1])
                 # plt.ylabel(r'$\%10$')
-                plt.title(r'$\%10$'+f'={avg:0.3f}')
+                plt.title(r'$\overline{\%10}$'+f'={avg:0.3f}')
                 plt.grid(True)
                 plt.xlabel(r'$\alpha$')
             c+=1
