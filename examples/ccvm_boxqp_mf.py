@@ -40,5 +40,6 @@ if __name__ == "__main__":
             instance=boxqp_instance,
             post_processor=None,
         )
-​
+
         print(solution)
+        

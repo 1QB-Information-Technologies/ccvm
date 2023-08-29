@@ -377,9 +377,16 @@ class MFSolver(CCVMSolver):
             torch.tensor([0.0] * batch_size, device=device),
             torch.tensor([1.0] * batch_size, device=device),
         )
-
+        
+        # Pump rate update selection: time-dependent
+        pump_rate_i = lambda i: (i + 1) / iterations
+        pump_rate_c = lambda i: 1.0
+        if pump_rate_flag:
+            pump_rate = pump_rate_i
+        else:
+            pump_rate= pump_rate_c
+        
         # Perform the solve over the specified number of iterations
-        pump_rate = 1
         for i in range(iterations):
 
             j_i = j * np.exp(-(i + 1) / iterations * 3.0)
@@ -388,10 +395,9 @@ class MFSolver(CCVMSolver):
             mu_tilde = mu + np.sqrt(1 / (4 * j_i)) * wiener_increment
             mu_tilde_c = self.fit_to_constraints(mu_tilde, -S, S)
 
-            if pump_rate_flag:
-                pump_rate = (i + 1) / iterations
+            rate = pump_rate(i) # t/T
 
-            instantaneous_pump = pump * pump_rate + 1 + j_i
+            instantaneous_pump = pump * rate + 1 + j_i  # TODO: Check if Farhad updated!!!
 
             (grads_mu, grads_sigma) = self.calculate_grads(
                 mu,
