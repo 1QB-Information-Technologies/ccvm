@@ -56,15 +56,15 @@ class DLSolver(CCVMSolver):
             * key: problem size (the number of variables in the problem).
             * value: dict with these keys:
                 * pump (float),
-                * lr (float),
+                * dt (float),
                 * iterations (int),
                 * noise_ratio (float)
 
             With values, the parameter key might look like this::
 
                 {
-                    20: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "noise_ratio": 10},
-                    30: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "noise_ratio": 5},
+                    20: {"pump": 2.0, "dt": 0.005, "iterations": 15000, "noise_ratio": 10},
+                    30: {"pump": 2.0, "dt": 0.005, "iterations": 15000, "noise_ratio": 5},
                 }
 
         Raises:
@@ -76,7 +76,7 @@ class DLSolver(CCVMSolver):
     @parameter_key.setter
     def parameter_key(self, parameters):
 
-        expected_dlparameter_key_set = set(["pump", "lr", "iterations", "noise_ratio"])
+        expected_dlparameter_key_set = set(["pump", "dt", "iterations", "noise_ratio"])
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
         for parameter_key in parameter_key_list:
@@ -130,11 +130,9 @@ class DLSolver(CCVMSolver):
         """
         
         c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, q_matrix) / S
-        # c_grad_2: moved into the main evolution loop in DLSolve.solve()
         c_grad_3 = v_vector / 2 / S
 
         s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, q_matrix) / S
-        # s_grad_2: moved into the main evolution loop in DLSolve.solve()
         s_grad_3 = v_vector / 2 / S
 
         c_grads = -c_grad_1 - c_grad_3
@@ -270,7 +268,7 @@ class DLSolver(CCVMSolver):
         # Get parameters from parameter_key
         try:
             pump = self.parameter_key[problem_size]["pump"]
-            lr = self.parameter_key[problem_size]["lr"]
+            dt = self.parameter_key[problem_size]["dt"]
             iterations = self.parameter_key[problem_size]["iterations"]
             noise_ratio = self.parameter_key[problem_size]["noise_ratio"]
         except KeyError as e:
@@ -363,21 +361,21 @@ class DLSolver(CCVMSolver):
             
             wiener_increment_c = (
                 wiener_dist_c.sample((problem_size,)).transpose(0, 1)
-                * np.sqrt(lr)
+                * np.sqrt(dt)
                 * noise_ratio_i
             )
             wiener_increment_s = (
                 wiener_dist_s.sample((problem_size,)).transpose(0, 1)
-                * np.sqrt(lr)
+                * np.sqrt(dt)
                 / noise_ratio_i
             )
             
-            lr_c_drift = lr * (c_drift + c_grads)
+            lr_c_drift = dt * (c_drift + c_grads)
             c += (
                 lr_c_drift
                 + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_c
             )
-            lr_s_drift = lr * (s_drift + s_grads)
+            lr_s_drift = dt * (s_drift + s_grads)
             s += (
                 lr_s_drift
                 + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_s
@@ -510,7 +508,7 @@ class DLSolver(CCVMSolver):
         # Get parameters from parameter_key
         try:
             pump = self.parameter_key[problem_size]["pump"]
-            lr = self.parameter_key[problem_size]["lr"]
+            dt = self.parameter_key[problem_size]["dt"]
             iterations = self.parameter_key[problem_size]["iterations"]
             noise_ratio = self.parameter_key[problem_size]["noise_ratio"]
         except KeyError as e:
@@ -650,21 +648,21 @@ class DLSolver(CCVMSolver):
             
             wiener_increment_c = (
                 wiener_dist_c.sample((problem_size,)).transpose(0, 1)
-                * np.sqrt(lr)
+                * np.sqrt(dt)
                 * noise_ratio_i
             )
             wiener_increment_s = (
                 wiener_dist_s.sample((problem_size,)).transpose(0, 1)
-                * np.sqrt(lr)
+                * np.sqrt(dt)
                 / noise_ratio_i
             )
             
             c += (
-                lr * (c_drift + c_grads)
+                dt * (c_drift + c_grads)
                 + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_c
             )
             s += (
-                lr * (s_drift + s_grads)
+                dt * (s_drift + s_grads)
                 + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_s
             )
 
