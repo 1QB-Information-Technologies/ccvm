@@ -9,10 +9,10 @@ TEST_INSTANCES_DIR = "./test_instances/"
 if __name__ == "__main__":
     # Initialize solver
     batch_size = 1000
-    solver = DLSolver(device="cpu", batch_size=batch_size)  # or "cuda"
+    adam_solver = DLSolver(device="cpu", batch_size=batch_size)  # or "cuda"
 
     # Supply solver parameters for different problem sizes
-    solver.parameter_key = {
+    adam_solver.parameter_key = {
         20: {"pump": 2.0, "dt": 0.005, "iterations": 15000, "noise_ratio": 10},
     }
 
@@ -23,14 +23,14 @@ if __name__ == "__main__":
         boxqp_instance = ProblemInstance(
             instance_type="test",
             file_path=instance_file,
-            device=solver.device,
+            device=adam_solver.device,
         )
 
         # Scale the problem's coefficients for more stable optimization
-        boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
+        boxqp_instance.scale_coefs(adam_solver.get_scaling_factor(boxqp_instance.q_matrix))
 
         # Solve the problem
-        solution = solver.solve(
+        solution = adam_solver(
             instance=boxqp_instance,
             post_processor=None,
         )
