@@ -145,7 +145,7 @@ class MFSolver(CCVMSolver):
             fs (float): The coefficient of the feedback term.
 
         Returns:
-            tuple: The gradients of the mean-field amplitudes and the variance.
+            tensor: The gradients of the mean-field amplitude.
         """
         mu_term2_1 = (
             -(1 / 4) * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, q_matrix)) / S
