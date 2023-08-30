@@ -369,7 +369,7 @@ class MFSolver(CCVMSolver):
 
             rate = pump_rate(i) # t/T
 
-            pump_i = pump * rate + 1 + j_i  # TODO: Check if Farhad updated!!!
+            pump_i = pump * rate + 1 + j_i  
 
             grads_mu = self.calculate_grads(
                 mu_tilde_c,
@@ -467,9 +467,10 @@ class MFSolver(CCVMSolver):
         pump_rate_flag=True,
         evolution_step_size=None,
         evolution_file=None,
+        adam_hyperparam=dict(beta1=0.9, beta2=0.999, alpha=0.001),
     ):
-        """Solves the given problem instance using the tuned or specified
-        parameters in the parameter key.
+        """Solves the given problem instance using the MF-CCVM solver with ADAM algorithm
+        tuned or specified parameters in the parameter key.
 
         Args:
             instance (boxqp.boxqp.ProblemInstance): The problem to solve.
@@ -488,6 +489,7 @@ class MFSolver(CCVMSolver):
                 when evolution_step_size is set. If a file already exists with the same name,
                 it will be overwritten. Defaults to None, which generates a filename based on
                 the problem instance name.
+            adam_hyperparam (dict): Hyperparameters for adam algorithm. Defaults to None.
 
         Returns:
             solution (Solution): The solution to the problem instance.
@@ -584,6 +586,16 @@ class MFSolver(CCVMSolver):
         else:
             pump_rate= pump_rate_c
         
+        # Hyperparameters for Adam algorithm
+        alpha = adam_hyperparam['alpha']
+        beta1 = adam_hyperparam['beta1']
+        beta2 = adam_hyperparam['beta2']
+        epsilon = 1e-8
+        # Initialize first and second mement vectors
+        m_mu = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        # import warnings; warnings.warn("DL-CCVM-ADAM without 2nd moment estimate!")   
+        v_mu = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)        
+        
         # Perform the solve over the specified number of iterations
         for i in range(iterations):
 
@@ -595,8 +607,8 @@ class MFSolver(CCVMSolver):
 
             rate = pump_rate(i) # t/T
 
-            pump_i = pump * rate + 1 + j_i  # TODO: Check if Farhad updated!!!
-
+            pump_i = pump * rate + 1 + j_i
+            
             grads_mu = self.calculate_grads(
                 mu_tilde_c,
                 q_matrix,
@@ -604,9 +616,18 @@ class MFSolver(CCVMSolver):
                 S,
                 feedback_scale,
             )
-             
+            
+            # Update biased first and second moment estimates
+            m_mu = beta1 * m_mu + (1.0 - beta1) * grads_mu
+            v_mu = beta2 * v_mu + (1.0 - beta2) * torch.pow(grads_mu, 2) 
+            # Compute bias corrected grads using 1st and 2nd moments
+            beta1i, beta2i = (1.0 - beta1**(i+1)), (1.0 - beta2**(i+1))
+            mhat_mu, vhat_mu = m_mu / beta1i, v_mu / beta2i
+            # Update gradient in the form of element-wise division
+            grads_mu -= alpha * torch.div(mhat_mu, torch.sqrt(vhat_mu)+epsilon) 
+            
+            # Calculate drift and diffusion terms
             mu_pow = torch.pow(mu, 2)
-
             mu_drift = (-(1 + j_i) + pump_i - g**2 * mu_pow) * mu            
             mu_drift += np.sqrt(j_i) * (sigma - 0.5) * wiener_increment
             mu += dt * (grads_mu + mu_drift)

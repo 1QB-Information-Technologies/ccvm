@@ -462,7 +462,7 @@ class DLSolver(CCVMSolver):
         g=0.05,
         evolution_step_size=None,
         evolution_file=None,
-        adam_hyperparam=None,
+        adam_hyperparam=dict(beta1=0.9, beta2=0.999, alpha=0.001),
     ):
         """Solves the given problem instance using the DL-CCVM solver including ADAM algorithm.
 
@@ -482,7 +482,7 @@ class DLSolver(CCVMSolver):
                 Only revelant when evolution_step_size is set.
                 If a file already exists with the same name, it will be overwritten.
                 Defaults to None, which generates a filename based on the problem instance name.
-            adam_hyperparam (dict): Hyperparameters for adam algorithm. Defaults to None.
+            adam_hyperparam (dict): Hyperparameters for adam algorithm. Defaults to the paper.
 
         Returns:
             solution (Solution): The solution to the problem instance.
@@ -585,17 +585,13 @@ class DLSolver(CCVMSolver):
             S = np.sqrt(pump - 1)
         
         # Hyperparameters for Adam algorithm
-        if adam_hyperparam == None:
-            adam_hyperparam = dict(beta1=0.9, beta2=0.999, alpha=0.001)
         alpha = adam_hyperparam['alpha']
         beta1 = adam_hyperparam['beta1']
         beta2 = adam_hyperparam['beta2']
         epsilon = 1e-8
         # Initialize first and second moment vectors for c and s
-        m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        
-        import warnings
-        warnings.warn("DL-CCVM-ADAM without 2nd moment estimate!")     
+        m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)        
+        import warnings; warnings.warn("DL-CCVM-ADAM without 2nd moment estimate!")     
         #=======================================================================
         # v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         #=======================================================================
