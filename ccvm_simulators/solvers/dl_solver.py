@@ -158,21 +158,17 @@ class DLSolver(CCVMSolver):
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
             s (torch.Tensor): Quadrature amplitudes of the solver
-            q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
-            v_vector (torch.tensor): The V vector describing the BoxQP problem.
             S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
             tuple: The calculated change in the variable amplitudes.
         """
         
-        q_matrix = self.q_matrix; v_vector = self.v_vector
+        c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, self.q_matrix) / S
+        c_grad_3 = self.v_vector / 2 / S
 
-        c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, q_matrix) / S
-        c_grad_3 = v_vector / 2 / S
-
-        s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, q_matrix) / S
-        s_grad_3 = v_vector / 2 / S
+        s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, self.q_matrix) / S
+        s_grad_3 = self.v_vector / 2 / S
 
         c_grads = -c_grad_1 - c_grad_3
         s_grads = -s_grad_1 - s_grad_3

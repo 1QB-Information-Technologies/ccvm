@@ -123,6 +123,7 @@ class MFSolver(CCVMSolver):
         """
         if problem_category.lower() == "boxqp":
             self.calculate_grads = self._calculate_grads_boxqp
+            self.calculate_grads_adam = self._calculate_grads_boxqp_adam
             self.change_variables = self._change_variables_boxqp
             self.fit_to_constraints = self._fit_to_constraints_boxqp
         else:
@@ -131,7 +132,60 @@ class MFSolver(CCVMSolver):
                 f" {problem_category}"
             )
 
-    def _calculate_grads_boxqp(self, mu_tilde, q_matrix, v_vector, S, fs):
+    def _calculate_grads_boxqp(
+        self,
+        mu,
+        mu_tilde,
+        sigma,
+        q_matrix,
+        v_vector,
+        pump,
+        wiener_increment,
+        j,
+        g,
+        S,
+        fs,
+    ):
+        """We treat the SDE that simulates the CIM of NTT as gradient
+        calculation. Original SDE considers only quadratic part of the objective
+        function. Therefore, we need to modify and add linear part of the QP to
+        the SDE.
+
+        Args:
+            mu (torch.Tensor): Mean-field amplitudes
+            mu_tilde (torch.Tensor): Mean-field measured amplitudes
+            sigma (torch.Tensor): Variance of the in-phase position operator
+            q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
+            v_vector (torch.tensor): The V vector describing the BoxQP problem.
+            pump (float): Instantaneous pump value
+            wiener_increment (torch.Tensor): The Wiener process
+            j (float): The measurement strength
+            g (float): The nonlinearity coefficient
+            S (float): The enforced saturation value
+            fs (float): The coefficient of the feedback term.
+
+        Returns:
+            tuple: The gradients of the mean-field amplitudes and the variance.
+        """
+        mu_pow = torch.pow(mu, 2)
+
+        mu_term1 = (-(1 + j) + pump - g**2 * mu_pow) * mu
+        mu_term2_1 = (
+            -(1 / 4) * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, q_matrix)) / S
+        )
+        mu_term2_2 = -v_vector / S / 2
+        mu_term3 = np.sqrt(j) * (sigma - 0.5) * wiener_increment
+
+        sigma_term1 = 2 * (-(1 + j) + pump - 3 * g**2 * mu_pow) * sigma
+        sigma_term2 = -2 * j * (sigma - 0.5).pow(2)
+        sigma_term3 = (1 + j) + 2 * g**2 * mu_pow
+
+        grads_mu = mu_term1 + fs * (mu_term2_1 + mu_term2_2) + mu_term3
+        grads_sigma = sigma_term1 + sigma_term2 + sigma_term3
+
+        return grads_mu, grads_sigma
+    
+    def _calculate_grads_boxqp_adam(self, mu_tilde, S, fs):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
@@ -139,8 +193,6 @@ class MFSolver(CCVMSolver):
 
         Args:
             mu_tilde (torch.Tensor): Mean-field measured amplitudes
-            q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
-            v_vector (torch.tensor): The V vector describing the BoxQP problem.
             S (float): The enforced saturation value
             fs (float): The coefficient of the feedback term.
 
@@ -148,9 +200,9 @@ class MFSolver(CCVMSolver):
             tensor: The gradients of the mean-field amplitude.
         """
         mu_term2_1 = (
-            -(1 / 4) * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, q_matrix)) / S
+            -(1 / 4) * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, self.q_matrix)) / S
         )
-        mu_term2_2 = -v_vector / S / 2
+        mu_term2_2 = -self.v_vector / S / 2
 
         grads_mu = fs * (mu_term2_1 + mu_term2_2)
 
@@ -350,44 +402,36 @@ class MFSolver(CCVMSolver):
             torch.tensor([1.0] * batch_size, device=device),
         )
 
-        # Pump rate update selection: time-dependent
-        pump_rate_i = lambda i: (i + 1) / iterations
-        pump_rate_c = lambda i: 1.0
-        if pump_rate_flag:
-            pump_rate = pump_rate_i
-        else:
-            pump_rate = pump_rate_c
-
         # Perform the solve over the specified number of iterations
+        pump_rate = 1
         for i in range(iterations):
+
             j_i = j * np.exp(-(i + 1) / iterations * 3.0)
             wiener = wiener_dist.sample((problem_size,)).transpose(0, 1)
             wiener_increment = wiener / np.sqrt(dt)
             mu_tilde = mu + np.sqrt(1 / (4 * j_i)) * wiener_increment
             mu_tilde_c = self.fit_to_constraints(mu_tilde, -S, S)
 
-            rate = pump_rate(i)  # t/T
+            if pump_rate_flag:
+                pump_rate = (i + 1) / iterations
 
-            pump_i = pump * rate + 1 + j_i
+            instantaneous_pump = pump * pump_rate + 1 + j_i
 
-            grads_mu = self.calculate_grads(
+            (grads_mu, grads_sigma) = self.calculate_grads(
+                mu,
                 mu_tilde_c,
+                sigma,
                 q_matrix,
                 v_vector,
+                instantaneous_pump,
+                wiener_increment,
+                j_i,
+                g,
                 S,
                 feedback_scale,
             )
-
-            mu_pow = torch.pow(mu, 2)
-
-            mu_drift = (-(1 + j_i) + pump_i - g**2 * mu_pow) * mu
-            mu_drift += np.sqrt(j_i) * (sigma - 0.5) * wiener_increment
-            mu += dt * (grads_mu + mu_drift)
-
-            sigma_drift = 2 * (-(1 + j_i) + pump_i - 3 * g**2 * mu_pow) * sigma
-            sigma_drift += -2 * j_i * (sigma - 0.5).pow(2)
-            sigma_drift += (1 + j_i) + 2 * g**2 * mu_pow
-            sigma += dt * sigma_drift
+            mu += dt * grads_mu
+            sigma += dt * grads_sigma
 
             # If evolution_step_size is specified, save the values if this iteration
             # aligns with the step size or if this is the last iteration
@@ -503,8 +547,8 @@ class MFSolver(CCVMSolver):
 
         # Get problem from problem instance
         problem_size = instance.problem_size
-        q_matrix = instance.q_matrix
-        v_vector = instance.v_vector
+        self.q_matrix = instance.q_matrix
+        self.v_vector = instance.v_vector
 
         # Get solver setup variables
         batch_size = self.batch_size
@@ -607,10 +651,8 @@ class MFSolver(CCVMSolver):
 
             pump_i = pump * rate + 1 + j_i
 
-            grads_mu = self.calculate_grads(
+            grads_mu = self.calculate_grads_adam(
                 mu_tilde_c,
-                q_matrix,
-                v_vector,
                 S,
                 feedback_scale,
             )
@@ -657,7 +699,7 @@ class MFSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                self.change_variables(mu_tilde, S), q_matrix, v_vector, device=device
+                self.change_variables(mu_tilde, S), self.q_matrix, self.v_vector, device=device
             )
             pp_time = post_processor_object.pp_time
         else:
