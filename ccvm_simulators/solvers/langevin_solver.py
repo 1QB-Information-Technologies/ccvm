@@ -105,6 +105,7 @@ class LangevinSolver(CCVMSolver):
         """
         if problem_category.lower() == "boxqp":
             self.calculate_grads = self._calculate_grads_boxqp
+            self.calculate_grads_adam = self._calculate_grads_boxqp_adam
             self.change_variables = self._change_variables_boxqp
             self.fit_to_constraints = self._fit_to_constraints_boxqp
         else:
@@ -133,6 +134,26 @@ class LangevinSolver(CCVMSolver):
         c_grad_3 = v_vector
 
         c_grads = -c_grad_1 - c_grad_3
+
+        return c_grads
+
+    def _calculate_grads_boxqp_adam(self, c):
+        """We treat the SDE that simulates the CIM of NTT as gradient
+        calculation. Original SDE considers only quadratic part of the objective
+        function. Therefore, we need to modify and add linear part of the QP to
+        the SDE.
+
+        Args:
+            c (torch.Tensor): In-phase amplitudes of the solver
+
+        Returns:
+            tensor: The calculated change in the variable amplitude.
+        """
+
+        c_grad_1 = torch.einsum("bi,ij -> bj", c, self.q_matrix)
+        c_grad_2 = self.v_vector
+
+        c_grads = -c_grad_1 - c_grad_2
 
         return c_grads
 
@@ -217,8 +238,6 @@ class LangevinSolver(CCVMSolver):
         self,
         instance,
         post_processor=None,
-        pump_rate_flag=True,
-        g=0.05,
         evolution_step_size=None,
         evolution_file=None,
     ):
@@ -228,9 +247,6 @@ class LangevinSolver(CCVMSolver):
             instance (ProblemInstance): The problem instance to solve.
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
-            pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number. If False, the pump rate will be 1.0. Defaults to True.
-            g (float): The nonlinearity coefficient. Defaults to 0.05.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
@@ -244,8 +260,6 @@ class LangevinSolver(CCVMSolver):
         Returns:
             solution (Solution): The solution to the problem instance.
         """
-        # TODO:  Update docstring
-
         # If the instance and the solver don't specify the same device type, raise
         # an error
         if instance.device != self.device:
@@ -400,8 +414,6 @@ class LangevinSolver(CCVMSolver):
         self,
         instance,
         post_processor=None,
-        pump_rate_flag=True,
-        g=0.05,
         evolution_step_size=None,
         evolution_file=None,
         adam_hyperparam=dict(beta1=0.9, beta2=0.999, alpha=0.001),
@@ -412,9 +424,6 @@ class LangevinSolver(CCVMSolver):
             instance (ProblemInstance): The problem instance to solve.
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
-            pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number. If False, the pump rate will be 1.0. Defaults to True.
-            g (float): The nonlinearity coefficient. Defaults to 0.05.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
@@ -439,20 +448,20 @@ class LangevinSolver(CCVMSolver):
 
         # Get problem from problem instance
         problem_size = instance.problem_size
-        q_matrix = instance.q_matrix
-        v_vector = instance.v_vector
+        self.q_matrix = instance.q_matrix
+        self.v_vector = instance.v_vector
 
         # Get solver setup variables
-        S = self.S
+        S = self.S # TODO: REMOVE
         batch_size = self.batch_size
         device = self.device
 
         # Get parameters from parameter_key
         try:
-            pump = self.parameter_key[problem_size]["pump"]
             dt = self.parameter_key[problem_size]["dt"]
             iterations = self.parameter_key[problem_size]["iterations"]
-            noise_ratio = self.parameter_key[problem_size]["noise_ratio"]
+            sigma = self.parameter_key[problem_size]["sigma"]
+            feedback_scale = self.parameter_key[problem_size]["feedback_scale"]
         except KeyError as e:
             raise KeyError(
                 f"The parameter '{e.args[0]}' for the given instance size is not defined."
@@ -505,27 +514,11 @@ class LangevinSolver(CCVMSolver):
         # Initialize tensor variables on the device that will be used to perform the
         # calculations
         c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         wiener_dist_c = tdist.Normal(
             torch.tensor([0.0] * batch_size, device=device),
             torch.tensor([1.0] * batch_size, device=device),
         )
-        wiener_dist_s = tdist.Normal(
-            torch.tensor([0.0] * batch_size, device=device),
-            torch.tensor([1.0] * batch_size, device=device),
-        )
-
-        # Pump rate update selection: time-dependent or constant
-        pump_rate_i = lambda i: pump * (i + 1) / iterations
-        pump_rate_c = lambda i: pump  # Constant
-        if pump_rate_flag:
-            calc_pump_rate = pump_rate_i
-        else:
-            calc_pump_rate = pump_rate_c
-
-        if pump > 1:
-            S = np.sqrt(pump - 1)
-
+        
         # Hyperparameters for Adam algorithm
         alpha = adam_hyperparam["alpha"]
         beta1 = adam_hyperparam["beta1"]
@@ -535,75 +528,44 @@ class LangevinSolver(CCVMSolver):
         m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         import warnings
 
-        warnings.warn("DL-CCVM-ADAM without 2nd moment estimate!")
+        warnings.warn("Langevin-ADAM without 2nd moment estimate!")
         # =======================================================================
         # v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         # =======================================================================
-        m_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        # =======================================================================
-        # v_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        # =======================================================================
+        
 
         # Perform the solve with ADAM over the specified number of iterations
         for i in range(iterations):
-            pump_rate = calc_pump_rate(i)
-
-            noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
 
             # Calculate gradient
-            c_grads, s_grads = self.calculate_grads(c, s, q_matrix, v_vector, S)
+            c_grads = self.calculate_grads_adam(c)
 
             # Update biased first and second moment estimates
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
             # ===================================================================
             # v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2) # Open issue: need to be avoided
             # ===================================================================
-            m_s = beta1 * m_s + (1.0 - beta1) * s_grads
-            # ===================================================================
-            # v_s = beta2 * v_s + (1.0 - beta2) * torch.pow(s_grads, 2)
-            # ===================================================================
-
+            
             # Compute bias corrected grads using 1st and 2nd moments
             beta1i, beta2i = (1.0 - beta1 ** (i + 1)), (1.0 - beta2 ** (i + 1))
             # ===================================================================
             # mhat_c, vhat_c = m_c / beta1i, v_c / beta2i
-            # mhat_s, vhat_s = m_s / beta1i, v_s / beta2i
             # ===================================================================
             mhat_c = m_c / beta1i
-            mhat_s = m_s / beta1i
             # Element-wise division
             # ===================================================================
             # c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon) # Open issue!
-            # s_grads -= alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
             # ===================================================================
             c_grads -= alpha * mhat_c
-            s_grads -= alpha * mhat_s
-
-            # Additional drift terms (moved from self._calculate_grads_boxqp)
-            c_pow = torch.pow(c, 2)
-            s_pow = torch.pow(s, 2)
-            c_drift = torch.einsum("cj,cj -> cj", -1 + pump_rate - c_pow - s_pow, c)
-            s_drift = torch.einsum("cj,cj -> cj", -1 - pump_rate - c_pow - s_pow, s)
-
+            
             wiener_increment_c = (
                 wiener_dist_c.sample((problem_size,)).transpose(0, 1)
                 * np.sqrt(dt)
-                * noise_ratio_i
-            )
-            wiener_increment_s = (
-                wiener_dist_s.sample((problem_size,)).transpose(0, 1)
-                * np.sqrt(dt)
-                / noise_ratio_i
             )
 
-            c += (
-                dt * (c_drift + c_grads)
-                + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_c
-            )
-            s += (
-                dt * (s_drift + s_grads)
-                + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_s
-            )
+            c += dt * feedback_scale * c_grads + sigma * wiener_increment_c
+            # Ensure variables are within any problem constraints
+            c = self.fit_to_constraints(c, 0, 1.0)
 
             # If evolution_step_size is specified, save the values if this iteration
             # aligns with the step size or if this is the last iteration
@@ -613,11 +575,7 @@ class LangevinSolver(CCVMSolver):
                 # Update the record of the sample values with the values found at
                 # this iteration
                 c_sample[:, :, samples_taken] = c
-                s_sample[:, :, samples_taken] = s
                 samples_taken += 1
-
-        # Ensure variables are within any problem constraints
-        c = self.fit_to_constraints(c, -S, S)
 
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
@@ -629,7 +587,7 @@ class LangevinSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                self.change_variables(c, S), q_matrix, v_vector
+                self.change_variables(c, S), self.q_matrix, self.v_vector
             )
             pp_time = post_processor_object.pp_time
         else:
@@ -637,9 +595,7 @@ class LangevinSolver(CCVMSolver):
             pp_time = 0.0
 
         # Calculate the objective value
-        # Perform a change of variables to enforce the box constraints
-        confs = self.change_variables(problem_variables, S)
-        objval = instance.compute_energy(confs)
+        objval = instance.compute_energy(problem_variables)
 
         if evolution_step_size:
             # Write samples to file
@@ -652,7 +608,6 @@ class LangevinSolver(CCVMSolver):
             with open(evolution_file, "a") as evolution_file_obj:
                 self._append_samples_to_file(
                     c_sample=c_sample[batch_index],
-                    s_sample=s_sample[batch_index],
                     evolution_file_object=evolution_file_obj,
                 )
 
@@ -665,10 +620,7 @@ class LangevinSolver(CCVMSolver):
             solve_time=solve_time,
             pp_time=pp_time,
             optimal_value=instance.optimal_sol,
-            variables={
-                "problem_variables": problem_variables,
-                "s": s,
-            },
+            variables={"problem_variables": problem_variables},
             device=device,
         )
 
