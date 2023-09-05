@@ -15,7 +15,6 @@ PLOT_OUTPUT_DEST = f"{PLOT_OUTPUT_DIR}/DL-CCVM_TTS_cpu_plot.png"
 
 
 if __name__ == "__main__":
-
     # Initialize solver
     batch_size = 1000
     solver = DLSolver(device="cpu", batch_size=batch_size)  # or "cuda"

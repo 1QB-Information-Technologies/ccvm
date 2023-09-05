@@ -45,7 +45,6 @@ class TestBoxQPModel(TestCase):
         assert torch.is_tensor(output)
 
     def test_valid_boxqp_asgd(self):
-
         "Test a valid tensor is returned when correct parameters are passed to forward function for asgd post-processor"
 
         method_type = MethodType.ASGD

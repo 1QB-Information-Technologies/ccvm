@@ -1,5 +1,6 @@
 import glob
-import os, sys 
+import os, sys
+
 # sys.path.insert(0, os.path.abspath("../"))
 from ccvm_simulators.problem_classes.boxqp import ProblemInstance
 from ccvm_simulators.solvers import DLSolver
@@ -27,7 +28,9 @@ if __name__ == "__main__":
         )
 
         # Scale the problem's coefficients for more stable optimization
-        boxqp_instance.scale_coefs(adam_solver.get_scaling_factor(boxqp_instance.q_matrix))
+        boxqp_instance.scale_coefs(
+            adam_solver.get_scaling_factor(boxqp_instance.q_matrix)
+        )
 
         # Solve the problem
         solution = adam_solver(

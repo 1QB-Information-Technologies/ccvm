@@ -1,5 +1,6 @@
 import glob
-import os, sys 
+import os, sys
+
 # sys.path.insert(0, os.path.abspath("../"))
 from ccvm_simulators.problem_classes.boxqp import ProblemInstance
 from ccvm_simulators.solvers import LangevinSolver
@@ -13,7 +14,12 @@ if __name__ == "__main__":
 
     # Supply solver parameters for different problem sizes
     solver.parameter_key = {
-        20: {"dt": 0.005, "iterations": 15000, "sigma": 0.02, "noise_ratio": 1.0},
+        20: {
+            "dt": 0.005,
+            "iterations": 15000,
+            "sigma": 0.02,
+            "feedback_scale": 1.0,
+        },
     }
 
     # Load test instances to solve

@@ -6,7 +6,6 @@
 
 
 if __name__ == "__main__":
-
     # Load problem instances
     # instances = load_instances("path/to/instances")
 

@@ -1,5 +1,6 @@
 import glob
 import os, sys, pickle
+
 # sys.path.insert(0, os.path.abspath("../"))
 from ccvm_simulators.problem_classes.boxqp import ProblemInstance
 from ccvm_simulators.solvers import DLSolver
@@ -31,7 +32,7 @@ if __name__ == "__main__":
         boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 
         # Solve the problem
-        dataset=dict()
+        dataset = dict()
         # Repeat the experiment 10 times
         for repeat in range(1, 11):
             solution = solver.solve(
@@ -39,22 +40,21 @@ if __name__ == "__main__":
                 post_processor=None,
             )
             dataset[f"r{repeat:02d}"] = dict(
-                best_objective_value = solution.best_objective_value,
-                solution_performance = solution.solution_performance,
-                solve_time = solution.solve_time,
+                best_objective_value=solution.best_objective_value,
+                solution_performance=solution.solution_performance,
+                solve_time=solution.solve_time,
             )
-        dataset['params'] = dict(
-            batch_size = solution.batch_size,
-            device = solution.device,
-            instance_name = solution.instance_name,
-            iterations = solution.iterations,
-            optimal_value = solution.optimal_value,
-            problem_size = solution.problem_size,
+        dataset["params"] = dict(
+            batch_size=solution.batch_size,
+            device=solution.device,
+            instance_name=solution.instance_name,
+            iterations=solution.iterations,
+            optimal_value=solution.optimal_value,
+            problem_size=solution.problem_size,
         )
         # print(solution)
         filename = f"{RESULTS_DIR}original_iter{solution.iterations:06d}.pkl"
-        with open(filename, 'wb') as file:
+        with open(filename, "wb") as file:
             pickle.dump(dataset, file, pickle.HIGHEST_PROTOCOL)
-                        
+
         print(dataset)
-        

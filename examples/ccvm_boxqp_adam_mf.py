@@ -12,7 +12,14 @@ if __name__ == "__main__":
 
     # Supply solver parameters for different problem sizes
     adam_solver.parameter_key = {
-        20: {"pump": 0.5, "feedback_scale": 20, "j": 20, "S": 0.2, "dt": 0.0025, "iterations": 15000,}
+        20: {
+            "pump": 0.5,
+            "feedback_scale": 20,
+            "j": 20,
+            "S": 0.2,
+            "dt": 0.0025,
+            "iterations": 15000,
+        }
     }
 
     # Load test instances to solve
@@ -26,7 +33,9 @@ if __name__ == "__main__":
         )
 
         # Scale the problem's coefficients for more stable optimization
-        boxqp_instance.scale_coefs(adam_solver.get_scaling_factor(boxqp_instance.q_matrix))
+        boxqp_instance.scale_coefs(
+            adam_solver.get_scaling_factor(boxqp_instance.q_matrix)
+        )
 
         # Solve the problem
         solution = adam_solver(
@@ -35,4 +44,3 @@ if __name__ == "__main__":
         )
 
         print(solution)
-        

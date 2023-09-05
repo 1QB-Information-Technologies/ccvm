@@ -15,7 +15,6 @@ class InstanceType(enum.Enum):
     TUNING = "tuning"
     TEST = "test"
 
-    
 
 # TODO: Revisit for a potential factory pattern
 class ProblemInstance:

@@ -349,27 +349,26 @@ class MFSolver(CCVMSolver):
             torch.tensor([0.0] * batch_size, device=device),
             torch.tensor([1.0] * batch_size, device=device),
         )
-        
+
         # Pump rate update selection: time-dependent
         pump_rate_i = lambda i: (i + 1) / iterations
         pump_rate_c = lambda i: 1.0
         if pump_rate_flag:
             pump_rate = pump_rate_i
         else:
-            pump_rate= pump_rate_c
-        
+            pump_rate = pump_rate_c
+
         # Perform the solve over the specified number of iterations
         for i in range(iterations):
-
             j_i = j * np.exp(-(i + 1) / iterations * 3.0)
             wiener = wiener_dist.sample((problem_size,)).transpose(0, 1)
             wiener_increment = wiener / np.sqrt(dt)
             mu_tilde = mu + np.sqrt(1 / (4 * j_i)) * wiener_increment
             mu_tilde_c = self.fit_to_constraints(mu_tilde, -S, S)
 
-            rate = pump_rate(i) # t/T
+            rate = pump_rate(i)  # t/T
 
-            pump_i = pump * rate + 1 + j_i  
+            pump_i = pump * rate + 1 + j_i
 
             grads_mu = self.calculate_grads(
                 mu_tilde_c,
@@ -378,13 +377,13 @@ class MFSolver(CCVMSolver):
                 S,
                 feedback_scale,
             )
-             
+
             mu_pow = torch.pow(mu, 2)
 
-            mu_drift = (-(1 + j_i) + pump_i - g**2 * mu_pow) * mu            
+            mu_drift = (-(1 + j_i) + pump_i - g**2 * mu_pow) * mu
             mu_drift += np.sqrt(j_i) * (sigma - 0.5) * wiener_increment
             mu += dt * (grads_mu + mu_drift)
-            
+
             sigma_drift = 2 * (-(1 + j_i) + pump_i - 3 * g**2 * mu_pow) * sigma
             sigma_drift += -2 * j_i * (sigma - 0.5).pow(2)
             sigma_drift += (1 + j_i) + 2 * g**2 * mu_pow
@@ -577,38 +576,37 @@ class MFSolver(CCVMSolver):
             torch.tensor([0.0] * batch_size, device=device),
             torch.tensor([1.0] * batch_size, device=device),
         )
-        
+
         # Pump rate update selection: time-dependent
         pump_rate_i = lambda i: (i + 1) / iterations
         pump_rate_c = lambda i: 1.0
         if pump_rate_flag:
             pump_rate = pump_rate_i
         else:
-            pump_rate= pump_rate_c
-        
+            pump_rate = pump_rate_c
+
         # Hyperparameters for Adam algorithm
-        alpha = adam_hyperparam['alpha']
-        beta1 = adam_hyperparam['beta1']
-        beta2 = adam_hyperparam['beta2']
+        alpha = adam_hyperparam["alpha"]
+        beta1 = adam_hyperparam["beta1"]
+        beta2 = adam_hyperparam["beta2"]
         epsilon = 1e-8
         # Initialize first and second mement vectors
         m_mu = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        # import warnings; warnings.warn("DL-CCVM-ADAM without 2nd moment estimate!")   
-        v_mu = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)        
-        
+        # import warnings; warnings.warn("DL-CCVM-ADAM without 2nd moment estimate!")
+        v_mu = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+
         # Perform the solve over the specified number of iterations
         for i in range(iterations):
-
             j_i = j * np.exp(-(i + 1) / iterations * 3.0)
             wiener = wiener_dist.sample((problem_size,)).transpose(0, 1)
             wiener_increment = wiener / np.sqrt(dt)
             mu_tilde = mu + np.sqrt(1 / (4 * j_i)) * wiener_increment
             mu_tilde_c = self.fit_to_constraints(mu_tilde, -S, S)
 
-            rate = pump_rate(i) # t/T
+            rate = pump_rate(i)  # t/T
 
             pump_i = pump * rate + 1 + j_i
-            
+
             grads_mu = self.calculate_grads(
                 mu_tilde_c,
                 q_matrix,
@@ -616,22 +614,22 @@ class MFSolver(CCVMSolver):
                 S,
                 feedback_scale,
             )
-            
+
             # Update biased first and second moment estimates
             m_mu = beta1 * m_mu + (1.0 - beta1) * grads_mu
-            v_mu = beta2 * v_mu + (1.0 - beta2) * torch.pow(grads_mu, 2) 
+            v_mu = beta2 * v_mu + (1.0 - beta2) * torch.pow(grads_mu, 2)
             # Compute bias corrected grads using 1st and 2nd moments
-            beta1i, beta2i = (1.0 - beta1**(i+1)), (1.0 - beta2**(i+1))
+            beta1i, beta2i = (1.0 - beta1 ** (i + 1)), (1.0 - beta2 ** (i + 1))
             mhat_mu, vhat_mu = m_mu / beta1i, v_mu / beta2i
             # Update gradient in the form of element-wise division
-            grads_mu -= alpha * torch.div(mhat_mu, torch.sqrt(vhat_mu)+epsilon) 
-            
+            grads_mu -= alpha * torch.div(mhat_mu, torch.sqrt(vhat_mu) + epsilon)
+
             # Calculate drift and diffusion terms
             mu_pow = torch.pow(mu, 2)
-            mu_drift = (-(1 + j_i) + pump_i - g**2 * mu_pow) * mu            
+            mu_drift = (-(1 + j_i) + pump_i - g**2 * mu_pow) * mu
             mu_drift += np.sqrt(j_i) * (sigma - 0.5) * wiener_increment
             mu += dt * (grads_mu + mu_drift)
-            
+
             sigma_drift = 2 * (-(1 + j_i) + pump_i - 3 * g**2 * mu_pow) * sigma
             sigma_drift += -2 * j_i * (sigma - 0.5).pow(2)
             sigma_drift += (1 + j_i) + 2 * g**2 * mu_pow
