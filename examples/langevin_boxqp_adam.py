@@ -33,7 +33,9 @@ if __name__ == "__main__":
         )
 
         # Scale the problem's coefficients for more stable optimization
-        boxqp_instance.scale_coefs(solver_adam.get_scaling_factor(boxqp_instance.q_matrix))
+        boxqp_instance.scale_coefs(
+            solver_adam.get_scaling_factor(boxqp_instance.q_matrix)
+        )
 
         # Solve the problem
         solution = solver_adam(

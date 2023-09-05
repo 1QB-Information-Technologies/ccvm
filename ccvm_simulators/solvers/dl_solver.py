@@ -163,7 +163,7 @@ class DLSolver(CCVMSolver):
         Returns:
             tuple: The calculated change in the variable amplitudes.
         """
-        
+
         c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, self.q_matrix) / S
         c_grad_3 = self.v_vector / 2 / S
 
@@ -371,7 +371,6 @@ class DLSolver(CCVMSolver):
         # Perform the solve over the specified number of iterations
         pump_rate = 1
         for i in range(iterations):
-
             if pump_rate_flag:
                 pump_rate = (i + 1) / iterations
 
@@ -611,8 +610,9 @@ class DLSolver(CCVMSolver):
         m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
 
         import warnings
+
         warnings.warn("DL-CCVM-ADAM without 2nd moment estimate!")
-        
+
         # =======================================================================
         # v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         # =======================================================================

@@ -452,7 +452,7 @@ class LangevinSolver(CCVMSolver):
         self.v_vector = instance.v_vector
 
         # Get solver setup variables
-        S = self.S # TODO: REMOVE
+        S = self.S  # TODO: REMOVE
         batch_size = self.batch_size
         device = self.device
 
@@ -518,7 +518,7 @@ class LangevinSolver(CCVMSolver):
             torch.tensor([0.0] * batch_size, device=device),
             torch.tensor([1.0] * batch_size, device=device),
         )
-        
+
         # Hyperparameters for Adam algorithm
         alpha = adam_hyperparam["alpha"]
         beta1 = adam_hyperparam["beta1"]
@@ -532,11 +532,9 @@ class LangevinSolver(CCVMSolver):
         # =======================================================================
         # v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         # =======================================================================
-        
 
         # Perform the solve with ADAM over the specified number of iterations
         for i in range(iterations):
-
             # Calculate gradient
             c_grads = self.calculate_grads_adam(c)
 
@@ -545,7 +543,7 @@ class LangevinSolver(CCVMSolver):
             # ===================================================================
             # v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2) # Open issue: need to be avoided
             # ===================================================================
-            
+
             # Compute bias corrected grads using 1st and 2nd moments
             beta1i, beta2i = (1.0 - beta1 ** (i + 1)), (1.0 - beta2 ** (i + 1))
             # ===================================================================
@@ -557,11 +555,10 @@ class LangevinSolver(CCVMSolver):
             # c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon) # Open issue!
             # ===================================================================
             c_grads -= alpha * mhat_c
-            
-            wiener_increment_c = (
-                wiener_dist_c.sample((problem_size,)).transpose(0, 1)
-                * np.sqrt(dt)
-            )
+
+            wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(
+                0, 1
+            ) * np.sqrt(dt)
 
             c += dt * feedback_scale * c_grads + sigma * wiener_increment_c
             # Ensure variables are within any problem constraints

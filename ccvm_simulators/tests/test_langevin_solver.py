@@ -4,7 +4,9 @@ from ccvm_simulators.solvers import LangevinSolver
 
 class TestLangevinSolver(TestCase):
     def setUp(self):
-        langevin_solver = LangevinSolver(device="cpu", batch_size=1000, problem_category="boxqp")
+        langevin_solver = LangevinSolver(
+            device="cpu", batch_size=1000, problem_category="boxqp"
+        )
 
     def test_set_parameter_key_with_valid_inputs(self):
         """Test parameter_key sets given parameters when inputs are valid"""

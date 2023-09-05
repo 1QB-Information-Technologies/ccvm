@@ -184,7 +184,7 @@ class MFSolver(CCVMSolver):
         grads_sigma = sigma_term1 + sigma_term2 + sigma_term3
 
         return grads_mu, grads_sigma
-    
+
     def _calculate_grads_boxqp_adam(self, mu_tilde, S, fs):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
@@ -200,7 +200,9 @@ class MFSolver(CCVMSolver):
             tensor: The gradients of the mean-field amplitude.
         """
         mu_term2_1 = (
-            -(1 / 4) * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, self.q_matrix)) / S
+            -(1 / 4)
+            * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, self.q_matrix))
+            / S
         )
         mu_term2_2 = -self.v_vector / S / 2
 
@@ -405,7 +407,6 @@ class MFSolver(CCVMSolver):
         # Perform the solve over the specified number of iterations
         pump_rate = 1
         for i in range(iterations):
-
             j_i = j * np.exp(-(i + 1) / iterations * 3.0)
             wiener = wiener_dist.sample((problem_size,)).transpose(0, 1)
             wiener_increment = wiener / np.sqrt(dt)
@@ -699,7 +700,10 @@ class MFSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                self.change_variables(mu_tilde, S), self.q_matrix, self.v_vector, device=device
+                self.change_variables(mu_tilde, S),
+                self.q_matrix,
+                self.v_vector,
+                device=device,
             )
             pp_time = post_processor_object.pp_time
         else:
