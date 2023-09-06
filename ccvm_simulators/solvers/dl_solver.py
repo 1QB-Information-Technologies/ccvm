@@ -148,7 +148,6 @@ class DLSolver(CCVMSolver):
         s_grads = -s_grad_1 + s_grad_2 - s_grad_3
         return c_grads, s_grads
 
-
     def _change_variables_boxqp(self, problem_variables, S=1):
         """Perform a change of variables to enforce the box constraints.
 
@@ -445,4 +444,3 @@ class DLSolver(CCVMSolver):
             solution.evolution_file = evolution_file
 
         return solution
-

@@ -5,7 +5,6 @@ from ccvm_simulators.solvers import DLSolver
 TEST_INSTANCES_DIR = "./test_instances/"
 
 if __name__ == "__main__":
-
     # Initialize solver
     batch_size = 1000
     solver = DLSolver(device="cpu", batch_size=batch_size)  # or "cuda"

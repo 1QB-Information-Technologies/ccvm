@@ -184,7 +184,6 @@ class MFSolver(CCVMSolver):
 
         return grads_mu, grads_sigma
 
-
     def _change_variables_boxqp(self, problem_variables, S=1):
         """Perform a change of variables to enforce the box constraints.
 
