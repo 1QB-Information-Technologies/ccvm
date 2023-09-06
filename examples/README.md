@@ -3,17 +3,8 @@
 ### Demo Scripts
 
 - `ccvm_boxqp_plot.py`: Solve a BoxQP problem using a CCVM simulator, w/ time-to-solution (TTS) plotting
-- `ccvm_boxqp_dl.py`: Solve a DL-CCVM BoxQP problem using a CCVM simulator, w/o plotting
-- `ccvm_boxqp_mf.py`: Solve a MF-CCVM BoxQP problem using a CCVM simulator, w/o plotting
-- `langevin_boxqp.py`: Solve a Langevin BoxQP problem using a CCVM simulator, w/o plotting
+- `ccvm_boxqp.py`: Solve a BoxQP problem using a CCVM simulator, w/o plotting
 - `benchmarking_studies.py`: Benchmark a CCVM simulator against a Langevin solver (to be implemented)
-
-### Demo Scripts with ADAM algorithm
-The following scripts solve BoxQP problem using CCVM simulator with ADAM algorithm
-- `ccvm_boxqp_adam_dl.py`: Using a DL-CCVM simulator
-- `ccvm_boxqp_adam_mf.py`: Using MF-CCVM simulator
-- `langevin_boxqp_adam.py`: Using Langevin simulator
-
 
 ### Example Problem Instances
 
