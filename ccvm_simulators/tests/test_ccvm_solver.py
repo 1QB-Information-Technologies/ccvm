@@ -41,7 +41,7 @@ class TestCCVMSolver(TestCase):
                 "feedback_scale": 400,
                 "j": 399,
                 "S": 20.0,
-                "lr": 0.0025,
+                "dt": 0.0025,
                 "iterations": 15000,
             }
         }

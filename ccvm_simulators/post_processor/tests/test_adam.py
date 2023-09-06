@@ -40,7 +40,6 @@ class TestPostProcessorAdam(TestCase):
         self.assertGreater(self.post_processor.pp_time, 0, error_message)
 
     def test_postprocess_invalid_c_parameter(self):
-
         """Test postprocess when c value is not a tensor"""
         invalid_c = "dummy-c"
 
@@ -48,7 +47,6 @@ class TestPostProcessorAdam(TestCase):
             self.post_processor.postprocess(invalid_c, self.q_matrix, self.v_vector)
 
     def test_postprocess_invalid_qmat_parameter(self):
-
         """Test postprocess when qmat value is not a tensor"""
         invalid_qmat = "dummy-qmat"
 
@@ -56,7 +54,6 @@ class TestPostProcessorAdam(TestCase):
             self.post_processor.postprocess(self.c, invalid_qmat, self.v_vector)
 
     def test_postprocess_invalid_c_vector_parameter(self):
-
         """Test postprocess when v_vector value is not a tensor"""
         invalid_c_vector = "dummy-v_vector"
 
@@ -64,7 +61,6 @@ class TestPostProcessorAdam(TestCase):
             self.post_processor.postprocess(self.c, self.q_matrix, invalid_c_vector)
 
     def test_postprocess_error_for_invalid_c_dimension(self):
-
         """Test postprocess when parameter dimensions are inconsistent.
         We expect to be given an MxN tensor for c, an NxN tensor for q_matrix, and
         a tensor of size N for the v_vector. If any of these are not the correct
@@ -83,7 +79,6 @@ class TestPostProcessorAdam(TestCase):
             self.fail("Expected Exception not raised")
 
     def test_postprocess_error_for_invalid_c_vector_shape(self):
-
         """Test postprocess when parameter dimensions are inconsistent.
         We expect to be given an MxN tensor for c, an NxN tensor for q_matrix, and
         a tensor of size N for the v_vector. If any of these are not the correct

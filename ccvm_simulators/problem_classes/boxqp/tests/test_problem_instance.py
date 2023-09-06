@@ -164,7 +164,6 @@ class TestProblemInstance(TestCase):
         assert torch.equal(expected_result, energy)
 
     def test_scale_coefs_multiple_times(self):
-
         file_path = self.basepath + "/test_instances/test002.in"
         problem_instance = ProblemInstance(
             device=self.device,

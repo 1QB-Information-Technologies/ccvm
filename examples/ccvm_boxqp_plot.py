@@ -15,15 +15,14 @@ PLOT_OUTPUT_DEST = f"{PLOT_OUTPUT_DIR}/DL-CCVM_TTS_cpu_plot.png"
 
 
 if __name__ == "__main__":
-
     # Initialize solver
     batch_size = 1000
     solver = DLSolver(device="cpu", batch_size=batch_size)  # or "cuda"
 
     # Supply solver parameters for different problem sizes
     solver.parameter_key = {
-        10: {"pump": 1.0, "lr": 0.001, "iterations": 10000, "noise_ratio": 15},
-        20: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "noise_ratio": 10},
+        10: {"pump": 1.0, "dt": 0.001, "iterations": 10000, "noise_ratio": 15},
+        20: {"pump": 2.0, "dt": 0.005, "iterations": 15000, "noise_ratio": 10},
     }
 
     metadata_list = MetadataList()

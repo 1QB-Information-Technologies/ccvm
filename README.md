@@ -83,7 +83,7 @@ from ccvm_simulators.solvers import DLSolver
 ```python
 solver = DLSolver(device="cpu", batch_size=100)  # or "cuda"
 solver.parameter_key = {
-    20: {"pump": 2.0, "lr": 0.005, "iterations": 15000, "noise_ratio": 10},
+    20: {"pump": 2.0, "dt": 0.005, "iterations": 15000, "noise_ratio": 10},
 }
 ```
 

@@ -42,7 +42,6 @@ class PostProcessorLBFGS(PostProcessor):
         for bb in tqdm.tqdm(range(batch_size)):
             model = BoxQPModel(c[bb], self.method_type)
             for _ in range(num_iter):
-
                 optimizer = torch.optim.LBFGS(model.parameters(), lr=0.001, max_iter=1)
 
                 def closure():

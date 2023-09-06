@@ -67,7 +67,7 @@ class SampleTTSMetric(Metric):
 
         Args:
             results (list[list]): A result for each problem.
-            best_known_energies (list): A best known energy for the problem associated 
+            best_known_energies (list): A best known energy for the problem associated
                 with each result.
 
         Keyword Args:

@@ -57,8 +57,8 @@ class MFSolver(CCVMSolver):
                     * The measurement strength
                 * S (float or vector of float with size 'problem_size')
                     * The enforced saturation value
-                * lr (float)
-                    * The learning rate
+                * dt (float)
+                    * The time step or the learning rate (old name was lr)
                 * noise_ratio (float)
 
             With values, the parameter key might look like this::
@@ -70,7 +70,7 @@ class MFSolver(CCVMSolver):
                             "feedback_scale": 400,
                             "j": 399,
                             "S": 20.0,
-                            "lr": 0.0025,
+                            "dt": 0.0025,
                             "iterations": 15000
                         },
                     30:
@@ -79,7 +79,7 @@ class MFSolver(CCVMSolver):
                             "feedback_scale": 250,
                             "j": 399,
                             "S": 20.0,
-                            "lr": 0.0025,
+                            "dt": 0.0025,
                             "iterations": 15000
                         },
                 }
@@ -93,7 +93,7 @@ class MFSolver(CCVMSolver):
     @parameter_key.setter
     def parameter_key(self, parameters):
         expected_mfparameter_key_set = set(
-            ["pump", "feedback_scale", "j", "S", "lr", "iterations"]
+            ["pump", "feedback_scale", "j", "S", "dt", "iterations"]
         )
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
@@ -183,6 +183,7 @@ class MFSolver(CCVMSolver):
         grads_sigma = sigma_term1 + sigma_term2 + sigma_term3
 
         return grads_mu, grads_sigma
+
 
     def _change_variables_boxqp(self, problem_variables, S=1):
         """Perform a change of variables to enforce the box constraints.
@@ -314,7 +315,7 @@ class MFSolver(CCVMSolver):
         # Get parameters from parameter_key
         try:
             pump = self.parameter_key[problem_size]["pump"]
-            lr = self.parameter_key[problem_size]["lr"]
+            dt = self.parameter_key[problem_size]["dt"]
             iterations = self.parameter_key[problem_size]["iterations"]
             j = self.parameter_key[problem_size]["j"]
             feedback_scale = self.parameter_key[problem_size]["feedback_scale"]
@@ -381,10 +382,9 @@ class MFSolver(CCVMSolver):
         # Perform the solve over the specified number of iterations
         pump_rate = 1
         for i in range(iterations):
-
             j_i = j * np.exp(-(i + 1) / iterations * 3.0)
             wiener = wiener_dist.sample((problem_size,)).transpose(0, 1)
-            wiener_increment = wiener / np.sqrt(lr)
+            wiener_increment = wiener / np.sqrt(dt)
             mu_tilde = mu + np.sqrt(1 / (4 * j_i)) * wiener_increment
             mu_tilde_c = self.fit_to_constraints(mu_tilde, -S, S)
 
@@ -406,8 +406,8 @@ class MFSolver(CCVMSolver):
                 S,
                 feedback_scale,
             )
-            mu += lr * grads_mu
-            sigma += lr * grads_sigma
+            mu += dt * grads_mu
+            sigma += dt * grads_sigma
 
             # If evolution_step_size is specified, save the values if this iteration
             # aligns with the step size or if this is the last iteration

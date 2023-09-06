@@ -134,3 +134,10 @@ dmypy.json
 
 #sphinx docs
 _build
+
+#MC
+.vscode/
+.project
+.pydevproject
+metadata/
+
