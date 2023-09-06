@@ -3,7 +3,9 @@
 ### Demo Scripts
 
 - `ccvm_boxqp_plot.py`: Solve a BoxQP problem using a CCVM simulator, w/ time-to-solution (TTS) plotting
-- `ccvm_boxqp.py`: Solve a BoxQP problem using a CCVM simulator, w/o plotting
+- `ccvm_boxqp.py`: Solve a BoxQP problem using a DL-CCVM simulator, w/o plotting
+- `ccvm_boxqp_mf.py`: Solve a MF-CCVM BoxQP problem using a CCVM simulator, w/o plotting
+- `langevin_boxqp.py`: Solve a Langevin BoxQP problem using a CCVM simulator, w/o plotting
 - `benchmarking_studies.py`: Benchmark a CCVM simulator against a Langevin solver (to be implemented)
 
 ### Example Problem Instances
