@@ -105,7 +105,6 @@ class LangevinSolver(CCVMSolver):
         """
         if problem_category.lower() == "boxqp":
             self.calculate_grads = self._calculate_grads_boxqp
-            self.calculate_grads_adam = self._calculate_grads_boxqp_adam
             self.change_variables = self._change_variables_boxqp
             self.fit_to_constraints = self._fit_to_constraints_boxqp
         else:
@@ -134,26 +133,6 @@ class LangevinSolver(CCVMSolver):
         c_grad_3 = v_vector
 
         c_grads = -c_grad_1 - c_grad_3
-
-        return c_grads
-
-    def _calculate_grads_boxqp_adam(self, c):
-        """We treat the SDE that simulates the CIM of NTT as gradient
-        calculation. Original SDE considers only quadratic part of the objective
-        function. Therefore, we need to modify and add linear part of the QP to
-        the SDE.
-
-        Args:
-            c (torch.Tensor): In-phase amplitudes of the solver
-
-        Returns:
-            tensor: The calculated change in the variable amplitude.
-        """
-
-        c_grad_1 = torch.einsum("bi,ij -> bj", c, self.q_matrix)
-        c_grad_2 = self.v_vector
-
-        c_grads = -c_grad_1 - c_grad_2
 
         return c_grads
 
