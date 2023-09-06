@@ -103,7 +103,6 @@ class DLSolver(CCVMSolver):
         """
         if problem_category.lower() == "boxqp":
             self.calculate_grads = self._calculate_grads_boxqp
-            self.calculate_grads_adam = self._calculate_grads_boxqp_adam
             self.change_variables = self._change_variables_boxqp
             self.fit_to_constraints = self._fit_to_constraints_boxqp
         else:
@@ -149,30 +148,6 @@ class DLSolver(CCVMSolver):
         s_grads = -s_grad_1 + s_grad_2 - s_grad_3
         return c_grads, s_grads
 
-    def _calculate_grads_boxqp_adam(self, c, s, S=1):
-        """We treat the SDE that simulates the CIM of NTT as gradient
-        calculation. Original SDE considers only quadratic part of the objective
-        function. Therefore, we need to modify and add linear part of the QP to
-        the SDE.
-
-        Args:
-            c (torch.Tensor): In-phase amplitudes of the solver
-            s (torch.Tensor): Quadrature amplitudes of the solver
-            S (float): The saturation value of the amplitudes. Defaults to 1.
-
-        Returns:
-            tuple: The calculated change in the variable amplitudes.
-        """
-
-        c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, self.q_matrix) / S
-        c_grad_3 = self.v_vector / 2 / S
-
-        s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, self.q_matrix) / S
-        s_grad_3 = self.v_vector / 2 / S
-
-        c_grads = -c_grad_1 - c_grad_3
-        s_grads = -s_grad_1 - s_grad_3
-        return c_grads, s_grads
 
     def _change_variables_boxqp(self, problem_variables, S=1):
         """Perform a change of variables to enforce the box constraints.

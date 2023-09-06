@@ -137,6 +137,7 @@ _build
 
 #MC
 .vscode/settings.json
+.vscode/
 .project
 .pydevproject
 .vscode/launch.json

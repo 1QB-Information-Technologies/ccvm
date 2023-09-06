@@ -123,7 +123,6 @@ class MFSolver(CCVMSolver):
         """
         if problem_category.lower() == "boxqp":
             self.calculate_grads = self._calculate_grads_boxqp
-            self.calculate_grads_adam = self._calculate_grads_boxqp_adam
             self.change_variables = self._change_variables_boxqp
             self.fit_to_constraints = self._fit_to_constraints_boxqp
         else:
@@ -185,30 +184,6 @@ class MFSolver(CCVMSolver):
 
         return grads_mu, grads_sigma
 
-    def _calculate_grads_boxqp_adam(self, mu_tilde, S, fs):
-        """We treat the SDE that simulates the CIM of NTT as gradient
-        calculation. Original SDE considers only quadratic part of the objective
-        function. Therefore, we need to modify and add linear part of the QP to
-        the SDE.
-
-        Args:
-            mu_tilde (torch.Tensor): Mean-field measured amplitudes
-            S (float): The enforced saturation value
-            fs (float): The coefficient of the feedback term.
-
-        Returns:
-            tensor: The gradients of the mean-field amplitude.
-        """
-        mu_term2_1 = (
-            -(1 / 4)
-            * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, self.q_matrix))
-            / S
-        )
-        mu_term2_2 = -self.v_vector / S / 2
-
-        grads_mu = fs * (mu_term2_1 + mu_term2_2)
-
-        return grads_mu
 
     def _change_variables_boxqp(self, problem_variables, S=1):
         """Perform a change of variables to enforce the box constraints.
