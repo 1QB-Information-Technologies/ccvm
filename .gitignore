@@ -136,10 +136,8 @@ dmypy.json
 _build
 
 #MC
-.vscode/settings.json
 .vscode/
 .project
 .pydevproject
-.vscode/launch.json
 metadata/
 
