@@ -409,5 +409,3 @@ class LangevinSolver(CCVMSolver):
             solution.evolution_file = evolution_file
 
         return solution
-
-    def 
