@@ -326,7 +326,7 @@ class LangevinSolver(CCVMSolver):
 
             c += dt * feedback_scale * c_grads + sigma * wiener_increment_c
             # Ensure variables are within any problem constraints
-            # The lower bound is determined by ell=0 and the upper bound by u=1
+            # The lower bound is determined by ell=0 and upper bound by u=1
             c = self.fit_to_constraints(c, 0, 1.0)
 
             # If evolution_step_size is specified, save the values if this iteration
