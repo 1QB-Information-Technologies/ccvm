@@ -1,7 +1,6 @@
 import glob
 import os, sys
 
-# sys.path.insert(0, os.path.abspath("../"))
 from ccvm_simulators.problem_classes.boxqp import ProblemInstance
 from ccvm_simulators.solvers import LangevinSolver
 

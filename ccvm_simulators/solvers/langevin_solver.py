@@ -6,13 +6,13 @@ import numpy as np
 import torch.distributions as tdist
 import time
 
-DL_SCALING_MULTIPLIER = 0.5
+LANGEVIN_SCALING_MULTIPLIER = 0.5
 """The value used by the LangevinSolver when calculating a scaling value in
 super.get_scaling_factor()"""
 
 
 class LangevinSolver(CCVMSolver):
-    """The LangevinSolver class models typical Langeving dynamics as a system of
+    """The LangevinSolver class models typical Langevin dynamics as a system of
     SDE."""
 
     def __init__(
@@ -40,7 +40,7 @@ class LangevinSolver(CCVMSolver):
         super().__init__(device)
         self.batch_size = batch_size
         self.S = S
-        self._scaling_multiplier = DL_SCALING_MULTIPLIER
+        self._scaling_multiplier = LANGEVIN_SCALING_MULTIPLIER
         # Use the method selector to choose the problem-specific methods to use
         self._method_selector(problem_category)
 
@@ -253,7 +253,7 @@ class LangevinSolver(CCVMSolver):
         v_vector = instance.v_vector
 
         # Get solver setup variables
-        S = self.S  # TODO: REMOVE
+        S = self.S
         batch_size = self.batch_size
         device = self.device
 
