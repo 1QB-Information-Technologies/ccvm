@@ -6,14 +6,14 @@ import numpy as np
 import torch.distributions as tdist
 import time
 
-DL_SCALING_MULTIPLIER = 0.5
-"""The value used by the DLSolver when calculating a scaling value in
+LANGEVIN_SCALING_MULTIPLIER = 0.5
+"""The value used by the LangevinSolver when calculating a scaling value in
 super.get_scaling_factor()"""
 
 
-class DLSolver(CCVMSolver):
-    """The DLSolver class models the delay line coherent continuous-variable machine
-    (DL-CCVM)."""
+class LangevinSolver(CCVMSolver):
+    """The LangevinSolver class models typical Langevin dynamics as a system of
+    SDE."""
 
     def __init__(
         self,
@@ -35,12 +35,12 @@ class DLSolver(CCVMSolver):
             ValueError: If the problem category is not supported by the solver.
 
         Returns:
-            DLSolver: The DLSolver object.
+            LangevinSolver: The LangevinSolver object.
         """
         super().__init__(device)
         self.batch_size = batch_size
         self.S = S
-        self._scaling_multiplier = DL_SCALING_MULTIPLIER
+        self._scaling_multiplier = LANGEVIN_SCALING_MULTIPLIER
         # Use the method selector to choose the problem-specific methods to use
         self._method_selector(problem_category)
 
@@ -58,13 +58,13 @@ class DLSolver(CCVMSolver):
                 * pump (float),
                 * dt (float),
                 * iterations (int),
+                * sigma (float),
                 * noise_ratio (float)
 
             With values, the parameter key might look like this::
 
                 {
-                    20: {"pump": 2.0, "dt": 0.005, "iterations": 15000, "noise_ratio": 10},
-                    30: {"pump": 2.0, "dt": 0.005, "iterations": 15000, "noise_ratio": 5},
+                    20: {"dt": 0.005, "iterations": 15000, "sigma":0.02, "noise_ratio": 1.0}
                 }
 
         Raises:
@@ -75,7 +75,9 @@ class DLSolver(CCVMSolver):
 
     @parameter_key.setter
     def parameter_key(self, parameters):
-        expected_dlparameter_key_set = set(["pump", "dt", "iterations", "noise_ratio"])
+        expected_dlparameter_key_set = set(
+            ["dt", "iterations", "sigma", "feedback_scale"]
+        )
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
         for parameter_key in parameter_key_list:
@@ -111,7 +113,7 @@ class DLSolver(CCVMSolver):
                 f" Given category: {problem_category}"
             )
 
-    def _calculate_grads_boxqp(self, c, s, q_matrix, v_vector, pump, rate, S=1):
+    def _calculate_grads_boxqp(self, c, q_matrix, v_vector, S=1):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
@@ -119,34 +121,20 @@ class DLSolver(CCVMSolver):
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
-            s (torch.Tensor): Quadrature amplitudes of the solver
             q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
             v_vector (torch.tensor): The V vector describing the BoxQP problem.
-            pump (float): The maximum pump field strength
-            rate (float): The multiplier for the pump field strength at a given instance of time.
             S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
-            tuple: The calculated change in the variable amplitudes.
+            tensor: The calculated change in the variable amplitude.
         """
 
-        c_pow = torch.pow(c, 2)
-        s_pow = torch.pow(s, 2)
+        c_grad_1 = torch.einsum("bi,ij -> bj", c, q_matrix)
+        c_grad_3 = v_vector
 
-        if pump > 1:
-            S = np.sqrt(pump - 1)
+        c_grads = -c_grad_1 - c_grad_3
 
-        c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, q_matrix) / S
-        c_grad_2 = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
-        c_grad_3 = v_vector / 2 / S
-
-        s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, q_matrix) / S
-        s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
-        s_grad_3 = v_vector / 2 / S
-
-        c_grads = -c_grad_1 + c_grad_2 - c_grad_3
-        s_grads = -s_grad_1 + s_grad_2 - s_grad_3
-        return c_grads, s_grads
+        return c_grads
 
     def _change_variables_boxqp(self, problem_variables, S=1):
         """Perform a change of variables to enforce the box constraints.
@@ -229,8 +217,6 @@ class DLSolver(CCVMSolver):
         self,
         instance,
         post_processor=None,
-        pump_rate_flag=True,
-        g=0.05,
         evolution_step_size=None,
         evolution_file=None,
     ):
@@ -240,9 +226,6 @@ class DLSolver(CCVMSolver):
             instance (ProblemInstance): The problem instance to solve.
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
-            pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number. If False, the pump rate will be 1.0. Defaults to True.
-            g (float): The nonlinearity coefficient. Defaults to 0.05.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
@@ -276,10 +259,11 @@ class DLSolver(CCVMSolver):
 
         # Get parameters from parameter_key
         try:
-            pump = self.parameter_key[problem_size]["pump"]
             dt = self.parameter_key[problem_size]["dt"]
             iterations = self.parameter_key[problem_size]["iterations"]
-            noise_ratio = self.parameter_key[problem_size]["noise_ratio"]
+            sigma = self.parameter_key[problem_size]["sigma"]
+            feedback_scale = self.parameter_key[problem_size]["feedback_scale"]
+
         except KeyError as e:
             raise KeyError(
                 f"The parameter '{e.args[0]}' for the given instance size is not defined."
@@ -322,55 +306,28 @@ class DLSolver(CCVMSolver):
                 dtype=torch.float,
                 device="cpu",
             )
-            s_sample = torch.zeros(
-                (batch_size, problem_size, num_samples),
-                dtype=torch.float,
-                device="cpu",
-            )
             samples_taken = 0
 
         # Initialize tensor variables on the device that will be used to perform the
         # calculations
         c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         wiener_dist_c = tdist.Normal(
-            torch.tensor([0.0] * batch_size, device=device),
-            torch.tensor([1.0] * batch_size, device=device),
-        )
-        wiener_dist_s = tdist.Normal(
             torch.tensor([0.0] * batch_size, device=device),
             torch.tensor([1.0] * batch_size, device=device),
         )
 
         # Perform the solve over the specified number of iterations
-        pump_rate = 1
         for i in range(iterations):
-            if pump_rate_flag:
-                pump_rate = (i + 1) / iterations
+            c_grads = self.calculate_grads(c, q_matrix, v_vector, S)
 
-            noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
+            wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(
+                0, 1
+            ) * np.sqrt(dt)
 
-            c_grads, s_grads = self.calculate_grads(
-                c, s, q_matrix, v_vector, pump, pump_rate
-            )
-            wiener_increment_c = (
-                wiener_dist_c.sample((problem_size,)).transpose(0, 1)
-                * np.sqrt(dt)
-                * noise_ratio_i
-            )
-            wiener_increment_s = (
-                wiener_dist_s.sample((problem_size,)).transpose(0, 1)
-                * np.sqrt(dt)
-                / noise_ratio_i
-            )
-            c += (
-                dt * c_grads
-                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_c
-            )
-            s += (
-                dt * s_grads
-                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_s
-            )
+            c += dt * feedback_scale * c_grads + sigma * wiener_increment_c
+            # Ensure variables are within any problem constraints
+            # The lower bound is determined by ell=0 and upper bound by u=1
+            c = self.fit_to_constraints(c, 0, 1.0)
 
             # If evolution_step_size is specified, save the values if this iteration
             # aligns with the step size or if this is the last iteration
@@ -380,11 +337,7 @@ class DLSolver(CCVMSolver):
                 # Update the record of the sample values with the values found at
                 # this iteration
                 c_sample[:, :, samples_taken] = c
-                s_sample[:, :, samples_taken] = s
                 samples_taken += 1
-
-        # Ensure variables are within any problem constraints
-        c = self.fit_to_constraints(c, -S, S)
 
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
@@ -395,18 +348,14 @@ class DLSolver(CCVMSolver):
                 post_processor
             )
 
-            problem_variables = post_processor_object.postprocess(
-                self.change_variables(c, S), q_matrix, v_vector
-            )
+            problem_variables = post_processor_object.postprocess(c, q_matrix, v_vector)
             pp_time = post_processor_object.pp_time
         else:
             problem_variables = c
             pp_time = 0.0
 
         # Calculate the objective value
-        # Perform a change of variables to enforce the box constraints
-        confs = self.change_variables(problem_variables, S)
-        objval = instance.compute_energy(confs)
+        objval = instance.compute_energy(problem_variables)
 
         if evolution_step_size:
             # Write samples to file
@@ -419,7 +368,6 @@ class DLSolver(CCVMSolver):
             with open(evolution_file, "a") as evolution_file_obj:
                 self._append_samples_to_file(
                     c_sample=c_sample[batch_index],
-                    s_sample=s_sample[batch_index],
                     evolution_file_object=evolution_file_obj,
                 )
 
@@ -432,10 +380,7 @@ class DLSolver(CCVMSolver):
             solve_time=solve_time,
             pp_time=pp_time,
             optimal_value=instance.optimal_sol,
-            variables={
-                "problem_variables": problem_variables,
-                "s": s,
-            },
+            variables={"problem_variables": problem_variables},
             device=device,
         )
 
