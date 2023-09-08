@@ -635,10 +635,14 @@ class MFSolver(CCVMSolver):
         beta1 = adam_hyperparam["beta1"]
         beta2 = adam_hyperparam["beta2"]
         epsilon = 1e-8
-        # Initialize first and second mement vectors
+        
+        # Initialize first moment vector
         m_mu = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        # import warnings; warnings.warn("DL-CCVM-ADAM without 2nd moment estimate!")
-        v_mu = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        # Initialize second moment vector conditionally
+        if not beta2==1.0:
+            v_mu = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        else:
+            v_mu = None  
 
         # Perform the solve over the specified number of iterations
         for i in range(iterations):
@@ -658,16 +662,30 @@ class MFSolver(CCVMSolver):
                 feedback_scale,
             )
 
-            # Update biased first and second moment estimates
+            # Update biased first moment estimate
             m_mu = beta1 * m_mu + (1.0 - beta1) * grads_mu
-            v_mu = beta2 * v_mu + (1.0 - beta2) * torch.pow(grads_mu, 2)
-            # Compute bias corrected grads using 1st and 2nd moments
-            beta1i, beta2i = (1.0 - beta1 ** (i + 1)), (1.0 - beta2 ** (i + 1))
-            mhat_mu, vhat_mu = m_mu / beta1i, v_mu / beta2i
-            # Update gradient in the form of element-wise division
-            grads_mu -= alpha * torch.div(mhat_mu, torch.sqrt(vhat_mu) + epsilon)
-
-            # Calculate drift and diffusion terms
+            
+            # Compute bias correction in 1st moment
+            beta1i = (1.0 - beta1 ** (i + 1))
+            mhat_mu = m_mu / beta1i
+            
+            # Conditional second moment estimation
+            if not beta2==1.0:
+                # Update biased 2nd moment estimate
+                v_mu = beta2 * v_mu + (1.0 - beta2) * torch.pow(grads_mu, 2)
+                
+                # Compute bias correction in 2nd moment
+                beta2i = (1.0 - beta2 ** (i + 1))
+                vhat_mu = v_mu / beta2i
+                
+                # Compute bias corrected grads using 1st and 2nd moments
+                # in the form of element-wise division
+                grads_mu -= alpha * torch.div(mhat_mu, torch.sqrt(vhat_mu) + epsilon)
+            else:
+                # Compute bias corrected grads only with 1st moment
+                grads_mu -= alpha * mhat_mu
+                
+            # Calculate drift and diffusion terms of mf-ccvm
             mu_pow = torch.pow(mu, 2)
             mu_drift = (-(1 + j_i) + pump_i - g**2 * mu_pow) * mu
             mu_drift += np.sqrt(j_i) * (sigma - 0.5) * wiener_increment

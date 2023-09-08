@@ -520,37 +520,42 @@ class LangevinSolver(CCVMSolver):
         beta1 = adam_hyperparam["beta1"]
         beta2 = adam_hyperparam["beta2"]
         epsilon = 1e-8
-        # Initialize first and second moment vectors for c and s
+        
+        # Initialize first moment vector
         m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        import warnings
-
-        warnings.warn("Langevin-ADAM without 2nd moment estimate!")
-        # =======================================================================
-        # v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        # =======================================================================
+        # Initialize second moment conditionally
+        if not beta2==1.0:
+            v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        else:
+            v_c = None
 
         # Perform the solve with ADAM over the specified number of iterations
         for i in range(iterations):
             # Calculate gradient
             c_grads = self.calculate_grads_adam(c)
 
-            # Update biased first and second moment estimates
+            # Update biased first moment estimate
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
-            # ===================================================================
-            # v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2) # Open issue: need to be avoided
-            # ===================================================================
-
-            # Compute bias corrected grads using 1st and 2nd moments
-            beta1i, beta2i = (1.0 - beta1 ** (i + 1)), (1.0 - beta2 ** (i + 1))
-            # ===================================================================
-            # mhat_c, vhat_c = m_c / beta1i, v_c / beta2i
-            # ===================================================================
+            
+            # Compute bias correction in 1st moment
+            beta1i = (1.0 - beta1 ** (i + 1))
             mhat_c = m_c / beta1i
-            # Element-wise division
-            # ===================================================================
-            # c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon) # Open issue!
-            # ===================================================================
-            c_grads -= alpha * mhat_c
+            
+            # Conditional second moment estimation
+            if not beta2==1.0:
+                # Update biased 2nd moment estimate
+                v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2)
+                
+                # Compute bias correction in 2nd moment
+                beta2i = (1.0 - beta2 ** (i + 1))
+                vhat_c = v_c / beta2i
+                
+                # Compute bias corrected grads using 1st and 2nd moments
+                # in the form of element-wise division
+                c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
+            else:
+                # Compute bias corrected grads only with 1st moment
+                c_grads -= alpha * mhat_c
 
             wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(
                 0, 1

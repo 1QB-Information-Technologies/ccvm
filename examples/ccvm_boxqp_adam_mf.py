@@ -41,7 +41,7 @@ if __name__ == "__main__":
         solution = adam_solver(
             instance=boxqp_instance,
             post_processor=None,
-            adam_hyperparam=dict(beta1=0.9, beta2=0.999, alpha=0.001),
+            adam_hyperparam=dict(beta1=0.9, beta2=1.0, alpha=0.001),
         )
 
         print(solution)
