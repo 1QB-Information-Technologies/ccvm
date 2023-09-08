@@ -12,7 +12,7 @@ super.get_scaling_factor()"""
 
 
 class LangevinSolver(CCVMSolver):
-    """The LangevinSolver class models typical Langevin dynamics as a system of
+    """The LangevinSolver class models typical Langeving dynamics as a system of
     SDE."""
 
     def __init__(
@@ -105,6 +105,7 @@ class LangevinSolver(CCVMSolver):
         """
         if problem_category.lower() == "boxqp":
             self.calculate_grads = self._calculate_grads_boxqp
+            self.calculate_grads_adam = self._calculate_grads_boxqp_adam
             self.change_variables = self._change_variables_boxqp
             self.fit_to_constraints = self._fit_to_constraints_boxqp
         else:
@@ -133,6 +134,26 @@ class LangevinSolver(CCVMSolver):
         c_grad_3 = v_vector
 
         c_grads = -c_grad_1 - c_grad_3
+
+        return c_grads
+
+    def _calculate_grads_boxqp_adam(self, c):
+        """We treat the SDE that simulates the CIM of NTT as gradient
+        calculation. Original SDE considers only quadratic part of the objective
+        function. Therefore, we need to modify and add linear part of the QP to
+        the SDE.
+
+        Args:
+            c (torch.Tensor): In-phase amplitudes of the solver
+
+        Returns:
+            tensor: The calculated change in the variable amplitude.
+        """
+
+        c_grad_1 = torch.einsum("bi,ij -> bj", c, self.q_matrix)
+        c_grad_2 = self.v_vector
+
+        c_grads = -c_grad_1 - c_grad_2
 
         return c_grads
 
@@ -220,7 +241,7 @@ class LangevinSolver(CCVMSolver):
         evolution_step_size=None,
         evolution_file=None,
     ):
-        """Solves the given problem instance using the DL-CCVM solver.
+        """Solves the given problem instance using the Langevin solver.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
@@ -253,7 +274,7 @@ class LangevinSolver(CCVMSolver):
         v_vector = instance.v_vector
 
         # Get solver setup variables
-        S = self.S
+        S = self.S 
         batch_size = self.batch_size
         device = self.device
 
@@ -326,7 +347,7 @@ class LangevinSolver(CCVMSolver):
 
             c += dt * feedback_scale * c_grads + sigma * wiener_increment_c
             # Ensure variables are within any problem constraints
-            # The lower bound is determined by ell=0 and upper bound by u=1
+            # The lower bound is determined by ell=0, and upper bound by u=1
             c = self.fit_to_constraints(c, 0, 1.0)
 
             # If evolution_step_size is specified, save the values if this iteration
@@ -349,6 +370,219 @@ class LangevinSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(c, q_matrix, v_vector)
+            pp_time = post_processor_object.pp_time
+        else:
+            problem_variables = c
+            pp_time = 0.0
+
+        # Calculate the objective value
+        objval = instance.compute_energy(problem_variables)
+
+        if evolution_step_size:
+            # Write samples to file
+            # Overwrite file if it exists
+            open(evolution_file, "w")
+
+            # Get the indices of the best objective values over the sampled iterations
+            # to use to get and save the best sampled values of c and s
+            batch_index = torch.argmax(-objval)
+            with open(evolution_file, "a") as evolution_file_obj:
+                self._append_samples_to_file(
+                    c_sample=c_sample[batch_index],
+                    evolution_file_object=evolution_file_obj,
+                )
+
+        solution = Solution(
+            problem_size=problem_size,
+            batch_size=batch_size,
+            instance_name=instance.name,
+            iterations=iterations,
+            objective_values=objval,
+            solve_time=solve_time,
+            pp_time=pp_time,
+            optimal_value=instance.optimal_sol,
+            variables={"problem_variables": problem_variables},
+            device=device,
+        )
+
+        # Add evolution filename to solution if it was generated
+        if evolution_step_size:
+            solution.evolution_file = evolution_file
+
+        return solution
+
+    def __call__(
+        self,
+        instance,
+        post_processor=None,
+        evolution_step_size=None,
+        evolution_file=None,
+        adam_hyperparam=dict(beta1=0.9, beta2=0.999, alpha=0.001),
+    ):
+        """Solves the given problem instance using the Langevin solver including ADAM algorithm.
+
+        Args:
+            instance (ProblemInstance): The problem instance to solve.
+            post_processor (str): The name of the post processor to use to process the results of the solver.
+                None if no post processing is desired. Defaults to None.
+            evolution_step_size (int): If set, the c/s values will be sampled once
+                per number of iterations equivalent to the value of this variable.
+                At the end of the solve process, the best batch of sampled values
+                will be written to a file that can be specified by setting the evolution_file parameter.
+                Defaults to None, meaning no problem variables will be written to the file.
+            evolution_file (str): The file to save the best set of c/s samples to.
+                Only revelant when evolution_step_size is set.
+                If a file already exists with the same name, it will be overwritten.
+                Defaults to None, which generates a filename based on the problem instance name.
+            adam_hyperparam (dict): Hyperparameters for adam algorithm. Defaults to the paper.
+
+        Returns:
+            solution (Solution): The solution to the problem instance.
+        """
+        # If the instance and the solver don't specify the same device type, raise
+        # an error
+        if instance.device != self.device:
+            raise ValueError(
+                f"The device type of the instance ({instance.device}) and the solver"
+                f" ({self.device}) must match."
+            )
+
+        # Get problem from problem instance
+        problem_size = instance.problem_size
+        self.q_matrix = instance.q_matrix
+        self.v_vector = instance.v_vector
+
+        # Get solver setup variables
+        S = self.S  
+        batch_size = self.batch_size
+        device = self.device
+
+        # Get parameters from parameter_key
+        try:
+            dt = self.parameter_key[problem_size]["dt"]
+            iterations = self.parameter_key[problem_size]["iterations"]
+            sigma = self.parameter_key[problem_size]["sigma"]
+            feedback_scale = self.parameter_key[problem_size]["feedback_scale"]
+        except KeyError as e:
+            raise KeyError(
+                f"The parameter '{e.args[0]}' for the given instance size is not defined."
+            ) from e
+
+        # If S is a 1-D tensor, convert it to to a 2-D tensor
+        if torch.is_tensor(S) and S.ndim == 1:
+            # Dimension indexing in pytorch starts at 0
+            if S.size(dim=0) == problem_size:
+                S = torch.outer(torch.ones(batch_size), S)
+            else:
+                raise ValueError("Tensor S size should be equal to problem size.")
+
+        # Start the timer for the solve
+        solve_time_start = time.time()
+
+        if evolution_step_size:
+            # Check that the value is valid
+            if evolution_step_size < 1:
+                raise ValueError(
+                    f"The evolution step size must be greater than or equal to 1."
+                )
+            # Generate evolution file name
+            if evolution_file is None:
+                evolution_file = f"./{instance.name}_evolution.txt"
+
+            # Get the number of samples to save
+            # Find the number of full steps that will be taken
+            num_steps = int(iterations / evolution_step_size)
+            # We will also capture the first iteration through
+            num_samples = num_steps + 1
+            # And capture the last iteration if the step size doesn't evenly divide
+            if iterations % evolution_step_size != 0:
+                num_samples += 1
+
+            # Initialize tensors
+            # Store on CPU to keep the memory usage lower on the GPU
+            c_sample = torch.zeros(
+                (batch_size, problem_size, num_samples),
+                dtype=torch.float,
+                device="cpu",
+            )
+            samples_taken = 0
+
+        # Initialize tensor variables on the device that will be used to perform the
+        # calculations
+        c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        wiener_dist_c = tdist.Normal(
+            torch.tensor([0.0] * batch_size, device=device),
+            torch.tensor([1.0] * batch_size, device=device),
+        )
+
+        # Hyperparameters for Adam algorithm
+        alpha = adam_hyperparam["alpha"]
+        beta1 = adam_hyperparam["beta1"]
+        beta2 = adam_hyperparam["beta2"]
+        epsilon = 1e-8
+        # Initialize first and second moment vectors for c and s
+        m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        import warnings
+
+        warnings.warn("Langevin-ADAM without 2nd moment estimate!")
+        # =======================================================================
+        # v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        # =======================================================================
+
+        # Perform the solve with ADAM over the specified number of iterations
+        for i in range(iterations):
+            # Calculate gradient
+            c_grads = self.calculate_grads_adam(c)
+
+            # Update biased first and second moment estimates
+            m_c = beta1 * m_c + (1.0 - beta1) * c_grads
+            # ===================================================================
+            # v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2) # Open issue: need to be avoided
+            # ===================================================================
+
+            # Compute bias corrected grads using 1st and 2nd moments
+            beta1i, beta2i = (1.0 - beta1 ** (i + 1)), (1.0 - beta2 ** (i + 1))
+            # ===================================================================
+            # mhat_c, vhat_c = m_c / beta1i, v_c / beta2i
+            # ===================================================================
+            mhat_c = m_c / beta1i
+            # Element-wise division
+            # ===================================================================
+            # c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon) # Open issue!
+            # ===================================================================
+            c_grads -= alpha * mhat_c
+
+            wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(
+                0, 1
+            ) * np.sqrt(dt)
+
+            c += dt * feedback_scale * c_grads + sigma * wiener_increment_c
+            # Ensure variables are within any problem constraints
+            # The lower bound is determined by ell=0, and upper bound by u=1
+            c = self.fit_to_constraints(c, 0, 1.0)
+
+            # If evolution_step_size is specified, save the values if this iteration
+            # aligns with the step size or if this is the last iteration
+            if evolution_step_size and (
+                i % evolution_step_size == 0 or i + 1 >= iterations
+            ):
+                # Update the record of the sample values with the values found at
+                # this iteration
+                c_sample[:, :, samples_taken] = c
+                samples_taken += 1
+
+        # Stop the timer for the solve
+        solve_time = time.time() - solve_time_start
+
+        # Run the post processor on the results, if specified
+        if post_processor:
+            post_processor_object = PostProcessorFactory.create_postprocessor(
+                post_processor
+            )
+
+            problem_variables = post_processor_object.postprocess(
+                self.change_variables(c, S), self.q_matrix, self.v_vector
+            )
             pp_time = post_processor_object.pp_time
         else:
             problem_variables = c

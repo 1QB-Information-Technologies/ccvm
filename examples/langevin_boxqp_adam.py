@@ -1,0 +1,45 @@
+import glob
+import os, sys
+
+from ccvm_simulators.problem_classes.boxqp import ProblemInstance
+from ccvm_simulators.solvers import LangevinSolver
+
+TEST_INSTANCES_DIR = "./test_instances/"
+
+if __name__ == "__main__":
+    # Initialize solver
+    batch_size = 1000
+    solver_adam = LangevinSolver(device="cpu", batch_size=batch_size)  # or "cuda"
+
+    # Supply solver parameters for different problem sizes
+    solver_adam.parameter_key = {
+        20: {
+            "dt": 0.005,
+            "iterations": 15000,
+            "sigma": 0.02,
+            "feedback_scale": 1.0,
+        },
+    }
+
+    # Load test instances to solve
+    test_instances_files = [f for f in glob.glob(TEST_INSTANCES_DIR + "*.in")]
+    for instance_file in test_instances_files:
+        # Load the problem from the problem file into the instance
+        boxqp_instance = ProblemInstance(
+            instance_type="test",
+            file_path=instance_file,
+            device=solver_adam.device,
+        )
+
+        # Scale the problem's coefficients for more stable optimization
+        boxqp_instance.scale_coefs(
+            solver_adam.get_scaling_factor(boxqp_instance.q_matrix)
+        )
+
+        # Solve the problem
+        solution = solver_adam(
+            instance=boxqp_instance,
+            post_processor=None,
+        )
+
+        print(solution)
