@@ -678,11 +678,11 @@ class MFSolver(CCVMSolver):
                 beta2i = (1.0 - beta2 ** (i + 1))
                 vhat_mu = v_mu / beta2i
                 
-                # Compute bias corrected grads using 1st and 2nd moments
+                # Compute bias corrected grad using 1st and 2nd moments
                 # in the form of element-wise division
                 grads_mu -= alpha * torch.div(mhat_mu, torch.sqrt(vhat_mu) + epsilon)
             else:
-                # Compute bias corrected grads only with 1st moment
+                # Compute bias corrected grad only with 1st moment
                 grads_mu -= alpha * mhat_mu
                 
             # Calculate drift and diffusion terms of mf-ccvm
