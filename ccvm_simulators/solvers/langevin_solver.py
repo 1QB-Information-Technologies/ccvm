@@ -12,7 +12,7 @@ super.get_scaling_factor()"""
 
 
 class LangevinSolver(CCVMSolver):
-    """The LangevinSolver class models typical Langeving dynamics as a system of
+    """The LangevinSolver class models typical Langevin dynamics as a system of
     SDE."""
 
     def __init__(
