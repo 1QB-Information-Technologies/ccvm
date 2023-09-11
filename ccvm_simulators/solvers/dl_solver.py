@@ -154,6 +154,8 @@ class DLSolver(CCVMSolver):
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
         the SDE.
+        
+        TODO: Consider update
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
