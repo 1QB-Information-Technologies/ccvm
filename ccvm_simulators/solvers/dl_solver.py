@@ -92,37 +92,35 @@ class DLSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-    def _method_selector(self, problem_category):
-        """Set methods relevant to this category of problem
+#===============================================================================
+#     def _method_selector(self, problem_category):
+#         """Set methods relevant to this category of problem
+# 
+#         Args:
+#             problem_category (str): The category of problem to solve. Can be one of "boxqp".
+# 
+#         Raises:
+#             ValueError: If the problem category is not supported by the solver.
+#         """
+#         if problem_category.lower() == "boxqp":
+#             self.calculate_grads = self._calculate_grads_boxqp
+#             self.calculate_grads_adam = self._calculate_grads_boxqp_adam
+#             self.change_variables = self._change_variables_boxqp
+#             self.fit_to_constraints = self._fit_to_constraints_boxqp
+#         else:
+#             raise ValueError(
+#                 "The given instance is not a valid problem category."
+#                 f" Given category: {problem_category}"
+#             )
+#===============================================================================
 
-        Args:
-            problem_category (str): The category of problem to solve. Can be one of "boxqp".
-
-        Raises:
-            ValueError: If the problem category is not supported by the solver.
-        """
-        if problem_category.lower() == "boxqp":
-            self.calculate_grads = self._calculate_grads_boxqp
-            self.calculate_grads_adam = self._calculate_grads_boxqp_adam
-            self.change_variables = self._change_variables_boxqp
-            self.fit_to_constraints = self._fit_to_constraints_boxqp
-        else:
-            raise ValueError(
-                "The given instance is not a valid problem category."
-                f" Given category: {problem_category}"
-            )
-
-    def _calculate_grads_boxqp(self, c, s, q_matrix, v_vector, pump, rate, S=1):
-        """We treat the SDE that simulates the CIM of NTT as gradient
-        calculation. Original SDE considers only quadratic part of the objective
-        function. Therefore, we need to modify and add linear part of the QP to
-        the SDE.
+    def _calculate_drift_boxqp(self, c, s, pump, rate, S=1):
+        """We treat the SDE that simulates the CIM of NTT as drift
+        calculation. 
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
             s (torch.Tensor): Quadrature amplitudes of the solver
-            q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
-            v_vector (torch.tensor): The V vector describing the BoxQP problem.
             pump (float): The maximum pump field strength
             rate (float): The multiplier for the pump field strength at a given instance of time.
             S (float): The saturation value of the amplitudes. Defaults to 1.
@@ -137,25 +135,23 @@ class DLSolver(CCVMSolver):
         if pump > 1:
             S = np.sqrt(pump - 1)
 
-        c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, q_matrix) / S
+        c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, self.q_matrix) / S
         c_grad_2 = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
-        c_grad_3 = v_vector / 2 / S
+        c_grad_3 = self.v_vector / 2 / S
 
-        s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, q_matrix) / S
+        s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, self.q_matrix) / S
         s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
-        s_grad_3 = v_vector / 2 / S
+        s_grad_3 = self.v_vector / 2 / S
 
         c_grads = -c_grad_1 + c_grad_2 - c_grad_3
         s_grads = -s_grad_1 + s_grad_2 - s_grad_3
         return c_grads, s_grads
 
-    def _calculate_grads_boxqp_adam(self, c, s, S=1):
+    def _calculate_grads_boxqp(self, c, s, S=1):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
         the SDE.
-        
-        TODO: Consider update
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
@@ -253,7 +249,7 @@ class DLSolver(CCVMSolver):
         #       future consideration
         self.is_tuned = True
 
-    def solve(
+    def _solve(
         self,
         instance,
         post_processor=None,
@@ -262,7 +258,7 @@ class DLSolver(CCVMSolver):
         evolution_step_size=None,
         evolution_file=None,
     ):
-        """Solves the given problem instance using the DL-CCVM solver.
+        """Solves the given problem instance using the original DL-CCVM solver.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
@@ -294,8 +290,8 @@ class DLSolver(CCVMSolver):
 
         # Get problem from problem instance
         problem_size = instance.problem_size
-        q_matrix = instance.q_matrix
-        v_vector = instance.v_vector
+        self.q_matrix = instance.q_matrix
+        self.v_vector = instance.v_vector
 
         # Get solver setup variables
         S = self.S
@@ -378,9 +374,7 @@ class DLSolver(CCVMSolver):
 
             noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
 
-            c_grads, s_grads = self.calculate_grads(
-                c, s, q_matrix, v_vector, pump, pump_rate
-            )
+            c_drift, s_drift = self.calculate_drift(c, s, pump, pump_rate)
             wiener_increment_c = (
                 wiener_dist_c.sample((problem_size,)).transpose(0, 1)
                 * np.sqrt(dt)
@@ -392,11 +386,11 @@ class DLSolver(CCVMSolver):
                 / noise_ratio_i
             )
             c += (
-                dt * c_grads
+                dt * c_drift
                 + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_c
             )
             s += (
-                dt * s_grads
+                dt * s_drift
                 + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_s
             )
 
@@ -424,7 +418,7 @@ class DLSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                self.change_variables(c, S), q_matrix, v_vector
+                self.change_variables(c, S), self.q_matrix, self.v_vector
             )
             pp_time = post_processor_object.pp_time
         else:
@@ -473,20 +467,22 @@ class DLSolver(CCVMSolver):
 
         return solution
 
-    def __call__(
+
+    def _solve_adam(
         self,
         instance,
+        hyperparameters,
         post_processor=None,
         pump_rate_flag=True,
         g=0.05,
         evolution_step_size=None,
         evolution_file=None,
-        adam_hyperparam=dict(beta1=0.9, beta2=0.999, alpha=0.001),
     ):
         """Solves the given problem instance using the DL-CCVM solver including ADAM algorithm.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
+            hyperparameters (dict): Hyperparameters for adam algorithm. 
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
@@ -603,10 +599,9 @@ class DLSolver(CCVMSolver):
         if pump > 1:
             S = np.sqrt(pump - 1)
 
-        # Hyperparameters for Adam algorithm
-        alpha = adam_hyperparam["alpha"]
-        beta1 = adam_hyperparam["beta1"]
-        beta2 = adam_hyperparam["beta2"]
+        alpha = hyperparameters["alpha"]
+        beta1 = hyperparameters["beta1"]
+        beta2 = hyperparameters["beta2"]
         epsilon = 1e-8
         
         # Initialize first moment vectors for c and s
@@ -627,7 +622,7 @@ class DLSolver(CCVMSolver):
             noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
 
             # Calculate gradient
-            c_grads, s_grads = self.calculate_grads_adam(c, s, S)
+            c_grads, s_grads = self.calculate_grads(c, s, S)
 
             # Update biased first moment estimate
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
@@ -757,3 +752,46 @@ class DLSolver(CCVMSolver):
             solution.evolution_file = evolution_file
 
         return solution
+    
+    
+    def __call__(
+            self,
+            instance,
+            solve_type=None,
+            post_processor=None,
+            pump_rate_flag=True,
+            g=0.05,
+            evolution_step_size=None,
+            evolution_file=None,
+            hyperparameters=None,
+    ):
+        """Solves the given problem instance choosing one of the available DL-CCVM solvers.
+
+        Args:
+            instance (ProblemInstance): The problem instance to solve.
+            solve_type (str): Flag to choose one of the available solve methods
+            post_processor (str): The name of the post processor to use to process the results of the solver.
+                None if no post processing is desired. Defaults to None.
+            pump_rate_flag (bool): Whether or not to scale the pump rate based on the
+            iteration number. If False, the pump rate will be 1.0. Defaults to True.
+            g (float): The nonlinearity coefficient. Defaults to 0.05.
+            evolution_step_size (int): If set, the c/s values will be sampled once
+                per number of iterations equivalent to the value of this variable.
+                At the end of the solve process, the best batch of sampled values
+                will be written to a file that can be specified by setting the evolution_file parameter.
+                Defaults to None, meaning no problem variables will be written to the file.
+            evolution_file (str): The file to save the best set of c/s samples to.
+                Only revelant when evolution_step_size is set.
+                If a file already exists with the same name, it will be overwritten.
+                Defaults to None, which generates a filename based on the problem instance name.
+            hyperparameters (dict): Hyperparameters for adam algorithm. 
+
+        Returns:
+            solution (Solution): The solution to the problem instance.
+        """
+        
+        if solve_type in ["Adam", "adam", "ADAM"]:
+            return self._solve_adam(instance, hyperparameters, post_processor, pump_rate_flag, g, evolution_step_size, evolution_file)
+        else:
+            return self._solve(instance, post_processor,pump_rate_flag,g, evolution_step_size, evolution_file) 
+        

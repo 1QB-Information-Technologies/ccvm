@@ -94,25 +94,27 @@ class LangevinSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-    def _method_selector(self, problem_category):
-        """Set methods relevant to this category of problem
-
-        Args:
-            problem_category (str): The category of problem to solve. Can be one of "boxqp".
-
-        Raises:
-            ValueError: If the problem category is not supported by the solver.
-        """
-        if problem_category.lower() == "boxqp":
-            self.calculate_drift = self._calculate_drift_boxqp
-            self.calculate_grads = self._calculate_grads_boxqp
-            self.change_variables = self._change_variables_boxqp
-            self.fit_to_constraints = self._fit_to_constraints_boxqp
-        else:
-            raise ValueError(
-                "The given instance is not a valid problem category."
-                f" Given category: {problem_category}"
-            )
+    #===========================================================================
+    # def _method_selector(self, problem_category):
+    #     """Set methods relevant to this category of problem
+    # 
+    #     Args:
+    #         problem_category (str): The category of problem to solve. Can be one of "boxqp".
+    # 
+    #     Raises:
+    #         ValueError: If the problem category is not supported by the solver.
+    #     """
+    #     if problem_category.lower() == "boxqp":
+    #         self.calculate_drift = self._calculate_drift_boxqp
+    #         self.calculate_grads = self._calculate_grads_boxqp
+    #         self.change_variables = self._change_variables_boxqp
+    #         self.fit_to_constraints = self._fit_to_constraints_boxqp
+    #     else:
+    #         raise ValueError(
+    #             "The given instance is not a valid problem category."
+    #             f" Given category: {problem_category}"
+    #         )
+    #===========================================================================
 
     def _calculate_drift_boxqp(self, c, S=1):
         """We treat the SDE that simulates the CIM of NTT as drift
@@ -237,7 +239,7 @@ class LangevinSolver(CCVMSolver):
         evolution_step_size=None,
         evolution_file=None,
     ):
-        """Solves the given problem instance using the Langevin solver.
+        """Solves the given problem instance using the original Langevin solver.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
@@ -335,13 +337,13 @@ class LangevinSolver(CCVMSolver):
 
         # Perform the solve over the specified number of iterations
         for i in range(iterations):
-            c_grads = self.calculate_drift(c, S)
+            c_drift = self.calculate_drift(c, S)
 
             wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(
                 0, 1
             ) * np.sqrt(dt)
 
-            c += dt * feedback_scale * c_grads + sigma * wiener_increment_c
+            c += dt * feedback_scale * c_drift + sigma * wiener_increment_c
             # Ensure variables are within any problem constraints
             # The lower bound is determined by ell=0, and upper bound by u=1
             c = self.fit_to_constraints(c, 0, 1.0)
@@ -365,7 +367,7 @@ class LangevinSolver(CCVMSolver):
                 post_processor
             )
 
-            problem_variables = post_processor_object.postprocess(c, q_matrix, v_vector)
+            problem_variables = post_processor_object.postprocess(c, self.q_matrix, self.v_vector)
             pp_time = post_processor_object.pp_time
         else:
             problem_variables = c
@@ -411,7 +413,7 @@ class LangevinSolver(CCVMSolver):
     def _solve_adam(
         self,
         instance,
-        adam_hyperparam,
+        hyperparameters,
         post_processor=None,
         evolution_step_size=None,
         evolution_file=None,
@@ -420,7 +422,7 @@ class LangevinSolver(CCVMSolver):
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            adam_hyperparam (dict): Hyperparameters for adam algorithm. 
+            hyperparameters (dict): Hyperparameters for adam algorithm. 
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
             evolution_step_size (int): If set, the c/s values will be sampled once
@@ -512,10 +514,9 @@ class LangevinSolver(CCVMSolver):
             torch.tensor([1.0] * batch_size, device=device),
         )
 
-        # Hyperparameters for Adam algorithm
-        alpha = adam_hyperparam["alpha"]
-        beta1 = adam_hyperparam["beta1"]
-        beta2 = adam_hyperparam["beta2"]
+        alpha = hyperparameters["alpha"]
+        beta1 = hyperparameters["beta1"]
+        beta2 = hyperparameters["beta2"]
         epsilon = 1e-8
         
         # Initialize first moment vector
@@ -634,9 +635,9 @@ class LangevinSolver(CCVMSolver):
         post_processor=None,
         evolution_step_size=None,
         evolution_file=None,
-        adam_hyperparam=None,   
+        hyperparameters=None,   
     ):
-        """Solves the given problem instance by choosing one of the Langevin solvers.
+        """Solves the given problem instance by choosing one of the available Langevin solvers.
         
         Args:
             instance (ProblemInstance): The problem instance to solve.
@@ -659,7 +660,7 @@ class LangevinSolver(CCVMSolver):
         
         """
         if solve_type in ["Adam", "adam", "ADAM"]:
-            return self._solve_adam(instance, adam_hyperparam, post_processor, evolution_step_size, evolution_file)
+            return self._solve_adam(instance, hyperparameters, post_processor, evolution_step_size, evolution_file)
         else:
             return self._solve(instance, post_processor, evolution_step_size, evolution_file) 
  

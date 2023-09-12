@@ -39,7 +39,7 @@ if __name__ == "__main__":
             instance=boxqp_instance,
             solve_type="Adam", # solve_type=None refers to default (original) solver
             post_processor=None,
-            adam_hyperparam=dict(beta1=0.9, beta2=0.999, alpha=0.001),
+            hyperparameters=dict(beta1=0.9, beta2=0.999, alpha=0.001),
         )
 
         print(solution)
