@@ -92,27 +92,6 @@ class DLSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-#===============================================================================
-#     def _method_selector(self, problem_category):
-#         """Set methods relevant to this category of problem
-# 
-#         Args:
-#             problem_category (str): The category of problem to solve. Can be one of "boxqp".
-# 
-#         Raises:
-#             ValueError: If the problem category is not supported by the solver.
-#         """
-#         if problem_category.lower() == "boxqp":
-#             self.calculate_grads = self._calculate_grads_boxqp
-#             self.calculate_grads_adam = self._calculate_grads_boxqp_adam
-#             self.change_variables = self._change_variables_boxqp
-#             self.fit_to_constraints = self._fit_to_constraints_boxqp
-#         else:
-#             raise ValueError(
-#                 "The given instance is not a valid problem category."
-#                 f" Given category: {problem_category}"
-#             )
-#===============================================================================
 
     def _calculate_drift_boxqp(self, c, s, pump, rate, S=1):
         """We treat the SDE that simulates the CIM of NTT as drift
@@ -143,9 +122,9 @@ class DLSolver(CCVMSolver):
         s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
         s_grad_3 = self.v_vector / 2 / S
 
-        c_grads = -c_grad_1 + c_grad_2 - c_grad_3
-        s_grads = -s_grad_1 + s_grad_2 - s_grad_3
-        return c_grads, s_grads
+        c_drift = -c_grad_1 + c_grad_2 - c_grad_3
+        s_drift = -s_grad_1 + s_grad_2 - s_grad_3
+        return c_drift, s_drift
 
     def _calculate_grads_boxqp(self, c, s, S=1):
         """We treat the SDE that simulates the CIM of NTT as gradient
@@ -791,7 +770,22 @@ class DLSolver(CCVMSolver):
         """
         
         if solve_type in ["Adam", "adam", "ADAM"]:
-            return self._solve_adam(instance, hyperparameters, post_processor, pump_rate_flag, g, evolution_step_size, evolution_file)
+            return self._solve_adam(
+                instance, 
+                hyperparameters, 
+                post_processor, 
+                pump_rate_flag, 
+                g, 
+                evolution_step_size, 
+                evolution_file
+            )
         else:
-            return self._solve(instance, post_processor,pump_rate_flag,g, evolution_step_size, evolution_file) 
+            return self._solve(
+                instance, 
+                post_processor,
+                pump_rate_flag,
+                g, 
+                evolution_step_size, 
+                evolution_file
+            ) 
         

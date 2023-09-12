@@ -94,27 +94,6 @@ class LangevinSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-    #===========================================================================
-    # def _method_selector(self, problem_category):
-    #     """Set methods relevant to this category of problem
-    # 
-    #     Args:
-    #         problem_category (str): The category of problem to solve. Can be one of "boxqp".
-    # 
-    #     Raises:
-    #         ValueError: If the problem category is not supported by the solver.
-    #     """
-    #     if problem_category.lower() == "boxqp":
-    #         self.calculate_drift = self._calculate_drift_boxqp
-    #         self.calculate_grads = self._calculate_grads_boxqp
-    #         self.change_variables = self._change_variables_boxqp
-    #         self.fit_to_constraints = self._fit_to_constraints_boxqp
-    #     else:
-    #         raise ValueError(
-    #             "The given instance is not a valid problem category."
-    #             f" Given category: {problem_category}"
-    #         )
-    #===========================================================================
 
     def _calculate_drift_boxqp(self, c, S=1):
         """We treat the SDE that simulates the CIM of NTT as drift
@@ -128,12 +107,12 @@ class LangevinSolver(CCVMSolver):
             tensor: The calculated change in the variable amplitude.
         """
 
-        c_grad_1 = torch.einsum("bi,ij -> bj", c, self.q_matrix)
-        c_grad_3 = self.v_vector
+        c_drift_1 = torch.einsum("bi,ij -> bj", c, self.q_matrix)
+        c_drift_2 = self.v_vector
 
-        c_grads = -c_grad_1 - c_grad_3
+        c_drift = -c_drift_1 - c_drift_2
 
-        return c_grads
+        return c_drift
 
     def _calculate_grads_boxqp(self, c):
         """We treat the SDE that simulates the CIM of NTT as gradient

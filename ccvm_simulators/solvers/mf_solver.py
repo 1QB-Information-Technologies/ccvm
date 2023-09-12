@@ -111,54 +111,48 @@ class MFSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-    def _method_selector(self, problem_category):
-        """Set methods relevant to this category of problem
+#===============================================================================
+#     def _method_selector(self, problem_category):
+#         """Set methods relevant to this category of problem
+# 
+#         Args:
+#             problem_category (str): The category of problem to solve. Can be one
+#             of "boxqp".
+# 
+#         Raises:
+#             ValueError: If the problem category is not supported by the solver.
+#         """
+#         if problem_category.lower() == "boxqp":
+#             self.calculate_grads = self._calculate_grads_boxqp
+#             self.calculate_grads_adam = self._calculate_grads_boxqp_adam
+#             self.change_variables = self._change_variables_boxqp
+#             self.fit_to_constraints = self._fit_to_constraints_boxqp
+#         else:
+#             raise ValueError(
+#                 f"The given problem category is not valid. Given category:"
+#                 f" {problem_category}"
+#             )
+#===============================================================================
 
-        Args:
-            problem_category (str): The category of problem to solve. Can be one
-            of "boxqp".
-
-        Raises:
-            ValueError: If the problem category is not supported by the solver.
-        """
-        if problem_category.lower() == "boxqp":
-            self.calculate_grads = self._calculate_grads_boxqp
-            self.calculate_grads_adam = self._calculate_grads_boxqp_adam
-            self.change_variables = self._change_variables_boxqp
-            self.fit_to_constraints = self._fit_to_constraints_boxqp
-        else:
-            raise ValueError(
-                f"The given problem category is not valid. Given category:"
-                f" {problem_category}"
-            )
-
-    def _calculate_grads_boxqp(
+    def _calculate_drift_boxqp(
         self,
         mu,
         mu_tilde,
         sigma,
-        q_matrix,
-        v_vector,
         pump,
-        wiener_increment,
         j,
         g,
         S,
         fs,
     ):
-        """We treat the SDE that simulates the CIM of NTT as gradient
-        calculation. Original SDE considers only quadratic part of the objective
-        function. Therefore, we need to modify and add linear part of the QP to
-        the SDE.
+        """We treat the SDE that simulates the CIM of NTT as drift
+        calculation. 
 
         Args:
             mu (torch.Tensor): Mean-field amplitudes
             mu_tilde (torch.Tensor): Mean-field measured amplitudes
             sigma (torch.Tensor): Variance of the in-phase position operator
-            q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
-            v_vector (torch.tensor): The V vector describing the BoxQP problem.
             pump (float): Instantaneous pump value
-            wiener_increment (torch.Tensor): The Wiener process
             j (float): The measurement strength
             g (float): The nonlinearity coefficient
             S (float): The enforced saturation value
@@ -171,21 +165,21 @@ class MFSolver(CCVMSolver):
 
         mu_term1 = (-(1 + j) + pump - g**2 * mu_pow) * mu
         mu_term2_1 = (
-            -(1 / 4) * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, q_matrix)) / S
+            -(1 / 4) * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, self.q_matrix)) / S 
         )
-        mu_term2_2 = -v_vector / S / 2
-        mu_term3 = np.sqrt(j) * (sigma - 0.5) * wiener_increment
+        mu_term2_2 = -self.v_vector / S / 2  
 
         sigma_term1 = 2 * (-(1 + j) + pump - 3 * g**2 * mu_pow) * sigma
         sigma_term2 = -2 * j * (sigma - 0.5).pow(2)
         sigma_term3 = (1 + j) + 2 * g**2 * mu_pow
 
-        grads_mu = mu_term1 + fs * (mu_term2_1 + mu_term2_2) + mu_term3
-        grads_sigma = sigma_term1 + sigma_term2 + sigma_term3
+        # drift_mu = mu_term1 + fs * (mu_term2_1 + mu_term2_2) + mu_term3 # TODO: REMOVE
+        drift_mu = mu_term1 + fs * (mu_term2_1 + mu_term2_2)
+        drift_sigma = sigma_term1 + sigma_term2 + sigma_term3 
 
-        return grads_mu, grads_sigma
+        return drift_mu, drift_sigma
 
-    def _calculate_grads_boxqp_adam(self, mu_tilde, S, fs):
+    def _calculate_grads_boxqp(self, mu_tilde, S, fs):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
@@ -287,7 +281,7 @@ class MFSolver(CCVMSolver):
         #       future consideration
         self.is_tuned = True
 
-    def solve(
+    def _solve(
         self,
         instance,
         post_processor=None,
@@ -296,8 +290,8 @@ class MFSolver(CCVMSolver):
         evolution_step_size=None,
         evolution_file=None,
     ):
-        """Solves the given problem instance using the tuned or specified
-        parameters in the parameter key.
+        """Solves the given problem instance using the original MF-CCVM solver with 
+        tuned or specified parameters in the parameter key.
 
         Args:
             instance (boxqp.boxqp.ProblemInstance): The problem to solve.
@@ -330,8 +324,8 @@ class MFSolver(CCVMSolver):
 
         # Get problem from problem instance
         problem_size = instance.problem_size
-        q_matrix = instance.q_matrix
-        v_vector = instance.v_vector
+        self.q_matrix = instance.q_matrix 
+        self.v_vector = instance.v_vector 
 
         # Get solver setup variables
         batch_size = self.batch_size
@@ -418,21 +412,22 @@ class MFSolver(CCVMSolver):
 
             instantaneous_pump = pump * pump_rate + 1 + j_i
 
-            (grads_mu, grads_sigma) = self.calculate_grads(
+            (drift_mu, drift_sigma) = self.calculate_drift(
                 mu,
                 mu_tilde_c,
                 sigma,
-                q_matrix,
-                v_vector,
                 instantaneous_pump,
-                wiener_increment,
                 j_i,
                 g,
                 S,
                 feedback_scale,
             )
-            mu += dt * grads_mu
-            sigma += dt * grads_sigma
+            
+            # mu_term3-> mu_diffusion
+            mu_diffusion = np.sqrt(j_i) * (sigma - 0.5) * wiener_increment 
+            
+            mu += dt * (drift_mu + mu_diffusion) 
+            sigma += dt * drift_sigma
 
             # If evolution_step_size is specified, save the values if this iteration
             # aligns with the step size or if this is the last iteration
@@ -456,7 +451,7 @@ class MFSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                self.change_variables(mu_tilde, S), q_matrix, v_vector, device=device
+                self.change_variables(mu_tilde, S), self.q_matrix, self.v_vector, device=device 
             )
             pp_time = post_processor_object.pp_time
         else:
@@ -503,21 +498,22 @@ class MFSolver(CCVMSolver):
 
         return solution
 
-    def __call__(
+    def _solve_adam(
         self,
         instance,
+        hyperparameters,
         post_processor=None,
         g=0.01,
         pump_rate_flag=True,
         evolution_step_size=None,
         evolution_file=None,
-        adam_hyperparam=dict(beta1=0.9, beta2=0.999, alpha=0.001),
     ):
         """Solves the given problem instance using the MF-CCVM solver with ADAM algorithm
         tuned or specified parameters in the parameter key.
 
         Args:
             instance (boxqp.boxqp.ProblemInstance): The problem to solve.
+            hyperparameters (dict): Hyperparameters for adam algorithm. 
             post_processor (str): The name of the post processor to use to process
                 the results of the solver. None if no post processing is desired.
             g (float, optional): The nonlinearity coefficient. Defaults to 0.01
@@ -630,10 +626,9 @@ class MFSolver(CCVMSolver):
         else:
             pump_rate = pump_rate_c
 
-        # Hyperparameters for Adam algorithm
-        alpha = adam_hyperparam["alpha"]
-        beta1 = adam_hyperparam["beta1"]
-        beta2 = adam_hyperparam["beta2"]
+        alpha = hyperparameters["alpha"]
+        beta1 = hyperparameters["beta1"]
+        beta2 = hyperparameters["beta2"]
         epsilon = 1e-8
         
         # Initialize first moment vector
@@ -656,7 +651,7 @@ class MFSolver(CCVMSolver):
 
             pump_i = pump * rate + 1 + j_i
 
-            grads_mu = self.calculate_grads_adam(
+            grads_mu = self.calculate_grads(
                 mu_tilde_c,
                 S,
                 feedback_scale,
@@ -767,3 +762,61 @@ class MFSolver(CCVMSolver):
             solution.evolution_file = evolution_file
 
         return solution
+    
+    def __call__(
+        self,
+        instance,
+        solve_type=None,
+        post_processor=None,
+        g=0.01,
+        pump_rate_flag=True,
+        evolution_step_size=None,
+        evolution_file=None,
+        hyperparameters=None,
+    ):
+        """Solves the given problem instance by choosing one of the available 
+        MF-CCVM solvers tuned or specified parameters in the parameter key.
+
+        Args:
+            instance (boxqp.boxqp.ProblemInstance): The problem to solve.
+            solve_type (str): Flag to choose one of the available solve methods
+            post_processor (str): The name of the post processor to use to process
+                the results of the solver. None if no post processing is desired.
+            g (float, optional): The nonlinearity coefficient. Defaults to 0.01
+            pump_rate_flag (bool, optional): Whether or not to scale the pump rate
+                based on the iteration number. If False, the pump rate will be 1.0.
+                Defaults to True.
+            evolution_step_size (int): If set, the mu/sigma values will be sampled once per number of
+                iterations equivalent to the value of this variable. At the end of the solve process,
+                the best batch of sampled values will be written to a file that can be specified by
+                setting the evolution_file parameter.Defaults to None, meaning no problem variables
+                will be written to the file.
+            evolution_file (str): The file to save the best set of mu/sigma samples to. Only revelant
+                when evolution_step_size is set. If a file already exists with the same name,
+                it will be overwritten. Defaults to None, which generates a filename based on
+                the problem instance name.
+            hyperparameters (dict): Hyperparameters for adam algorithm. 
+
+        Returns:
+            solution (Solution): The solution to the problem instance.
+        """
+        if solve_type in ["Adam", "adam", "ADAM"]:
+            return self._solve_adam(
+                instance, 
+                hyperparameters, 
+                post_processor, 
+                g,
+                pump_rate_flag, 
+                evolution_step_size, 
+                evolution_file
+            )
+        else:
+            return self._solve(
+                instance, 
+                post_processor,
+                g,
+                pump_rate_flag,
+                evolution_step_size, 
+                evolution_file
+            ) 
+        
