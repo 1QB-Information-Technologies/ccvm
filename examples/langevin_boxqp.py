@@ -35,9 +35,11 @@ if __name__ == "__main__":
         boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 
         # Solve the problem
-        solution = solver.solve(
+        solution = solver(
             instance=boxqp_instance,
+            solve_type="Adam", # solve_type=None refers to default (original) solver
             post_processor=None,
+            adam_hyperparam=dict(beta1=0.9, beta2=0.999, alpha=0.001),
         )
 
         print(solution)

@@ -69,12 +69,23 @@ class CCVMSolver(ABC):
         pass
 
     @abstractmethod
-    def solve(self):
+    def _solve(self):
         """Solves a given problem instance using the parameters in the solver's
         `parameter_key`
         """
         pass
+    
+    @abstractmethod
+    def _solve_adam(self):
+        """Solves a given problem instance with an enhancement of Adam algorithm 
+        using the parameters in the solver's `parameter_key`
+        """
+        pass
 
+    @abstractmethod
+    def _calculate_drift_boxqp(self, **kwargs):
+        """Calculates the drift part of the CCVM for the boxqp problem."""
+        pass
     @abstractmethod
     def _calculate_grads_boxqp(self, **kwargs):
         """Calculates the gradients of the variables for the boxqp problem."""

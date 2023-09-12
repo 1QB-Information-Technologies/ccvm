@@ -104,8 +104,8 @@ class LangevinSolver(CCVMSolver):
             ValueError: If the problem category is not supported by the solver.
         """
         if problem_category.lower() == "boxqp":
+            self.calculate_drift = self._calculate_drift_boxqp
             self.calculate_grads = self._calculate_grads_boxqp
-            self.calculate_grads_adam = self._calculate_grads_boxqp_adam
             self.change_variables = self._change_variables_boxqp
             self.fit_to_constraints = self._fit_to_constraints_boxqp
         else:
@@ -114,30 +114,26 @@ class LangevinSolver(CCVMSolver):
                 f" Given category: {problem_category}"
             )
 
-    def _calculate_grads_boxqp(self, c, q_matrix, v_vector, S=1):
-        """We treat the SDE that simulates the CIM of NTT as gradient
-        calculation. Original SDE considers only quadratic part of the objective
-        function. Therefore, we need to modify and add linear part of the QP to
-        the SDE.
+    def _calculate_drift_boxqp(self, c, S=1):
+        """We treat the SDE that simulates the CIM of NTT as drift
+        calculation. 
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
-            q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
-            v_vector (torch.tensor): The V vector describing the BoxQP problem.
             S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
             tensor: The calculated change in the variable amplitude.
         """
 
-        c_grad_1 = torch.einsum("bi,ij -> bj", c, q_matrix)
-        c_grad_3 = v_vector
+        c_grad_1 = torch.einsum("bi,ij -> bj", c, self.q_matrix)
+        c_grad_3 = self.v_vector
 
         c_grads = -c_grad_1 - c_grad_3
 
         return c_grads
 
-    def _calculate_grads_boxqp_adam(self, c):
+    def _calculate_grads_boxqp(self, c):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
@@ -234,7 +230,7 @@ class LangevinSolver(CCVMSolver):
         #       future consideration
         self.is_tuned = True
 
-    def solve(
+    def _solve(
         self,
         instance,
         post_processor=None,
@@ -270,8 +266,8 @@ class LangevinSolver(CCVMSolver):
 
         # Get problem from problem instance
         problem_size = instance.problem_size
-        q_matrix = instance.q_matrix
-        v_vector = instance.v_vector
+        self.q_matrix = instance.q_matrix
+        self.v_vector = instance.v_vector
 
         # Get solver setup variables
         S = self.S 
@@ -339,7 +335,7 @@ class LangevinSolver(CCVMSolver):
 
         # Perform the solve over the specified number of iterations
         for i in range(iterations):
-            c_grads = self.calculate_grads(c, q_matrix, v_vector, S)
+            c_grads = self.calculate_drift(c, S)
 
             wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(
                 0, 1
@@ -411,18 +407,20 @@ class LangevinSolver(CCVMSolver):
 
         return solution
 
-    def __call__(
+        
+    def _solve_adam(
         self,
         instance,
+        adam_hyperparam,
         post_processor=None,
         evolution_step_size=None,
         evolution_file=None,
-        adam_hyperparam=dict(beta1=0.9, beta2=0.999, alpha=0.001),
     ):
         """Solves the given problem instance using the Langevin solver including ADAM algorithm.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
+            adam_hyperparam (dict): Hyperparameters for adam algorithm. 
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
             evolution_step_size (int): If set, the c/s values will be sampled once
@@ -434,7 +432,6 @@ class LangevinSolver(CCVMSolver):
                 Only revelant when evolution_step_size is set.
                 If a file already exists with the same name, it will be overwritten.
                 Defaults to None, which generates a filename based on the problem instance name.
-            adam_hyperparam (dict): Hyperparameters for adam algorithm. Defaults to the paper.
 
         Returns:
             solution (Solution): The solution to the problem instance.
@@ -532,7 +529,7 @@ class LangevinSolver(CCVMSolver):
         # Perform the solve with ADAM over the specified number of iterations
         for i in range(iterations):
             # Calculate gradient
-            c_grads = self.calculate_grads_adam(c)
+            c_grads = self.calculate_grads(c)
 
             # Update biased first moment estimate
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
@@ -628,3 +625,41 @@ class LangevinSolver(CCVMSolver):
             solution.evolution_file = evolution_file
 
         return solution
+    
+    
+    def __call__(
+        self,
+        instance,
+        solve_type=None,
+        post_processor=None,
+        evolution_step_size=None,
+        evolution_file=None,
+        adam_hyperparam=None,   
+    ):
+        """Solves the given problem instance by choosing one of the Langevin solvers.
+        
+        Args:
+            instance (ProblemInstance): The problem instance to solve.
+            solve_type (str): Flag to choose one of the available solve methods
+            post_processor (str): The name of the post processor to use to process the results of the solver.
+                None if no post processing is desired. Defaults to None.
+            evolution_step_size (int): If set, the c/s values will be sampled once
+                per number of iterations equivalent to the value of this variable.
+                At the end of the solve process, the best batch of sampled values
+                will be written to a file that can be specified by setting the evolution_file parameter.
+                Defaults to None, meaning no problem variables will be written to the file.
+            evolution_file (str): The file to save the best set of c/s samples to.
+                Only revelant when evolution_step_size is set.
+                If a file already exists with the same name, it will be overwritten.
+                Defaults to None, which generates a filename based on the problem instance name.
+            adam_hyperparam (dict): Hyperparameters for adam algorithm. Defaults to None.
+
+        Returns:
+            solution (Solution): The solution to the problem instance.
+        
+        """
+        if solve_type in ["Adam", "adam", "ADAM"]:
+            return self._solve_adam(instance, adam_hyperparam, post_processor, evolution_step_size, evolution_file)
+        else:
+            return self._solve(instance, post_processor, evolution_step_size, evolution_file) 
+ 
