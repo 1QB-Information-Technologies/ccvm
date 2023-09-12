@@ -1,6 +1,4 @@
 import glob
-import os, sys
-
 from ccvm_simulators.problem_classes.boxqp import ProblemInstance
 from ccvm_simulators.solvers import LangevinSolver
 

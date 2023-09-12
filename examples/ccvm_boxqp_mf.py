@@ -1,4 +1,3 @@
-import numpy as np
 import glob
 from ccvm_simulators.problem_classes.boxqp import ProblemInstance
 from ccvm_simulators.solvers import MFSolver
