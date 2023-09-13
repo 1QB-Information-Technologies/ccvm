@@ -151,7 +151,6 @@ class MFSolver(CCVMSolver):
         sigma_term2 = -2 * j * (sigma - 0.5).pow(2)
         sigma_term3 = (1 + j) + 2 * g**2 * mu_pow
 
-        # drift_mu = mu_term1 + fs * (mu_term2_1 + mu_term2_2) + mu_term3 # TODO: REMOVE
         drift_mu = mu_term1 + fs * (mu_term2_1 + mu_term2_2)
         drift_sigma = sigma_term1 + sigma_term2 + sigma_term3 
 
