@@ -111,28 +111,6 @@ class MFSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-#===============================================================================
-#     def _method_selector(self, problem_category):
-#         """Set methods relevant to this category of problem
-# 
-#         Args:
-#             problem_category (str): The category of problem to solve. Can be one
-#             of "boxqp".
-# 
-#         Raises:
-#             ValueError: If the problem category is not supported by the solver.
-#         """
-#         if problem_category.lower() == "boxqp":
-#             self.calculate_grads = self._calculate_grads_boxqp
-#             self.calculate_grads_adam = self._calculate_grads_boxqp_adam
-#             self.change_variables = self._change_variables_boxqp
-#             self.fit_to_constraints = self._fit_to_constraints_boxqp
-#         else:
-#             raise ValueError(
-#                 f"The given problem category is not valid. Given category:"
-#                 f" {problem_category}"
-#             )
-#===============================================================================
 
     def _calculate_drift_boxqp(
         self,
