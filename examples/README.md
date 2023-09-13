@@ -1,12 +1,16 @@
 # Examples
 
 ### Demo Scripts
+The following scripts solve BoxQP problem using CCVM Simulator with/without ADAM algorithm.
+Currently, there are two available solvers for each of the solver class [DL-CCVM, MF-CCVM, Langevin] which are **original** (default) and **Adam**. 
 
-- `ccvm_boxqp_plot.py`: Solve a BoxQP problem using a CCVM simulator, w/ time-to-solution (TTS) plotting
-- `ccvm_boxqp.py`: Solve a BoxQP problem using a DL-CCVM simulator, w/o plotting
-- `ccvm_boxqp_mf.py`: Solve a MF-CCVM BoxQP problem using a CCVM simulator, w/o plotting
-- `langevin_boxqp.py`: Solve a Langevin BoxQP problem using a CCVM simulator, w/o plotting
-- `benchmarking_studies.py`: Benchmark a CCVM simulator against a Langevin solver (to be implemented)
+- `ccvm_boxqp_plot.py`: Solves DL-CCVM with time-to-solution (TTS) plotting
+- `ccvm_boxqp_dl.py`: Solves DL-CCVM with Adam if it is set to `solve_type="Adam"` otherwise with Original solver without plotting. 
+- `ccvm_boxqp_mf.py`: Solves MF-CCVM with Adam if `solve_type="Adam"` otherwise with original solver without plotting
+- `langevin_boxqp.py`: Solves Langevin equation with Adam if `solve_type="Adam"` is set without plotting. 
+- `benchmarking_studies.py`: Benchmark DL-CCVM against a Langevin solver (**?to be implemented?**)
+
+
 
 ### Example Problem Instances
 

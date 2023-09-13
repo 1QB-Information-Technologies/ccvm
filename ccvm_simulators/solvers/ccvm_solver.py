@@ -53,6 +53,7 @@ class CCVMSolver(ABC):
             dict: The parameter key.
         """
         return self._parameter_key
+    
 
     ##################################
     # Abstract Methods               #
@@ -69,12 +70,23 @@ class CCVMSolver(ABC):
         pass
 
     @abstractmethod
-    def solve(self):
+    def _solve(self):
         """Solves a given problem instance using the parameters in the solver's
         `parameter_key`
         """
         pass
+    
+    @abstractmethod
+    def _solve_adam(self):
+        """Solves a given problem instance with an enhancement of Adam algorithm 
+        using the parameters in the solver's `parameter_key`
+        """
+        pass
 
+    @abstractmethod
+    def _calculate_drift_boxqp(self, **kwargs):
+        """Calculates the drift part of the CCVM for the boxqp problem."""
+        pass
     @abstractmethod
     def _calculate_grads_boxqp(self, **kwargs):
         """Calculates the gradients of the variables for the boxqp problem."""
@@ -110,3 +122,24 @@ class CCVMSolver(ABC):
             torch.sqrt(torch.sum(torch.abs(q_matrix))) * self._scaling_multiplier
         )
         return scaling_val
+    
+    
+    def _method_selector(self, problem_category):
+        """Set methods relevant to this category of problem
+
+        Args:
+            problem_category (str): The category of problem to solve. Can be one of "boxqp".
+
+        Raises:
+            ValueError: If the problem category is not supported by the solver.
+        """
+        if problem_category.lower() == "boxqp":
+            self.calculate_drift = self._calculate_drift_boxqp
+            self.calculate_grads = self._calculate_grads_boxqp
+            self.change_variables = self._change_variables_boxqp
+            self.fit_to_constraints = self._fit_to_constraints_boxqp
+        else:
+            raise ValueError(
+                "The given instance is not a valid problem category."
+                f" Given category: {problem_category}"
+            )

@@ -40,6 +40,7 @@ This software package includes solvers for continuous optimization problems. The
 2. Go into `examples/` and run the demo scripts.
     - `ccvm_boxqp.py`: Solve a BoxQP problem using a CCVM simulator, w/o plotting
     - `ccvm_boxqp_plot.py`: Solve a BoxQP problem using a CCVM simulator, w/ time-to-solution (TTS) plotting
+    - For more demo scripts see `examples/README.md`
 
 3. View the generated plot.
     - The `ccvm_boxqp_plot.py` script solves a single problem instance, and will create an image of the resulting TTS plot in a `plots/` directory. The resulting output image, `DL-CCVM_TTS_cpu_plot.png`, will look something like this:
