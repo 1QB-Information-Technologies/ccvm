@@ -30,7 +30,7 @@ if __name__ == "__main__":
         # Solve the problem
         solution = solver(
             instance=boxqp_instance,
-            solve_type = "Adam",
+            solve_type = "Adam", # solve_type=None refers to default (original) solver
             post_processor=None,
             hyperparameters=dict(beta1=0.9, beta2=0.999, alpha=0.001),
         )

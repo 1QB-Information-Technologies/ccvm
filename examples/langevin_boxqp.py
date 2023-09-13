@@ -32,7 +32,7 @@ if __name__ == "__main__":
         # Scale the problem's coefficients for more stable optimization
         boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 
-        # Solve the problem
+        # Solve the problem 
         solution = solver(
             instance=boxqp_instance,
             solve_type="Adam", # solve_type=None refers to default (original) solver
