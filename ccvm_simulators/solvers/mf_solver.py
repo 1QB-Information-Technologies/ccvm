@@ -652,10 +652,16 @@ class MFSolver(CCVMSolver):
                 
                 # Compute bias corrected grad using 1st and 2nd moments
                 # in the form of element-wise division
-                grads_mu -= alpha * torch.div(mhat_mu, torch.sqrt(vhat_mu) + epsilon)
+                #===============================================================
+                # grads_mu -= alpha * torch.div(mhat_mu, torch.sqrt(vhat_mu) + epsilon)
+                #===============================================================
+                grads_mu = -alpha * torch.div(mhat_mu, torch.sqrt(vhat_mu) + epsilon)
             else:
                 # Compute bias corrected grad only with 1st moment
-                grads_mu -= alpha * mhat_mu
+                #===============================================================
+                # grads_mu -= alpha * mhat_mu
+                #===============================================================
+                grads_mu = -alpha * mhat_mu
                 
             # Calculate drift and diffusion terms of mf-ccvm
             mu_pow = torch.pow(mu, 2)
