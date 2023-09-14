@@ -529,10 +529,10 @@ class LangevinSolver(CCVMSolver):
                 
                 # Compute bias corrected grad using 1st and 2nd moments
                 # in the form of element-wise division
-                c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
+                c_grads = -alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
             else:
                 # Compute bias corrected grad only with 1st moment
-                c_grads -= alpha * mhat_c
+                c_grads = -alpha * mhat_c
 
             wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(
                 0, 1
