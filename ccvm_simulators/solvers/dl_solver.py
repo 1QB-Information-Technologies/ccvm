@@ -625,17 +625,31 @@ class DLSolver(CCVMSolver):
                 
                 # Compute bias corrected grads using 1st and 2nd moments
                 # in the form of element-wise division
-                c_grads = -alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
-                s_grads = -alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
+                c_grads = alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
+                s_grads = alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
+                #===============================================================
+                # # 2nd change
+                # c_grads = -alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
+                # s_grads = -alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
+                #===============================================================
+                # # Original
                 # c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
                 # s_grads -= alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
+                #===============================================================
 
             else:
                 # Compute bias corrected grads only with 1st moment
-                c_grads = -alpha * mhat_c
-                s_grads = -alpha * mhat_s
+                c_grads = alpha * mhat_c
+                s_grads = alpha * mhat_s
+                #===============================================================
+                # # 2nd change
+                # c_grads = -alpha * mhat_c
+                # s_grads = -alpha * mhat_s
+                #===============================================================
+                # # Original form
                 # c_grads -= alpha * mhat_c
                 # s_grads -= alpha * mhat_s
+                #===============================================================
 
             # Calculate drift and diffusion terms of dl-ccvm
             c_pow = torch.pow(c, 2)
