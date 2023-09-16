@@ -625,7 +625,12 @@ class DLSolver(CCVMSolver):
                 
                 # Compute bias corrected grads using 1st and 2nd moments
                 # in the form of element-wise division
-                # # 2nd revision
+                #===============================================================
+                # # 3rd revision
+                # c_grads += alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
+                # s_grads += alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
+                #===============================================================
+                # 2nd revision
                 c_grads = alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
                 s_grads = alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
                 #===============================================================
@@ -637,10 +642,14 @@ class DLSolver(CCVMSolver):
                 # c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
                 # s_grads -= alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
                 #===============================================================
-
             else:
                 # Compute bias corrected grads only with 1st moment
-                # # 2nd revision
+                #===============================================================
+                # # 3rd revision
+                # c_grads += alpha * mhat_c
+                # s_grads += alpha * mhat_s
+                #===============================================================
+                # 2nd revision
                 c_grads = alpha * mhat_c
                 s_grads = alpha * mhat_s
                 #===============================================================
