@@ -125,15 +125,15 @@ ylim = [-0.1, 5.0] # [-0.1, 2.0] # scatter limit
 
 baseline = process_baseline(RESULTS_DIR, N, iterations, nrep)
 
-for beta2 in [0.1, 0.5, 0.999, 1.0]: #[0.5, 0.8, 0.999, 1.0]:  #
-    for beta1 in [0.1, 0.5, 0.9]: #[0.1, 0.5, 0.7, 0.9]:
+for beta2 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.999, 1.0]: #[0.5, 0.8, 0.999, 1.0]:  #
+    for beta1 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.9]: #[0.1, 0.5, 0.7, 0.9]:
         c = 0
         plt.rcParams.update({"font.size": 10})
         plt.figure(figsize=(12, 4))
         #=======================================================================
         # avg_performance_list = dict(opt=[],one=[],two=[],three=[], four=[], five=[], ten=[])
         #=======================================================================
-        for alpha in [0.00001, 0.0001, 0.001, 0.01, 0.1, 0.15, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0]:
+        for alpha in [0.001, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.5, 1.0]:#[0.00001, 0.0001, 0.001, 0.01, 0.1, 0.15, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0]:
             filename = f"{RESULTS_DIR}N_{N}_A_{alpha:.05f}_B1_{beta1:.03f}_B2_{beta2:.04f}_iter{iterations:06d}.pkl"
             with open(filename, "rb") as file:
                 data = pickle.load(file)
