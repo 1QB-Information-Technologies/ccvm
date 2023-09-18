@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Breaking Changes
+- parameter_key: `lr` parameter has been renamed to `dt` to better reflect the meaning of the parameter, which is the time step of the simulation.
+- solve(): The `solve` method has been removed from the solvers and a `__call__` method has been implemented; users must call the solver object directly.
+
+### Added
+- LangevinSolver has been added to the package. This solver is a stochastic solver based on the Langevin equation.
+- Updated all solvers with an implementation of the ADAM algorithm. This algorithm can be invoked by calling the solver with the `solve_type` keyword set to `ADAM` and the `hyperparameters` keyword set to a dictionary of hyperparameter names and values.
+
+### Changed
+- Updated internal data handling that have improved performance and reduced memory usage.
+
 ## [0.1.2] - 2023-03-09
 ### Fixed
 - Corrected an issue with the PyPI deployment for version 0.1.1. This version is the first available on PyPI.
@@ -16,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated the MF Solver and DL Solver algorithms to better account for the enforced saturation value (S).
+- Improved and fixed some issues in the DL and MF solvers to improve performance.
+- Modified the gradient of the objective function in the MFSolver to implement a linear function of variables by default. This enhances the performance of the solver.
 - Updated the package name from ccvm to ccvm-simulators.
 
 ### Notes
