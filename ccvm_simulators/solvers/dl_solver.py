@@ -92,10 +92,9 @@ class DLSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-
     def _calculate_drift_boxqp(self, c, s, pump, rate, S=1):
         """We treat the SDE that simulates the CIM of NTT as drift
-        calculation. 
+        calculation.
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
@@ -446,575 +445,6 @@ class DLSolver(CCVMSolver):
 
         return solution
 
-    def _solve_adam_assign(
-        self,
-        instance,
-        hyperparameters,
-        post_processor=None,
-        pump_rate_flag=True,
-        g=0.05,
-        evolution_step_size=None,
-        evolution_file=None,
-    ):
-        """Solves the given problem instance using the DL-CCVM solver with Adam algorithm.
-
-        Args:
-            instance (ProblemInstance): The problem instance to solve.
-            hyperparameters (dict): Hyperparameters for adam algorithm. 
-            post_processor (str): The name of the post processor to use to process the results of the solver.
-                None if no post processing is desired. Defaults to None.
-            pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number. If False, the pump rate will be 1.0. Defaults to True.
-            g (float): The nonlinearity coefficient. Defaults to 0.05.
-            evolution_step_size (int): If set, the c/s values will be sampled once
-                per number of iterations equivalent to the value of this variable.
-                At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
-                Defaults to None, meaning no problem variables will be written to the file.
-            evolution_file (str): The file to save the best set of c/s samples to.
-                Only revelant when evolution_step_size is set.
-                If a file already exists with the same name, it will be overwritten.
-                Defaults to None, which generates a filename based on the problem instance name.
-
-        Returns:
-            solution (Solution): The solution to the problem instance.
-        """
-        # If the instance and the solver don't specify the same device type, raise
-        # an error
-        if instance.device != self.device:
-            raise ValueError(
-                f"The device type of the instance ({instance.device}) and the solver"
-                f" ({self.device}) must match."
-            )
-
-        # Get problem from problem instance
-        problem_size = instance.problem_size
-        self.q_matrix = instance.q_matrix
-        self.v_vector = instance.v_vector
-
-        # Get solver setup variables
-        S = self.S
-        batch_size = self.batch_size
-        device = self.device
-
-        # Get parameters from parameter_key
-        try:
-            pump = self.parameter_key[problem_size]["pump"]
-            dt = self.parameter_key[problem_size]["dt"]
-            iterations = self.parameter_key[problem_size]["iterations"]
-            noise_ratio = self.parameter_key[problem_size]["noise_ratio"]
-        except KeyError as e:
-            raise KeyError(
-                f"The parameter '{e.args[0]}' for the given instance size is not defined."
-            ) from e
-
-        # If S is a 1-D tensor, convert it to to a 2-D tensor
-        if torch.is_tensor(S) and S.ndim == 1:
-            # Dimension indexing in pytorch starts at 0
-            if S.size(dim=0) == problem_size:
-                S = torch.outer(torch.ones(batch_size), S)
-            else:
-                raise ValueError("Tensor S size should be equal to problem size.")
-
-        # Start the timer for the solve
-        solve_time_start = time.time()
-
-        if evolution_step_size:
-            # Check that the value is valid
-            if evolution_step_size < 1:
-                raise ValueError(
-                    f"The evolution step size must be greater than or equal to 1."
-                )
-            # Generate evolution file name
-            if evolution_file is None:
-                evolution_file = f"./{instance.name}_evolution.txt"
-
-            # Get the number of samples to save
-            # Find the number of full steps that will be taken
-            num_steps = int(iterations / evolution_step_size)
-            # We will also capture the first iteration through
-            num_samples = num_steps + 1
-            # And capture the last iteration if the step size doesn't evenly divide
-            if iterations % evolution_step_size != 0:
-                num_samples += 1
-
-            # Initialize tensors
-            # Store on CPU to keep the memory usage lower on the GPU
-            c_sample = torch.zeros(
-                (batch_size, problem_size, num_samples),
-                dtype=torch.float,
-                device="cpu",
-            )
-            s_sample = torch.zeros(
-                (batch_size, problem_size, num_samples),
-                dtype=torch.float,
-                device="cpu",
-            )
-            samples_taken = 0
-
-        # Initialize tensor variables on the device that will be used to perform the
-        # calculations
-        c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        wiener_dist_c = tdist.Normal(
-            torch.tensor([0.0] * batch_size, device=device),
-            torch.tensor([1.0] * batch_size, device=device),
-        )
-        wiener_dist_s = tdist.Normal(
-            torch.tensor([0.0] * batch_size, device=device),
-            torch.tensor([1.0] * batch_size, device=device),
-        )
-
-        # Pump rate update selection: time-dependent or constant
-        pump_rate_i = lambda i: pump * (i + 1) / iterations
-        pump_rate_c = lambda i: pump  # Constant
-        if pump_rate_flag:
-            calc_pump_rate = pump_rate_i
-        else:
-            calc_pump_rate = pump_rate_c
-
-        if pump > 1:
-            S = np.sqrt(pump - 1)
-
-        alpha = hyperparameters["alpha"]
-        beta1 = hyperparameters["beta1"]
-        beta2 = hyperparameters["beta2"]
-        epsilon = 1e-8
-        
-        # Initialize first moment vectors for c and s
-        m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        m_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        # Initialize second moment vectors conditionally
-        if not beta2==1.0:
-            v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-            v_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        else:
-            v_c = None 
-            v_s = None 
-        
-        # Perform the solve with ADAM over the specified number of iterations
-        for i in range(iterations):
-            pump_rate = calc_pump_rate(i)
-
-            noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
-
-            # Calculate gradient
-            c_grads, s_grads = self.calculate_grads(c, s, S)
-
-            # Update biased first moment estimate
-            m_c = beta1 * m_c + (1.0 - beta1) * c_grads
-            m_s = beta1 * m_s + (1.0 - beta1) * s_grads
-            
-            # Compute bias correction in 1st moment
-            beta1i = (1.0 - beta1 ** (i + 1))
-            mhat_c = m_c / beta1i
-            mhat_s = m_s / beta1i
-              
-            # Conditional second moment estimation
-            if not beta2 == 1.0:
-                # Update biased 2nd moment estimate
-                v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2) 
-                v_s = beta2 * v_s + (1.0 - beta2) * torch.pow(s_grads, 2)
-                
-                # Compute bias correction in 2nd moment
-                beta2i = (1.0 - beta2 ** (i + 1))
-                vhat_c = v_c / beta2i
-                vhat_s = v_s / beta2i
-                
-                # Compute bias corrected grads using 1st and 2nd moments
-                # in the form of element-wise division
-                c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
-                s_grads -= alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
-
-            else:
-                # Compute bias corrected grads only with 1st moment
-                c_grads -= alpha * mhat_c
-                s_grads -= alpha * mhat_s
-
-            # Calculate drift and diffusion terms of dl-ccvm
-            c_pow = torch.pow(c, 2)
-            s_pow = torch.pow(s, 2)
-            c_drift = torch.einsum("cj,cj -> cj", -1 + pump_rate - c_pow - s_pow, c)
-            s_drift = torch.einsum("cj,cj -> cj", -1 - pump_rate - c_pow - s_pow, s)
-
-            wiener_increment_c = (
-                wiener_dist_c.sample((problem_size,)).transpose(0, 1)
-                * np.sqrt(dt)
-                * noise_ratio_i
-            )
-            wiener_increment_s = (
-                wiener_dist_s.sample((problem_size,)).transpose(0, 1)
-                * np.sqrt(dt)
-                / noise_ratio_i
-            )
-
-            c += (
-                dt * (c_drift + c_grads)
-                + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_c
-            )
-            s += (
-                dt * (s_drift + s_grads)
-                + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_s
-            )
-
-            # If evolution_step_size is specified, save the values if this iteration
-            # aligns with the step size or if this is the last iteration
-            if evolution_step_size and (
-                i % evolution_step_size == 0 or i + 1 >= iterations
-            ):
-                # Update the record of the sample values with the values found at
-                # this iteration
-                c_sample[:, :, samples_taken] = c
-                s_sample[:, :, samples_taken] = s
-                samples_taken += 1
-
-        # Ensure variables are within any problem constraints
-        c = self.fit_to_constraints(c, -S, S)
-
-        # Stop the timer for the solve
-        solve_time = time.time() - solve_time_start
-
-        # Run the post processor on the results, if specified
-        if post_processor:
-            post_processor_object = PostProcessorFactory.create_postprocessor(
-                post_processor
-            )
-
-            problem_variables = post_processor_object.postprocess(
-                self.change_variables(c, S), self.q_matrix, self.v_vector
-            )
-            pp_time = post_processor_object.pp_time
-        else:
-            problem_variables = c
-            pp_time = 0.0
-
-        # Calculate the objective value
-        # Perform a change of variables to enforce the box constraints
-        confs = self.change_variables(problem_variables, S)
-        objval = instance.compute_energy(confs)
-
-        if evolution_step_size:
-            # Write samples to file
-            # Overwrite file if it exists
-            open(evolution_file, "w")
-
-            # Get the indices of the best objective values over the sampled iterations
-            # to use to get and save the best sampled values of c and s
-            batch_index = torch.argmax(-objval)
-            with open(evolution_file, "a") as evolution_file_obj:
-                self._append_samples_to_file(
-                    c_sample=c_sample[batch_index],
-                    s_sample=s_sample[batch_index],
-                    evolution_file_object=evolution_file_obj,
-                )
-
-        solution = Solution(
-            problem_size=problem_size,
-            batch_size=batch_size,
-            instance_name=instance.name,
-            iterations=iterations,
-            objective_values=objval,
-            solve_time=solve_time,
-            pp_time=pp_time,
-            optimal_value=instance.optimal_sol,
-            variables={
-                "problem_variables": problem_variables,
-                "s": s,
-            },
-            device=device,
-        )
-
-        # Add evolution filename to solution if it was generated
-        if evolution_step_size:
-            solution.evolution_file = evolution_file
-
-        return solution
-    
-    def _solve_adam_addassign(
-        self,
-        instance,
-        hyperparameters,
-        post_processor=None,
-        pump_rate_flag=True,
-        g=0.05,
-        evolution_step_size=None,
-        evolution_file=None,
-    ):
-        """Solves the given problem instance using the DL-CCVM solver  with Adam algorithm.
-
-        Args:
-            instance (ProblemInstance): The problem instance to solve.
-            hyperparameters (dict): Hyperparameters for adam algorithm. 
-            post_processor (str): The name of the post processor to use to process the results of the solver.
-                None if no post processing is desired. Defaults to None.
-            pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number. If False, the pump rate will be 1.0. Defaults to True.
-            g (float): The nonlinearity coefficient. Defaults to 0.05.
-            evolution_step_size (int): If set, the c/s values will be sampled once
-                per number of iterations equivalent to the value of this variable.
-                At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
-                Defaults to None, meaning no problem variables will be written to the file.
-            evolution_file (str): The file to save the best set of c/s samples to.
-                Only revelant when evolution_step_size is set.
-                If a file already exists with the same name, it will be overwritten.
-                Defaults to None, which generates a filename based on the problem instance name.
-
-        Returns:
-            solution (Solution): The solution to the problem instance.
-        """
-        # If the instance and the solver don't specify the same device type, raise
-        # an error
-        if instance.device != self.device:
-            raise ValueError(
-                f"The device type of the instance ({instance.device}) and the solver"
-                f" ({self.device}) must match."
-            )
-
-        # Get problem from problem instance
-        problem_size = instance.problem_size
-        self.q_matrix = instance.q_matrix
-        self.v_vector = instance.v_vector
-
-        # Get solver setup variables
-        S = self.S
-        batch_size = self.batch_size
-        device = self.device
-
-        # Get parameters from parameter_key
-        try:
-            pump = self.parameter_key[problem_size]["pump"]
-            dt = self.parameter_key[problem_size]["dt"]
-            iterations = self.parameter_key[problem_size]["iterations"]
-            noise_ratio = self.parameter_key[problem_size]["noise_ratio"]
-        except KeyError as e:
-            raise KeyError(
-                f"The parameter '{e.args[0]}' for the given instance size is not defined."
-            ) from e
-
-        # If S is a 1-D tensor, convert it to to a 2-D tensor
-        if torch.is_tensor(S) and S.ndim == 1:
-            # Dimension indexing in pytorch starts at 0
-            if S.size(dim=0) == problem_size:
-                S = torch.outer(torch.ones(batch_size), S)
-            else:
-                raise ValueError("Tensor S size should be equal to problem size.")
-
-        # Start the timer for the solve
-        solve_time_start = time.time()
-
-        if evolution_step_size:
-            # Check that the value is valid
-            if evolution_step_size < 1:
-                raise ValueError(
-                    f"The evolution step size must be greater than or equal to 1."
-                )
-            # Generate evolution file name
-            if evolution_file is None:
-                evolution_file = f"./{instance.name}_evolution.txt"
-
-            # Get the number of samples to save
-            # Find the number of full steps that will be taken
-            num_steps = int(iterations / evolution_step_size)
-            # We will also capture the first iteration through
-            num_samples = num_steps + 1
-            # And capture the last iteration if the step size doesn't evenly divide
-            if iterations % evolution_step_size != 0:
-                num_samples += 1
-
-            # Initialize tensors
-            # Store on CPU to keep the memory usage lower on the GPU
-            c_sample = torch.zeros(
-                (batch_size, problem_size, num_samples),
-                dtype=torch.float,
-                device="cpu",
-            )
-            s_sample = torch.zeros(
-                (batch_size, problem_size, num_samples),
-                dtype=torch.float,
-                device="cpu",
-            )
-            samples_taken = 0
-
-        # Initialize tensor variables on the device that will be used to perform the
-        # calculations
-        c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        wiener_dist_c = tdist.Normal(
-            torch.tensor([0.0] * batch_size, device=device),
-            torch.tensor([1.0] * batch_size, device=device),
-        )
-        wiener_dist_s = tdist.Normal(
-            torch.tensor([0.0] * batch_size, device=device),
-            torch.tensor([1.0] * batch_size, device=device),
-        )
-
-        # Pump rate update selection: time-dependent or constant
-        pump_rate_i = lambda i: pump * (i + 1) / iterations
-        pump_rate_c = lambda i: pump  # Constant
-        if pump_rate_flag:
-            calc_pump_rate = pump_rate_i
-        else:
-            calc_pump_rate = pump_rate_c
-
-        if pump > 1:
-            S = np.sqrt(pump - 1)
-
-        alpha = hyperparameters["alpha"]
-        beta1 = hyperparameters["beta1"]
-        beta2 = hyperparameters["beta2"]
-        epsilon = 1e-8
-        
-        # Initialize first moment vectors for c and s
-        m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        m_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        # Initialize second moment vectors conditionally
-        if not beta2==1.0:
-            v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-            v_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-        else:
-            v_c = None 
-            v_s = None 
-        
-        # Perform the solve with ADAM over the specified number of iterations
-        for i in range(iterations):
-            pump_rate = calc_pump_rate(i)
-
-            noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
-
-            # Calculate gradient
-            c_grads, s_grads = self.calculate_grads(c, s, S)
-
-            # Update biased first moment estimate
-            m_c = beta1 * m_c + (1.0 - beta1) * c_grads
-            m_s = beta1 * m_s + (1.0 - beta1) * s_grads
-            
-            # Compute bias correction in 1st moment
-            beta1i = (1.0 - beta1 ** (i + 1))
-            mhat_c = m_c / beta1i
-            mhat_s = m_s / beta1i
-              
-            # Conditional second moment estimation
-            if not beta2 == 1.0:
-                # Update biased 2nd moment estimate
-                v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2) 
-                v_s = beta2 * v_s + (1.0 - beta2) * torch.pow(s_grads, 2)
-                
-                # Compute bias correction in 2nd moment
-                beta2i = (1.0 - beta2 ** (i + 1))
-                vhat_c = v_c / beta2i
-                vhat_s = v_s / beta2i
-                
-                # Compute bias corrected grads using 1st and 2nd moments
-                # in the form of element-wise division
-                c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
-                s_grads -= alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
-
-            else:
-                # Compute bias corrected grads only with 1st moment
-                c_grads -= alpha * mhat_c
-                s_grads -= alpha * mhat_s
-
-            # Calculate drift and diffusion terms of dl-ccvm
-            c_pow = torch.pow(c, 2)
-            s_pow = torch.pow(s, 2)
-            c_drift = torch.einsum("cj,cj -> cj", -1 + pump_rate - c_pow - s_pow, c)
-            s_drift = torch.einsum("cj,cj -> cj", -1 - pump_rate - c_pow - s_pow, s)
-
-            wiener_increment_c = (
-                wiener_dist_c.sample((problem_size,)).transpose(0, 1)
-                * np.sqrt(dt)
-                * noise_ratio_i
-            )
-            wiener_increment_s = (
-                wiener_dist_s.sample((problem_size,)).transpose(0, 1)
-                * np.sqrt(dt)
-                / noise_ratio_i
-            )
-
-            c += (
-                dt * (c_drift + c_grads)
-                + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_c
-            )
-            s += (
-                dt * (s_drift + s_grads)
-                + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_s
-            )
-
-            # If evolution_step_size is specified, save the values if this iteration
-            # aligns with the step size or if this is the last iteration
-            if evolution_step_size and (
-                i % evolution_step_size == 0 or i + 1 >= iterations
-            ):
-                # Update the record of the sample values with the values found at
-                # this iteration
-                c_sample[:, :, samples_taken] = c
-                s_sample[:, :, samples_taken] = s
-                samples_taken += 1
-
-        # Ensure variables are within any problem constraints
-        c = self.fit_to_constraints(c, -S, S)
-
-        # Stop the timer for the solve
-        solve_time = time.time() - solve_time_start
-
-        # Run the post processor on the results, if specified
-        if post_processor:
-            post_processor_object = PostProcessorFactory.create_postprocessor(
-                post_processor
-            )
-
-            problem_variables = post_processor_object.postprocess(
-                self.change_variables(c, S), self.q_matrix, self.v_vector
-            )
-            pp_time = post_processor_object.pp_time
-        else:
-            problem_variables = c
-            pp_time = 0.0
-
-        # Calculate the objective value
-        # Perform a change of variables to enforce the box constraints
-        confs = self.change_variables(problem_variables, S)
-        objval = instance.compute_energy(confs)
-
-        if evolution_step_size:
-            # Write samples to file
-            # Overwrite file if it exists
-            open(evolution_file, "w")
-
-            # Get the indices of the best objective values over the sampled iterations
-            # to use to get and save the best sampled values of c and s
-            batch_index = torch.argmax(-objval)
-            with open(evolution_file, "a") as evolution_file_obj:
-                self._append_samples_to_file(
-                    c_sample=c_sample[batch_index],
-                    s_sample=s_sample[batch_index],
-                    evolution_file_object=evolution_file_obj,
-                )
-
-        solution = Solution(
-            problem_size=problem_size,
-            batch_size=batch_size,
-            instance_name=instance.name,
-            iterations=iterations,
-            objective_values=objval,
-            solve_time=solve_time,
-            pp_time=pp_time,
-            optimal_value=instance.optimal_sol,
-            variables={
-                "problem_variables": problem_variables,
-                "s": s,
-            },
-            device=device,
-        )
-
-        # Add evolution filename to solution if it was generated
-        if evolution_step_size:
-            solution.evolution_file = evolution_file
-
-        return solution
-    
-    
     def _solve_adam(
         self,
         instance,
@@ -1029,7 +459,7 @@ class DLSolver(CCVMSolver):
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            hyperparameters (dict): Hyperparameters for adam algorithm. 
+            hyperparameters (dict): Hyperparameters for adam algorithm.
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
@@ -1048,38 +478,313 @@ class DLSolver(CCVMSolver):
         Returns:
             solution (Solution): The solution to the problem instance.
         """
-        if hyperparameters['which_adam'] == 'ASSIGN':
-            return self._solve_adam_assign(
-                instance, 
-                hyperparameters, 
-                post_processor, 
-                pump_rate_flag, 
-                g, 
-                evolution_step_size, 
-                evolution_file
+        # If the instance and the solver don't specify the same device type, raise
+        # an error
+        if instance.device != self.device:
+            raise ValueError(
+                f"The device type of the instance ({instance.device}) and the solver"
+                f" ({self.device}) must match."
             )
-        elif hyperparameters['which_adam'] == 'ADDASSIGN':
-            return self._solve_adam_addassign(
-                instance, 
-                hyperparameters, 
-                post_processor, 
-                pump_rate_flag, 
-                g, 
-                evolution_step_size, 
-                evolution_file
+
+        # Get problem from problem instance
+        problem_size = instance.problem_size
+        self.q_matrix = instance.q_matrix
+        self.v_vector = instance.v_vector
+
+        # Get solver setup variables
+        S = self.S
+        batch_size = self.batch_size
+        device = self.device
+
+        # Get parameters from parameter_key
+        try:
+            pump = self.parameter_key[problem_size]["pump"]
+            dt = self.parameter_key[problem_size]["dt"]
+            iterations = self.parameter_key[problem_size]["iterations"]
+            noise_ratio = self.parameter_key[problem_size]["noise_ratio"]
+        except KeyError as e:
+            raise KeyError(
+                f"The parameter '{e.args[0]}' for the given instance size is not defined."
+            ) from e
+
+        # If S is a 1-D tensor, convert it to to a 2-D tensor
+        if torch.is_tensor(S) and S.ndim == 1:
+            # Dimension indexing in pytorch starts at 0
+            if S.size(dim=0) == problem_size:
+                S = torch.outer(torch.ones(batch_size), S)
+            else:
+                raise ValueError("Tensor S size should be equal to problem size.")
+
+        # Start the timer for the solve
+        solve_time_start = time.time()
+
+        if evolution_step_size:
+            # Check that the value is valid
+            if evolution_step_size < 1:
+                raise ValueError(
+                    f"The evolution step size must be greater than or equal to 1."
+                )
+            # Generate evolution file name
+            if evolution_file is None:
+                evolution_file = f"./{instance.name}_evolution.txt"
+
+            # Get the number of samples to save
+            # Find the number of full steps that will be taken
+            num_steps = int(iterations / evolution_step_size)
+            # We will also capture the first iteration through
+            num_samples = num_steps + 1
+            # And capture the last iteration if the step size doesn't evenly divide
+            if iterations % evolution_step_size != 0:
+                num_samples += 1
+
+            # Initialize tensors
+            # Store on CPU to keep the memory usage lower on the GPU
+            c_sample = torch.zeros(
+                (batch_size, problem_size, num_samples),
+                dtype=torch.float,
+                device="cpu",
             )
-       
-    
+            s_sample = torch.zeros(
+                (batch_size, problem_size, num_samples),
+                dtype=torch.float,
+                device="cpu",
+            )
+            samples_taken = 0
+
+        # Initialize tensor variables on the device that will be used to perform the
+        # calculations
+        c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        wiener_dist_c = tdist.Normal(
+            torch.tensor([0.0] * batch_size, device=device),
+            torch.tensor([1.0] * batch_size, device=device),
+        )
+        wiener_dist_s = tdist.Normal(
+            torch.tensor([0.0] * batch_size, device=device),
+            torch.tensor([1.0] * batch_size, device=device),
+        )
+
+        # Pump rate update selection: time-dependent or constant
+        pump_rate_i = lambda i: pump * (i + 1) / iterations
+        pump_rate_c = lambda i: pump  # Constant
+        if pump_rate_flag:
+            calc_pump_rate = pump_rate_i
+        else:
+            calc_pump_rate = pump_rate_c
+
+        if pump > 1:
+            S = np.sqrt(pump - 1)
+
+        alpha = hyperparameters["alpha"]
+        beta1 = hyperparameters["beta1"]
+        beta2 = hyperparameters["beta2"]
+        epsilon = 1e-8
+         
+        # Compute bias corrected grads using 1st and 2nd moments 
+        # with element-wise division
+        def update_grads_with_moment2_assign(
+                gradc, grads, mhatc, vhatc, mhats, vhats
+        ):
+            return (
+                alpha * torch.div(mhatc, torch.sqrt(vhatc) + epsilon),
+                alpha * torch.div(mhats, torch.sqrt(vhats) + epsilon)
+            )
+        
+        def update_grads_with_moment2_addassign(
+                gradc, grads, mhatc, vhatc, mhats, vhats
+        ):
+            return (
+                gradc + alpha * torch.div(mhatc, torch.sqrt(vhatc) + epsilon),
+                grads + alpha * torch.div(mhats, torch.sqrt(vhats) + epsilon)
+            )
+        
+        # Compute bias corrected grads using only 1st moment
+        def update_grads_without_moment2_assign(gradc, grads, mhatc, mhats):
+            return (alpha * mhatc, alpha * mhats)
+        def update_grads_without_moment2_addassign(gradc, grads, mhatc, mhats):
+            return (gradc + alpha * mhatc, grads + alpha * mhats)
+        
+        # Choose desired update method. 
+        if hyperparameters['which_adam']=='ASSIGN':    
+            update_grads_with_moment2 = update_grads_with_moment2_assign
+            update_grads_without_moment2 = update_grads_without_moment2_assign
+        elif hyperparameters['which_adam']=='ADD_ASSIGN':
+            update_grads_with_moment2 = update_grads_with_moment2_addassign
+            update_grads_without_moment2 =\
+            update_grads_without_moment2_addassign
+        else: 
+            raise ValueError(
+                f"Invalid choice: ({hyperparameters['which_adam']}) must match."
+            )
+
+        # Initialize first moment vectors for c and s
+        m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        m_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        # Initialize second moment vectors conditionally
+        if not beta2 == 1.0:
+            v_c = torch.zeros(
+                (batch_size, problem_size), dtype=torch.float, device=device
+            )
+            v_s = torch.zeros(
+                (batch_size, problem_size), dtype=torch.float, device=device
+            )
+        else:
+            v_c = None
+            v_s = None
+
+        # Perform the solve with ADAM over the specified number of iterations
+        for i in range(iterations):
+            pump_rate = calc_pump_rate(i)
+
+            noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
+
+            # Calculate gradient
+            c_grads, s_grads = self.calculate_grads(c, s, S)
+
+            # Update biased first moment estimate
+            m_c = beta1 * m_c + (1.0 - beta1) * c_grads
+            m_s = beta1 * m_s + (1.0 - beta1) * s_grads
+
+            # Compute bias correction in 1st moment
+            beta1i = 1.0 - beta1 ** (i + 1)
+            mhat_c = m_c / beta1i
+            mhat_s = m_s / beta1i
+
+            # Conditional second moment estimation
+            if not beta2 == 1.0:
+                # Update biased 2nd moment estimate
+                v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2)
+                v_s = beta2 * v_s + (1.0 - beta2) * torch.pow(s_grads, 2)
+
+                # Compute bias correction in 2nd moment
+                beta2i = 1.0 - beta2 ** (i + 1)
+                vhat_c = v_c / beta2i
+                vhat_s = v_s / beta2i
+
+                # Compute bias corrected grads
+                c_grads, s_grads =\
+                update_grads_with_moment2(
+                    c_grads, s_grads, mhat_c, vhat_c, mhat_s, vhat_s
+                )
+            else:
+                # Compute bias corrected grads only with 1st moment
+                #===============================================================
+                # c_grads = alpha * mhat_c
+                # s_grads = alpha * mhat_s
+                #===============================================================
+                c_grads, s_grads =\
+                update_grads_without_moment2(c_grads, s_grads, mhat_c, mhat_s)
+
+            # Calculate drift and diffusion terms of dl-ccvm
+            c_pow = torch.pow(c, 2)
+            s_pow = torch.pow(s, 2)
+            c_drift = torch.einsum("cj,cj -> cj", -1 + pump_rate - c_pow - s_pow, c)
+            s_drift = torch.einsum("cj,cj -> cj", -1 - pump_rate - c_pow - s_pow, s)
+
+            wiener_increment_c = (
+                wiener_dist_c.sample((problem_size,)).transpose(0, 1)
+                * np.sqrt(dt)
+                * noise_ratio_i
+            )
+            wiener_increment_s = (
+                wiener_dist_s.sample((problem_size,)).transpose(0, 1)
+                * np.sqrt(dt)
+                / noise_ratio_i
+            )
+
+            c += (
+                dt * (c_drift + c_grads)
+                + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_c
+            )
+            s += (
+                dt * (s_drift + s_grads)
+                + 2 * g * torch.sqrt(c_pow + s_pow + 0.5) * wiener_increment_s
+            )
+
+            # If evolution_step_size is specified, save the values if this iteration
+            # aligns with the step size or if this is the last iteration
+            if evolution_step_size and (
+                i % evolution_step_size == 0 or i + 1 >= iterations
+            ):
+                # Update the record of the sample values with the values found at
+                # this iteration
+                c_sample[:, :, samples_taken] = c
+                s_sample[:, :, samples_taken] = s
+                samples_taken += 1
+
+        # Ensure variables are within any problem constraints
+        c = self.fit_to_constraints(c, -S, S)
+
+        # Stop the timer for the solve
+        solve_time = time.time() - solve_time_start
+
+        # Run the post processor on the results, if specified
+        if post_processor:
+            post_processor_object = PostProcessorFactory.create_postprocessor(
+                post_processor
+            )
+
+            problem_variables = post_processor_object.postprocess(
+                self.change_variables(c, S), self.q_matrix, self.v_vector
+            )
+            pp_time = post_processor_object.pp_time
+        else:
+            problem_variables = c
+            pp_time = 0.0
+
+        # Calculate the objective value
+        # Perform a change of variables to enforce the box constraints
+        confs = self.change_variables(problem_variables, S)
+        objval = instance.compute_energy(confs)
+
+        if evolution_step_size:
+            # Write samples to file
+            # Overwrite file if it exists
+            open(evolution_file, "w")
+
+            # Get the indices of the best objective values over the sampled iterations
+            # to use to get and save the best sampled values of c and s
+            batch_index = torch.argmax(-objval)
+            with open(evolution_file, "a") as evolution_file_obj:
+                self._append_samples_to_file(
+                    c_sample=c_sample[batch_index],
+                    s_sample=s_sample[batch_index],
+                    evolution_file_object=evolution_file_obj,
+                )
+
+        solution = Solution(
+            problem_size=problem_size,
+            batch_size=batch_size,
+            instance_name=instance.name,
+            iterations=iterations,
+            objective_values=objval,
+            solve_time=solve_time,
+            pp_time=pp_time,
+            optimal_value=instance.optimal_sol,
+            variables={
+                "problem_variables": problem_variables,
+                "s": s,
+            },
+            device=device,
+        )
+
+        # Add evolution filename to solution if it was generated
+        if evolution_step_size:
+            solution.evolution_file = evolution_file
+
+        return solution
+
+
     def __call__(
-            self,
-            instance,
-            solve_type=None,
-            post_processor=None,
-            pump_rate_flag=True,
-            g=0.05,
-            evolution_step_size=None,
-            evolution_file=None,
-            hyperparameters=None,
+        self,
+        instance,
+        solve_type=None,
+        post_processor=None,
+        pump_rate_flag=True,
+        g=0.05,
+        evolution_step_size=None,
+        evolution_file=None,
+        hyperparameters=None,
     ):
         """Solves the given problem instance choosing one of the available DL-CCVM solvers.
 
@@ -1100,29 +805,28 @@ class DLSolver(CCVMSolver):
                 Only revelant when evolution_step_size is set.
                 If a file already exists with the same name, it will be overwritten.
                 Defaults to None, which generates a filename based on the problem instance name.
-            hyperparameters (dict): Hyperparameters for adam algorithm. 
+            hyperparameters (dict): Hyperparameters for adam algorithm.
 
         Returns:
             solution (Solution): The solution to the problem instance.
         """
-        
+
         if solve_type in ["Adam", "adam", "ADAM"]:
             return self._solve_adam(
-                instance, 
-                hyperparameters, 
-                post_processor, 
-                pump_rate_flag, 
-                g, 
-                evolution_step_size, 
-                evolution_file
+                instance,
+                hyperparameters,
+                post_processor,
+                pump_rate_flag,
+                g,
+                evolution_step_size,
+                evolution_file,
             )
         else:
             return self._solve(
-                instance, 
+                instance,
                 post_processor,
                 pump_rate_flag,
-                g, 
-                evolution_step_size, 
-                evolution_file
-            ) 
-        
+                g,
+                evolution_step_size,
+                evolution_file,
+            )

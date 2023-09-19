@@ -53,7 +53,6 @@ class CCVMSolver(ABC):
             dict: The parameter key.
         """
         return self._parameter_key
-    
 
     ##################################
     # Abstract Methods               #
@@ -75,10 +74,10 @@ class CCVMSolver(ABC):
         `parameter_key`
         """
         pass
-    
+
     @abstractmethod
     def _solve_adam(self):
-        """Solves a given problem instance with an enhancement of Adam algorithm 
+        """Solves a given problem instance with an enhancement of Adam algorithm
         using the parameters in the solver's `parameter_key`
         """
         pass
@@ -87,6 +86,7 @@ class CCVMSolver(ABC):
     def _calculate_drift_boxqp(self, **kwargs):
         """Calculates the drift part of the CCVM for the boxqp problem."""
         pass
+
     @abstractmethod
     def _calculate_grads_boxqp(self, **kwargs):
         """Calculates the gradients of the variables for the boxqp problem."""
@@ -122,8 +122,7 @@ class CCVMSolver(ABC):
             torch.sqrt(torch.sum(torch.abs(q_matrix))) * self._scaling_multiplier
         )
         return scaling_val
-    
-    
+
     def _method_selector(self, problem_category):
         """Set methods relevant to this category of problem
 

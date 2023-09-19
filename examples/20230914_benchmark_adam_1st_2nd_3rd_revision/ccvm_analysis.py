@@ -5,8 +5,9 @@ import matplotlib.pyplot as plt
 
 def sub_scatter(baseline, data, subkey, nrep):
     base = baseline["solution_performance"][subkey]
-    base_ret = base 
-    if base==0.0: base=1
+    base_ret = base
+    if base == 0.0:
+        base = 1
     plt.scatter(
         data["alpha"],
         data["r01"]["solution_performance"][subkey] / base,
@@ -38,31 +39,22 @@ def sub_scatter(baseline, data, subkey, nrep):
         marker="<",
     )
     avg_subkey_val = 0.0
-    for r in range(1, nrep+1):
+    for r in range(1, nrep + 1):
         avg_subkey_val += data[f"r{r:02d}"]["solution_performance"][subkey]
         # print(f"r{r:02d}", data[f"r{r:02d}"]["solution_performance"][subkey])
     avg_subkey_val = avg_subkey_val / nrep / base
-    
-    plt.scatter(
-        data["alpha"],
-        avg_subkey_val,
-        color=f"k",
-        marker="+", s=200
-    )
-    plt.scatter(
-        data["alpha"],
-        avg_subkey_val,
-        color=f"k", 
-        marker="o", s=20
-    )
+
+    plt.scatter(data["alpha"], avg_subkey_val, color=f"k", marker="+", s=200)
+    plt.scatter(data["alpha"], avg_subkey_val, color=f"k", marker="o", s=20)
     return base_ret, avg_subkey_val
+
 
 def process_baseline(RESULTS_DIR, N, iterations, nrep):
     # Original method: base_N20_iter015000
     filename = f"{RESULTS_DIR}base_N{N}_iter{iterations:06d}.pkl"
     with open(filename, "rb") as file:
         data = pickle.load(file)
-    
+
     best_objective_value = 0
     optimal = 0
     one_percent = 0
@@ -72,7 +64,7 @@ def process_baseline(RESULTS_DIR, N, iterations, nrep):
     five_percent = 0
     ten_percent = 0
     solve_time = 0
-    for r in range(1, nrep+1):
+    for r in range(1, nrep + 1):
         best_objective_value += data[f"r{1:02d}"]["best_objective_value"]
         solve_time += data[f"r{1:02d}"]["solve_time"]
         optimal += data[f"r{1:02d}"]["solution_performance"]["optimal"]
@@ -82,7 +74,7 @@ def process_baseline(RESULTS_DIR, N, iterations, nrep):
         four_percent += data[f"r{1:02d}"]["solution_performance"]["four_percent"]
         five_percent += data[f"r{1:02d}"]["solution_performance"]["five_percent"]
         ten_percent += data[f"r{1:02d}"]["solution_performance"]["ten_percent"]
-    
+
     baseline = dict(
         best_objective_value=best_objective_value / nrep,
         solve_time=solve_time / nrep,
@@ -96,16 +88,17 @@ def process_baseline(RESULTS_DIR, N, iterations, nrep):
             ten_percent=ten_percent / nrep,
         ),
     )
-    return baseline 
+    return baseline
 
-#===============================================================================
+
+# ===============================================================================
 # RESULTS_DIR = "./results/mf/"
 # PLOT_DIR = "./results/mf-plots/"
 RESULTS_DIR = "./results/dl/"
 PLOT_DIR = "./results/dl-plots/"
 # RESULTS_DIR = "./results/lan/"
 # PLOT_DIR = "./results/lan-plots/"
-#===============================================================================
+# ===============================================================================
 # maindir = "/Users/mehmetcanturk/CCVM/benchmarks/20230908_results/"
 # RESULTS_DIR = maindir+"/dl/"
 # PLOT_DIR = maindir+"/new-dl-plots/"
@@ -119,21 +112,31 @@ if not os.path.exists(PLOT_DIR):
 
 ## Data analysis
 iterations = 15000  # 10000 #5000 #
-N = 20 #70 # 50 # 
+N = 20  # 70 # 50 #
 nrep = 5
-ylim = [-0.1, 5.0] # [-0.1, 2.0] # scatter limit 
+ylim = [-0.1, 5.0]  # [-0.1, 2.0] # scatter limit
 
 baseline = process_baseline(RESULTS_DIR, N, iterations, nrep)
 
-for beta2 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.999, 1.0]: #[0.5, 0.8, 0.999, 1.0]:  #
-    for beta1 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.9]: #[0.1, 0.5, 0.7, 0.9]:
+for beta2 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.999, 1.0]:  # [0.5, 0.8, 0.999, 1.0]:  #
+    for beta1 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.9]:  # [0.1, 0.5, 0.7, 0.9]:
         c = 0
         plt.rcParams.update({"font.size": 10})
         plt.figure(figsize=(12, 4))
-        #=======================================================================
+        # =======================================================================
         # avg_performance_list = dict(opt=[],one=[],two=[],three=[], four=[], five=[], ten=[])
-        #=======================================================================
-        for alpha in [0.001, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.5, 1.0]:#[0.00001, 0.0001, 0.001, 0.01, 0.1, 0.15, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0]:
+        # =======================================================================
+        for alpha in [
+            0.001,
+            0.005,
+            0.01,
+            0.05,
+            0.1,
+            0.15,
+            0.2,
+            0.5,
+            1.0,
+        ]:  # [0.00001, 0.0001, 0.001, 0.01, 0.1, 0.15, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0]:
             filename = f"{RESULTS_DIR}N_{N}_A_{alpha:.05f}_B1_{beta1:.03f}_B2_{beta2:.04f}_iter{iterations:06d}.pkl"
             with open(filename, "rb") as file:
                 data = pickle.load(file)
@@ -217,7 +220,7 @@ for beta2 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.999, 1.0]: #[0.5, 0.8, 0.999, 1.0]:  #
             + r", $n_\mathrm{iter}$"
             + f"={data['params']['iterations']}"
         )
-        plt.text(0.001, 0.2, '+: avg')
+        plt.text(0.001, 0.2, "+: avg")
         # plt.yscale('log')
         plt.tight_layout()
         # plt.show()
@@ -226,4 +229,3 @@ for beta2 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.999, 1.0]: #[0.5, 0.8, 0.999, 1.0]:  #
             dpi=500,
         )
         plt.close()
-        

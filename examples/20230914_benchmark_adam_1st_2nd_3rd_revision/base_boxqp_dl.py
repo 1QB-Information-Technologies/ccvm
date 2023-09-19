@@ -9,7 +9,7 @@ RESULTS_DIR = "./results/dl/"
 if __name__ == "__main__":
     # Initialize solver
     batch_size = 1000
-    nrepeats =  5
+    nrepeats = 5
     solver = DLSolver(device="cpu", batch_size=batch_size)  # or "cuda"
 
     # Supply solver parameters for different problem sizes
@@ -37,7 +37,7 @@ if __name__ == "__main__":
         # Solve the problem
         dataset = dict()
         # Repeat the experiment nrepeats times
-        for repeat in range(1, nrepeats+1):
+        for repeat in range(1, nrepeats + 1):
             solution = solver(
                 instance=boxqp_instance,
                 post_processor=None,

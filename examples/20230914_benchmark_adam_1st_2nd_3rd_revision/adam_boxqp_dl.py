@@ -9,7 +9,7 @@ RESULTS_DIR = "./results/dl/"
 if __name__ == "__main__":
     # Initialize solver
     batch_size = 1000
-    nrepeats =  5
+    nrepeats = 5
     solver = DLSolver(device="cpu", batch_size=batch_size)  # or "cuda"
 
     # Supply solver parameters for different problem sizes
@@ -37,7 +37,7 @@ if __name__ == "__main__":
         # Solve the problem
         for alpha in [0.001, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.5, 1.0]:
             for beta1 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.9]:
-                for beta2 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.999, 1.0]: 
+                for beta2 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.999, 1.0]:
                     hyperparameters = dict(alpha=alpha, beta1=beta1, beta2=beta2)
                     dataset = dict(
                         beta1=hyperparameters["beta1"],
@@ -45,10 +45,10 @@ if __name__ == "__main__":
                         alpha=hyperparameters["alpha"],
                     )
                     # Repeat the experiment nrepeats times
-                    for repeat in range(1, nrepeats+1):
+                    for repeat in range(1, nrepeats + 1):
                         solution = solver(
                             instance=boxqp_instance,
-                            solve_type = "Adam", # solve_type=None refers to default (original) solver
+                            solve_type="Adam",  # solve_type=None refers to default (original) solver
                             post_processor=None,
                             hyperparameters=hyperparameters,
                         )

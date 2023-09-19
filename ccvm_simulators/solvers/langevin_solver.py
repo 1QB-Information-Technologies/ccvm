@@ -94,10 +94,9 @@ class LangevinSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-
     def _calculate_drift_boxqp(self, c, S=1):
         """We treat the SDE that simulates the CIM of NTT as drift
-        calculation. 
+        calculation.
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
@@ -251,7 +250,7 @@ class LangevinSolver(CCVMSolver):
         self.v_vector = instance.v_vector
 
         # Get solver setup variables
-        S = self.S 
+        S = self.S
         batch_size = self.batch_size
         device = self.device
 
@@ -346,7 +345,9 @@ class LangevinSolver(CCVMSolver):
                 post_processor
             )
 
-            problem_variables = post_processor_object.postprocess(c, self.q_matrix, self.v_vector)
+            problem_variables = post_processor_object.postprocess(
+                c, self.q_matrix, self.v_vector
+            )
             pp_time = post_processor_object.pp_time
         else:
             problem_variables = c
@@ -388,7 +389,7 @@ class LangevinSolver(CCVMSolver):
 
         return solution
 
-        
+
     def _solve_adam(
         self,
         instance,
@@ -397,11 +398,11 @@ class LangevinSolver(CCVMSolver):
         evolution_step_size=None,
         evolution_file=None,
     ):
-        """Solves the given problem instance using the Langevin solver including ADAM algorithm.
+        """Solves the given problem instance using the Langevin solver with Adam algorithm.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            hyperparameters (dict): Hyperparameters for adam algorithm. 
+            hyperparameters (dict): Hyperparameters for adam algorithm.
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
             evolution_step_size (int): If set, the c/s values will be sampled once
@@ -431,7 +432,7 @@ class LangevinSolver(CCVMSolver):
         self.v_vector = instance.v_vector
 
         # Get solver setup variables
-        S = self.S  
+        S = self.S
         batch_size = self.batch_size
         device = self.device
 
@@ -498,11 +499,33 @@ class LangevinSolver(CCVMSolver):
         beta2 = hyperparameters["beta2"]
         epsilon = 1e-8
         
+        # Choose desired update method for
+        if hyperparameters['which_adam']=='ASSIGN':
+            
+            update_grads_with_moment2 = lambda grads, mhat, vhat:\
+            alpha * torch.div(mhat, torch.sqrt(vhat) + epsilon)
+            
+            update_grads_without_moment2 = lambda grads, mhat: alpha * mhat_c
+            
+        elif hyperparameters['which_adam']=='ADD_ASSIGN':
+            
+            update_grads_with_moment2 = lambda grads, mhat, vhat:\
+            grads + alpha * torch.div(mhat, torch.sqrt(vhat) + epsilon)
+                
+            update_grads_without_moment2 = lambda grads, mhat: grads + alpha * mhat_c
+            
+        else: 
+            raise ValueError(
+                f"Invalid choice: ({hyperparameters['which_adam']}) must match."
+            )
+
         # Initialize first moment vector
         m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         # Initialize second moment conditionally
-        if not beta2==1.0:
-            v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        if not beta2 == 1.0:
+            v_c = torch.zeros(
+                (batch_size, problem_size), dtype=torch.float, device=device
+            )
         else:
             v_c = None
 
@@ -513,26 +536,32 @@ class LangevinSolver(CCVMSolver):
 
             # Update biased first moment estimate
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
-            
+
             # Compute bias correction in 1st moment
-            beta1i = (1.0 - beta1 ** (i + 1))
+            beta1i = 1.0 - beta1 ** (i + 1)
             mhat_c = m_c / beta1i
-            
+
             # Conditional second moment estimation
-            if not beta2==1.0:
+            if not beta2 == 1.0:
                 # Update biased 2nd moment estimate
                 v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2)
-                
+
                 # Compute bias correction in 2nd moment
-                beta2i = (1.0 - beta2 ** (i + 1))
+                beta2i = 1.0 - beta2 ** (i + 1)
                 vhat_c = v_c / beta2i
-                
+
                 # Compute bias corrected grad using 1st and 2nd moments
                 # in the form of element-wise division
-                c_grads = -alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
+                #===============================================================
+                # c_grads = alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
+                #===============================================================
+                c_grads = update_grads_with_moment2(c_grads, mhat_c, vhat_c)
             else:
                 # Compute bias corrected grad only with 1st moment
-                c_grads = -alpha * mhat_c
+                #===============================================================
+                # c_grads = alpha * mhat_c
+                #===============================================================
+                c_grads = update_grads_without_moment2(c_grads, mhat_c)
 
             wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(
                 0, 1
@@ -605,8 +634,7 @@ class LangevinSolver(CCVMSolver):
             solution.evolution_file = evolution_file
 
         return solution
-    
-    
+
     def __call__(
         self,
         instance,
@@ -614,10 +642,10 @@ class LangevinSolver(CCVMSolver):
         post_processor=None,
         evolution_step_size=None,
         evolution_file=None,
-        hyperparameters=None,   
+        hyperparameters=None,
     ):
         """Solves the given problem instance by choosing one of the available Langevin solvers.
-        
+
         Args:
             instance (ProblemInstance): The problem instance to solve.
             solve_type (str): Flag to choose one of the available solve methods
@@ -636,10 +664,17 @@ class LangevinSolver(CCVMSolver):
 
         Returns:
             solution (Solution): The solution to the problem instance.
-        
+
         """
         if solve_type in ["Adam", "adam", "ADAM"]:
-            return self._solve_adam(instance, hyperparameters, post_processor, evolution_step_size, evolution_file)
+            return self._solve_adam(
+                instance,
+                hyperparameters,
+                post_processor,
+                evolution_step_size,
+                evolution_file,
+            )
         else:
-            return self._solve(instance, post_processor, evolution_step_size, evolution_file) 
- 
+            return self._solve(
+                instance, post_processor, evolution_step_size, evolution_file
+            )
