@@ -46,20 +46,21 @@ if __name__ == "__main__":
                 for beta2 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.999, 1.0]:
                     dataset = {"ADD_ASSIGN":{}, "ASSIGN":{}}
                     for which_adam in ["ADD_ASSIGN", "ASSIGN"]:
-                        hyperparameters = dict(alpha=alpha, beta1=beta1, beta2=beta2, which_adam=which_adam)
-                        dataset[which_adam]["hyperparameters"] = hyperparameters
+                        dataset[which_adam]["hyperparameters"] = dict(alpha=alpha, beta1=beta1, beta2=beta2)
                         for repeat in range(1, nrepeats + 1):
                             solution = solver(
                                 instance=boxqp_instance,
                                 solve_type="Adam",  # solve_type=None refers to default (original) solver
                                 post_processor=None,
-                                hyperparameters=hyperparameters,
+                                hyperparameters=dict(alpha=alpha, beta1=beta1, beta2=beta2, which_adam=which_adam),
                             )
                             disp = f"{which_adam}: {solution.instance_name}: {repeat=}, \tsolve-time={solution.solve_time}\n"
                             disp += f"performance={solution.solution_performance}\n"
                             print(disp)
                             
                             dataset[which_adam][f"r{repeat:02d}"] = dict(
+                                best_objective_value_rel = solution.optimal_value - solution.best_objective_value,
+                                best_objective_value_abs = (solution.optimal_value - solution.best_objective_value) / solution.optimal_value,
                                 best_objective_value=solution.best_objective_value,
                                 solution_performance=solution.solution_performance,
                                 solve_time=solution.solve_time,
@@ -72,7 +73,7 @@ if __name__ == "__main__":
                         optimal_value=solution.optimal_value,
                         problem_size=solution.problem_size,
                     )
-                    filename = f"{RESULTS_DIR}adam_N{solution.problem_size}_iter{solution.iterations:05d}_B2_{beta2:.04f}_B1_{beta1:.03f}_A{alpha:.05f}.pkl"
+                    filename = f"{RESULTS_DIR}adam_N{solution.problem_size}_iter{solution.iterations:05d}_B2_{beta2:.03f}_B1_{beta1:.03f}_A{alpha:.03f}.pkl"
                     with open(filename, "wb") as file:
                         pickle.dump(dataset, file, pickle.HIGHEST_PROTOCOL)
                     print(dataset) 
