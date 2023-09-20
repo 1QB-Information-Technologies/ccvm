@@ -1,3 +1,5 @@
+import sys 
+sys.path.append("../../")
 import os, pickle
 import glob
 from ccvm_simulators.problem_classes.boxqp import ProblemInstance
@@ -59,9 +61,10 @@ if __name__ == "__main__":
                             print(disp)
                             
                             dataset[which_adam][f"r{repeat:02d}"] = dict(
-                                best_objective_value_rel = solution.optimal_value - solution.best_objective_value,
-                                best_objective_value_abs = (solution.optimal_value - solution.best_objective_value) / solution.optimal_value,
-                                best_objective_value=solution.best_objective_value,
+                                f_relative_objective_value = solution.optimal_value - solution.best_objective_value,
+                                f_absolute_objective_value = abs((solution.optimal_value - solution.best_objective_value) / solution.optimal_value),
+                                f_best_objective_value=solution.best_objective_value,
+                                f_optimal_value=solution.optimal_value,
                                 solution_performance=solution.solution_performance,
                                 solve_time=solution.solve_time,
                             )
@@ -70,7 +73,6 @@ if __name__ == "__main__":
                         device=solution.device,
                         instance_name=solution.instance_name,
                         iterations=solution.iterations,
-                        optimal_value=solution.optimal_value,
                         problem_size=solution.problem_size,
                     )
                     filename = f"{RESULTS_DIR}adam_N{solution.problem_size}_iter{solution.iterations:05d}_B2_{beta2:.03f}_B1_{beta1:.03f}_A{alpha:.03f}.pkl"
