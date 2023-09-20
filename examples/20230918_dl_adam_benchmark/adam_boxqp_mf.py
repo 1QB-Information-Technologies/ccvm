@@ -46,9 +46,8 @@ if __name__ == "__main__":
         for alpha in [0.001, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.5, 1.0, 2.0]:
             for beta1 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.9]:
                 for beta2 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.999, 1.0]:
-                    dataset = {"ADD_ASSIGN":{}, "ASSIGN":{}}
+                    dataset = {"ADD_ASSIGN":{}, "ASSIGN":{}, "hyperparameters": dict(alpha=alpha, beta1=beta1, beta2=beta2)}
                     for which_adam in ["ADD_ASSIGN", "ASSIGN"]:
-                        dataset[which_adam]["hyperparameters"] = dict(alpha=alpha, beta1=beta1, beta2=beta2)
                         for repeat in range(1, nrepeats + 1):
                             solution = solver(
                                 instance=boxqp_instance,
@@ -58,7 +57,7 @@ if __name__ == "__main__":
                             )
                             disp = f"{which_adam}: {solution.instance_name}: {repeat=}, \tsolve-time={solution.solve_time}\n"
                             disp += f"performance={solution.solution_performance}\n"
-                            print(disp)
+                            # print(disp)
                             
                             dataset[which_adam][f"r{repeat:02d}"] = dict(
                                 f_relative_objective_value = solution.optimal_value - solution.best_objective_value,

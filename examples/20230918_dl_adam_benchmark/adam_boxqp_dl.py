@@ -1,10 +1,12 @@
+import sys 
+sys.path.append("../../")
 import os, pickle
 import glob
 from ccvm_simulators.problem_classes.boxqp import ProblemInstance
 from ccvm_simulators.solvers import DLSolver
 
 TEST_INSTANCES_DIR = "../tuning_instances/"
-RESULTS_DIR = "./results/dl/"
+RESULTS_DIR = "./results_dl/data/"
 
 if __name__ == "__main__":
     # Initialize solver
@@ -35,41 +37,39 @@ if __name__ == "__main__":
         boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 
         # Solve the problem
-        for alpha in [0.001, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.5, 1.0]:
+        for alpha in [0.001, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.5, 1.0, 2.0]:
             for beta1 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.9]:
                 for beta2 in [0.1, 0.3, 0.5, 0.7, 0.8, 0.999, 1.0]:
-                    hyperparameters = dict(alpha=alpha, beta1=beta1, beta2=beta2)
-                    dataset = dict(
-                        beta1=hyperparameters["beta1"],
-                        beta2=hyperparameters["beta2"],
-                        alpha=hyperparameters["alpha"],
-                    )
-                    # Repeat the experiment nrepeats times
-                    for repeat in range(1, nrepeats + 1):
-                        solution = solver(
-                            instance=boxqp_instance,
-                            solve_type="Adam",  # solve_type=None refers to default (original) solver
-                            post_processor=None,
-                            hyperparameters=hyperparameters,
-                        )
-                        disp = f"{solution.instance_name}: {alpha=}, {beta1=}, {beta2=}, {repeat=}, \tsolve-time={solution.solve_time}\n"
-                        disp += f"performance={solution.solution_performance}\n"
-                        print(disp)
-
-                        dataset[f"r{repeat:02d}"] = dict(
-                            best_objective_value=solution.best_objective_value,
-                            solution_performance=solution.solution_performance,
-                            solve_time=solution.solve_time,
-                        )
+                    dataset = {"ADD_ASSIGN":{}, "ASSIGN":{}, "hyperparameters": dict(alpha=alpha, beta1=beta1, beta2=beta2)}
+                    for which_adam in ["ADD_ASSIGN", "ASSIGN"]:
+                        for repeat in range(1, nrepeats + 1):
+                            solution = solver(
+                                instance=boxqp_instance,
+                                solve_type="Adam",  # solve_type=None refers to default (original) solver
+                                post_processor=None,
+                                hyperparameters=dict(alpha=alpha, beta1=beta1, beta2=beta2, which_adam=which_adam),
+                            )
+                            disp = f"{which_adam}: {solution.instance_name}: {alpha=}, {beta1=}, {beta2=}, {repeat=}, \tsolve-time={solution.solve_time}\n"
+                            disp += f"performance={solution.solution_performance}\n"
+                            # print(disp)
+    
+                            dataset[which_adam][f"r{repeat:02d}"] = dict(
+                                f_relative_objective_value = solution.optimal_value - solution.best_objective_value,
+                                f_absolute_objective_value = abs((solution.optimal_value - solution.best_objective_value) / solution.optimal_value),
+                                f_best_objective_value=solution.best_objective_value,
+                                f_optimal_value=solution.optimal_value,
+                                solution_performance=solution.solution_performance,
+                                solve_time=solution.solve_time,
+                            )
 
                     dataset["params"] = dict(
                         batch_size=solution.batch_size,
                         device=solution.device,
                         instance_name=solution.instance_name,
                         iterations=solution.iterations,
-                        optimal_value=solution.optimal_value,
                         problem_size=solution.problem_size,
                     )
-                    filename = f"{RESULTS_DIR}N_{solution.problem_size}_A_{alpha:.05f}_B1_{beta1:.03f}_B2_{beta2:.04f}_iter{solution.iterations:06d}.pkl"
+                    filename = f"{RESULTS_DIR}adam_N{solution.problem_size}_iter{solution.iterations:05d}_B2_{beta2:.03f}_B1_{beta1:.03f}_A{alpha:.03f}.pkl"
                     with open(filename, "wb") as file:
                         pickle.dump(dataset, file, pickle.HIGHEST_PROTOCOL)
+                    print(dataset) 
