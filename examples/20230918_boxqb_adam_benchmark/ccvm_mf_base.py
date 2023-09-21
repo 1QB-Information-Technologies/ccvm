@@ -69,4 +69,5 @@ if __name__ == "__main__":
         filename = f"{RESULTS_DIR}base_N{solution.problem_size}_iter{solution.iterations:06d}.pkl"
         with open(filename, "wb") as file:
             pickle.dump(dataset, file, pickle.HIGHEST_PROTOCOL)
-
+            
+        print(dataset) 

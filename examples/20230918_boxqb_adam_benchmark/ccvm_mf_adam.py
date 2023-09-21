@@ -59,6 +59,12 @@ if __name__ == "__main__":
                             disp += f"performance={solution.solution_performance}\n"
                             # print(disp)
                             
+                            '''
+                            objective_value_relative += data[rkey]['f_relative_objective_value']
+                            objective_value_absolute += data[rkey]['f_absolute_objective_value']
+                            objective_value_best += data[rkey]["f_best_objective_value"]
+                            objective_value_optimal_value += data[rkey]['f_optimal_value']
+                            '''
                             dataset[which_adam][f"r{repeat:02d}"] = dict(
                                 f_relative_objective_value = solution.optimal_value - solution.best_objective_value,
                                 f_absolute_objective_value = abs((solution.optimal_value - solution.best_objective_value) / solution.optimal_value),

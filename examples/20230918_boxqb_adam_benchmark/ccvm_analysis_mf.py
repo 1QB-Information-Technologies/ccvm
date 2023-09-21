@@ -48,6 +48,9 @@ def process_baseline(RESULTS_DIR, N, iterations, nrep):
 
     with open(filename, "rb") as file:
         data = pickle.load(file)
+        
+    assert data['params']['iterations'] == iterations
+    assert data['params']['problem_size'] == N
 
     best_objective_value = 0
     optimal = 0
@@ -82,16 +85,16 @@ def process_baseline(RESULTS_DIR, N, iterations, nrep):
             five_percent / nrep,
             ten_percent / nrep,
         ),
+        instance = data['params']
     )
     return baseline
 
 
-def process_adam(alpha, beta1, beta2, RESULTS_DIR, N, iterations, nrep):
-    filename = f"{RESULTS_DIR}N_{N}_A_{alpha:.05f}_B1_{beta1:.03f}_B2_{beta2:.04f}_iter{iterations:06d}.pkl"
-    with open(filename, "rb") as file:
-        data = pickle.load(file)
-
-    best_objective_value = 0
+def unpack_adam(data, nrep):
+    objective_value_relative = 0
+    objective_value_absolute = 0
+    objective_value_best = 0
+    objective_value_optimal = 0
     optimal = 0
     one_percent = 0
     two_percent = 0
@@ -102,7 +105,11 @@ def process_adam(alpha, beta1, beta2, RESULTS_DIR, N, iterations, nrep):
     solve_time = 0
     for r in range(1, nrep + 1):
         rkey = f"r{r:02d}"
-        best_objective_value += data[rkey]["best_objective_value"]
+        objective_value_relative += data[rkey]['f_relative_objective_value']
+        objective_value_absolute += data[rkey]['f_absolute_objective_value']
+        objective_value_best += data[rkey]["f_best_objective_value"]
+        objective_value_optimal += data[rkey]['f_optimal_value']
+        
         solve_time += data[rkey]["solve_time"]
         optimal += data[rkey]["solution_performance"]["optimal"]
         one_percent += data[rkey]["solution_performance"]["one_percent"]
@@ -111,25 +118,37 @@ def process_adam(alpha, beta1, beta2, RESULTS_DIR, N, iterations, nrep):
         four_percent += data[rkey]["solution_performance"]["four_percent"]
         five_percent += data[rkey]["solution_performance"]["five_percent"]
         ten_percent += data[rkey]["solution_performance"]["ten_percent"]
+    return dict(
+            objective_values= (
+                objective_value_relative / nrep,
+                objective_value_absolute / nrep,
+                objective_value_best / nrep,
+                objective_value_optimal / nrep
+            ),
+            solve_time=solve_time / nrep,
+            solution_performance=(
+                optimal / nrep,
+                one_percent / nrep,
+                two_percent / nrep,
+                three_percent / nrep,
+                four_percent / nrep,
+                five_percent / nrep,
+                ten_percent / nrep,
+            ),
+        )
 
-    adam = dict(
-        alpha=alpha,
-        beta1=beta1,
-        beta2=beta2,
-        best_objective_value=best_objective_value / nrep,
-        solve_time=solve_time / nrep,
-        solution_performance=(
-            optimal / nrep,
-            one_percent / nrep,
-            two_percent / nrep,
-            three_percent / nrep,
-            four_percent / nrep,
-            five_percent / nrep,
-            ten_percent / nrep,
-        ),
-    )
-    return adam
-
+def process_adam(alpha, beta1, beta2, RESULTS_DIR, N, iterations, nrep):
+    filename = f"{RESULTS_DIR}adam_N{N}_iter{iterations:05d}_B2_{beta2:.03f}_B1_{beta1:.03f}_A{alpha:.03f}.pkl"
+    with open(filename, "rb") as file:
+        data = pickle.load(file)
+    hyperparameters = data['hyperparameters']
+    assert hyperparameters['alpha'] == alpha
+    assert hyperparameters['beta1'] == beta1
+    assert hyperparameters['beta2'] == beta2
+    adam = dict(hyperparameters=data['hyperparameters'])
+    for subkey in ['ASSIGN', 'ADD_ASSIGN']:
+        adam[subkey] = unpack_adam(data[subkey], nrep)
+    return adam, data['instance'] 
 
 resultdir = "./results_mf/"
 Beta2 = np.array([0.1, 0.3, 0.5, 0.7, 0.8, 0.999, 1.0])
@@ -138,8 +157,30 @@ Alpha = np.array(
     [0.001, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.5, 1.0, 2.0]
 )
 
+def plot_outputs(SuccessProb, ps_max, grad_update, filename_prefix):
+    for i in range(Beta2.shape[0]):
+        for j in range(Beta1.shape[0]):
+            filename = f"{filename_prefix}_beta1_{Beta1[j]:.03f}_beta2_{Beta2[i]:.04f}.png"
+            plt.rcParams.update({"font.size": 10})
+            plt.figure(figsize=(12, 4))
+            plot_success_probability(
+                Alpha,
+                Beta2[i],
+                Beta1[j],
+                Baseline["solution_performance"],
+                SuccessProb[i, j, :, :],
+                iterations,
+                ps_max[i, j],
+            )
+            plt.tight_layout()
+            if save_plot == True:
+                plt.savefig(filename, dpi=500 )
+                plt.close()
+            else:
+                plt.show()
+
 RESULTS_DIR = resultdir + "data/"
-PLOT_DIR = resultdir + "plot/"
+PLOT_DIR = resultdir + "plots/"
 if not os.path.exists(PLOT_DIR):
     os.makedirs(PLOT_DIR)
 
@@ -150,57 +191,37 @@ nrep = 5
 save_plot = True
 
 Baseline = process_baseline(RESULTS_DIR, N, iterations, nrep)
-SuccessProb = np.zeros(
-    (
-        Beta2.shape[0],
-        Beta1.shape[0],
-        Alpha.shape[0],
-        len(Baseline["solution_performance"]),
-    )
-)
-BestObjectVal = np.zeros((Beta2.shape[0], Beta1.shape[0], Alpha.shape[0]))
-SolveTime = np.zeros((Beta2.shape[0], Beta1.shape[0], Alpha.shape[0]))
-
-ps_max = np.full(
-    (Beta2.shape[0], Beta1.shape[0]), np.max(Baseline["solution_performance"])
-)
+str_adam_grad_update = ["ASSIGN", "ADD_ASSIGN"] # ORDER
+str_objective_values = ['relative', 'absolute', 'best', 'optimal']; 
+SuccessProb = np.zeros((len(str_adam_grad_update), Beta2.shape[0], Beta1.shape[0], Alpha.shape[0], len(Baseline["solution_performance"])))
+ObjectiveValues = np.zeros((len(str_adam_grad_update), Beta2.shape[0], Beta1.shape[0], Alpha.shape[0], len(str_objective_values)))
+SolveTime = np.zeros((len(str_adam_grad_update), Beta2.shape[0], Beta1.shape[0], Alpha.shape[0]))
+ps_max = np.full((len(str_adam_grad_update), Beta2.shape[0], Beta1.shape[0]), np.max(Baseline["solution_performance"]))
 
 # Process data
 for i in range(Beta2.shape[0]):
     for j in range(Beta1.shape[0]):
         for k in range(Alpha.shape[0]):
-            adam = process_adam(
-                Alpha[k], Beta1[j], Beta2[i], RESULTS_DIR, N, iterations, nrep
-            )
-            SuccessProb[i, j, k, :] = adam["solution_performance"]
+            adam, instance = process_adam(Alpha[k], Beta1[j], Beta2[i], RESULTS_DIR, N, iterations, nrep)
+            assert instance['batch_size']==Baseline['instance']['batch_size']
+            assert instance['device'] == Baseline['instance']['device']
+            assert instance['iterations'] == Baseline['instance']['iterations']
+            assert instance['instance_name'] == Baseline['instance']['instance_name']
+            assert instance['problem_size'] == Baseline['instance']['problem_size']
+            
+            SuccessProb[0, i, j, k, :] = adam['ASSIGN']["solution_performance"]
+            SuccessProb[1, i, j, k, :] = adam['ADD_ASSIGN']["solution_performance"]
+            tmp_ps_max0 = np.max(SuccessProb[0, i, j, k, :])
+            tmp_ps_max1 = np.max(SuccessProb[1, i, j, k, :])
+            if ps_max[0,i,j] < tmp_ps_max0: ps_max[0,i,j] = tmp_ps_max0
+            if ps_max[1,i,j] < tmp_ps_max1: ps_max[1,i,j] = tmp_ps_max1
 
-            tmp_ps_max = np.max(SuccessProb[i, j, k, :])
-            if ps_max[i, j] < tmp_ps_max:
-                ps_max[i, j] = tmp_ps_max
+            ObjectiveValues[0, i, j, k, :] = adam['ASSIGN']["objective_values"]
+            ObjectiveValues[1, i, j, k, :] = adam['ADD_ASSIGN']["objective_values"]
+            SolveTime[0, i, j, k] = adam['ASSIGN']["solve_time"]
+            SolveTime[1, i, j, k] = adam['ADD_ASSIGN']["solve_time"]
 
-            BestObjectVal[i, j, k] = adam["best_objective_value"]
-            SolveTime[i, j, k] = adam["solve_time"]
 
 # Plot outputs
-for i in range(Beta2.shape[0]):
-    for j in range(Beta1.shape[0]):
-        plt.rcParams.update({"font.size": 10})
-        plt.figure(figsize=(12, 4))
-        plot_success_probability(
-            Alpha,
-            Beta2[i],
-            Beta1[j],
-            Baseline["solution_performance"],
-            SuccessProb[i, j, :, :],
-            iterations,
-            ps_max[i, j],
-        )
-        plt.tight_layout()
-        if save_plot == True:
-            plt.savefig(
-                f"{PLOT_DIR}Ps_N{N}_beta1_{Beta1[j]:.03f}_beta2_{Beta2[i]:.04f}_iter{iterations:06d}.png",
-                dpi=500,
-            )
-            plt.close()
-        else:
-            plt.show()
+plot_outputs(SuccessProb[0,:,:,:,:], ps_max[0,:,:], f"{PLOT_DIR}Ps_AS_N{N}_iter{iterations:06d}")
+plot_outputs(SuccessProb[1,:,:,:,:], ps_max[1,:,:], f"{PLOT_DIR}Ps_PA_N{N}_iter{iterations:06d}")
