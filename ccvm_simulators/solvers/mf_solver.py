@@ -486,7 +486,7 @@ class MFSolver(CCVMSolver):
         evolution_step_size=None,
         evolution_file=None,
     ):
-        """Solves the given problem instance using the MF-CCVM solver with ADAM algorithm
+        """Solves the given problem instance using the MF-CCVM solver with Adam algorithm
         tuned or specified parameters in the parameter key.
 
         Args:
@@ -790,7 +790,7 @@ class MFSolver(CCVMSolver):
                 evolution_file
             )
         elif isinstance(algorithm_parameters, AdamParameters):
-            # Use the MF solver with ADAM algorithm
+            # Use the MF solver with Adam algorithm
             return self._solve_adam(
                 instance,
                 algorithm_parameters.to_dict(),

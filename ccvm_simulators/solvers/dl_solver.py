@@ -458,7 +458,7 @@ class DLSolver(CCVMSolver):
         evolution_step_size=None,
         evolution_file=None,
     ):
-        """Solves the given problem instance using the DL-CCVM solver including ADAM algorithm.
+        """Solves the given problem instance using the DL-CCVM solver including Adam algorithm.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
@@ -595,7 +595,7 @@ class DLSolver(CCVMSolver):
             v_c = None
             v_s = None
 
-        # Perform the solve with ADAM over the specified number of iterations
+        # Perform the solve with Adam over the specified number of iterations
         for i in range(iterations):
             pump_rate = calc_pump_rate(i)
 
@@ -781,7 +781,7 @@ class DLSolver(CCVMSolver):
                 evolution_file
             )
         elif isinstance(algorithm_parameters, AdamParameters):
-            # Use the DL solver with the ADAM algorithm
+            # Use the DL solver with the Adam algorithm
             return self._solve_adam(
                 instance,
                 algorithm_parameters.to_dict(),

@@ -398,7 +398,7 @@ class LangevinSolver(CCVMSolver):
         evolution_step_size=None,
         evolution_file=None,
     ):
-        """Solves the given problem instance using the Langevin solver including ADAM algorithm.
+        """Solves the given problem instance using the Langevin solver including Adam algorithm.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
@@ -507,7 +507,7 @@ class LangevinSolver(CCVMSolver):
         else:
             v_c = None
 
-        # Perform the solve with ADAM over the specified number of iterations
+        # Perform the solve with Adam over the specified number of iterations
         for i in range(iterations):
             # Calculate gradient
             c_grads = self.calculate_grads(c)
@@ -642,7 +642,7 @@ class LangevinSolver(CCVMSolver):
             # Use the original Langevin solver
             return self._solve(instance, post_processor, evolution_step_size, evolution_file)
         elif isinstance(algorithm_parameters, AdamParameters):
-            # Use the Langevin solver with the ADAM algorithm
+            # Use the Langevin solver with the Adam algorithm
             return self._solve_adam(instance, algorithm_parameters.to_dict(), post_processor, evolution_step_size, evolution_file)
         else:
             raise ValueError(f"Solver option type {type(algorithm_parameters)} is not supported.")
