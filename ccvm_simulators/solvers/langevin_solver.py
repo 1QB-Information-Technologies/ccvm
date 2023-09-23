@@ -1,4 +1,5 @@
 from ccvm_simulators.solvers import CCVMSolver
+from ccvm_simulators.solvers.algorithms import AdamParameters
 from ccvm_simulators.solution import Solution
 from ccvm_simulators.post_processor.factory import PostProcessorFactory
 import torch
@@ -97,7 +98,7 @@ class LangevinSolver(CCVMSolver):
 
     def _calculate_drift_boxqp(self, c, S=1):
         """We treat the SDE that simulates the CIM of NTT as drift
-        calculation. 
+        calculation.
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
@@ -251,7 +252,7 @@ class LangevinSolver(CCVMSolver):
         self.v_vector = instance.v_vector
 
         # Get solver setup variables
-        S = self.S 
+        S = self.S
         batch_size = self.batch_size
         device = self.device
 
@@ -388,7 +389,7 @@ class LangevinSolver(CCVMSolver):
 
         return solution
 
-        
+
     def _solve_adam(
         self,
         instance,
@@ -401,7 +402,7 @@ class LangevinSolver(CCVMSolver):
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            hyperparameters (dict): Hyperparameters for adam algorithm. 
+            hyperparameters (dict): Hyperparameters for adam algorithm.
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
             evolution_step_size (int): If set, the c/s values will be sampled once
@@ -431,7 +432,7 @@ class LangevinSolver(CCVMSolver):
         self.v_vector = instance.v_vector
 
         # Get solver setup variables
-        S = self.S  
+        S = self.S
         batch_size = self.batch_size
         device = self.device
 
@@ -497,7 +498,7 @@ class LangevinSolver(CCVMSolver):
         beta1 = hyperparameters["beta1"]
         beta2 = hyperparameters["beta2"]
         epsilon = 1e-8
-        
+
         # Initialize first moment vector
         m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         # Initialize second moment conditionally
@@ -513,20 +514,20 @@ class LangevinSolver(CCVMSolver):
 
             # Update biased first moment estimate
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
-            
+
             # Compute bias correction in 1st moment
             beta1i = (1.0 - beta1 ** (i + 1))
             mhat_c = m_c / beta1i
-            
+
             # Conditional second moment estimation
             if not beta2==1.0:
                 # Update biased 2nd moment estimate
                 v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2)
-                
+
                 # Compute bias correction in 2nd moment
                 beta2i = (1.0 - beta2 ** (i + 1))
                 vhat_c = v_c / beta2i
-                
+
                 # Compute bias corrected grad using 1st and 2nd moments
                 # in the form of element-wise division
                 c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
@@ -605,22 +606,19 @@ class LangevinSolver(CCVMSolver):
             solution.evolution_file = evolution_file
 
         return solution
-    
-    
+
     def __call__(
         self,
         instance,
-        solve_type=None,
         post_processor=None,
         evolution_step_size=None,
         evolution_file=None,
-        hyperparameters=None,   
+        algorithm_parameters=None,
     ):
         """Solves the given problem instance by choosing one of the available Langevin solvers.
-        
+
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            solve_type (str): Flag to choose one of the available solve methods
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
             evolution_step_size (int): If set, the c/s values will be sampled once
@@ -632,14 +630,19 @@ class LangevinSolver(CCVMSolver):
                 Only revelant when evolution_step_size is set.
                 If a file already exists with the same name, it will be overwritten.
                 Defaults to None, which generates a filename based on the problem instance name.
-            adam_hyperparam (dict): Hyperparameters for adam algorithm. Defaults to None.
+            algorithm_parameters (None, AdamParameters): Specify for the solver to use a specialized algorithm by passing in
+                an instance of the algorithm's parameters class. Options include: AdamParameters.
+                Defaults to None, which uses the original Langevin solver.
 
         Returns:
             solution (Solution): The solution to the problem instance.
-        
+
         """
-        if solve_type in ["Adam", "adam", "ADAM"]:
-            return self._solve_adam(instance, hyperparameters, post_processor, evolution_step_size, evolution_file)
+        if algorithm_parameters is None:
+            # Use the original Langevin solver
+            return self._solve(instance, post_processor, evolution_step_size, evolution_file)
+        elif isinstance(algorithm_parameters, AdamParameters):
+            # Use the Langevin solver with the ADAM algorithm
+            return self._solve_adam(instance, algorithm_parameters.to_dict(), post_processor, evolution_step_size, evolution_file)
         else:
-            return self._solve(instance, post_processor, evolution_step_size, evolution_file) 
- 
+            raise ValueError(f"Solver option type {type(algorithm_parameters)} is not supported.")
