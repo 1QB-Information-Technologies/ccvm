@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - LangevinSolver has been added to the package. This solver is a stochastic solver based on the Langevin equation.
-- Updated all solvers with an implementation of the ADAM algorithm. This algorithm can be invoked by calling the solver with the `solve_type` keyword set to `ADAM` and the `hyperparameters` keyword set to a dictionary of hyperparameter names and values.
+- Introduced `solve_type` control keyword when calling the solver objects. If it is deliberately set to 'Adam' then the ADAM algorithm method will be executed with relevant hyperparameters. Otherwise, its default value (i.e. solve_type=None) refers to the call for the original solve method. The Adam method consist of three hyperparameters in which beta1 and beta2 are exponential decay rates for the moment estimates and
+alpha is the step size. Please refer to [the paper](https://doi.org/10.48550/arXiv.1412.6980) for more information about Adam algorithm and its hyperparameters.
 
 ### Changed
 - Updated internal data handling that have improved performance and reduced memory usage.
