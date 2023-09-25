@@ -389,7 +389,6 @@ class LangevinSolver(CCVMSolver):
 
         return solution
 
-
     def _solve_adam(
         self,
         instance,
@@ -498,23 +497,24 @@ class LangevinSolver(CCVMSolver):
         beta1 = hyperparameters["beta1"]
         beta2 = hyperparameters["beta2"]
         epsilon = 1e-8
-        
+
         # Choose desired update method for
-        if hyperparameters['which_adam']=='ASSIGN':
-            
-            update_grads_with_moment2 = lambda grads, mhat, vhat:\
-            alpha * torch.div(mhat, torch.sqrt(vhat) + epsilon)
-            
+        if hyperparameters["which_adam"] == "ASSIGN":
+            update_grads_with_moment2 = lambda grads, mhat, vhat: alpha * torch.div(
+                mhat, torch.sqrt(vhat) + epsilon
+            )
+
             update_grads_without_moment2 = lambda grads, mhat: alpha * mhat_c
-            
-        elif hyperparameters['which_adam']=='ADD_ASSIGN':
-            
-            update_grads_with_moment2 = lambda grads, mhat, vhat:\
-            grads + alpha * torch.div(mhat, torch.sqrt(vhat) + epsilon)
-                
+
+        elif hyperparameters["which_adam"] == "ADD_ASSIGN":
+            update_grads_with_moment2 = (
+                lambda grads, mhat, vhat: grads
+                + alpha * torch.div(mhat, torch.sqrt(vhat) + epsilon)
+            )
+
             update_grads_without_moment2 = lambda grads, mhat: grads + alpha * mhat_c
-            
-        else: 
+
+        else:
             raise ValueError(
                 f"Invalid choice: ({hyperparameters['which_adam']}) must match."
             )
@@ -552,15 +552,15 @@ class LangevinSolver(CCVMSolver):
 
                 # Compute bias corrected grad using 1st and 2nd moments
                 # in the form of element-wise division
-                #===============================================================
+                # ===============================================================
                 # c_grads = alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
-                #===============================================================
+                # ===============================================================
                 c_grads = update_grads_with_moment2(c_grads, mhat_c, vhat_c)
             else:
                 # Compute bias corrected grad only with 1st moment
-                #===============================================================
+                # ===============================================================
                 # c_grads = alpha * mhat_c
-                #===============================================================
+                # ===============================================================
                 c_grads = update_grads_without_moment2(c_grads, mhat_c)
 
             wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(

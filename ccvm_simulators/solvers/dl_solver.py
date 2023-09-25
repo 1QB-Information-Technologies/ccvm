@@ -579,40 +579,38 @@ class DLSolver(CCVMSolver):
         beta1 = hyperparameters["beta1"]
         beta2 = hyperparameters["beta2"]
         epsilon = 1e-8
-         
-        # Compute bias corrected grads using 1st and 2nd moments 
+
+        # Compute bias corrected grads using 1st and 2nd moments
         # with element-wise division
-        def update_grads_with_moment2_assign(
-                gradc, grads, mhatc, vhatc, mhats, vhats
-        ):
+        def update_grads_with_moment2_assign(gradc, grads, mhatc, vhatc, mhats, vhats):
             return (
                 alpha * torch.div(mhatc, torch.sqrt(vhatc) + epsilon),
-                alpha * torch.div(mhats, torch.sqrt(vhats) + epsilon)
+                alpha * torch.div(mhats, torch.sqrt(vhats) + epsilon),
             )
-        
+
         def update_grads_with_moment2_addassign(
-                gradc, grads, mhatc, vhatc, mhats, vhats
+            gradc, grads, mhatc, vhatc, mhats, vhats
         ):
             return (
                 gradc + alpha * torch.div(mhatc, torch.sqrt(vhatc) + epsilon),
-                grads + alpha * torch.div(mhats, torch.sqrt(vhats) + epsilon)
+                grads + alpha * torch.div(mhats, torch.sqrt(vhats) + epsilon),
             )
-        
+
         # Compute bias corrected grads using only 1st moment
         def update_grads_without_moment2_assign(gradc, grads, mhatc, mhats):
             return (alpha * mhatc, alpha * mhats)
+
         def update_grads_without_moment2_addassign(gradc, grads, mhatc, mhats):
             return (gradc + alpha * mhatc, grads + alpha * mhats)
-        
-        # Choose desired update method. 
-        if hyperparameters['which_adam']=='ASSIGN':    
+
+        # Choose desired update method.
+        if hyperparameters["which_adam"] == "ASSIGN":
             update_grads_with_moment2 = update_grads_with_moment2_assign
             update_grads_without_moment2 = update_grads_without_moment2_assign
-        elif hyperparameters['which_adam']=='ADD_ASSIGN':
+        elif hyperparameters["which_adam"] == "ADD_ASSIGN":
             update_grads_with_moment2 = update_grads_with_moment2_addassign
-            update_grads_without_moment2 =\
-            update_grads_without_moment2_addassign
-        else: 
+            update_grads_without_moment2 = update_grads_without_moment2_addassign
+        else:
             raise ValueError(
                 f"Invalid choice: ({hyperparameters['which_adam']}) must match."
             )
@@ -662,18 +660,18 @@ class DLSolver(CCVMSolver):
                 vhat_s = v_s / beta2i
 
                 # Compute bias corrected grads
-                c_grads, s_grads =\
-                update_grads_with_moment2(
+                c_grads, s_grads = update_grads_with_moment2(
                     c_grads, s_grads, mhat_c, vhat_c, mhat_s, vhat_s
                 )
             else:
                 # Compute bias corrected grads only with 1st moment
-                #===============================================================
+                # ===============================================================
                 # c_grads = alpha * mhat_c
                 # s_grads = alpha * mhat_s
-                #===============================================================
-                c_grads, s_grads =\
-                update_grads_without_moment2(c_grads, s_grads, mhat_c, mhat_s)
+                # ===============================================================
+                c_grads, s_grads = update_grads_without_moment2(
+                    c_grads, s_grads, mhat_c, mhat_s
+                )
 
             # Calculate drift and diffusion terms of dl-ccvm
             c_pow = torch.pow(c, 2)
@@ -773,7 +771,6 @@ class DLSolver(CCVMSolver):
             solution.evolution_file = evolution_file
 
         return solution
-
 
     def __call__(
         self,

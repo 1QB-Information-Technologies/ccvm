@@ -36,7 +36,7 @@ if __name__ == "__main__":
                 beta1=0.9,
                 beta2=0.999,
                 alpha=0.2,
-                which_adam="ASSIGN", # Temporary flag for selecting desired gradient update either "ASSIGN" or "ADD_ASSIGN" in the Adam method.
+                which_adam="ASSIGN",  # Temporary flag for selecting desired gradient update either "ASSIGN" or "ADD_ASSIGN" in the Adam method.
             ),
         )
 

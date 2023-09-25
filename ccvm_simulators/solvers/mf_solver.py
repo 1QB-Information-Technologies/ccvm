@@ -610,31 +610,30 @@ class MFSolver(CCVMSolver):
         beta1 = hyperparameters["beta1"]
         beta2 = hyperparameters["beta2"]
         epsilon = 1e-8
-        
-        # Compute bias corrected grads using 1st and 2nd moments 
+
+        # Compute bias corrected grads using 1st and 2nd moments
         # with element-wise division
         def update_grads_with_moment2_assign(grads, mhat, vhat):
             return alpha * torch.div(mhat, torch.sqrt(vhat) + epsilon)
-        
+
         def update_grads_with_moment2_addassign(grads, mhat, vhat):
             return grads + alpha * torch.div(mhat, torch.sqrt(vhat) + epsilon)
-        
+
         # Compute bias corrected grads using only 1st moment
         def update_grads_without_moment2_assign(grads, mhat):
             return alpha * mhat
-                
+
         def update_grads_without_moment2_addassign(grads, mhat):
             return grads + alpha * mhat
-        
-        # Choose desired update method. 
-        if hyperparameters['which_adam']=='ASSIGN':    
+
+        # Choose desired update method.
+        if hyperparameters["which_adam"] == "ASSIGN":
             update_grads_with_moment2 = update_grads_with_moment2_assign
             update_grads_without_moment2 = update_grads_without_moment2_assign
-        elif hyperparameters['which_adam']=='ADD_ASSIGN':
+        elif hyperparameters["which_adam"] == "ADD_ASSIGN":
             update_grads_with_moment2 = update_grads_with_moment2_addassign
-            update_grads_without_moment2 =\
-            update_grads_without_moment2_addassign
-        else: 
+            update_grads_without_moment2 = update_grads_without_moment2_addassign
+        else:
             raise ValueError(
                 f"Invalid choice: ({hyperparameters['which_adam']}) must match."
             )
