@@ -111,7 +111,6 @@ class MFSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-
     def _calculate_drift_boxqp(
         self,
         mu,
@@ -124,7 +123,7 @@ class MFSolver(CCVMSolver):
         fs,
     ):
         """We treat the SDE that simulates the CIM of NTT as drift
-        calculation. 
+        calculation.
 
         Args:
             mu (torch.Tensor): Mean-field amplitudes
@@ -143,16 +142,18 @@ class MFSolver(CCVMSolver):
 
         mu_term1 = (-(1 + j) + pump - g**2 * mu_pow) * mu
         mu_term2_1 = (
-            -(1 / 4) * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, self.q_matrix)) / S 
+            -(1 / 4)
+            * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, self.q_matrix))
+            / S
         )
-        mu_term2_2 = -self.v_vector / S / 2  
+        mu_term2_2 = -self.v_vector / S / 2
 
         sigma_term1 = 2 * (-(1 + j) + pump - 3 * g**2 * mu_pow) * sigma
         sigma_term2 = -2 * j * (sigma - 0.5).pow(2)
         sigma_term3 = (1 + j) + 2 * g**2 * mu_pow
 
         drift_mu = mu_term1 + fs * (mu_term2_1 + mu_term2_2)
-        drift_sigma = sigma_term1 + sigma_term2 + sigma_term3 
+        drift_sigma = sigma_term1 + sigma_term2 + sigma_term3
 
         return drift_mu, drift_sigma
 
@@ -267,7 +268,7 @@ class MFSolver(CCVMSolver):
         evolution_step_size=None,
         evolution_file=None,
     ):
-        """Solves the given problem instance using the original MF-CCVM solver with 
+        """Solves the given problem instance using the original MF-CCVM solver with
         tuned or specified parameters in the parameter key.
 
         Args:
@@ -301,8 +302,8 @@ class MFSolver(CCVMSolver):
 
         # Get problem from problem instance
         problem_size = instance.problem_size
-        self.q_matrix = instance.q_matrix 
-        self.v_vector = instance.v_vector 
+        self.q_matrix = instance.q_matrix
+        self.v_vector = instance.v_vector
 
         # Get solver setup variables
         batch_size = self.batch_size
@@ -399,11 +400,11 @@ class MFSolver(CCVMSolver):
                 S,
                 feedback_scale,
             )
-            
+
             # mu_term3-> mu_diffusion
-            mu_diffusion = np.sqrt(j_i) * (sigma - 0.5) * wiener_increment 
-            
-            mu += dt * (drift_mu + mu_diffusion) 
+            mu_diffusion = np.sqrt(j_i) * (sigma - 0.5) * wiener_increment
+
+            mu += dt * (drift_mu + mu_diffusion)
             sigma += dt * drift_sigma
 
             # If evolution_step_size is specified, save the values if this iteration
@@ -428,7 +429,10 @@ class MFSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                self.change_variables(mu_tilde, S), self.q_matrix, self.v_vector, device=device 
+                self.change_variables(mu_tilde, S),
+                self.q_matrix,
+                self.v_vector,
+                device=device,
             )
             pp_time = post_processor_object.pp_time
         else:
@@ -490,7 +494,7 @@ class MFSolver(CCVMSolver):
 
         Args:
             instance (boxqp.boxqp.ProblemInstance): The problem to solve.
-            hyperparameters (dict): Hyperparameters for adam algorithm. 
+            hyperparameters (dict): Hyperparameters for adam algorithm.
             post_processor (str): The name of the post processor to use to process
                 the results of the solver. None if no post processing is desired.
             g (float, optional): The nonlinearity coefficient. Defaults to 0.01
@@ -506,7 +510,6 @@ class MFSolver(CCVMSolver):
                 when evolution_step_size is set. If a file already exists with the same name,
                 it will be overwritten. Defaults to None, which generates a filename based on
                 the problem instance name.
-            adam_hyperparam (dict): Hyperparameters for adam algorithm. Defaults to None.
 
         Returns:
             solution (Solution): The solution to the problem instance.
@@ -607,14 +610,43 @@ class MFSolver(CCVMSolver):
         beta1 = hyperparameters["beta1"]
         beta2 = hyperparameters["beta2"]
         epsilon = 1e-8
-        
+
+        # Compute bias corrected grads using 1st and 2nd moments
+        # with element-wise division
+        def update_grads_with_moment2_assign(grads, mhat, vhat):
+            return alpha * torch.div(mhat, torch.sqrt(vhat) + epsilon)
+
+        def update_grads_with_moment2_addassign(grads, mhat, vhat):
+            return grads + alpha * torch.div(mhat, torch.sqrt(vhat) + epsilon)
+
+        # Compute bias corrected grads using only 1st moment
+        def update_grads_without_moment2_assign(grads, mhat):
+            return alpha * mhat
+
+        def update_grads_without_moment2_addassign(grads, mhat):
+            return grads + alpha * mhat
+
+        # Choose desired update method.
+        if hyperparameters["which_adam"] == "ASSIGN":
+            update_grads_with_moment2 = update_grads_with_moment2_assign
+            update_grads_without_moment2 = update_grads_without_moment2_assign
+        elif hyperparameters["which_adam"] == "ADD_ASSIGN":
+            update_grads_with_moment2 = update_grads_with_moment2_addassign
+            update_grads_without_moment2 = update_grads_without_moment2_addassign
+        else:
+            raise ValueError(
+                f"Invalid choice: ({hyperparameters['which_adam']}) must match."
+            )
+
         # Initialize first moment vector
         m_mu = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         # Initialize second moment vector conditionally
-        if not beta2==1.0:
-            v_mu = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        if not beta2 == 1.0:
+            v_mu = torch.zeros(
+                (batch_size, problem_size), dtype=torch.float, device=device
+            )
         else:
-            v_mu = None  
+            v_mu = None
 
         # Perform the solve over the specified number of iterations
         for i in range(iterations):
@@ -636,27 +668,27 @@ class MFSolver(CCVMSolver):
 
             # Update biased first moment estimate
             m_mu = beta1 * m_mu + (1.0 - beta1) * grads_mu
-            
+
             # Compute bias correction in 1st moment
-            beta1i = (1.0 - beta1 ** (i + 1))
+            beta1i = 1.0 - beta1 ** (i + 1)
             mhat_mu = m_mu / beta1i
-            
+
             # Conditional second moment estimation
-            if not beta2==1.0:
+            if not beta2 == 1.0:
                 # Update biased 2nd moment estimate
                 v_mu = beta2 * v_mu + (1.0 - beta2) * torch.pow(grads_mu, 2)
-                
+
                 # Compute bias correction in 2nd moment
-                beta2i = (1.0 - beta2 ** (i + 1))
+                beta2i = 1.0 - beta2 ** (i + 1)
                 vhat_mu = v_mu / beta2i
-                
+
                 # Compute bias corrected grad using 1st and 2nd moments
                 # in the form of element-wise division
-                grads_mu -= alpha * torch.div(mhat_mu, torch.sqrt(vhat_mu) + epsilon)
+                grads_mu = update_grads_with_moment2(grads_mu, mhat_mu, vhat_mu)
             else:
                 # Compute bias corrected grad only with 1st moment
-                grads_mu -= alpha * mhat_mu
-                
+                grads_mu = update_grads_without_moment2(grads_mu, mhat_mu)
+
             # Calculate drift and diffusion terms of mf-ccvm
             mu_pow = torch.pow(mu, 2)
             mu_drift = (-(1 + j_i) + pump_i - g**2 * mu_pow) * mu
@@ -739,7 +771,7 @@ class MFSolver(CCVMSolver):
             solution.evolution_file = evolution_file
 
         return solution
-    
+
     def __call__(
         self,
         instance,
@@ -751,7 +783,7 @@ class MFSolver(CCVMSolver):
         evolution_file=None,
         hyperparameters=None,
     ):
-        """Solves the given problem instance by choosing one of the available 
+        """Solves the given problem instance by choosing one of the available
         MF-CCVM solvers tuned or specified parameters in the parameter key.
 
         Args:
@@ -772,28 +804,27 @@ class MFSolver(CCVMSolver):
                 when evolution_step_size is set. If a file already exists with the same name,
                 it will be overwritten. Defaults to None, which generates a filename based on
                 the problem instance name.
-            hyperparameters (dict): Hyperparameters for adam algorithm. 
+            hyperparameters (dict): Hyperparameters for adam algorithm.
 
         Returns:
             solution (Solution): The solution to the problem instance.
         """
         if solve_type in ["Adam", "adam", "ADAM"]:
             return self._solve_adam(
-                instance, 
-                hyperparameters, 
-                post_processor, 
-                g,
-                pump_rate_flag, 
-                evolution_step_size, 
-                evolution_file
-            )
-        else:
-            return self._solve(
-                instance, 
+                instance,
+                hyperparameters,
                 post_processor,
                 g,
                 pump_rate_flag,
-                evolution_step_size, 
-                evolution_file
-            ) 
-        
+                evolution_step_size,
+                evolution_file,
+            )
+        else:
+            return self._solve(
+                instance,
+                post_processor,
+                g,
+                pump_rate_flag,
+                evolution_step_size,
+                evolution_file,
+            )

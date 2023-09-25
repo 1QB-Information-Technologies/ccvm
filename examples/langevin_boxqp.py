@@ -32,12 +32,16 @@ if __name__ == "__main__":
         # Scale the problem's coefficients for more stable optimization
         boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 
-        # Solve the problem 
+        # Solve the problem
         solution = solver(
             instance=boxqp_instance,
-            solve_type="Adam", # solve_type=None refers to default (original) solver
+            solve_type="Adam",  # solve_type=None refers to default (original) solver
             post_processor=None,
-            hyperparameters=dict(beta1=0.9, beta2=0.999, alpha=0.001),
+            hyperparameters=dict(
+                beta1=0.9, beta2=0.999, alpha=0.2,
+                which_adam="ASSIGN",  # Temporary flag for desired gradient update
+                                      # either "ASSIGN" or "ADD_ASSIGN" in the Adam method.
+            ),
         )
 
         print(solution)
