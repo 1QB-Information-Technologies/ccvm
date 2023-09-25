@@ -665,10 +665,6 @@ class DLSolver(CCVMSolver):
                 )
             else:
                 # Compute bias corrected grads only with 1st moment
-                # ===============================================================
-                # c_grads = alpha * mhat_c
-                # s_grads = alpha * mhat_s
-                # ===============================================================
                 c_grads, s_grads = update_grads_without_moment2(
                     c_grads, s_grads, mhat_c, mhat_s
                 )
