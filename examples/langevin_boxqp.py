@@ -38,10 +38,9 @@ if __name__ == "__main__":
             solve_type="Adam",  # solve_type=None refers to default (original) solver
             post_processor=None,
             hyperparameters=dict(
-                beta1=0.9,
-                beta2=0.999,
-                alpha=0.2,
-                which_adam="ASSIGN",  # Temporary flag for selecting desired gradient update either "ASSIGN" or "ADD_ASSIGN" in the Adam method.
+                beta1=0.9, beta2=0.999, alpha=0.2,
+                which_adam="ASSIGN",  # Temporary flag for desired gradient update
+                                      # either "ASSIGN" or "ADD_ASSIGN" in the Adam method.
             ),
         )
 
