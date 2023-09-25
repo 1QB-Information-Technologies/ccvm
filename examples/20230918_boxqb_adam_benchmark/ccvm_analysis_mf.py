@@ -157,7 +157,7 @@ Alpha = np.array(
     [0.001, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.5, 1.0, 2.0]
 )
 
-def plot_outputs(SuccessProb, ps_max, grad_update, filename_prefix):
+def plot_outputs(SuccessProb, ps_max, filename_prefix):
     for i in range(Beta2.shape[0]):
         for j in range(Beta1.shape[0]):
             filename = f"{filename_prefix}_beta1_{Beta1[j]:.03f}_beta2_{Beta2[i]:.04f}.png"
@@ -198,7 +198,7 @@ ObjectiveValues = np.zeros((len(str_adam_grad_update), Beta2.shape[0], Beta1.sha
 SolveTime = np.zeros((len(str_adam_grad_update), Beta2.shape[0], Beta1.shape[0], Alpha.shape[0]))
 ps_max = np.full((len(str_adam_grad_update), Beta2.shape[0], Beta1.shape[0]), np.max(Baseline["solution_performance"]))
 
-# Process data
+# Process data for adam method using grads update with '=' and '+='
 for i in range(Beta2.shape[0]):
     for j in range(Beta1.shape[0]):
         for k in range(Alpha.shape[0]):
