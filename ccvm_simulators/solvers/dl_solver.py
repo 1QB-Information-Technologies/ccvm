@@ -93,9 +93,9 @@ class DLSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-
     def _calculate_drift_boxqp(self, c, s, pump, rate, S=1):
         """We treat the SDE that simulates the CIM of NTT as drift
+        calculation.
         calculation.
 
         Args:
@@ -447,7 +447,6 @@ class DLSolver(CCVMSolver):
 
         return solution
 
-
     def _solve_adam(
         self,
         instance,
@@ -458,11 +457,11 @@ class DLSolver(CCVMSolver):
         evolution_step_size=None,
         evolution_file=None,
     ):
-        """Solves the given problem instance using the DL-CCVM solver including Adam algorithm.
+        """Solves the given problem instance using the DL-CCVM solver with Adam algorithm.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            hyperparameters (dict): Hyperparameters for adam algorithm.
+            hyperparameters (dict): Hyperparameters for Adam algorithm.
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
@@ -477,7 +476,6 @@ class DLSolver(CCVMSolver):
                 Only revelant when evolution_step_size is set.
                 If a file already exists with the same name, it will be overwritten.
                 Defaults to None, which generates a filename based on the problem instance name.
-            adam_hyperparam (dict): Hyperparameters for adam algorithm. Defaults to the paper.
 
         Returns:
             solution (Solution): The solution to the problem instance.
@@ -584,13 +582,52 @@ class DLSolver(CCVMSolver):
         beta2 = hyperparameters["beta2"]
         epsilon = 1e-8
 
+        # Compute bias corrected grads using 1st and 2nd moments
+        # with element-wise division
+        def update_grads_with_moment2_assign(gradc, grads, mhatc, vhatc, mhats, vhats):
+            return (
+                alpha * torch.div(mhatc, torch.sqrt(vhatc) + epsilon),
+                alpha * torch.div(mhats, torch.sqrt(vhats) + epsilon),
+            )
+
+        def update_grads_with_moment2_addassign(
+            gradc, grads, mhatc, vhatc, mhats, vhats
+        ):
+            return (
+                gradc + alpha * torch.div(mhatc, torch.sqrt(vhatc) + epsilon),
+                grads + alpha * torch.div(mhats, torch.sqrt(vhats) + epsilon),
+            )
+
+        # Compute bias corrected grads using only 1st moment
+        def update_grads_without_moment2_assign(gradc, grads, mhatc, mhats):
+            return (alpha * mhatc, alpha * mhats)
+
+        def update_grads_without_moment2_addassign(gradc, grads, mhatc, mhats):
+            return (gradc + alpha * mhatc, grads + alpha * mhats)
+
+        # Choose desired update method.
+        if hyperparameters["which_adam"] == "ASSIGN":
+            update_grads_with_moment2 = update_grads_with_moment2_assign
+            update_grads_without_moment2 = update_grads_without_moment2_assign
+        elif hyperparameters["which_adam"] == "ADD_ASSIGN":
+            update_grads_with_moment2 = update_grads_with_moment2_addassign
+            update_grads_without_moment2 = update_grads_without_moment2_addassign
+        else:
+            raise ValueError(
+                f"Invalid choice: ({hyperparameters['which_adam']}) must match."
+            )
+
         # Initialize first moment vectors for c and s
         m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         m_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
         # Initialize second moment vectors conditionally
-        if not beta2==1.0:
-            v_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
-            v_s = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
+        if not beta2 == 1.0:
+            v_c = torch.zeros(
+                (batch_size, problem_size), dtype=torch.float, device=device
+            )
+            v_s = torch.zeros(
+                (batch_size, problem_size), dtype=torch.float, device=device
+            )
         else:
             v_c = None
             v_s = None
@@ -609,7 +646,7 @@ class DLSolver(CCVMSolver):
             m_s = beta1 * m_s + (1.0 - beta1) * s_grads
 
             # Compute bias correction in 1st moment
-            beta1i = (1.0 - beta1 ** (i + 1))
+            beta1i = 1.0 - beta1 ** (i + 1)
             mhat_c = m_c / beta1i
             mhat_s = m_s / beta1i
 
@@ -619,20 +656,21 @@ class DLSolver(CCVMSolver):
                 v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2)
                 v_s = beta2 * v_s + (1.0 - beta2) * torch.pow(s_grads, 2)
 
+
                 # Compute bias correction in 2nd moment
-                beta2i = (1.0 - beta2 ** (i + 1))
+                beta2i = 1.0 - beta2 ** (i + 1)
                 vhat_c = v_c / beta2i
                 vhat_s = v_s / beta2i
 
-                # Compute bias corrected grads using 1st and 2nd moments
-                # in the form of element-wise division
-                c_grads -= alpha * torch.div(mhat_c, torch.sqrt(vhat_c) + epsilon)
-                s_grads -= alpha * torch.div(mhat_s, torch.sqrt(vhat_s) + epsilon)
-
+                # Compute bias corrected grads
+                c_grads, s_grads = update_grads_with_moment2(
+                    c_grads, s_grads, mhat_c, vhat_c, mhat_s, vhat_s
+                )
             else:
                 # Compute bias corrected grads only with 1st moment
-                c_grads -= alpha * mhat_c
-                s_grads -= alpha * mhat_s
+                c_grads, s_grads = update_grads_without_moment2(
+                    c_grads, s_grads, mhat_c, mhat_s
+                )
 
             # Calculate drift and diffusion terms of dl-ccvm
             c_pow = torch.pow(c, 2)
@@ -732,7 +770,6 @@ class DLSolver(CCVMSolver):
             solution.evolution_file = evolution_file
 
         return solution
-
 
     def __call__(
             self,

@@ -40,7 +40,7 @@ if __name__ == "__main__":
         boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 
         # Solve the problem
-        solution = solver.solve(
+        solution = solver(
             instance=boxqp_instance,
             post_processor=None,
         )
