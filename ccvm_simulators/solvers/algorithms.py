@@ -1,6 +1,6 @@
 class AdamParameters:
   """Validates and stores the parameters required for the Adam algorithm."""
-  def __init__(self, alpha=0.1, beta1=0.9, beta2=0.999):
+  def __init__(self, alpha=0.1, beta1=0.9, beta2=0.999, add_assign=True):
     """
     Initializes the AdamParameters object with the given hyperparameters.
     Please refer to [the paper](https://doi.org/10.48550/arXiv.1412.6980)
@@ -12,6 +12,9 @@ class AdamParameters:
           must be between 0 and 1. Defaults to 0.9.
         beta2 (float, optional): Exponential decay rate for the second moment estimates,
           must be between 0 and 1. Defaults to 0.999.
+        add_assign (bool, optional): Whether to add the original gradients to the value
+          when performing bias correction. Defaults to True. This parameter is experimental
+          and may be removed in the future.
     """
     if alpha < 0.0:
         raise ValueError(f"AdamAlgorithm: Invalid `alpha` value: {alpha}")
@@ -28,10 +31,13 @@ class AdamParameters:
     else:
         self.beta2 = beta2
 
+    self.add_assign = bool(add_assign)
+
   def to_dict(self):
     """Returns the parameters as a dictionary."""
     return {
         "alpha": self.alpha,
         "beta1": self.beta1,
         "beta2": self.beta2,
+        "add_assign": self.add_assign,
     }

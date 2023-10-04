@@ -606,16 +606,12 @@ class DLSolver(CCVMSolver):
             return (gradc + alpha * mhatc, grads + alpha * mhats)
 
         # Choose desired update method.
-        if hyperparameters["which_adam"] == "ASSIGN":
-            update_grads_with_moment2 = update_grads_with_moment2_assign
-            update_grads_without_moment2 = update_grads_without_moment2_assign
-        elif hyperparameters["which_adam"] == "ADD_ASSIGN":
+        if hyperparameters["add_assign"]:
             update_grads_with_moment2 = update_grads_with_moment2_addassign
             update_grads_without_moment2 = update_grads_without_moment2_addassign
         else:
-            raise ValueError(
-                f"Invalid choice: ({hyperparameters['which_adam']}) must match."
-            )
+            update_grads_with_moment2 = update_grads_with_moment2_assign
+            update_grads_without_moment2 = update_grads_without_moment2_assign
 
         # Initialize first moment vectors for c and s
         m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)

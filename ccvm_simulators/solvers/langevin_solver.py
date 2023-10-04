@@ -499,26 +499,20 @@ class LangevinSolver(CCVMSolver):
         beta2 = hyperparameters["beta2"]
         epsilon = 1e-8
 
-        # Choose desired update method for
-        if hyperparameters["which_adam"] == "ASSIGN":
-            update_grads_with_moment2 = lambda grads, mhat, vhat: alpha * torch.div(
-                mhat, torch.sqrt(vhat) + epsilon
-            )
-
-            update_grads_without_moment2 = lambda grads, mhat: alpha * mhat_c
-
-        elif hyperparameters["which_adam"] == "ADD_ASSIGN":
+        # Choose desired update method.
+        if hyperparameters["add_assign"]:
             update_grads_with_moment2 = (
                 lambda grads, mhat, vhat: grads
                 + alpha * torch.div(mhat, torch.sqrt(vhat) + epsilon)
             )
 
             update_grads_without_moment2 = lambda grads, mhat: grads + alpha * mhat_c
-
         else:
-            raise ValueError(
-                f"Invalid choice: ({hyperparameters['which_adam']}) must match."
+            update_grads_with_moment2 = lambda grads, mhat, vhat: alpha * torch.div(
+                mhat, torch.sqrt(vhat) + epsilon
             )
+
+            update_grads_without_moment2 = lambda grads, mhat: alpha * mhat_c
 
         # Initialize first moment vector
         m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
