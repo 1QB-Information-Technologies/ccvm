@@ -96,7 +96,6 @@ class DLSolver(CCVMSolver):
     def _calculate_drift_boxqp(self, c, s, pump, rate, S=1):
         """We treat the SDE that simulates the CIM of NTT as drift
         calculation.
-        calculation.
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
