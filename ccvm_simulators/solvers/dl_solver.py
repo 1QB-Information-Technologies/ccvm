@@ -753,6 +753,9 @@ class DLSolver(CCVMSolver):
             solve_time=solve_time,
             pp_time=pp_time,
             optimal_value=instance.optimal_sol,
+            best_value=instance.best_sol,
+            num_frac_values=instance.num_frac_values,
+            optional_info=instance.optional_info,
             variables={
                 "problem_variables": problem_variables,
                 "s": s,
