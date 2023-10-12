@@ -743,7 +743,8 @@ class DLSolver(CCVMSolver):
                     s_sample=s_sample[batch_index],
                     evolution_file_object=evolution_file_obj,
                 )
-
+        
+        #TODO: Move solution object to the DLSolver.__call__() method
         solution = Solution(
             problem_size=problem_size,
             batch_size=batch_size,
@@ -804,7 +805,8 @@ class DLSolver(CCVMSolver):
         Returns:
             solution (Solution): The solution to the problem instance.
         """
-
+        #TODO: Get solution object here from the DLSolver._solve() or _solve_adam()
+        
         if algorithm_parameters is None:
             # Use the original DL solver
             return self._solve(
