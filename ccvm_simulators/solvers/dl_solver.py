@@ -1,4 +1,5 @@
 from ccvm_simulators.solvers import CCVMSolver
+from ccvm_simulators.solvers.algorithms import AdamParameters
 from ccvm_simulators.solution import Solution
 from ccvm_simulators.post_processor.factory import PostProcessorFactory
 import torch
@@ -459,7 +460,7 @@ class DLSolver(CCVMSolver):
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            hyperparameters (dict): Hyperparameters for adam algorithm.
+            hyperparameters (dict): Hyperparameters for Adam algorithm.
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
@@ -604,16 +605,12 @@ class DLSolver(CCVMSolver):
             return (gradc + alpha * mhatc, grads + alpha * mhats)
 
         # Choose desired update method.
-        if hyperparameters["which_adam"] == "ASSIGN":
-            update_grads_with_moment2 = update_grads_with_moment2_assign
-            update_grads_without_moment2 = update_grads_without_moment2_assign
-        elif hyperparameters["which_adam"] == "ADD_ASSIGN":
+        if hyperparameters["add_assign"]:
             update_grads_with_moment2 = update_grads_with_moment2_addassign
             update_grads_without_moment2 = update_grads_without_moment2_addassign
         else:
-            raise ValueError(
-                f"Invalid choice: ({hyperparameters['which_adam']}) must match."
-            )
+            update_grads_with_moment2 = update_grads_with_moment2_assign
+            update_grads_without_moment2 = update_grads_without_moment2_assign
 
         # Initialize first moment vectors for c and s
         m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
@@ -630,7 +627,7 @@ class DLSolver(CCVMSolver):
             v_c = None
             v_s = None
 
-        # Perform the solve with ADAM over the specified number of iterations
+        # Perform the solve with Adam over the specified number of iterations
         for i in range(iterations):
             pump_rate = calc_pump_rate(i)
 
@@ -653,6 +650,7 @@ class DLSolver(CCVMSolver):
                 # Update biased 2nd moment estimate
                 v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2)
                 v_s = beta2 * v_s + (1.0 - beta2) * torch.pow(s_grads, 2)
+
 
                 # Compute bias correction in 2nd moment
                 beta2i = 1.0 - beta2 ** (i + 1)
@@ -769,21 +767,19 @@ class DLSolver(CCVMSolver):
         return solution
 
     def __call__(
-        self,
-        instance,
-        solve_type=None,
-        post_processor=None,
-        pump_rate_flag=True,
-        g=0.05,
-        evolution_step_size=None,
-        evolution_file=None,
-        hyperparameters=None,
+            self,
+            instance,
+            post_processor=None,
+            pump_rate_flag=True,
+            g=0.05,
+            evolution_step_size=None,
+            evolution_file=None,
+            algorithm_parameters=None,
     ):
         """Solves the given problem instance choosing one of the available DL-CCVM solvers.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            solve_type (str): Flag to choose one of the available solve methods
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
@@ -798,28 +794,34 @@ class DLSolver(CCVMSolver):
                 Only revelant when evolution_step_size is set.
                 If a file already exists with the same name, it will be overwritten.
                 Defaults to None, which generates a filename based on the problem instance name.
-            hyperparameters (dict): Hyperparameters for adam algorithm.
+            algorithm_parameters (None, AdamParameters): Specify for the solver to use a specialized algorithm by passing in
+                an instance of the algorithm's parameters class. Options include: AdamParameters.
+                Defaults to None, which uses the original DL solver.
 
         Returns:
             solution (Solution): The solution to the problem instance.
         """
 
-        if solve_type in ["Adam", "adam", "ADAM"]:
-            return self._solve_adam(
-                instance,
-                hyperparameters,
-                post_processor,
-                pump_rate_flag,
-                g,
-                evolution_step_size,
-                evolution_file,
-            )
-        else:
+        if algorithm_parameters is None:
+            # Use the original DL solver
             return self._solve(
                 instance,
                 post_processor,
                 pump_rate_flag,
                 g,
                 evolution_step_size,
-                evolution_file,
+                evolution_file
             )
+        elif isinstance(algorithm_parameters, AdamParameters):
+            # Use the DL solver with the Adam algorithm
+            return self._solve_adam(
+                instance,
+                algorithm_parameters.to_dict(),
+                post_processor,
+                pump_rate_flag,
+                g,
+                evolution_step_size,
+                evolution_file
+            )
+        else:
+            raise ValueError(f"Solver option type {type(algorithm_parameters)} is not supported.")
