@@ -37,14 +37,14 @@ The workflow diagram showcases a step-by-step process on how the CCVM can be
 used to solve a problem.
 
 <p align="center">
-    <img src="diagrams/example_workflow.jpeg">
+    <img src="diagrams/example_workflow.png">
 </p>
 
 #### High-Level Class Diagram
 This diagram offers a concise visualization of the main classes and their interactions within the CCVM.
 
 <p align="center">
-    <img src="diagrams/high_level_class_diagram.jpeg">
+    <img src="diagrams/high_level_class_diagram.png">
 </p>
 
 
