@@ -31,12 +31,18 @@ independet of the particular random instances generated.
 The first line of each instance file contains the following information, in this order:
 - instance size
 - optimum solution (example files used the Gurobi solver to determine these values)
+- best solution (example files used the BFGS solver to determine these values)
 - whether the solution is optimal (`True` or `False`)
+- solution time for Gurobi to solve it 
+- solution time for BFGS to solve it
 - the seed number used for generating the instance in `torch`.
+- number of fractional values in the solution
 
 The second line contains the elements of the vector `V`, which describes the instance.
 
-The rest of the lines hold the elements of the `Q` matrix.
+The rest of the lines before the last line hold the elements of the `Q` matrix.
+
+The final line contains list of additional (optional) information in the problem instance.
 
 You can specify a file delimiter of your choice. Then remember to
 provide it when initializing the ProblemInstance.

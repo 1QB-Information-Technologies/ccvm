@@ -38,7 +38,7 @@ This software package includes solvers for continuous optimization problems. The
 ```
 
 2. Go into `examples/` and run the demo scripts.
-    - `ccvm_boxqp.py`: Solve a BoxQP problem using a CCVM simulator, w/o plotting
+    - `ccvm_boxqp_dl.py`: Solve a BoxQP problem using a CCVM simulator, w/o plotting
     - `ccvm_boxqp_plot.py`: Solve a BoxQP problem using a CCVM simulator, w/ time-to-solution (TTS) plotting
     - For more demo scripts see `examples/README.md`
 
@@ -111,7 +111,7 @@ boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 ##### 5. Solve the Problem Instance
 
 ```python
-solution = solver.solve(
+solution = solver(
     instance=boxqp_instance,
     post_processor=None,
 )
