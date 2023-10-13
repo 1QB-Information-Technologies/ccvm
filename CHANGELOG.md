@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated internal data handling that have improved performance and reduced memory usage.
+- Updated data structure of the problem instance
 
 ## [0.1.2] - 2023-03-09
 ### Fixed
