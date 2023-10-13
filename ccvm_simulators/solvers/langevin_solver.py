@@ -340,6 +340,8 @@ class LangevinSolver(CCVMSolver):
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
 
+        # TODO: Similar to DLSolver, move the rest of the code to the LangevinSolver.__call__()
+        
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -380,6 +382,9 @@ class LangevinSolver(CCVMSolver):
             solve_time=solve_time,
             pp_time=pp_time,
             optimal_value=instance.optimal_sol,
+            best_value=instance.best_sol,
+            num_frac_values=instance.num_frac_values,
+            optional_info=instance.optional_info,                    
             variables={"problem_variables": problem_variables},
             device=device,
         )
@@ -574,6 +579,9 @@ class LangevinSolver(CCVMSolver):
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
 
+        # TODO: Similar in DLSolver._solve() and DLSolver._solve_adam(), 
+        #       move the rest of the code segments to the LangevinSolver.__call__()
+        
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -604,7 +612,7 @@ class LangevinSolver(CCVMSolver):
                     c_sample=c_sample[batch_index],
                     evolution_file_object=evolution_file_obj,
                 )
-
+                
         solution = Solution(
             problem_size=problem_size,
             batch_size=batch_size,
@@ -614,6 +622,9 @@ class LangevinSolver(CCVMSolver):
             solve_time=solve_time,
             pp_time=pp_time,
             optimal_value=instance.optimal_sol,
+            best_value=instance.best_sol,
+            num_frac_values=instance.num_frac_values,
+            optional_info=instance.optional_info,                    
             variables={"problem_variables": problem_variables},
             device=device,
         )
