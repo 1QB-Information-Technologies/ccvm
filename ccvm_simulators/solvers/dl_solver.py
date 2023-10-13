@@ -409,7 +409,8 @@ class DLSolver(CCVMSolver):
         confs = self.change_variables(problem_variables, S)
         objval = instance.compute_energy(confs)
         
-        # TODO: Do the same thing in DLSolver._solve_adam()
+        # TODO: Move the rest of the code to DLSolver.__call__() and update the return accordingly
+        
         if evolution_step_size:
             # Write samples to file
             # Overwrite file if it exists
@@ -425,7 +426,6 @@ class DLSolver(CCVMSolver):
                     evolution_file_object=evolution_file_obj,
                 )
         
-        # TODO: remove solutions from here incorporated with DLSolver.__call__() and return relevant outcomes
         solution = Solution(
             problem_size=problem_size,
             batch_size=batch_size,
@@ -444,23 +444,7 @@ class DLSolver(CCVMSolver):
             },
             device=device,
         )
-        # solution = Solution(
-        #     problem_size=problem_size,
-        #     batch_size=batch_size,
-        #     instance_name=instance.name,
-        #     iterations=iterations,
-        #     objective_values=objval,
-        #     solve_time=solve_time,
-        #     pp_time=pp_time,
-        #     optimal_value=instance.optimal_sol,
-        #     variables={
-        #         "problem_variables": problem_variables,
-        #         "s": s,
-        #     },
-        #     device=device,
-        # )
         
-        # TODO: Do the same thing in DLSolver._solve_adam()
         # Add evolution filename to solution if it was generated
         if evolution_step_size:
             solution.evolution_file = evolution_file
@@ -750,7 +734,8 @@ class DLSolver(CCVMSolver):
         confs = self.change_variables(problem_variables, S)
         objval = instance.compute_energy(confs)
 
-        #TODO: Redundant; should be moved to DLSolver.__call__()
+        # TODO: Move the rest of the code to DLSolver.__call__() and update the return accordingly
+        
         if evolution_step_size:
             # Write samples to file
             # Overwrite file if it exists
@@ -766,7 +751,6 @@ class DLSolver(CCVMSolver):
                     evolution_file_object=evolution_file_obj,
                 )
         
-        #TODO: Move solution object to the DLSolver.__call__() method
         solution = Solution(
             problem_size=problem_size,
             batch_size=batch_size,
@@ -786,7 +770,6 @@ class DLSolver(CCVMSolver):
             device=device,
         )
         
-        #TODO: Redundant should be moved to DLSolver.__call__()
         # Add evolution filename to solution if it was generated
         if evolution_step_size:
             solution.evolution_file = evolution_file
@@ -829,8 +812,8 @@ class DLSolver(CCVMSolver):
             solution (Solution): The solution to the problem instance.
         """
         
-        #TODO: Get solution object from DLSolver._solve() or _solve_adam() 
-        #         together with other redundant term and refactor
+        #TODO: Get the solution object from DLSolver._solve() or _solve_adam() 
+        #      and return the outcomes properly
         
         if algorithm_parameters is None:
             # Use the original DL solver

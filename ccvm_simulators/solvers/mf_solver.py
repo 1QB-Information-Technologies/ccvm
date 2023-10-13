@@ -422,7 +422,10 @@ class MFSolver(CCVMSolver):
         mu_tilde = self.fit_to_constraints(mu_tilde, -S, S)
 
         solve_time = time.time() - solve_time_start
-
+        
+        # TODO: Similar to DLSolver, move the rest of the code to the LangevinSolver.__call__()
+        #       and update the return accordingly
+        
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -441,6 +444,8 @@ class MFSolver(CCVMSolver):
             pp_time = 0.0
 
         objval = instance.compute_energy(problem_variables)
+        
+        
 
         if evolution_step_size:
             # Write samples to file
@@ -466,6 +471,9 @@ class MFSolver(CCVMSolver):
             solve_time=solve_time,
             pp_time=pp_time,
             optimal_value=instance.optimal_sol,
+            best_value=instance.best_sol,
+            num_frac_values=instance.num_frac_values,
+            optional_info=instance.optional_info,
             variables={
                 "problem_variables": problem_variables,
                 "mu": mu,
@@ -712,6 +720,9 @@ class MFSolver(CCVMSolver):
 
         solve_time = time.time() - solve_time_start
 
+        # TODO: Similar to the solver methos in LangevinSolver and DLSolver
+        #       move the rest of the statements and update the return accordingly
+
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -745,7 +756,7 @@ class MFSolver(CCVMSolver):
                     sigma_sample=sigma_sample[batch_index],
                     evolution_file_object=evolution_file_obj,
                 )
-
+        
         solution = Solution(
             problem_size=problem_size,
             batch_size=batch_size,
@@ -755,6 +766,9 @@ class MFSolver(CCVMSolver):
             solve_time=solve_time,
             pp_time=pp_time,
             optimal_value=instance.optimal_sol,
+            best_value=instance.best_sol,
+            num_frac_values=instance.num_frac_values,
+            optional_info=instance.optional_info,
             variables={
                 "problem_variables": problem_variables,
                 "mu": mu,
