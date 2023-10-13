@@ -12,13 +12,14 @@ This software package includes solvers for continuous optimization problems. The
 
 0. [Requirements](#requirements)
 1. [Quickstart](#quickstart)
-2. [Usage](#usage)
-3. [Documentation](#docs)
+2. [Architecture and Workflow Overview](#architecture-and-workflow-overview)
+3. [Usage](#usage)
+4. [Documentation](#docs)
     - [BoxQP Problem Definition](ccvm_simulators/problem_classes/README.md)
     - [ccvmplotlib](ccvm_simulators/ccvmplotlib/README.md)
-4. [Contributing](#contributing)
-5. [References](#references)
-6. [License](#license)
+5. [Contributing](#contributing)
+6. [References](#references)
+7. [License](#license)
 
 ## Requirements
 
@@ -134,6 +135,22 @@ Additional links:
 - Problem definition: [BoxQP problem class](ccvm_simulators/problem_classes/README.md)
 - Plotting library: [ccvmplotlib](ccvm_simulators/ccvmplotlib/README.md)
 
+
+## Architecture and Workflow Overview
+#### Example Workflow
+The workflow diagram showcases a step-by-step process on how the CCVM can be
+used to solve a problem.
+
+<p align="center">
+    <img src="diagrams/example_workflow.jpeg">
+</p>
+
+#### High-Level Class Diagram
+This diagram offers a concise visualization of the main classes and their interactions within the CCVM.
+
+<p align="center">
+    <img src="diagrams/high_level_class_diagram.jpeg">
+</p>
 
 ## Contributing
 
