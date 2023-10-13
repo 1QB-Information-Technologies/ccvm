@@ -422,10 +422,10 @@ class MFSolver(CCVMSolver):
         mu_tilde = self.fit_to_constraints(mu_tilde, -S, S)
 
         solve_time = time.time() - solve_time_start
-        
+
         # TODO: Similar to DLSolver, move the rest of the code to the LangevinSolver.__call__()
         #       and update the return accordingly
-        
+
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -444,8 +444,6 @@ class MFSolver(CCVMSolver):
             pp_time = 0.0
 
         objval = instance.compute_energy(problem_variables)
-        
-        
 
         if evolution_step_size:
             # Write samples to file
@@ -756,7 +754,7 @@ class MFSolver(CCVMSolver):
                     sigma_sample=sigma_sample[batch_index],
                     evolution_file_object=evolution_file_obj,
                 )
-        
+
         solution = Solution(
             problem_size=problem_size,
             batch_size=batch_size,
@@ -822,14 +820,14 @@ class MFSolver(CCVMSolver):
             solution (Solution): The solution to the problem instance.
         """
         if algorithm_parameters is None:
-        # Use the original MF solver
+            # Use the original MF solver
             return self._solve(
                 instance,
                 post_processor,
                 g,
                 pump_rate_flag,
                 evolution_step_size,
-                evolution_file
+                evolution_file,
             )
         elif isinstance(algorithm_parameters, AdamParameters):
             # Use the MF solver with Adam algorithm
@@ -840,7 +838,9 @@ class MFSolver(CCVMSolver):
                 g,
                 pump_rate_flag,
                 evolution_step_size,
-                evolution_file
+                evolution_file,
             )
         else:
-            raise ValueError(f"Solver option type {type(algorithm_parameters)} is not supported.")
+            raise ValueError(
+                f"Solver option type {type(algorithm_parameters)} is not supported."
+            )

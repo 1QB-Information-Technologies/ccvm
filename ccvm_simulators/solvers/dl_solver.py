@@ -408,9 +408,9 @@ class DLSolver(CCVMSolver):
         # Perform a change of variables to enforce the box constraints
         confs = self.change_variables(problem_variables, S)
         objval = instance.compute_energy(confs)
-        
+
         # TODO: Move the rest of the code to DLSolver.__call__() and update the return accordingly
-        
+
         if evolution_step_size:
             # Write samples to file
             # Overwrite file if it exists
@@ -425,7 +425,7 @@ class DLSolver(CCVMSolver):
                     s_sample=s_sample[batch_index],
                     evolution_file_object=evolution_file_obj,
                 )
-        
+
         solution = Solution(
             problem_size=problem_size,
             batch_size=batch_size,
@@ -444,7 +444,7 @@ class DLSolver(CCVMSolver):
             },
             device=device,
         )
-        
+
         # Add evolution filename to solution if it was generated
         if evolution_step_size:
             solution.evolution_file = evolution_file
@@ -656,7 +656,6 @@ class DLSolver(CCVMSolver):
                 v_c = beta2 * v_c + (1.0 - beta2) * torch.pow(c_grads, 2)
                 v_s = beta2 * v_s + (1.0 - beta2) * torch.pow(s_grads, 2)
 
-
                 # Compute bias correction in 2nd moment
                 beta2i = 1.0 - beta2 ** (i + 1)
                 vhat_c = v_c / beta2i
@@ -735,7 +734,7 @@ class DLSolver(CCVMSolver):
         objval = instance.compute_energy(confs)
 
         # TODO: Move the rest of the code to DLSolver.__call__() and update the return accordingly
-        
+
         if evolution_step_size:
             # Write samples to file
             # Overwrite file if it exists
@@ -750,7 +749,7 @@ class DLSolver(CCVMSolver):
                     s_sample=s_sample[batch_index],
                     evolution_file_object=evolution_file_obj,
                 )
-        
+
         solution = Solution(
             problem_size=problem_size,
             batch_size=batch_size,
@@ -769,7 +768,7 @@ class DLSolver(CCVMSolver):
             },
             device=device,
         )
-        
+
         # Add evolution filename to solution if it was generated
         if evolution_step_size:
             solution.evolution_file = evolution_file
@@ -777,14 +776,14 @@ class DLSolver(CCVMSolver):
         return solution
 
     def __call__(
-            self,
-            instance,
-            post_processor=None,
-            pump_rate_flag=True,
-            g=0.05,
-            evolution_step_size=None,
-            evolution_file=None,
-            algorithm_parameters=None,
+        self,
+        instance,
+        post_processor=None,
+        pump_rate_flag=True,
+        g=0.05,
+        evolution_step_size=None,
+        evolution_file=None,
+        algorithm_parameters=None,
     ):
         """Solves the given problem instance choosing one of the available DL-CCVM solvers.
 
@@ -811,10 +810,10 @@ class DLSolver(CCVMSolver):
         Returns:
             solution (Solution): The solution to the problem instance.
         """
-        
-        #TODO: Get the solution object from DLSolver._solve() or _solve_adam() 
+
+        # TODO: Get the solution object from DLSolver._solve() or _solve_adam()
         #      and return the outcomes properly
-        
+
         if algorithm_parameters is None:
             # Use the original DL solver
             return self._solve(
@@ -823,7 +822,7 @@ class DLSolver(CCVMSolver):
                 pump_rate_flag,
                 g,
                 evolution_step_size,
-                evolution_file
+                evolution_file,
             )
         elif isinstance(algorithm_parameters, AdamParameters):
             # Use the DL solver with the Adam algorithm
@@ -834,7 +833,9 @@ class DLSolver(CCVMSolver):
                 pump_rate_flag,
                 g,
                 evolution_step_size,
-                evolution_file
+                evolution_file,
             )
         else:
-            raise ValueError(f"Solver option type {type(algorithm_parameters)} is not supported.")
+            raise ValueError(
+                f"Solver option type {type(algorithm_parameters)} is not supported."
+            )

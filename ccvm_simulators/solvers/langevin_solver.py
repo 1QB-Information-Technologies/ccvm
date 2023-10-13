@@ -342,7 +342,7 @@ class LangevinSolver(CCVMSolver):
 
         # TODO: Similar to DLSolver, move the rest of the code to the LangevinSolver.__call__()
         #       and update the return accordingly
-        
+
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -385,7 +385,7 @@ class LangevinSolver(CCVMSolver):
             optimal_value=instance.optimal_sol,
             best_value=instance.best_sol,
             num_frac_values=instance.num_frac_values,
-            optional_info=instance.optional_info,                    
+            optional_info=instance.optional_info,
             variables={"problem_variables": problem_variables},
             device=device,
         )
@@ -580,10 +580,10 @@ class LangevinSolver(CCVMSolver):
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
 
-        # TODO: Similar in DLSolver._solve() and DLSolver._solve_adam(), 
+        # TODO: Similar in DLSolver._solve() and DLSolver._solve_adam(),
         #       move the rest of the code segments to the LangevinSolver.__call__()
         #       and update the return accordingly
-        
+
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -614,7 +614,7 @@ class LangevinSolver(CCVMSolver):
                     c_sample=c_sample[batch_index],
                     evolution_file_object=evolution_file_obj,
                 )
-                
+
         solution = Solution(
             problem_size=problem_size,
             batch_size=batch_size,
@@ -626,7 +626,7 @@ class LangevinSolver(CCVMSolver):
             optimal_value=instance.optimal_sol,
             best_value=instance.best_sol,
             num_frac_values=instance.num_frac_values,
-            optional_info=instance.optional_info,                    
+            optional_info=instance.optional_info,
             variables={"problem_variables": problem_variables},
             device=device,
         )
@@ -670,9 +670,19 @@ class LangevinSolver(CCVMSolver):
         """
         if algorithm_parameters is None:
             # Use the original Langevin solver
-            return self._solve(instance, post_processor, evolution_step_size, evolution_file)
+            return self._solve(
+                instance, post_processor, evolution_step_size, evolution_file
+            )
         elif isinstance(algorithm_parameters, AdamParameters):
             # Use the Langevin solver with the Adam algorithm
-            return self._solve_adam(instance, algorithm_parameters.to_dict(), post_processor, evolution_step_size, evolution_file)
+            return self._solve_adam(
+                instance,
+                algorithm_parameters.to_dict(),
+                post_processor,
+                evolution_step_size,
+                evolution_file,
+            )
         else:
-            raise ValueError(f"Solver option type {type(algorithm_parameters)} is not supported.")
+            raise ValueError(
+                f"Solver option type {type(algorithm_parameters)} is not supported."
+            )

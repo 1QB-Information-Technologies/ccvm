@@ -54,8 +54,8 @@ class Solution:
     pp_time: float
     optimal_value: float
     best_value: float
-    num_frac_values: int 
-    optional_info: list 
+    num_frac_values: int
+    optional_info: list
     variables: dict = field(repr=False)
     evolution_file: str = None
     device: str = field(default="cpu", repr=False)

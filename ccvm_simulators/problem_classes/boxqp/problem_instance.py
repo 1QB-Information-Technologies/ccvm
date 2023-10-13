@@ -48,12 +48,12 @@ class ProblemInstance:
             best_sol (float): the best solution via BFGS. Defaults to None
             optimality (bool): indicates whether the solution is
                 optimal (True or False). Defaults to None.
-            sol_time_gb (float): the time for Gurobi to solve it 
+            sol_time_gb (float): the time for Gurobi to solve it
             sol_time_bfgs (float): the time for BFGS to solve it
             num_frac_values (int): number of fractional values in the solution
             q_matrix (torch.tensor): Q matrix of the QP problem. Defaults to None.
             v_vector (torch.tensor): V vector of the QP problem. Defaults to None.
-            optional_info (list): additional information in the problem instance 
+            optional_info (list): additional information in the problem instance
             scaled_by (float): scaling value of the coefficient. Defaults to 1.
         """
         self.problem_size = None
@@ -65,7 +65,7 @@ class ProblemInstance:
         self.num_frac_values = None
         self.q_matrix = None
         self.v_vector = None
-        self.optional_info = None 
+        self.optional_info = None
         self.scaled_by = 1
         self.device = device
         self._custom_name = False
@@ -142,7 +142,9 @@ class ProblemInstance:
                     optimality = False
                 sol_time_gb = float(instance_info[4])
                 sol_time_bfgs = float(instance_info[5])
-                num_frac_values = int(instance_info[7]) # seed=int(instance_info[6]) # discarded
+                num_frac_values = int(
+                    instance_info[7]
+                )  # seed=int(instance_info[6]) # discarded
 
                 # Initialize the q_matrix and v_vector matrices
                 rval_q = torch.zeros(
@@ -155,18 +157,18 @@ class ProblemInstance:
                 for idx in range(0, problem_size):
                     rval_v[idx] = -torch.Tensor([float(line_data_v[idx])])
                 # Read in the q_matrix matrix
-                for idx, line in enumerate(lines[2:problem_size+2]):
+                for idx, line in enumerate(lines[2 : problem_size + 2]):
                     line_data = line.split("\n")[0].split(file_delimiter)
                     for j, value in enumerate(line_data[:problem_size]):
                         rval_q[idx, j] = -torch.Tensor([float(value)])
-                
+
                 # Read the last line as an additional information
                 last_raw_data_line = lines[-1].split("\n")[0].split(file_delimiter)
                 optional_info = []
                 for v in last_raw_data_line:
-                    if not v=='':
+                    if not v == "":
                         optional_info.append(float(v))
-                        
+
             except Exception as e:
                 raise Exception("Error reading instance file: " + str(e))
 
