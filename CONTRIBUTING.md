@@ -18,7 +18,7 @@ Contributions are made to this repo via Issues and Pull Requests (PRs). A few ge
 
 ### Issues
 
-Issues should be used to report problems with the library, request a new feature, or to discuss potential changes before a PR is created. 
+Issues should be used to report problems with the library, request a new feature, or to discuss potential changes before a PR is created.
 
 - If you find an issue that addresses the problem you're having, please add your
   own reproduction information to the existing issue rather than creating a new
@@ -57,3 +57,6 @@ Run our unit tests to ensure your changes does not affect other parts of the cod
 
 Run `pytest .` from the root directory.
 
+#### GitHub Actions Testing Pipeline
+
+We use GitHub Actions to automatically run unit tests whenever a pull request is opened or receives new commits. A pull request may not be merged until the pipeline completes without detecting failures.
