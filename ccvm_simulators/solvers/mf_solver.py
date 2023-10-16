@@ -1,4 +1,5 @@
 from ccvm_simulators.solvers.ccvm_solver import CCVMSolver
+from ccvm_simulators.solvers.algorithms import AdamParameters
 from ccvm_simulators.solution import Solution
 from ccvm_simulators.post_processor.factory import PostProcessorFactory
 import torch
@@ -489,7 +490,7 @@ class MFSolver(CCVMSolver):
         evolution_step_size=None,
         evolution_file=None,
     ):
-        """Solves the given problem instance using the MF-CCVM solver with ADAM algorithm
+        """Solves the given problem instance using the MF-CCVM solver with Adam algorithm
         tuned or specified parameters in the parameter key.
 
         Args:
@@ -627,16 +628,12 @@ class MFSolver(CCVMSolver):
             return grads + alpha * mhat
 
         # Choose desired update method.
-        if hyperparameters["which_adam"] == "ASSIGN":
-            update_grads_with_moment2 = update_grads_with_moment2_assign
-            update_grads_without_moment2 = update_grads_without_moment2_assign
-        elif hyperparameters["which_adam"] == "ADD_ASSIGN":
+        if hyperparameters["add_assign"]:
             update_grads_with_moment2 = update_grads_with_moment2_addassign
             update_grads_without_moment2 = update_grads_without_moment2_addassign
         else:
-            raise ValueError(
-                f"Invalid choice: ({hyperparameters['which_adam']}) must match."
-            )
+            update_grads_with_moment2 = update_grads_with_moment2_assign
+            update_grads_without_moment2 = update_grads_without_moment2_assign
 
         # Initialize first moment vector
         m_mu = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
@@ -775,13 +772,12 @@ class MFSolver(CCVMSolver):
     def __call__(
         self,
         instance,
-        solve_type=None,
         post_processor=None,
         g=0.01,
         pump_rate_flag=True,
         evolution_step_size=None,
         evolution_file=None,
-        hyperparameters=None,
+        algorithm_parameters=None,
     ):
         """Solves the given problem instance by choosing one of the available
         MF-CCVM solvers tuned or specified parameters in the parameter key.
@@ -804,27 +800,33 @@ class MFSolver(CCVMSolver):
                 when evolution_step_size is set. If a file already exists with the same name,
                 it will be overwritten. Defaults to None, which generates a filename based on
                 the problem instance name.
-            hyperparameters (dict): Hyperparameters for adam algorithm.
+            algorithm_parameters (None, AdamParameters): Specify for the solver to use a specialized algorithm by passing in
+                an instance of the algorithm's parameters class. Options include: AdamParameters.
+                Defaults to None, which uses the original MF solver.
 
         Returns:
             solution (Solution): The solution to the problem instance.
         """
-        if solve_type in ["Adam", "adam", "ADAM"]:
-            return self._solve_adam(
-                instance,
-                hyperparameters,
-                post_processor,
-                g,
-                pump_rate_flag,
-                evolution_step_size,
-                evolution_file,
-            )
-        else:
+        if algorithm_parameters is None:
+        # Use the original MF solver
             return self._solve(
                 instance,
                 post_processor,
                 g,
                 pump_rate_flag,
                 evolution_step_size,
-                evolution_file,
+                evolution_file
             )
+        elif isinstance(algorithm_parameters, AdamParameters):
+            # Use the MF solver with Adam algorithm
+            return self._solve_adam(
+                instance,
+                algorithm_parameters.to_dict(),
+                post_processor,
+                g,
+                pump_rate_flag,
+                evolution_step_size,
+                evolution_file
+            )
+        else:
+            raise ValueError(f"Solver option type {type(algorithm_parameters)} is not supported.")

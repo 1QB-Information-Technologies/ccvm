@@ -1,4 +1,5 @@
 from ccvm_simulators.solvers import CCVMSolver
+from ccvm_simulators.solvers.algorithms import AdamParameters
 from ccvm_simulators.solution import Solution
 from ccvm_simulators.post_processor.factory import PostProcessorFactory
 import torch
@@ -498,26 +499,20 @@ class LangevinSolver(CCVMSolver):
         beta2 = hyperparameters["beta2"]
         epsilon = 1e-8
 
-        # Choose desired update method for
-        if hyperparameters["which_adam"] == "ASSIGN":
-            update_grads_with_moment2 = lambda grads, mhat, vhat: alpha * torch.div(
-                mhat, torch.sqrt(vhat) + epsilon
-            )
-
-            update_grads_without_moment2 = lambda grads, mhat: alpha * mhat_c
-
-        elif hyperparameters["which_adam"] == "ADD_ASSIGN":
+        # Choose desired update method.
+        if hyperparameters["add_assign"]:
             update_grads_with_moment2 = (
                 lambda grads, mhat, vhat: grads
                 + alpha * torch.div(mhat, torch.sqrt(vhat) + epsilon)
             )
 
             update_grads_without_moment2 = lambda grads, mhat: grads + alpha * mhat_c
-
         else:
-            raise ValueError(
-                f"Invalid choice: ({hyperparameters['which_adam']}) must match."
+            update_grads_with_moment2 = lambda grads, mhat, vhat: alpha * torch.div(
+                mhat, torch.sqrt(vhat) + epsilon
             )
+
+            update_grads_without_moment2 = lambda grads, mhat: alpha * mhat_c
 
         # Initialize first moment vector
         m_c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
@@ -529,7 +524,7 @@ class LangevinSolver(CCVMSolver):
         else:
             v_c = None
 
-        # Perform the solve with ADAM over the specified number of iterations
+        # Perform the solve with Adam over the specified number of iterations
         for i in range(iterations):
             # Calculate gradient
             c_grads = self.calculate_grads(c)
@@ -632,17 +627,15 @@ class LangevinSolver(CCVMSolver):
     def __call__(
         self,
         instance,
-        solve_type=None,
         post_processor=None,
         evolution_step_size=None,
         evolution_file=None,
-        hyperparameters=None,
+        algorithm_parameters=None,
     ):
         """Solves the given problem instance by choosing one of the available Langevin solvers.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            solve_type (str): Flag to choose one of the available solve methods
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
             evolution_step_size (int): If set, the c/s values will be sampled once
@@ -654,21 +647,19 @@ class LangevinSolver(CCVMSolver):
                 Only revelant when evolution_step_size is set.
                 If a file already exists with the same name, it will be overwritten.
                 Defaults to None, which generates a filename based on the problem instance name.
-            adam_hyperparam (dict): Hyperparameters for adam algorithm. Defaults to None.
+            algorithm_parameters (None, AdamParameters): Specify for the solver to use a specialized algorithm by passing in
+                an instance of the algorithm's parameters class. Options include: AdamParameters.
+                Defaults to None, which uses the original Langevin solver.
 
         Returns:
             solution (Solution): The solution to the problem instance.
 
         """
-        if solve_type in ["Adam", "adam", "ADAM"]:
-            return self._solve_adam(
-                instance,
-                hyperparameters,
-                post_processor,
-                evolution_step_size,
-                evolution_file,
-            )
+        if algorithm_parameters is None:
+            # Use the original Langevin solver
+            return self._solve(instance, post_processor, evolution_step_size, evolution_file)
+        elif isinstance(algorithm_parameters, AdamParameters):
+            # Use the Langevin solver with the Adam algorithm
+            return self._solve_adam(instance, algorithm_parameters.to_dict(), post_processor, evolution_step_size, evolution_file)
         else:
-            return self._solve(
-                instance, post_processor, evolution_step_size, evolution_file
-            )
+            raise ValueError(f"Solver option type {type(algorithm_parameters)} is not supported.")

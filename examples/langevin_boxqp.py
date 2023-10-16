@@ -1,6 +1,7 @@
 import glob
 from ccvm_simulators.problem_classes.boxqp import ProblemInstance
 from ccvm_simulators.solvers import LangevinSolver
+from ccvm_simulators.solvers.algorithms import AdamParameters
 
 TEST_INSTANCES_DIR = "./test_instances/"
 
@@ -32,16 +33,13 @@ if __name__ == "__main__":
         # Scale the problem's coefficients for more stable optimization
         boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 
-        # Solve the problem
+        # Solve the problem using the Adam algorithm
+        adam_parameters = AdamParameters(alpha=0.001, beta1=0.9, beta2=0.999, add_assign=False)
+
         solution = solver(
             instance=boxqp_instance,
-            solve_type="Adam",  # solve_type=None refers to default (original) solver
             post_processor=None,
-            hyperparameters=dict(
-                beta1=0.9, beta2=0.999, alpha=0.2,
-                which_adam="ASSIGN",  # Temporary flag for desired gradient update
-                                      # either "ASSIGN" or "ADD_ASSIGN" in the Adam method.
-            ),
+            algorithm_parameters=adam_parameters, # Set to None to use the original Langevin algorithm
         )
 
         print(solution)
