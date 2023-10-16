@@ -60,52 +60,55 @@ class TestMFSolver(TestCase):
         with self.assertRaises(ValueError):
             self.mf_solver.parameter_key = invalid_parameters
 
-    def test_method_selector_valid(self):
-        """Test that method_selector set the correct methods when valid inputs are passed"""
-        self.mf_solver._method_selector("boxqp")
-        assert self.mf_solver.calculate_grads == self.mf_solver._calculate_grads_boxqp
-        assert self.mf_solver.change_variables == self.mf_solver._change_variables_boxqp
-        assert (
-            self.mf_solver.fit_to_constraints
-            == self.mf_solver._fit_to_constraints_boxqp
-        )
-
-    def test_method_selector_invalid(self):
-        """Test that method_selector raises a ValueError when an invalid input is passed"""
-        invalid_problem_category = "invalid_problem_category"
-        with self.assertRaises(ValueError) as error:
-            self.mf_solver._method_selector(invalid_problem_category)
-
-        assert (
-            str(error.exception)
-            == f"The given problem category is not valid. Given category: {invalid_problem_category}"
-        )
-
     def test_calculate_grads_boxqp_valid(self):
         """Test that calculate_grads returns correct data when valid parameters are passed"""
         batch_size = 3
         problem_size = 2
 
+        self.mf_solver.q_matrix = torch.ones(problem_size, problem_size)
+        self.mf_solver.v_vector = torch.ones(problem_size)
+
+        mu_tilde = torch.zeros(batch_size, problem_size)
+        S = self.valid_parameters[problem_size]["S"]
+        fs = self.valid_parameters[problem_size]["feedback_scale"]
+
+        grads_mu = self.mf_solver._calculate_grads_boxqp(
+            mu_tilde=mu_tilde,
+            S=S,
+            fs=fs,
+        )
+
+        assert grads_mu.shape == torch.Size([batch_size, problem_size])
+
+        # Expected values were calculated using the function. This check is just to make
+        # sure that the function does not get changed unexpectedly.
+        expected_grads_mu = torch.tensor(
+            [[-20.0, -20.0], [-20.0, -20.0], [-20.0, -20.0]]
+        )
+        assert torch.equal(grads_mu, expected_grads_mu)
+
+    def test_calculate_drift_boxqp_valid(self):
+        """Test that calculate_drift returns correct data when valid parameters are passed"""
+        batch_size = 3
+        problem_size = 2
+
+        self.mf_solver.q_matrix = torch.ones(problem_size, problem_size)
+        self.mf_solver.v_vector = torch.ones(problem_size)
+
         mu = torch.zeros(batch_size, problem_size)
         mu_tilde = torch.zeros(batch_size, problem_size)
         sigma = torch.zeros(batch_size, problem_size)
-        q_matrix = torch.ones(problem_size, problem_size)
-        v_vector = torch.ones(problem_size)
         pump = self.valid_parameters[problem_size]["pump"]
-        wiener_increment = torch.zeros(batch_size, problem_size)
         j = self.valid_parameters[problem_size]["j"]
         g = 0.1
         S = self.valid_parameters[problem_size]["S"]
         fs = self.valid_parameters[problem_size]["feedback_scale"]
 
-        grads_mu, grads_sigma = self.mf_solver._calculate_grads_boxqp(
+        grads_mu, grads_sigma = self.mf_solver._calculate_drift_boxqp(
             mu=mu,
             mu_tilde=mu_tilde,
             sigma=sigma,
-            q_matrix=q_matrix,
-            v_vector=v_vector,
             pump=pump,
-            wiener_increment=wiener_increment,
             j=j,
             g=g,
             S=S,
@@ -249,7 +252,7 @@ class TestMFSolver(TestCase):
         self.mf_solver.change_variables = self.mock_change_variables
         self.mf_solver.calculate_grads = self.mock_calculate_grads
 
-        solution = self.mf_solver.solve(instance)
+        solution = self.mf_solver._solve(instance)
 
         # Check that the solution is correct
         assert solution.problem_size == instance.problem_size
@@ -291,7 +294,7 @@ class TestMFSolver(TestCase):
         self.mf_solver.device = "cpu"
         self.mf_solver.parameter_key = self.valid_parameters
         with self.assertRaises(ValueError) as error:
-            self.mf_solver.solve(instance)
+            self.mf_solver._solve(instance)
 
         self.assertEqual(
             str(error.exception),

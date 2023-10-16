@@ -19,9 +19,6 @@ class DummyConcreteSolver(CCVMSolver):
     def tune(self):
         print("dummy tune function")
 
-    def solve(self):
-        print("dummy solve function")
-
     def _calculate_grads_boxqp(self):
         print("dummy _calculate_grads_boxqp function")
 
@@ -31,6 +28,14 @@ class DummyConcreteSolver(CCVMSolver):
     def _fit_to_constraints_boxqp(self):
         print("dummy _fit_to_constraints_boxqp function")
 
+    def _calculate_drift_boxqp(self):
+        print("dummy _calculate_drift_boxqp function")
+
+    def _solve(self):
+        print("dummy solve function")
+
+    def _solve_adam(self):
+        print("dummy _solve_adam function")
 
 class TestCCVMSolver(TestCase):
     @classmethod
@@ -75,4 +80,25 @@ class TestCCVMSolver(TestCase):
 
         self.assertTrue(
             torch.eq(self.solver.get_scaling_factor(q_matrix), expected_value)
+        )
+
+    def test_method_selector_valid(self):
+        """Test that method_selector set the correct methods when valid inputs are passed"""
+        self.solver._method_selector("boxqp")
+        assert self.solver.calculate_grads == self.solver._calculate_grads_boxqp
+        assert self.solver.change_variables == self.solver._change_variables_boxqp
+        assert (
+            self.solver.fit_to_constraints
+            == self.solver._fit_to_constraints_boxqp
+        )
+
+    def test_method_selector_invalid(self):
+        """Test that method_selector raises a ValueError when an invalid input is passed"""
+        invalid_problem_category = "invalid_problem_category"
+        with self.assertRaises(ValueError) as error:
+            self.solver._method_selector(invalid_problem_category)
+
+        assert (
+            str(error.exception)
+            == f"The given instance is not a valid problem category. Given category: {invalid_problem_category}"
         )
