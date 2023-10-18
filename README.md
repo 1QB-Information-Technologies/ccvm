@@ -33,7 +33,7 @@ This software package includes solvers for continuous optimization problems. The
 
 ## Architecture and Workflow Overview
 #### Example Workflow
-The workflow diagram showcases a step-by-step process on how the CCVM can be
+The workflow diagram showcases, step-by-step, how the CCVM simulators can be
 used to solve a problem.
 
 <p align="center">
@@ -41,7 +41,7 @@ used to solve a problem.
 </p>
 
 #### High-Level Class Diagram
-This diagram offers a concise visualization of the main classes and their interactions within the CCVM.
+This diagram offers a concise visualization of the main classes and their interactions within the `ccvm_simulators` package.
 
 <p align="center">
     <img src="diagrams/high_level_class_diagram.png">
