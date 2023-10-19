@@ -11,8 +11,8 @@ This software package includes solvers for continuous optimization problems. The
 ## Table of Contents
 
 0. [Requirements](#requirements)
-1. [Architecture and Workflow Overview](#architecture-and-workflow-overview)
-2. [Quickstart](#quickstart)
+1. [Quickstart](#quickstart)
+2. [Architecture and Workflow Overview](#architecture-and-workflow-overview)
 3. [Usage](#usage)
 4. [Documentation](#docs)
     - [BoxQP Problem Definition](ccvm_simulators/problem_classes/README.md)
@@ -29,24 +29,6 @@ This software package includes solvers for continuous optimization problems. The
 
 - macOS (Monterey, Big Sur)
 - Ubuntu (20.04)
-
-
-## Architecture and Workflow Overview
-#### Example Workflow
-The workflow diagram showcases, step-by-step, how the CCVM simulators can be
-used to solve a problem.
-
-<p align="center">
-    <img src="diagrams/example_workflow.png">
-</p>
-
-#### High-Level Class Diagram
-This diagram offers a concise visualization of the main classes and their interactions within the `ccvm_simulators` package.
-
-<p align="center">
-    <img src="diagrams/high_level_class_diagram.png">
-</p>
-
 
 ## Quickstart
 
@@ -86,6 +68,24 @@ This diagram offers a concise visualization of the main classes and their intera
 <p align="center">
     <img src="ccvm_simulators/ccvmplotlib/images/success_prob_plot_example.png" width="250">
 </p>
+
+
+## Architecture and Workflow Overview
+#### Example Workflow
+The workflow diagram showcases, step-by-step, how the CCVM simulators can be
+used to solve a problem.
+
+<p align="center">
+    <img src="diagrams/example_workflow.png">
+</p>
+
+#### High-Level Class Diagram
+This diagram offers a concise visualization of the main classes and their interactions within the `ccvm_simulators` package.
+
+<p align="center">
+    <img src="diagrams/high_level_class_diagram.png">
+</p>
+
 
 ## Usage
 
