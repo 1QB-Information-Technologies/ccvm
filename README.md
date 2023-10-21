@@ -73,7 +73,9 @@ This software package includes solvers for continuous optimization problems. The
 ## Architecture and Workflow Overview
 #### Example Workflow
 The workflow diagram showcases, step-by-step, how the CCVM simulators can be
-used to solve a problem.
+used to solve a problem. As users progress through the problem-solving steps,
+they are presented with two distinct options to conclude their process. They can
+choose to either visually plot the solution or to print the results.
 
 <p align="center">
     <img src="diagrams/example_workflow.png">
@@ -84,6 +86,33 @@ This diagram offers a concise visualization of the main classes and their intera
 
 <p align="center">
     <img src="diagrams/high_level_class_diagram.png">
+</p>
+
+
+##### The solver hierarchy 
+The diagram portrays the relationships among different solvers and their
+association with the abstracted CCVM solver class.
+
+<p align="center">
+    <img src="diagrams/solver_ hierarchy.png">
+</p>
+
+
+##### Post processor hierarchy
+The diagram delineates the relationships between various post processors and
+their connection to the abstracted post processor class.
+
+<p align="center">
+    <img src="diagrams/post_processor_ hierarchy.png">
+</p>
+
+
+##### Plotter class diagram
+The diagram provides more details in how plotter library can be used and the asscoatiated
+class relationship.
+
+<p align="center">
+    <img src="diagrams/plottor_class_diagram.png">
 </p>
 
 
