@@ -53,7 +53,7 @@ class ProblemInstance:
             num_frac_values (int): number of fractional values in the solution
             q_matrix (torch.tensor): Q matrix of the QP problem. Defaults to None.
             v_vector (torch.tensor): V vector of the QP problem. Defaults to None.
-            solution_vector (list): the solution to the problem instance found using Gurobi
+            solution_vector (list): the vector of solution to the problem instance found using Gurobi
             scaled_by (float): scaling value of the coefficient. Defaults to 1.
         """
         self.problem_size = None

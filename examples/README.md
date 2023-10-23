@@ -34,4 +34,4 @@ The second line contains the elements of the vector `V`, which describes the ins
 
 The rest of the lines before the last line hold the elements of the `Q` matrix.
 
-The final line contains list of additional (optional) information in the problem instance.
+The final line contains the vector of the solution to the problem instance
