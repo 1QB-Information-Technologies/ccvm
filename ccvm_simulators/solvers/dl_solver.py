@@ -437,7 +437,7 @@ class DLSolver(CCVMSolver):
             optimal_value=instance.optimal_sol,
             best_value=instance.best_sol,
             num_frac_values=instance.num_frac_values,
-            optional_info=instance.optional_info,
+            solution_vector=instance.solution_vector,
             variables={
                 "problem_variables": problem_variables,
                 "s": s,
@@ -761,7 +761,7 @@ class DLSolver(CCVMSolver):
             optimal_value=instance.optimal_sol,
             best_value=instance.best_sol,
             num_frac_values=instance.num_frac_values,
-            optional_info=instance.optional_info,
+            solution_vector=instance.solution_vector,
             variables={
                 "problem_variables": problem_variables,
                 "s": s,

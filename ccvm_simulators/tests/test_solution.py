@@ -15,7 +15,7 @@ class TestSolution(unittest.TestCase):
         self.optimal_value = 3.2
         self.best_value = 3.2
         self.num_frac_values = 1
-        self.optional_info = [1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0]
+        self.solution_vector = [1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0]
         self.device = "cpu"
         self.evolution_file = "test"
         self.iterations = 1
@@ -33,7 +33,7 @@ class TestSolution(unittest.TestCase):
             self.optimal_value,
             self.best_value,
             self.num_frac_values,
-            self.optional_info,
+            self.solution_vector,
             self.variables,
             self.evolution_file,
             self.device,
@@ -57,7 +57,7 @@ class TestSolution(unittest.TestCase):
             self.optimal_value,
             self.best_value,
             self.num_frac_values,
-            self.optional_info,
+            self.solution_vector,
             variable,
             self.evolution_file,
             self.device,
@@ -82,7 +82,7 @@ class TestSolution(unittest.TestCase):
             self.optimal_value,
             self.best_value,
             self.num_frac_values,
-            self.optional_info,
+            self.solution_vector,
             self.variables,
             self.evolution_file,
             self.device,
@@ -116,7 +116,7 @@ class TestSolution(unittest.TestCase):
             self.optimal_value,
             self.best_value,
             self.num_frac_values,
-            self.optional_info,
+            self.solution_vector,
             self.variables,
             self.evolution_file,
             self.device,
@@ -152,7 +152,7 @@ class TestSolution(unittest.TestCase):
             self.optimal_value,
             self.best_value,
             self.num_frac_values,
-            self.optional_info,
+            self.solution_vector,
             self.variables,
             self.evolution_file,
             self.device,
@@ -185,7 +185,7 @@ class TestSolution(unittest.TestCase):
             self.optimal_value,
             self.best_value,
             self.num_frac_values,
-            self.optional_info,
+            self.solution_vector,
             self.variables,
             self.evolution_file,
             self.device,
@@ -202,7 +202,7 @@ class TestSolution(unittest.TestCase):
             "best_value": self.best_value,
             "num_frac_values": self.num_frac_values,
             "evolution_file": self.evolution_file,
-            "optional_info": self.optional_info,
+            "solution_vector": self.solution_vector,
             "solution_performance": {
                 "optimal": 0.0,
                 "one_percent": 0.0,

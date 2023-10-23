@@ -423,7 +423,7 @@ class MFSolver(CCVMSolver):
 
         solve_time = time.time() - solve_time_start
 
-        # TODO: Similar to DLSolver, move the rest of the code to the LangevinSolver.__call__()
+        # TODO: Similar to DLSolver, move the rest of the code to the MFSolver.__call__()
         #       and update the return accordingly
 
         # Run the post processor on the results, if specified
@@ -471,7 +471,7 @@ class MFSolver(CCVMSolver):
             optimal_value=instance.optimal_sol,
             best_value=instance.best_sol,
             num_frac_values=instance.num_frac_values,
-            optional_info=instance.optional_info,
+            solution_vector=instance.solution_vector,
             variables={
                 "problem_variables": problem_variables,
                 "mu": mu,
@@ -766,7 +766,7 @@ class MFSolver(CCVMSolver):
             optimal_value=instance.optimal_sol,
             best_value=instance.best_sol,
             num_frac_values=instance.num_frac_values,
-            optional_info=instance.optional_info,
+            solution_vector=instance.solution_vector,
             variables={
                 "problem_variables": problem_variables,
                 "mu": mu,

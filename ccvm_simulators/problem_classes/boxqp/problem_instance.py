@@ -53,7 +53,7 @@ class ProblemInstance:
             num_frac_values (int): number of fractional values in the solution
             q_matrix (torch.tensor): Q matrix of the QP problem. Defaults to None.
             v_vector (torch.tensor): V vector of the QP problem. Defaults to None.
-            optional_info (list): the solution to the problem instance found using Gurobi
+            solution_vector (list): the solution to the problem instance found using Gurobi
             scaled_by (float): scaling value of the coefficient. Defaults to 1.
         """
         self.problem_size = None
@@ -65,7 +65,7 @@ class ProblemInstance:
         self.num_frac_values = None
         self.q_matrix = None
         self.v_vector = None
-        self.optional_info = None
+        self.solution_vector = None
         self.scaled_by = 1
         self.device = device
         self._custom_name = False
@@ -164,10 +164,10 @@ class ProblemInstance:
 
                 # Read the last line as an additional information
                 last_raw_data_line = lines[-1].split("\n")[0].split(file_delimiter)
-                optional_info = []
+                solution_vector = []
                 for v in last_raw_data_line:
                     if not v == "":
-                        optional_info.append(float(v))
+                        solution_vector.append(float(v))
 
             except Exception as e:
                 raise Exception("Error reading instance file: " + str(e))
@@ -184,7 +184,7 @@ class ProblemInstance:
         self.num_frac_values = num_frac_values
         self.q_matrix = rval_q
         self.v_vector = rval_v
-        self.optional_info = optional_info
+        self.solution_vector = solution_vector
         self.scaled_by = 1
 
         # Set the name of the instance if the user has not set it
