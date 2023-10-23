@@ -199,7 +199,10 @@ class TestSolution(unittest.TestCase):
             "solve_time": self.solve_time,
             "pp_time": self.pp_time,
             "optimal_value": self.optimal_value,
+            "best_value": self.best_value,
+            "num_frac_values": self.num_frac_values,
             "evolution_file": self.evolution_file,
+            "optional_info": self.optional_info,
             "solution_performance": {
                 "optimal": 0.0,
                 "one_percent": 0.0,
