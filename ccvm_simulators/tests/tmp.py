@@ -5,7 +5,7 @@ import os
 
 
 class TestSolution(unittest.TestCase):
-    def setUp(self):       
+    def setUp(self):
         self.problem_size = 10
         self.batch_size = 5
         self.instance_name = "test_instance"
@@ -13,9 +13,6 @@ class TestSolution(unittest.TestCase):
         self.solve_time = 2.0
         self.pp_time = 3.0
         self.optimal_value = 3.2
-        self.best_value = 3.2
-        self.num_frac_values = 1
-        self.optional_info = [1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0]
         self.device = "cpu"
         self.evolution_file = "test"
         self.iterations = 1
@@ -31,9 +28,6 @@ class TestSolution(unittest.TestCase):
             self.solve_time,
             self.pp_time,
             self.optimal_value,
-            self.best_value,
-            self.num_frac_values,
-            self.optional_info,
             self.variables,
             self.evolution_file,
             self.device,
@@ -55,9 +49,6 @@ class TestSolution(unittest.TestCase):
             self.solve_time,
             self.pp_time,
             self.optimal_value,
-            self.best_value,
-            self.num_frac_values,
-            self.optional_info,
             variable,
             self.evolution_file,
             self.device,
@@ -80,9 +71,6 @@ class TestSolution(unittest.TestCase):
             self.solve_time,
             self.pp_time,
             self.optimal_value,
-            self.best_value,
-            self.num_frac_values,
-            self.optional_info,
             self.variables,
             self.evolution_file,
             self.device,
@@ -114,9 +102,6 @@ class TestSolution(unittest.TestCase):
             self.solve_time,
             self.pp_time,
             self.optimal_value,
-            self.best_value,
-            self.num_frac_values,
-            self.optional_info,
             self.variables,
             self.evolution_file,
             self.device,
@@ -150,9 +135,6 @@ class TestSolution(unittest.TestCase):
             self.solve_time,
             self.pp_time,
             self.optimal_value,
-            self.best_value,
-            self.num_frac_values,
-            self.optional_info,
             self.variables,
             self.evolution_file,
             self.device,
@@ -173,7 +155,8 @@ class TestSolution(unittest.TestCase):
         assert original_solution_stats == expected_solution_stats
 
     def test_get_meta_dict(self):
-        """Test solution performance for values parameters with no impact on solution stats"""    
+        """Test solution performance for values parameters with no impact on solution stats"""
+
         solution = Solution(
             self.problem_size,
             self.batch_size,
@@ -183,9 +166,6 @@ class TestSolution(unittest.TestCase):
             self.solve_time,
             self.pp_time,
             self.optimal_value,
-            self.best_value,
-            self.num_frac_values,
-            self.optional_info,
             self.variables,
             self.evolution_file,
             self.device,
