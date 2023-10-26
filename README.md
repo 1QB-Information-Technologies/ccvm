@@ -12,13 +12,14 @@ This software package includes solvers for continuous optimization problems. The
 
 0. [Requirements](#requirements)
 1. [Quickstart](#quickstart)
-2. [Usage](#usage)
-3. [Documentation](#docs)
+2. [Architecture and Workflow Overview](#architecture-and-workflow-overview)
+3. [Usage](#usage)
+4. [Documentation](#docs)
     - [BoxQP Problem Definition](ccvm_simulators/problem_classes/README.md)
     - [ccvmplotlib](ccvm_simulators/ccvmplotlib/README.md)
-4. [Contributing](#contributing)
-5. [References](#references)
-6. [License](#license)
+5. [Contributing](#contributing)
+6. [References](#references)
+7. [License](#license)
 
 ## Requirements
 
@@ -67,6 +68,53 @@ This software package includes solvers for continuous optimization problems. The
 <p align="center">
     <img src="ccvm_simulators/ccvmplotlib/images/success_prob_plot_example.png" width="250">
 </p>
+
+
+## Architecture and Workflow Overview
+#### Example Workflow
+The workflow diagram showcases, step-by-step, how the CCVM simulators can be
+used to solve a problem. As users progress through the problem-solving steps,
+they are presented with two distinct options to conclude their process. They can
+choose to either visually plot the solution or to print the results.
+
+<p align="center">
+    <img src="diagrams/example_workflow.png">
+</p>
+
+#### High-Level Class Diagram
+This diagram offers a concise visualization of the main classes and their interactions within the `ccvm_simulators` package.
+
+<p align="center">
+    <img src="diagrams/high_level_class_diagram.png">
+</p>
+
+
+##### The solver hierarchy 
+The diagram portrays the relationships among different solvers and their
+association with the abstracted CCVM solver class.
+
+<p align="center">
+    <img src="diagrams/solver_ hierarchy.png">
+</p>
+
+
+##### Post processor hierarchy
+The diagram delineates the relationships between various post processors and
+their connection to the abstracted post processor class.
+
+<p align="center">
+    <img src="diagrams/post_processor_ hierarchy.png">
+</p>
+
+
+##### Plotter class diagram
+The diagram provides more details in how plotter library can be used and the asscoatiated
+class relationship.
+
+<p align="center">
+    <img src="diagrams/plottor_class_diagram.png">
+</p>
+
 
 ## Usage
 
