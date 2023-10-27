@@ -20,7 +20,7 @@ class Solution:
         optimal_value (float): The optimal objective value for the given problem instance.
         best_value (float): The best objective value for the given problem instance.
         num_frac_values (int): Number of fractional values in the solutions of given problem instance.
-        solution_vector (list): Optional information in a given problem instance.
+        solution_vector (list): Vector of solution to the problem instance found using Gurobi.
         variables (dict): A dict object to store solution related variables.
             Some fields might be solver-dependent, such as mu, sigma and s.
             - problem_variables (torch.Tensor): The values of the problem
