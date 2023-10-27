@@ -18,9 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated internal data handling that have improved performance and reduced memory usage.
-- Updated data structure of the problem instance file:
-	-- To extract all the values in the first line of the instance, additional fields i.e. (`best_sol`, `sol_time_bfgs`, `num_frac_values`) are added.
-	--  The field`solution_vector` is added to extract vector of the solution to the problem instance at the end of the new instance file compared the old data structure
+- Updated data structure for new problem instance file:
+	-- Additional fields (`best_sol`, `sol_time_bfgs`, and `num_frac_values`) are added so that additional values in the first line can be extracted properly,
+	-- A field `solution_vector` is added to extract a list of values from the final line
 
 ## [0.1.2] - 2023-03-09
 ### Fixed
