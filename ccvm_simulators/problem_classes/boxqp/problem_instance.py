@@ -168,7 +168,7 @@ class ProblemInstance:
                 for v in last_raw_data_line:
                     if not v == "":
                         solution_vector.append(float(v))
-
+                        
             except Exception as e:
                 raise Exception("Error reading instance file: " + str(e))
 
