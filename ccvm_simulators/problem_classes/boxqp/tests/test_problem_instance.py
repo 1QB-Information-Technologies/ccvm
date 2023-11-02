@@ -98,22 +98,6 @@ class TestProblemInstance(TestCase):
             file_delimiter="\t",
         )
         
-        '''
-        self.device = device
-        self.instance_type = instance_type
-        self.problem_size = problem_size
-        self.optimal_sol = optimal_sol
-        self.best_sol = best_sol
-        self.optimality = optimality
-        self.sol_time_gb = sol_time_gb
-        self.sol_time_bfgs = sol_time_bfgs
-        self.num_frac_values = num_frac_values
-        self.q_matrix = rval_q
-        self.v_vector = rval_v
-        self.optional_info = optional_info
-        self.scaled_by = 1
-        '''
-
         expected_optimal_sol = 152.602291    
         expected_best_sol = 147.960031
 
