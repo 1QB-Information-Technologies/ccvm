@@ -97,19 +97,32 @@ class TestProblemInstance(TestCase):
             file_path=self.file_path,
             file_delimiter="\t",
         )
-
-        expected_optimal_sol = 799.560976
+        
+        expected_optimal_sol = 152.602291    
+        expected_best_sol = 147.960031
 
         # check all class variable type if function runs successfully
         assert isinstance(problem_instance.optimal_sol, float)
+        assert isinstance(problem_instance.best_sol, float)
         assert problem_instance.optimal_sol == expected_optimal_sol
+        assert problem_instance.best_sol == expected_best_sol
         assert isinstance(problem_instance.sol_time_gb, float)
+        assert isinstance(problem_instance.sol_time_bfgs, float)
 
-        error_message = "optimal_sol must be greater than 0"
-        self.assertGreater(problem_instance.optimal_sol, 0, error_message)
+    
+        self.assertGreater(
+            problem_instance.optimal_sol, 0, "optimal_sol must be greater than 0"
+        )
+        self.assertGreater(
+            problem_instance.best_sol, 0, "best_sol must be greater than 0"
+        )
 
-        error_message = "sol_time_gb must be greater than 0"
-        self.assertGreater(problem_instance.sol_time_gb, 0, error_message)
+        self.assertGreater(
+            problem_instance.sol_time_gb, 0, "sol_time_gb must be greater than 0"
+        )
+        self.assertGreater(
+            problem_instance.sol_time_bfgs, 0, "sol_time_bfgs must be greater than 0"
+        )
 
     def test_scale_coefs_one_time(self):
         """Test successfully scaling the instance's coefficients."""

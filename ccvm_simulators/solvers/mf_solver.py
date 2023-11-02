@@ -423,6 +423,9 @@ class MFSolver(CCVMSolver):
 
         solve_time = time.time() - solve_time_start
 
+        # TODO: Similar to DLSolver, move the rest of the code to the MFSolver.__call__()
+        #       and update the return accordingly
+
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -466,6 +469,9 @@ class MFSolver(CCVMSolver):
             solve_time=solve_time,
             pp_time=pp_time,
             optimal_value=instance.optimal_sol,
+            best_value=instance.best_sol,
+            num_frac_values=instance.num_frac_values,
+            solution_vector=instance.solution_vector,
             variables={
                 "problem_variables": problem_variables,
                 "mu": mu,
@@ -712,6 +718,9 @@ class MFSolver(CCVMSolver):
 
         solve_time = time.time() - solve_time_start
 
+        # TODO: Similar to the solver methos in LangevinSolver and DLSolver
+        #       move the rest of the statements and update the return accordingly
+
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -755,6 +764,9 @@ class MFSolver(CCVMSolver):
             solve_time=solve_time,
             pp_time=pp_time,
             optimal_value=instance.optimal_sol,
+            best_value=instance.best_sol,
+            num_frac_values=instance.num_frac_values,
+            solution_vector=instance.solution_vector,
             variables={
                 "problem_variables": problem_variables,
                 "mu": mu,
@@ -808,14 +820,14 @@ class MFSolver(CCVMSolver):
             solution (Solution): The solution to the problem instance.
         """
         if algorithm_parameters is None:
-        # Use the original MF solver
+            # Use the original MF solver
             return self._solve(
                 instance,
                 post_processor,
                 g,
                 pump_rate_flag,
                 evolution_step_size,
-                evolution_file
+                evolution_file,
             )
         elif isinstance(algorithm_parameters, AdamParameters):
             # Use the MF solver with Adam algorithm
@@ -826,7 +838,9 @@ class MFSolver(CCVMSolver):
                 g,
                 pump_rate_flag,
                 evolution_step_size,
-                evolution_file
+                evolution_file,
             )
         else:
-            raise ValueError(f"Solver option type {type(algorithm_parameters)} is not supported.")
+            raise ValueError(
+                f"Solver option type {type(algorithm_parameters)} is not supported."
+            )

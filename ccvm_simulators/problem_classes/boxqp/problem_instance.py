@@ -44,19 +44,28 @@ class ProblemInstance:
 
         Attributes:
             problem_size (int): instance size. Defaults to None.
-            optimal_sol (float): the optimal solution to the problem. Defaults to None.
+            optimal_sol (float): the optimal solution via Gurobi to the problem. Defaults to None.
+            best_sol (float): the best solution via BFGS. Defaults to None
             optimality (bool): indicates whether the solution is
                 optimal (True or False). Defaults to None.
+            sol_time_gb (float): the time for Gurobi to solve it
+            sol_time_bfgs (float): the time for BFGS to solve it
+            num_frac_values (int): number of fractional values in the solution
             q_matrix (torch.tensor): Q matrix of the QP problem. Defaults to None.
             v_vector (torch.tensor): V vector of the QP problem. Defaults to None.
+            solution_vector (list): the vector of solution to the problem instance found using Gurobi
             scaled_by (float): scaling value of the coefficient. Defaults to 1.
         """
         self.problem_size = None
         self.optimal_sol = None
+        self.best_sol = None
         self.optimality = None
         self.sol_time_gb = None
+        self.sol_time_bfgs = None
+        self.num_frac_values = None
         self.q_matrix = None
         self.v_vector = None
+        self.solution_vector = None
         self.scaled_by = 1
         self.device = device
         self._custom_name = False
@@ -126,11 +135,16 @@ class ProblemInstance:
                 # Save all metadata from the file
                 problem_size = int(instance_info[0])
                 optimal_sol = float(instance_info[1])
-                if instance_info[2].lower() == "true":
+                best_sol = float(instance_info[2])
+                if instance_info[3].lower() == "true":
                     optimality = True
                 else:
                     optimality = False
-                sol_time_gb = float(instance_info[3])
+                sol_time_gb = float(instance_info[4])
+                sol_time_bfgs = float(instance_info[5])
+                num_frac_values = int(
+                    instance_info[7]
+                )  # seed=int(instance_info[6]) # discarded
 
                 # Initialize the q_matrix and v_vector matrices
                 rval_q = torch.zeros(
@@ -143,10 +157,22 @@ class ProblemInstance:
                 for idx in range(0, problem_size):
                     rval_v[idx] = -torch.Tensor([float(line_data_v[idx])])
                 # Read in the q_matrix matrix
-                for idx, line in enumerate(lines[2:]):
+                for idx, line in enumerate(lines[2 : problem_size + 2]):
                     line_data = line.split("\n")[0].split(file_delimiter)
                     for j, value in enumerate(line_data[:problem_size]):
                         rval_q[idx, j] = -torch.Tensor([float(value)])
+
+                # Read the last line as an additional information
+                solution_vector = []
+                try:
+                    last_raw_data_line = lines[problem_size + 2].split("\n")[0].split(file_delimiter)
+                    for v in last_raw_data_line:
+                        if not v == "":
+                            solution_vector.append(float(v))
+                except IndexError:
+                    # solution_vector was not supplied
+                    pass
+                        
             except Exception as e:
                 raise Exception("Error reading instance file: " + str(e))
 
@@ -155,10 +181,14 @@ class ProblemInstance:
         self.instance_type = instance_type
         self.problem_size = problem_size
         self.optimal_sol = optimal_sol
+        self.best_sol = best_sol
         self.optimality = optimality
         self.sol_time_gb = sol_time_gb
+        self.sol_time_bfgs = sol_time_bfgs
+        self.num_frac_values = num_frac_values
         self.q_matrix = rval_q
         self.v_vector = rval_v
+        self.solution_vector = solution_vector
         self.scaled_by = 1
 
         # Set the name of the instance if the user has not set it

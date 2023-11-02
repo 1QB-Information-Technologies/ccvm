@@ -1,5 +1,6 @@
 class AdamParameters:
     """Validates and stores the parameters required for the Adam algorithm."""
+
     def __init__(self, alpha=0.1, beta1=0.9, beta2=0.999, add_assign=True):
         """
         Initializes the AdamParameters object with the given hyperparameters.
