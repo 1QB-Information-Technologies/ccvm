@@ -163,7 +163,7 @@ class ProblemInstance:
                         rval_q[idx, j] = -torch.Tensor([float(value)])
 
                 # Read the last line as an additional information
-                last_raw_data_line = lines[-1].split("\n")[0].split(file_delimiter)
+                last_raw_data_line = lines[problem_size + 2].split("\n")[0].split(file_delimiter)
                 solution_vector = []
                 for v in last_raw_data_line:
                     if not v == "":
