@@ -10,10 +10,21 @@ Welcome to ccvm's Documentation!
    :parser: myst_parser.sphinx_
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    ccvm
+
+Model Documentation
+-------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   ccvm_equations_of_motion
+   df_ccvm_sde
+   mf_ccvm_sde
+   langevin_sde
 
 
 Indices and tables
