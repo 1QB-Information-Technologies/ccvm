@@ -339,7 +339,7 @@ class LangevinSolver(CCVMSolver):
 
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
-
+        
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -356,7 +356,7 @@ class LangevinSolver(CCVMSolver):
 
         # Calculate the objective value
         objval = instance.compute_energy(problem_variables)
-
+        
         if evolution_step_size:
             # Write samples to file
             # Overwrite file if it exists
@@ -370,28 +370,9 @@ class LangevinSolver(CCVMSolver):
                     c_sample=c_sample[batch_index],
                     evolution_file_object=evolution_file_obj,
                 )
-
-        solution = Solution(
-            problem_size=problem_size,
-            batch_size=batch_size,
-            instance_name=instance.name,
-            iterations=iterations,
-            objective_values=objval,
-            solve_time=solve_time,
-            pp_time=pp_time,
-            optimal_value=instance.optimal_sol,
-            best_value=instance.best_sol,
-            num_frac_values=instance.num_frac_values,
-            solution_vector=instance.solution_vector,
-            variables={"problem_variables": problem_variables},
-            device=device,
-        )
-
-        # Add evolution filename to solution if it was generated
-        if evolution_step_size:
-            solution.evolution_file = evolution_file
-
-        return solution
+        
+        return objval, problem_variables, solve_time, pp_time
+        
 
     def _solve_adam(
         self,
@@ -663,12 +644,12 @@ class LangevinSolver(CCVMSolver):
         """
         if algorithm_parameters is None:
             # Use the original Langevin solver
-            return self._solve(
+            objval, problem_variables, solve_time, pp_time = self._solve(
                 instance, post_processor, evolution_step_size, evolution_file
             )
         elif isinstance(algorithm_parameters, AdamParameters):
             # Use the Langevin solver with the Adam algorithm
-            return self._solve_adam(
+            objval, problem_variables, solve_time, pp_time = self._solve_adam(
                 instance,
                 algorithm_parameters.to_dict(),
                 post_processor,
@@ -679,3 +660,25 @@ class LangevinSolver(CCVMSolver):
             raise ValueError(
                 f"Solver option type {type(algorithm_parameters)} is not supported."
             )
+
+        solution = Solution(
+            problem_size=instance.problem_size,
+            batch_size=self.batch_size,
+            instance_name=instance.name,
+            iterations=self.parameter_key[instance.problem_size]['iterations'],
+            objective_values=objval,
+            solve_time=solve_time,
+            pp_time=pp_time,
+            optimal_value=instance.optimal_sol,
+            best_value=instance.best_sol,
+            num_frac_values=instance.num_frac_values,
+            solution_vector=instance.solution_vector,
+            variables={"problem_variables": problem_variables},
+            device=self.device,
+        )
+
+        # Add evolution filename to solution if it was generated
+        if evolution_step_size:
+            solution.evolution_file = evolution_file
+
+        return solution
