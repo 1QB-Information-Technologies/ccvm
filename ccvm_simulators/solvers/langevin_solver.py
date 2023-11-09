@@ -340,9 +340,6 @@ class LangevinSolver(CCVMSolver):
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
 
-        # TODO: Similar to DLSolver, move the rest of the code to the LangevinSolver.__call__()
-        #       and update the return accordingly
-
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -579,10 +576,6 @@ class LangevinSolver(CCVMSolver):
 
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
-
-        # TODO: Similar in DLSolver._solve() and DLSolver._solve_adam(),
-        #       move the rest of the code segments to the LangevinSolver.__call__()
-        #       and update the return accordingly
 
         # Run the post processor on the results, if specified
         if post_processor:
