@@ -278,6 +278,7 @@ class LangevinSolver(CCVMSolver):
         # Start the timer for the solve
         solve_time_start = time.time()
 
+        c_sample = None # Make the variable global
         if evolution_step_size:
             # Check that the value is valid
             if evolution_step_size < 1:
@@ -340,39 +341,7 @@ class LangevinSolver(CCVMSolver):
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
         
-        # Run the post processor on the results, if specified
-        if post_processor:
-            post_processor_object = PostProcessorFactory.create_postprocessor(
-                post_processor
-            )
-
-            problem_variables = post_processor_object.postprocess(
-                c, self.q_matrix, self.v_vector
-            )
-            pp_time = post_processor_object.pp_time
-        else:
-            problem_variables = c
-            pp_time = 0.0
-
-        # Calculate the objective value
-        objval = instance.compute_energy(problem_variables)
-        
-        if evolution_step_size:
-            # Write samples to file
-            # Overwrite file if it exists
-            open(evolution_file, "w")
-
-            # Get the indices of the best objective values over the sampled iterations
-            # to use to get and save the best sampled values of c and s
-            batch_index = torch.argmax(-objval)
-            with open(evolution_file, "a") as evolution_file_obj:
-                self._append_samples_to_file(
-                    c_sample=c_sample[batch_index],
-                    evolution_file_object=evolution_file_obj,
-                )
-        
-        return objval, problem_variables, solve_time, pp_time
-        
+        return c, c_sample, solve_time         
 
     def _solve_adam(
         self,
@@ -442,6 +411,7 @@ class LangevinSolver(CCVMSolver):
         # Start the timer for the solve
         solve_time_start = time.time()
 
+        c_sample = None # Make the variable global
         if evolution_step_size:
             # Check that the value is valid
             if evolution_step_size < 1:
@@ -557,39 +527,41 @@ class LangevinSolver(CCVMSolver):
 
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
-
-        # Run the post processor on the results, if specified
-        if post_processor:
-            post_processor_object = PostProcessorFactory.create_postprocessor(
-                post_processor
-            )
-
-            problem_variables = post_processor_object.postprocess(
-                self.change_variables(c, S), self.q_matrix, self.v_vector
-            )
-            pp_time = post_processor_object.pp_time
-        else:
-            problem_variables = c
-            pp_time = 0.0
-
-        # Calculate the objective value
-        objval = instance.compute_energy(problem_variables)
-
-        if evolution_step_size:
-            # Write samples to file
-            # Overwrite file if it exists
-            open(evolution_file, "w")
-
-            # Get the indices of the best objective values over the sampled iterations
-            # to use to get and save the best sampled values of c and s
-            batch_index = torch.argmax(-objval)
-            with open(evolution_file, "a") as evolution_file_obj:
-                self._append_samples_to_file(
-                    c_sample=c_sample[batch_index],
-                    evolution_file_object=evolution_file_obj,
-                )
-    
-        return objval, problem_variables, solve_time, pp_time
+        
+        return c, c_sample, solve_time
+        
+        # # Run the post processor on the results, if specified
+        # if post_processor:
+        #     post_processor_object = PostProcessorFactory.create_postprocessor(
+        #         post_processor
+        #     )
+        #
+        #     problem_variables = post_processor_object.postprocess(
+        #         self.change_variables(c, S), self.q_matrix, self.v_vector
+        #     )
+        #     pp_time = post_processor_object.pp_time
+        # else:
+        #     problem_variables = c
+        #     pp_time = 0.0
+        #
+        # # Calculate the objective value
+        # objval = instance.compute_energy(problem_variables)
+        #
+        # if evolution_step_size:
+        #     # Write samples to file
+        #     # Overwrite file if it exists
+        #     open(evolution_file, "w")
+        #
+        #     # Get the indices of the best objective values over the sampled iterations
+        #     # to use to get and save the best sampled values of c and s
+        #     batch_index = torch.argmax(-objval)
+        #     with open(evolution_file, "a") as evolution_file_obj:
+        #         self._append_samples_to_file(
+        #             c_sample=c_sample[batch_index],
+        #             evolution_file_object=evolution_file_obj,
+        #         )
+        #
+        # return objval, problem_variables, solve_time, pp_time
 
     def __call__(
         self,
@@ -624,12 +596,12 @@ class LangevinSolver(CCVMSolver):
         """
         if algorithm_parameters is None:
             # Use the original Langevin solver
-            objval, problem_variables, solve_time, pp_time = self._solve(
+            c, c_sample, solve_time = self._solve(
                 instance, post_processor, evolution_step_size, evolution_file
             )
         elif isinstance(algorithm_parameters, AdamParameters):
             # Use the Langevin solver with the Adam algorithm
-            objval, problem_variables, solve_time, pp_time = self._solve_adam(
+            c, c_sample, solve_time = self._solve_adam(
                 instance,
                 algorithm_parameters.to_dict(),
                 post_processor,
@@ -640,6 +612,37 @@ class LangevinSolver(CCVMSolver):
             raise ValueError(
                 f"Solver option type {type(algorithm_parameters)} is not supported."
             )
+         
+        # Run the post processor on the results, if specified
+        if post_processor:
+            post_processor_object = PostProcessorFactory.create_postprocessor(
+                post_processor
+            )
+
+            problem_variables = post_processor_object.postprocess(
+                c, self.q_matrix, self.v_vector
+            )
+            pp_time = post_processor_object.pp_time
+        else:
+            problem_variables = c
+            pp_time = 0.0
+
+        # Calculate the objective value
+        objval = instance.compute_energy(problem_variables)
+        
+        if evolution_step_size:
+            # Write samples to file
+            # Overwrite file if it exists
+            open(evolution_file, "w")
+
+            # Get the indices of the best objective values over the sampled iterations
+            # to use to get and save the best sampled values of c and s
+            batch_index = torch.argmax(-objval)
+            with open(evolution_file, "a") as evolution_file_obj:
+                self._append_samples_to_file(
+                    c_sample=c_sample[batch_index],
+                    evolution_file_object=evolution_file_obj,
+                )
 
         solution = Solution(
             problem_size=instance.problem_size,
