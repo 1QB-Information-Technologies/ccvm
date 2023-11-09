@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Increased test coverage, especially with respect to the Problem and Solution classes.
 
 ### Changed
-- Refactor return part of `_solver()`, `_solve_adam()`, and `__call__()` to avoid code duplication in `LangevinSolver`, `DLSolver`, and `MFSolver`.
+- Moved the update code segment for `solution` object from `_solve()` and `_solve_adam()` to `__call__()` in order to reduce code duplication in `LangevinSolver`, `DLSolver`, and `MFSolver`.
 - Updated the MF Solver and DL Solver algorithms to better account for the enforced saturation value (S).
 - Improved and fixed some issues in the DL and MF solvers to improve performance.
 - Modified the gradient of the objective function in the MFSolver to implement a linear function of variables by default. This enhances the performance of the solver.
