@@ -588,28 +588,8 @@ class LangevinSolver(CCVMSolver):
                     c_sample=c_sample[batch_index],
                     evolution_file_object=evolution_file_obj,
                 )
-
-        solution = Solution(
-            problem_size=problem_size,
-            batch_size=batch_size,
-            instance_name=instance.name,
-            iterations=iterations,
-            objective_values=objval,
-            solve_time=solve_time,
-            pp_time=pp_time,
-            optimal_value=instance.optimal_sol,
-            best_value=instance.best_sol,
-            num_frac_values=instance.num_frac_values,
-            solution_vector=instance.solution_vector,
-            variables={"problem_variables": problem_variables},
-            device=device,
-        )
-
-        # Add evolution filename to solution if it was generated
-        if evolution_step_size:
-            solution.evolution_file = evolution_file
-
-        return solution
+    
+        return objval, problem_variables, solve_time, pp_time
 
     def __call__(
         self,
