@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Algorithm parameter classes have been added to `ccvm_simulators.solvers.algorithms` to allow users to specify the `algorithm_parameters`.
 
 ### Changed
+- Moved the update code segment for `solution` object from `_solve()` and `_solve_adam()` to `__call__()` in order to reduce code duplication in `LangevinSolver`, `DLSolver`, and `MFSolver`.
 - Updated internal data handling that have improved performance and reduced memory usage.
 - Updated data structure for new problem instance file:
 	-- Additional fields (`best_sol`, `sol_time_bfgs`, and `num_frac_values`) are added so that additional values in the first line can be extracted properly,
@@ -32,7 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Increased test coverage, especially with respect to the Problem and Solution classes.
 
 ### Changed
-- Moved the update code segment for `solution` object from `_solve()` and `_solve_adam()` to `__call__()` in order to reduce code duplication in `LangevinSolver`, `DLSolver`, and `MFSolver`.
 - Updated the MF Solver and DL Solver algorithms to better account for the enforced saturation value (S).
 - Improved and fixed some issues in the DL and MF solvers to improve performance.
 - Modified the gradient of the objective function in the MFSolver to implement a linear function of variables by default. This enhances the performance of the solver.
