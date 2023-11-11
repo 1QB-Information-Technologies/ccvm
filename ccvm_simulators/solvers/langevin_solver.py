@@ -235,7 +235,10 @@ class LangevinSolver(CCVMSolver):
                 Defaults to None, which generates a filename based on the problem instance name.
 
         Returns:
-            solution (Solution): The solution to the problem instance.
+            c (tensor): random variable 
+            c_sample (tensor):  
+            solve_time (float): Elapsed time 
+            S (float): Saturation bound
         """
         # If the instance and the solver don't specify the same device type, raise
         # an error
@@ -341,7 +344,7 @@ class LangevinSolver(CCVMSolver):
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
         
-        return c, c_sample, solve_time         
+        return c, c_sample, solve_time, S      
 
     def _solve_adam(
         self,
@@ -369,7 +372,10 @@ class LangevinSolver(CCVMSolver):
                 Defaults to None, which generates a filename based on the problem instance name.
 
         Returns:
-            solution (Solution): The solution to the problem instance.
+            c (tensor): random variable 
+            c_sample (tensor):  
+            solve_time (float): Elapsed time 
+            S (float): Saturation bound
         """
         # If the instance and the solver don't specify the same device type, raise
         # an error
@@ -528,7 +534,7 @@ class LangevinSolver(CCVMSolver):
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
         
-        return c, c_sample, solve_time
+        return c, c_sample, solve_time, S
 
     def __call__(
         self,
@@ -563,12 +569,12 @@ class LangevinSolver(CCVMSolver):
         """
         if algorithm_parameters is None:
             # Use the original Langevin solver
-            c, c_sample, solve_time = self._solve(
+            c, c_sample, solve_time, S = self._solve(
                 instance, post_processor, evolution_step_size, evolution_file
             )
         elif isinstance(algorithm_parameters, AdamParameters):
             # Use the Langevin solver with the Adam algorithm
-            c, c_sample, solve_time = self._solve_adam(
+            c, c_sample, solve_time, S = self._solve_adam(
                 instance,
                 algorithm_parameters.to_dict(),
                 post_processor,

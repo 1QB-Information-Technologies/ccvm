@@ -291,7 +291,10 @@ class MFSolver(CCVMSolver):
                 the problem instance name.
 
         Returns:
-            solution (Solution): The solution to the problem instance.
+            mu, mu_tilde, sigma (tensor): random variables 
+            mu_sample, sigma_sample (tensor): random sample [needs attention] 
+            solve_time (float): Elapsed time 
+            S (float): Saturation bound
         """
         # If the instance and the solver don't specify the same device type, raise an
         # error
@@ -461,7 +464,10 @@ class MFSolver(CCVMSolver):
                 the problem instance name.
 
         Returns:
-            solution (Solution): The solution to the problem instance.
+            mu, mu_tilde, sigma (tensor): random variables 
+            mu_sample, sigma_sample (tensor): random sample [needs attention] 
+            solve_time (float): Elapsed time 
+            S (float): Saturation bound
         """
         # If the instance and the solver don't specify the same device type, raise an
         # error

@@ -257,7 +257,10 @@ class DLSolver(CCVMSolver):
                 Defaults to None, which generates a filename based on the problem instance name.
 
         Returns:
-            solution (Solution): The solution to the problem instance.
+            c, s (tensor): random variables 
+            c_sample, s_sample (tensor): random sample [needs attention] 
+            solve_time (float): Elapsed time 
+            S (float): Saturation bound
         """
         # If the instance and the solver don't specify the same device type, raise
         # an error
@@ -392,7 +395,7 @@ class DLSolver(CCVMSolver):
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
         
-        return c, s, c_sample, s_sample, solve_time
+        return c, s, c_sample, s_sample, solve_time, S
         
 
     def _solve_adam(
@@ -426,7 +429,10 @@ class DLSolver(CCVMSolver):
                 Defaults to None, which generates a filename based on the problem instance name.
 
         Returns:
-            solution (Solution): The solution to the problem instance.
+            c, s (tensor): random variables 
+            c_sample, s_sample (tensor): random sample [needs attention] 
+            solve_time (float): Elapsed time 
+            S (float): Saturation bound
         """
         # If the instance and the solver don't specify the same device type, raise
         # an error
@@ -660,7 +666,7 @@ class DLSolver(CCVMSolver):
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
         
-        return c, s, c_sample, s_sample, solve_time
+        return c, s, c_sample, s_sample, solve_time, S
     
 
     def __call__(
@@ -701,7 +707,7 @@ class DLSolver(CCVMSolver):
 
         if algorithm_parameters is None:
             # Use the original DL solver
-            c, s, c_sample, s_sample, solve_time = self._solve(
+            c, s, c_sample, s_sample, solve_time, S = self._solve(
                 instance,
                 post_processor,
                 pump_rate_flag,
@@ -711,7 +717,7 @@ class DLSolver(CCVMSolver):
             )
         elif isinstance(algorithm_parameters, AdamParameters):
             # Use the DL solver with the Adam algorithm
-            c, s, c_sample, s_sample, solve_time = self._solve_adam(
+            c, s, c_sample, s_sample, solve_time, S = self._solve_adam(
                 instance,
                 algorithm_parameters.to_dict(),
                 post_processor,
@@ -732,7 +738,7 @@ class DLSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                self.change_variables(c, self.S), self.q_matrix, self.v_vector
+                self.change_variables(c, S), self.q_matrix, self.v_vector
             )
             pp_time = post_processor_object.pp_time
         else:
@@ -741,7 +747,7 @@ class DLSolver(CCVMSolver):
 
         # Calculate the objective value
         # Perform a change of variables to enforce the box constraints
-        confs = self.change_variables(problem_variables, self.S)
+        confs = self.change_variables(problem_variables, S)
         objval = instance.compute_energy(confs)
 
         if evolution_step_size:
