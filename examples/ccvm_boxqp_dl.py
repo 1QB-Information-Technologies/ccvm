@@ -36,7 +36,8 @@ if __name__ == "__main__":
 
         solution = solver(
             instance=boxqp_instance,
-            post_processor=None, # algorithm_parameters=adam_parameters,  # Set to None to use the original DL algorithm
+            post_processor=None, 
+            # algorithm_parameters=adam_parameters,  # Set to None to use the original DL algorithm
         )
 
         print(solution)

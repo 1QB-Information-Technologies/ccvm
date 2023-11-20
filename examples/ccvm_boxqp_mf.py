@@ -43,7 +43,8 @@ if __name__ == "__main__":
 
         solution = solver(
             instance=boxqp_instance,
-            post_processor=None, # algorithm_parameters=adam_parameters,  # Set to None to use the original MF algorithm
+            post_processor=None, 
+            # algorithm_parameters=adam_parameters,  # Set to None to use the original MF algorithm
         )
 
         print(solution)
