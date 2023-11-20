@@ -263,7 +263,6 @@ class MFSolver(CCVMSolver):
     def _solve(
         self,
         instance,
-        post_processor=None,
         g=0.01,
         pump_rate_flag=True,
         evolution_step_size=None,
@@ -274,8 +273,6 @@ class MFSolver(CCVMSolver):
 
         Args:
             instance (boxqp.boxqp.ProblemInstance): The problem to solve.
-            post_processor (str): The name of the post processor to use to process
-                the results of the solver. None if no post processing is desired.
             g (float, optional): The nonlinearity coefficient. Defaults to 0.01
             pump_rate_flag (bool, optional): Whether or not to scale the pump rate
                 based on the iteration number. If False, the pump rate will be 1.0.
@@ -435,7 +432,6 @@ class MFSolver(CCVMSolver):
         self,
         instance,
         hyperparameters,
-        post_processor=None,
         g=0.01,
         pump_rate_flag=True,
         evolution_step_size=None,
@@ -447,8 +443,6 @@ class MFSolver(CCVMSolver):
         Args:
             instance (boxqp.boxqp.ProblemInstance): The problem to solve.
             hyperparameters (dict): Hyperparameters for adam algorithm.
-            post_processor (str): The name of the post processor to use to process
-                the results of the solver. None if no post processing is desired.
             g (float, optional): The nonlinearity coefficient. Defaults to 0.01
             pump_rate_flag (bool, optional): Whether or not to scale the pump rate
                 based on the iteration number. If False, the pump rate will be 1.0.
@@ -713,7 +707,6 @@ class MFSolver(CCVMSolver):
             # Use the original MF solver
             mu, mu_tilde, sigma, mu_sample, sigma_sample, solve_time, S = self._solve(
                 instance,
-                post_processor,
                 g,
                 pump_rate_flag,
                 evolution_step_size,
@@ -724,7 +717,6 @@ class MFSolver(CCVMSolver):
             mu, mu_tilde, sigma, mu_sample, sigma_sample, solve_time, S = self._solve_adam(
                 instance,
                 algorithm_parameters.to_dict(),
-                post_processor,
                 g,
                 pump_rate_flag,
                 evolution_step_size,

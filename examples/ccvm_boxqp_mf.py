@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
         # Solve the problem using the Adam algorithm
         adam_parameters = AdamParameters(
-            alpha=0.001, beta1=0.9, beta2=0.999, # 1.0, #   
+            alpha=0.001, beta1=0.9, beta2= 1.0, #0.999, #   
             add_assign=False
         )
 

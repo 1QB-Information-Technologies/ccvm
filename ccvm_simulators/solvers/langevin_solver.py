@@ -214,7 +214,6 @@ class LangevinSolver(CCVMSolver):
     def _solve(
         self,
         instance,
-        post_processor=None,
         evolution_step_size=None,
         evolution_file=None,
     ):
@@ -222,8 +221,6 @@ class LangevinSolver(CCVMSolver):
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            post_processor (str): The name of the post processor to use to process the results of the solver.
-                None if no post processing is desired. Defaults to None.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
@@ -350,7 +347,6 @@ class LangevinSolver(CCVMSolver):
         self,
         instance,
         hyperparameters,
-        post_processor=None,
         evolution_step_size=None,
         evolution_file=None,
     ):
@@ -359,8 +355,6 @@ class LangevinSolver(CCVMSolver):
         Args:
             instance (ProblemInstance): The problem instance to solve.
             hyperparameters (dict): Hyperparameters for adam algorithm.
-            post_processor (str): The name of the post processor to use to process the results of the solver.
-                None if no post processing is desired. Defaults to None.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
@@ -570,14 +564,13 @@ class LangevinSolver(CCVMSolver):
         if algorithm_parameters is None:
             # Use the original Langevin solver
             c, c_sample, solve_time, S = self._solve(
-                instance, post_processor, evolution_step_size, evolution_file
+                instance, evolution_step_size, evolution_file
             )
         elif isinstance(algorithm_parameters, AdamParameters):
             # Use the Langevin solver with the Adam algorithm
             c, c_sample, solve_time, S = self._solve_adam(
                 instance,
                 algorithm_parameters.to_dict(),
-                post_processor,
                 evolution_step_size,
                 evolution_file,
             )
