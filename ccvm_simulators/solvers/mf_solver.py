@@ -289,7 +289,7 @@ class MFSolver(CCVMSolver):
 
         Returns:
             mu, mu_tilde, sigma (tensor): random variables 
-            mu_sample, sigma_sample (tensor): random sample [needs attention] 
+            mu_sample, sigma_sample (tensor): variables for random samples 
             solve_time (float): Elapsed time 
             S (float): Saturation bound
         """
@@ -459,7 +459,7 @@ class MFSolver(CCVMSolver):
 
         Returns:
             mu, mu_tilde, sigma (tensor): random variables 
-            mu_sample, sigma_sample (tensor): random sample [needs attention] 
+            mu_sample, sigma_sample (tensor): variables for random samples 
             solve_time (float): Elapsed time 
             S (float): Saturation bound
         """

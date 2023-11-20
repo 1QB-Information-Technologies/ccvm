@@ -255,7 +255,7 @@ class DLSolver(CCVMSolver):
 
         Returns:
             c, s (tensor): random variables 
-            c_sample, s_sample (tensor): random sample [needs attention] 
+            c_sample, s_sample (tensor): variables for random samples 
             solve_time (float): Elapsed time 
             S (float): Saturation bound
         """
@@ -424,7 +424,7 @@ class DLSolver(CCVMSolver):
 
         Returns:
             c, s (tensor): random variables 
-            c_sample, s_sample (tensor): random sample [needs attention] 
+            c_sample, s_sample (tensor): variables for random samples 
             solve_time (float): Elapsed time 
             S (float): Saturation bound
         """

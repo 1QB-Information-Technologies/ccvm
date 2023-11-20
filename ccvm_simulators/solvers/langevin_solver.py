@@ -233,7 +233,7 @@ class LangevinSolver(CCVMSolver):
 
         Returns:
             c (tensor): random variable 
-            c_sample (tensor):  
+            c_sample (tensor): variable for random sample 
             solve_time (float): Elapsed time 
             S (float): Saturation bound
         """
@@ -367,7 +367,7 @@ class LangevinSolver(CCVMSolver):
 
         Returns:
             c (tensor): random variable 
-            c_sample (tensor):  
+            c_sample (tensor):  variable for random sample 
             solve_time (float): Elapsed time 
             S (float): Saturation bound
         """
