@@ -299,8 +299,8 @@ class DLSolver(CCVMSolver):
         # Start the timer for the solve
         solve_time_start = time.time()
 
-        c_sample = None # Make it global
-        s_sample = None # Make it global
+        c_sample = None 
+        s_sample = None 
         if evolution_step_size:
             # Check that the value is valid
             if evolution_step_size < 1:
@@ -468,8 +468,8 @@ class DLSolver(CCVMSolver):
         # Start the timer for the solve
         solve_time_start = time.time()
         
-        c_sample = None # Make it global
-        s_sample = None # Make it global
+        c_sample = None 
+        s_sample = None 
         if evolution_step_size:
             # Check that the value is valid
             if evolution_step_size < 1:

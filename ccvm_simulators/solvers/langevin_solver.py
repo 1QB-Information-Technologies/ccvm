@@ -278,7 +278,7 @@ class LangevinSolver(CCVMSolver):
         # Start the timer for the solve
         solve_time_start = time.time()
 
-        c_sample = None # Make it global
+        c_sample = None 
         if evolution_step_size:
             # Check that the value is valid
             if evolution_step_size < 1:
@@ -411,7 +411,7 @@ class LangevinSolver(CCVMSolver):
         # Start the timer for the solve
         solve_time_start = time.time()
 
-        c_sample = None # Make the variable global
+        c_sample = None 
         if evolution_step_size:
             # Check that the value is valid
             if evolution_step_size < 1:

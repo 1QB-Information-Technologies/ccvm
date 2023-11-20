@@ -335,8 +335,8 @@ class MFSolver(CCVMSolver):
         # Start timing the solve process
         solve_time_start = time.time()
 
-        mu_sample = None # Make it global variable
-        sigma_sample = None # Make it global variable
+        mu_sample = None 
+        sigma_sample = None 
         if evolution_step_size:
             # Check that the value is valid
             if evolution_step_size < 1:
@@ -505,8 +505,8 @@ class MFSolver(CCVMSolver):
         # Start timing the solve process
         solve_time_start = time.time()
 
-        mu_sample = None # Make it global variable
-        sigma_sample = None # Make it global variable
+        mu_sample = None 
+        sigma_sample = None 
         if evolution_step_size:
             # Check that the value is valid
             if evolution_step_size < 1:
