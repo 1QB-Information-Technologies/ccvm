@@ -30,13 +30,14 @@ if __name__ == "__main__":
 
         # Solve the problem using the Adam algorithm
         adam_parameters = AdamParameters(
-            alpha=0.001, beta1=0.9, beta2=0.999, add_assign=False
+            alpha=0.001, beta1=0.9, beta2=0.999, # 1.0, # 
+            add_assign=False
         )
 
         solution = solver(
             instance=boxqp_instance,
-            post_processor=None,
-            algorithm_parameters=adam_parameters,  # Set to None to use the original DL algorithm
+            post_processor=None, 
+            # algorithm_parameters=adam_parameters,  # Set to None to use the original DL algorithm
         )
 
         print(solution)

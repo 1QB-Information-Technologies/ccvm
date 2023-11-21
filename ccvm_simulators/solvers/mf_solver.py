@@ -263,7 +263,6 @@ class MFSolver(CCVMSolver):
     def _solve(
         self,
         instance,
-        post_processor=None,
         g=0.01,
         pump_rate_flag=True,
         evolution_step_size=None,
@@ -274,8 +273,6 @@ class MFSolver(CCVMSolver):
 
         Args:
             instance (boxqp.boxqp.ProblemInstance): The problem to solve.
-            post_processor (str): The name of the post processor to use to process
-                the results of the solver. None if no post processing is desired.
             g (float, optional): The nonlinearity coefficient. Defaults to 0.01
             pump_rate_flag (bool, optional): Whether or not to scale the pump rate
                 based on the iteration number. If False, the pump rate will be 1.0.
@@ -291,7 +288,10 @@ class MFSolver(CCVMSolver):
                 the problem instance name.
 
         Returns:
-            solution (Solution): The solution to the problem instance.
+            mu, mu_tilde, sigma (tensor): random variables 
+            mu_sample, sigma_sample (tensor): variables for random samples 
+            solve_time (float): Elapsed time 
+            S (float): Saturation bound
         """
         # If the instance and the solver don't specify the same device type, raise an
         # error
@@ -335,6 +335,8 @@ class MFSolver(CCVMSolver):
         # Start timing the solve process
         solve_time_start = time.time()
 
+        mu_sample = None 
+        sigma_sample = None 
         if evolution_step_size:
             # Check that the value is valid
             if evolution_step_size < 1:
@@ -422,75 +424,14 @@ class MFSolver(CCVMSolver):
         mu_tilde = self.fit_to_constraints(mu_tilde, -S, S)
 
         solve_time = time.time() - solve_time_start
+        
+        return mu, mu_tilde, sigma, mu_sample, sigma_sample, solve_time, S 
 
-        # TODO: Similar to DLSolver, move the rest of the code to the MFSolver.__call__()
-        #       and update the return accordingly
-
-        # Run the post processor on the results, if specified
-        if post_processor:
-            post_processor_object = PostProcessorFactory.create_postprocessor(
-                post_processor
-            )
-
-            problem_variables = post_processor_object.postprocess(
-                self.change_variables(mu_tilde, S),
-                self.q_matrix,
-                self.v_vector,
-                device=device,
-            )
-            pp_time = post_processor_object.pp_time
-        else:
-            problem_variables = self.change_variables(mu_tilde, S)
-            pp_time = 0.0
-
-        objval = instance.compute_energy(problem_variables)
-
-        if evolution_step_size:
-            # Write samples to file
-            # Overwrite file if it exists
-            open(evolution_file, "w")
-
-            # Get the indices of the best objective values over the sampled iterations
-            # to use to get and save the best sampled values of mu and sigma
-            batch_index = torch.argmax(-objval)
-            with open(evolution_file, "a") as evolution_file_obj:
-                self._append_samples_to_file(
-                    mu_sample=mu_sample[batch_index],
-                    sigma_sample=sigma_sample[batch_index],
-                    evolution_file_object=evolution_file_obj,
-                )
-
-        solution = Solution(
-            problem_size=problem_size,
-            batch_size=batch_size,
-            instance_name=instance.name,
-            iterations=iterations,
-            objective_values=objval,
-            solve_time=solve_time,
-            pp_time=pp_time,
-            optimal_value=instance.optimal_sol,
-            best_value=instance.best_sol,
-            num_frac_values=instance.num_frac_values,
-            solution_vector=instance.solution_vector,
-            variables={
-                "problem_variables": problem_variables,
-                "mu": mu,
-                "sigma": sigma,
-            },
-            device=device,
-        )
-
-        # Add evolution filename to solution if it was generated
-        if evolution_step_size:
-            solution.evolution_file = evolution_file
-
-        return solution
 
     def _solve_adam(
         self,
         instance,
         hyperparameters,
-        post_processor=None,
         g=0.01,
         pump_rate_flag=True,
         evolution_step_size=None,
@@ -502,8 +443,6 @@ class MFSolver(CCVMSolver):
         Args:
             instance (boxqp.boxqp.ProblemInstance): The problem to solve.
             hyperparameters (dict): Hyperparameters for adam algorithm.
-            post_processor (str): The name of the post processor to use to process
-                the results of the solver. None if no post processing is desired.
             g (float, optional): The nonlinearity coefficient. Defaults to 0.01
             pump_rate_flag (bool, optional): Whether or not to scale the pump rate
                 based on the iteration number. If False, the pump rate will be 1.0.
@@ -519,7 +458,10 @@ class MFSolver(CCVMSolver):
                 the problem instance name.
 
         Returns:
-            solution (Solution): The solution to the problem instance.
+            mu, mu_tilde, sigma (tensor): random variables 
+            mu_sample, sigma_sample (tensor): variables for random samples 
+            solve_time (float): Elapsed time 
+            S (float): Saturation bound
         """
         # If the instance and the solver don't specify the same device type, raise an
         # error
@@ -563,6 +505,8 @@ class MFSolver(CCVMSolver):
         # Start timing the solve process
         solve_time_start = time.time()
 
+        mu_sample = None 
+        sigma_sample = None 
         if evolution_step_size:
             # Check that the value is valid
             if evolution_step_size < 1:
@@ -718,68 +662,8 @@ class MFSolver(CCVMSolver):
 
         solve_time = time.time() - solve_time_start
 
-        # TODO: Similar to the solver methos in LangevinSolver and DLSolver
-        #       move the rest of the statements and update the return accordingly
-
-        # Run the post processor on the results, if specified
-        if post_processor:
-            post_processor_object = PostProcessorFactory.create_postprocessor(
-                post_processor
-            )
-
-            problem_variables = post_processor_object.postprocess(
-                self.change_variables(mu_tilde, S),
-                self.q_matrix,
-                self.v_vector,
-                device=device,
-            )
-            pp_time = post_processor_object.pp_time
-        else:
-            problem_variables = self.change_variables(mu_tilde, S)
-            pp_time = 0.0
-
-        objval = instance.compute_energy(problem_variables)
-
-        if evolution_step_size:
-            # Write samples to file
-            # Overwrite file if it exists
-            open(evolution_file, "w")
-
-            # Get the indices of the best objective values over the sampled iterations
-            # to use to get and save the best sampled values of mu and sigma
-            batch_index = torch.argmax(-objval)
-            with open(evolution_file, "a") as evolution_file_obj:
-                self._append_samples_to_file(
-                    mu_sample=mu_sample[batch_index],
-                    sigma_sample=sigma_sample[batch_index],
-                    evolution_file_object=evolution_file_obj,
-                )
-
-        solution = Solution(
-            problem_size=problem_size,
-            batch_size=batch_size,
-            instance_name=instance.name,
-            iterations=iterations,
-            objective_values=objval,
-            solve_time=solve_time,
-            pp_time=pp_time,
-            optimal_value=instance.optimal_sol,
-            best_value=instance.best_sol,
-            num_frac_values=instance.num_frac_values,
-            solution_vector=instance.solution_vector,
-            variables={
-                "problem_variables": problem_variables,
-                "mu": mu,
-                "sigma": sigma,
-            },
-            device=device,
-        )
-
-        # Add evolution filename to solution if it was generated
-        if evolution_step_size:
-            solution.evolution_file = evolution_file
-
-        return solution
+        return mu, mu_tilde, sigma, mu_sample, sigma_sample, solve_time, S
+    
 
     def __call__(
         self,
@@ -821,9 +705,8 @@ class MFSolver(CCVMSolver):
         """
         if algorithm_parameters is None:
             # Use the original MF solver
-            return self._solve(
+            mu, mu_tilde, sigma, mu_sample, sigma_sample, solve_time, S = self._solve(
                 instance,
-                post_processor,
                 g,
                 pump_rate_flag,
                 evolution_step_size,
@@ -831,10 +714,9 @@ class MFSolver(CCVMSolver):
             )
         elif isinstance(algorithm_parameters, AdamParameters):
             # Use the MF solver with Adam algorithm
-            return self._solve_adam(
+            mu, mu_tilde, sigma, mu_sample, sigma_sample, solve_time, S = self._solve_adam(
                 instance,
                 algorithm_parameters.to_dict(),
-                post_processor,
                 g,
                 pump_rate_flag,
                 evolution_step_size,
@@ -844,3 +726,64 @@ class MFSolver(CCVMSolver):
             raise ValueError(
                 f"Solver option type {type(algorithm_parameters)} is not supported."
             )
+            
+        # Run the post processor on the results, if specified
+        if post_processor:
+            post_processor_object = PostProcessorFactory.create_postprocessor(
+                post_processor
+            )
+
+            problem_variables = post_processor_object.postprocess(
+                self.change_variables(mu_tilde, S),
+                self.q_matrix,
+                self.v_vector,
+                device=self.device,
+            )
+            pp_time = post_processor_object.pp_time
+        else:
+            problem_variables = self.change_variables(mu_tilde, S)
+            pp_time = 0.0
+
+        objval = instance.compute_energy(problem_variables)
+
+        if evolution_step_size:
+            # Write samples to file
+            # Overwrite file if it exists
+            open(evolution_file, "w")
+
+            # Get the indices of the best objective values over the sampled iterations
+            # to use to get and save the best sampled values of mu and sigma
+            batch_index = torch.argmax(-objval)
+            with open(evolution_file, "a") as evolution_file_obj:
+                self._append_samples_to_file(
+                    mu_sample=mu_sample[batch_index],
+                    sigma_sample=sigma_sample[batch_index],
+                    evolution_file_object=evolution_file_obj,
+                )
+
+        solution = Solution(
+            problem_size=instance.problem_size,
+            batch_size=self.batch_size,
+            instance_name=instance.name,
+            iterations=self.parameter_key[instance.problem_size]["iterations"],
+            objective_values=objval,
+            solve_time=solve_time,
+            pp_time=pp_time,
+            optimal_value=instance.optimal_sol,
+            best_value=instance.best_sol,
+            num_frac_values=instance.num_frac_values,
+            solution_vector=instance.solution_vector,
+            variables={
+                "problem_variables": problem_variables,
+                "mu": mu,
+                "sigma": sigma,
+            },
+            device=self.device,
+        )
+
+        # Add evolution filename to solution if it was generated
+        if evolution_step_size:
+            solution.evolution_file = evolution_file
+
+        return solution
+

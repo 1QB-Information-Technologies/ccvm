@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Algorithm parameter classes have been added to `ccvm_simulators.solvers.algorithms` to allow users to specify the `algorithm_parameters`.
 
 ### Changed
+- Moved the update code segment for `solution` object from `_solve()` and `_solve_adam()` to `__call__()` in order to reduce code duplication in `LangevinSolver`, `DLSolver`, and `MFSolver`.
 - Updated internal data handling that have improved performance and reduced memory usage.
 - Updated data structure for new problem instance file:
 	-- Additional fields (`best_sol`, `sol_time_bfgs`, and `num_frac_values`) are added so that additional values in the first line can be extracted properly,
