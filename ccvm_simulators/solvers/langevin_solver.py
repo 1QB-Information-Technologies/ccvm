@@ -274,6 +274,7 @@ class LangevinSolver(CCVMSolver):
                 # this iteration
                 self.c_sample[:, :, samples_taken] = c
                 samples_taken += 1
+        
         return c
 
     def _solve_adam(
@@ -393,8 +394,9 @@ class LangevinSolver(CCVMSolver):
             ):
                 # Update the record of the sample values with the values found at
                 # this iteration
-                c_sample[:, :, samples_taken] = c
+                self.c_sample[:, :, samples_taken] = c
                 samples_taken += 1
+        
         return c
 
     def __call__(
@@ -497,8 +499,6 @@ class LangevinSolver(CCVMSolver):
                 device="cpu",
             )
             samples_taken = 0
-
-        # ==========================================
 
         if algorithm_parameters is None:
             # Use the original Langevin solver

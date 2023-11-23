@@ -230,110 +230,41 @@ class DLSolver(CCVMSolver):
 
     def _solve(
         self,
-        instance,
-        pump_rate_flag=True,
-        g=0.05,
-        evolution_step_size=None,
-        evolution_file=None,
+        problem_size,
+        batch_size,
+        device,
+        S,
+        pump,
+        dt,
+        iterations,
+        noise_ratio,
+        pump_rate_flag,
+        g,
+        evolution_step_size,
+        samples_taken,
     ):
         """Solves the given problem instance using the original DL-CCVM solver.
 
         Args:
-            instance (ProblemInstance): The problem instance to solve.
+            problem_size (int): instance size.
+            batch_size (int): The number of times to solve a problem instance
+            device (str): The device to use for the solver. Can be "cpu" or "cuda".
+            S (float): Saturation bound.
+            dt (float): Simulation time step.
+            iterations (int): number of steps.
+            noise_ratio (float): noise ratio.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number. If False, the pump rate will be 1.0. Defaults to True.
-            g (float): The nonlinearity coefficient. Defaults to 0.05.
+            iteration number.
+            g (float): The nonlinearity coefficient. 
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
                 will be written to a file that can be specified by setting the evolution_file parameter.
-                Defaults to None, meaning no problem variables will be written to the file.
-            evolution_file (str): The file to save the best set of c/s samples to.
-                Only revelant when evolution_step_size is set.
-                If a file already exists with the same name, it will be overwritten.
-                Defaults to None, which generates a filename based on the problem instance name.
-
+            samples_taken (int): sample slice.
+            
         Returns:
             c, s (tensor): random variables
-            c_sample, s_sample (tensor): variables for random samples
-            solve_time (float): Elapsed time
-            S (float): Saturation bound
         """
-        # If the instance and the solver don't specify the same device type, raise
-        # an error
-        if instance.device != self.device:
-            raise ValueError(
-                f"The device type of the instance ({instance.device}) and the solver"
-                f" ({self.device}) must match."
-            )
-
-        # Get problem from problem instance
-        problem_size = instance.problem_size
-        self.q_matrix = instance.q_matrix
-        self.v_vector = instance.v_vector
-
-        # Get solver setup variables
-        S = self.S
-        batch_size = self.batch_size
-        device = self.device
-
-        # Get parameters from parameter_key
-        try:
-            pump = self.parameter_key[problem_size]["pump"]
-            dt = self.parameter_key[problem_size]["dt"]
-            iterations = self.parameter_key[problem_size]["iterations"]
-            noise_ratio = self.parameter_key[problem_size]["noise_ratio"]
-        except KeyError as e:
-            raise KeyError(
-                f"The parameter '{e.args[0]}' for the given instance size is not defined."
-            ) from e
-
-        # If S is a 1-D tensor, convert it to to a 2-D tensor
-        if torch.is_tensor(S) and S.ndim == 1:
-            # Dimension indexing in pytorch starts at 0
-            if S.size(dim=0) == problem_size:
-                S = torch.outer(torch.ones(batch_size), S)
-            else:
-                raise ValueError("Tensor S size should be equal to problem size.")
-
-        # Start the timer for the solve
-        solve_time_start = time.time()
-
-        c_sample = None
-        s_sample = None
-        if evolution_step_size:
-            # Check that the value is valid
-            if evolution_step_size < 1:
-                raise ValueError(
-                    f"The evolution step size must be greater than or equal to 1."
-                )
-            # Generate evolution file name
-            if evolution_file is None:
-                evolution_file = f"./{instance.name}_evolution.txt"
-
-            # Get the number of samples to save
-            # Find the number of full steps that will be taken
-            num_steps = int(iterations / evolution_step_size)
-            # We will also capture the first iteration through
-            num_samples = num_steps + 1
-            # And capture the last iteration if the step size doesn't evenly divide
-            if iterations % evolution_step_size != 0:
-                num_samples += 1
-
-            # Initialize tensors
-            # Store on CPU to keep the memory usage lower on the GPU
-            c_sample = torch.zeros(
-                (batch_size, problem_size, num_samples),
-                dtype=torch.float,
-                device="cpu",
-            )
-            s_sample = torch.zeros(
-                (batch_size, problem_size, num_samples),
-                dtype=torch.float,
-                device="cpu",
-            )
-            samples_taken = 0
-
         # Initialize tensor variables on the device that will be used to perform the
         # calculations
         c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
@@ -382,126 +313,54 @@ class DLSolver(CCVMSolver):
             ):
                 # Update the record of the sample values with the values found at
                 # this iteration
-                c_sample[:, :, samples_taken] = c
-                s_sample[:, :, samples_taken] = s
+                self.c_sample[:, :, samples_taken] = c
+                self.s_sample[:, :, samples_taken] = s
                 samples_taken += 1
 
         # Ensure variables are within any problem constraints
         c = self.fit_to_constraints(c, -S, S)
 
-        # Stop the timer for the solve
-        solve_time = time.time() - solve_time_start
-
-        return c, s, c_sample, s_sample, solve_time, S
+        return c, s
 
     def _solve_adam(
         self,
-        instance,
+        problem_size,
+        batch_size,
+        device,
+        S,
+        pump,
+        dt,
+        iterations,
+        noise_ratio,
+        pump_rate_flag,
+        g,
+        evolution_step_size,
+        samples_taken,
         hyperparameters,
-        pump_rate_flag=True,
-        g=0.05,
-        evolution_step_size=None,
-        evolution_file=None,
     ):
         """Solves the given problem instance using the DL-CCVM solver with Adam algorithm.
 
         Args:
-            instance (ProblemInstance): The problem instance to solve.
-            hyperparameters (dict): Hyperparameters for Adam algorithm.
+            problem_size (int): instance size.
+            batch_size (int): The number of times to solve a problem instance
+            device (str): The device to use for the solver. Can be "cpu" or "cuda".
+            S (float): Saturation bound.
+            dt (float): Simulation time step.
+            iterations (int): number of steps.
+            noise_ratio (float): noise ratio.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number. If False, the pump rate will be 1.0. Defaults to True.
-            g (float): The nonlinearity coefficient. Defaults to 0.05.
+            iteration number. 
+            g (float): The nonlinearity coefficient.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
-                Defaults to None, meaning no problem variables will be written to the file.
-            evolution_file (str): The file to save the best set of c/s samples to.
-                Only revelant when evolution_step_size is set.
-                If a file already exists with the same name, it will be overwritten.
-                Defaults to None, which generates a filename based on the problem instance name.
+                will be written to a file that can be specified by setting the evolution_file parameter. 
+            samples_taken (int): sample slice.
+            hyperparameters (dict): Hyperparameters for Adam algorithm.
 
         Returns:
             c, s (tensor): random variables
-            c_sample, s_sample (tensor): variables for random samples
-            solve_time (float): Elapsed time
-            S (float): Saturation bound
         """
-        # If the instance and the solver don't specify the same device type, raise
-        # an error
-        if instance.device != self.device:
-            raise ValueError(
-                f"The device type of the instance ({instance.device}) and the solver"
-                f" ({self.device}) must match."
-            )
-
-        # Get problem from problem instance
-        problem_size = instance.problem_size
-        self.q_matrix = instance.q_matrix
-        self.v_vector = instance.v_vector
-
-        # Get solver setup variables
-        S = self.S
-        batch_size = self.batch_size
-        device = self.device
-
-        # Get parameters from parameter_key
-        try:
-            pump = self.parameter_key[problem_size]["pump"]
-            dt = self.parameter_key[problem_size]["dt"]
-            iterations = self.parameter_key[problem_size]["iterations"]
-            noise_ratio = self.parameter_key[problem_size]["noise_ratio"]
-        except KeyError as e:
-            raise KeyError(
-                f"The parameter '{e.args[0]}' for the given instance size is not defined."
-            ) from e
-
-        # If S is a 1-D tensor, convert it to to a 2-D tensor
-        if torch.is_tensor(S) and S.ndim == 1:
-            # Dimension indexing in pytorch starts at 0
-            if S.size(dim=0) == problem_size:
-                S = torch.outer(torch.ones(batch_size), S)
-            else:
-                raise ValueError("Tensor S size should be equal to problem size.")
-
-        # Start the timer for the solve
-        solve_time_start = time.time()
-
-        c_sample = None
-        s_sample = None
-        if evolution_step_size:
-            # Check that the value is valid
-            if evolution_step_size < 1:
-                raise ValueError(
-                    f"The evolution step size must be greater than or equal to 1."
-                )
-            # Generate evolution file name
-            if evolution_file is None:
-                evolution_file = f"./{instance.name}_evolution.txt"
-
-            # Get the number of samples to save
-            # Find the number of full steps that will be taken
-            num_steps = int(iterations / evolution_step_size)
-            # We will also capture the first iteration through
-            num_samples = num_steps + 1
-            # And capture the last iteration if the step size doesn't evenly divide
-            if iterations % evolution_step_size != 0:
-                num_samples += 1
-
-            # Initialize tensors
-            # Store on CPU to keep the memory usage lower on the GPU
-            c_sample = torch.zeros(
-                (batch_size, problem_size, num_samples),
-                dtype=torch.float,
-                device="cpu",
-            )
-            s_sample = torch.zeros(
-                (batch_size, problem_size, num_samples),
-                dtype=torch.float,
-                device="cpu",
-            )
-            samples_taken = 0
-
         # Initialize tensor variables on the device that will be used to perform the
         # calculations
         c = torch.zeros((batch_size, problem_size), dtype=torch.float, device=device)
@@ -649,17 +508,14 @@ class DLSolver(CCVMSolver):
             ):
                 # Update the record of the sample values with the values found at
                 # this iteration
-                c_sample[:, :, samples_taken] = c
-                s_sample[:, :, samples_taken] = s
+                self.c_sample[:, :, samples_taken] = c
+                self.s_sample[:, :, samples_taken] = s
                 samples_taken += 1
 
         # Ensure variables are within any problem constraints
         c = self.fit_to_constraints(c, -S, S)
-
-        # Stop the timer for the solve
-        solve_time = time.time() - solve_time_start
-
-        return c, s, c_sample, s_sample, solve_time, S
+        
+        return c, s
 
     def __call__(
         self,
@@ -696,31 +552,123 @@ class DLSolver(CCVMSolver):
         Returns:
             solution (Solution): The solution to the problem instance.
         """
+        # If the instance and the solver don't specify the same device type, raise
+        # an error
+        if instance.device != self.device:
+            raise ValueError(
+                f"The device type of the instance ({instance.device}) and the solver"
+                f" ({self.device}) must match."
+            )
 
+        # Get problem from problem instance
+        problem_size = instance.problem_size
+        self.q_matrix = instance.q_matrix
+        self.v_vector = instance.v_vector
+
+        # Get solver setup variables
+        S = self.S
+        batch_size = self.batch_size
+        device = self.device
+
+        # Get parameters from parameter_key
+        try:
+            pump = self.parameter_key[problem_size]["pump"]
+            dt = self.parameter_key[problem_size]["dt"]
+            iterations = self.parameter_key[problem_size]["iterations"]
+            noise_ratio = self.parameter_key[problem_size]["noise_ratio"]
+        except KeyError as e:
+            raise KeyError(
+                f"The parameter '{e.args[0]}' for the given instance size is not defined."
+            ) from e
+
+        # If S is a 1-D tensor, convert it to to a 2-D tensor
+        if torch.is_tensor(S) and S.ndim == 1:
+            # Dimension indexing in pytorch starts at 0
+            if S.size(dim=0) == problem_size:
+                S = torch.outer(torch.ones(batch_size), S)
+            else:
+                raise ValueError("Tensor S size should be equal to problem size.")
+
+        # Start the timer for the solve
+        solve_time_start = time.time()
+
+        samples_taken = None
+        self.c_sample = None
+        self.s_sample = None
+        if evolution_step_size:
+            # Check that the value is valid
+            if evolution_step_size < 1:
+                raise ValueError(
+                    f"The evolution step size must be greater than or equal to 1."
+                )
+            # Generate evolution file name
+            if evolution_file is None:
+                evolution_file = f"./{instance.name}_evolution.txt"
+
+            # Get the number of samples to save
+            # Find the number of full steps that will be taken
+            num_steps = int(iterations / evolution_step_size)
+            # We will also capture the first iteration through
+            num_samples = num_steps + 1
+            # And capture the last iteration if the step size doesn't evenly divide
+            if iterations % evolution_step_size != 0:
+                num_samples += 1
+
+            # Initialize tensors
+            # Store on CPU to keep the memory usage lower on the GPU
+            self.c_sample = torch.zeros(
+                (batch_size, problem_size, num_samples),
+                dtype=torch.float,
+                device="cpu",
+            )
+            self.s_sample = torch.zeros(
+                (batch_size, problem_size, num_samples),
+                dtype=torch.float,
+                device="cpu",
+            )
+            samples_taken = 0
+            
         if algorithm_parameters is None:
             # Use the original DL solver
-            c, s, c_sample, s_sample, solve_time, S = self._solve(
-                instance,
+            c, s = self._solve(
+                problem_size,
+                batch_size,
+                device,
+                S,
+                pump,
+                dt,
+                iterations,
+                noise_ratio,
                 pump_rate_flag,
                 g,
                 evolution_step_size,
-                evolution_file,
+                samples_taken,
             )
         elif isinstance(algorithm_parameters, AdamParameters):
             # Use the DL solver with the Adam algorithm
-            c, s, c_sample, s_sample, solve_time, S = self._solve_adam(
-                instance,
-                algorithm_parameters.to_dict(),
+            c, s = self._solve_adam(
+                problem_size,
+                batch_size,
+                device,
+                S,
+                pump,
+                dt,
+                iterations,
+                noise_ratio,
                 pump_rate_flag,
                 g,
                 evolution_step_size,
-                evolution_file,
+                samples_taken,
+                algorithm_parameters.to_dict(),
             )
         else:
             raise ValueError(
                 f"Solver option type {type(algorithm_parameters)} is not supported."
             )
-
+        
+        # Stop the timer for the solve
+        solve_time = time.time() - solve_time_start
+        
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -750,16 +698,16 @@ class DLSolver(CCVMSolver):
             batch_index = torch.argmax(-objval)
             with open(evolution_file, "a") as evolution_file_obj:
                 self._append_samples_to_file(
-                    c_sample=c_sample[batch_index],
-                    s_sample=s_sample[batch_index],
+                    c_sample=self.c_sample[batch_index],
+                    s_sample=self.s_sample[batch_index],
                     evolution_file_object=evolution_file_obj,
                 )
 
         solution = Solution(
             problem_size=instance.problem_size,
-            batch_size=self.batch_size,
+            batch_size=batch_size,
             instance_name=instance.name,
-            iterations=self.parameter_key[instance.problem_size]["iterations"],
+            iterations=iterations,
             objective_values=objval,
             solve_time=solve_time,
             pp_time=pp_time,
@@ -771,7 +719,7 @@ class DLSolver(CCVMSolver):
                 "problem_variables": problem_variables,
                 "s": s,
             },
-            device=self.device,
+            device=device,
         )
 
         # Add evolution filename to solution if it was generated
