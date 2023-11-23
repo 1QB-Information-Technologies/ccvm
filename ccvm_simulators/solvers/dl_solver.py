@@ -254,9 +254,9 @@ class DLSolver(CCVMSolver):
                 Defaults to None, which generates a filename based on the problem instance name.
 
         Returns:
-            c, s (tensor): random variables 
-            c_sample, s_sample (tensor): variables for random samples 
-            solve_time (float): Elapsed time 
+            c, s (tensor): random variables
+            c_sample, s_sample (tensor): variables for random samples
+            solve_time (float): Elapsed time
             S (float): Saturation bound
         """
         # If the instance and the solver don't specify the same device type, raise
@@ -299,8 +299,8 @@ class DLSolver(CCVMSolver):
         # Start the timer for the solve
         solve_time_start = time.time()
 
-        c_sample = None 
-        s_sample = None 
+        c_sample = None
+        s_sample = None
         if evolution_step_size:
             # Check that the value is valid
             if evolution_step_size < 1:
@@ -391,9 +391,8 @@ class DLSolver(CCVMSolver):
 
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
-        
+
         return c, s, c_sample, s_sample, solve_time, S
-        
 
     def _solve_adam(
         self,
@@ -423,9 +422,9 @@ class DLSolver(CCVMSolver):
                 Defaults to None, which generates a filename based on the problem instance name.
 
         Returns:
-            c, s (tensor): random variables 
-            c_sample, s_sample (tensor): variables for random samples 
-            solve_time (float): Elapsed time 
+            c, s (tensor): random variables
+            c_sample, s_sample (tensor): variables for random samples
+            solve_time (float): Elapsed time
             S (float): Saturation bound
         """
         # If the instance and the solver don't specify the same device type, raise
@@ -467,9 +466,9 @@ class DLSolver(CCVMSolver):
 
         # Start the timer for the solve
         solve_time_start = time.time()
-        
-        c_sample = None 
-        s_sample = None 
+
+        c_sample = None
+        s_sample = None
         if evolution_step_size:
             # Check that the value is valid
             if evolution_step_size < 1:
@@ -659,9 +658,8 @@ class DLSolver(CCVMSolver):
 
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
-        
+
         return c, s, c_sample, s_sample, solve_time, S
-    
 
     def __call__(
         self,
@@ -722,7 +720,7 @@ class DLSolver(CCVMSolver):
             raise ValueError(
                 f"Solver option type {type(algorithm_parameters)} is not supported."
             )
-        
+
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -781,4 +779,3 @@ class DLSolver(CCVMSolver):
             solution.evolution_file = evolution_file
 
         return solution
-

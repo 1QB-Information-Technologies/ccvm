@@ -37,6 +37,7 @@ class DummyConcreteSolver(CCVMSolver):
     def _solve_adam(self):
         print("dummy _solve_adam function")
 
+
 class TestCCVMSolver(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -87,10 +88,7 @@ class TestCCVMSolver(TestCase):
         self.solver._method_selector("boxqp")
         assert self.solver.calculate_grads == self.solver._calculate_grads_boxqp
         assert self.solver.change_variables == self.solver._change_variables_boxqp
-        assert (
-            self.solver.fit_to_constraints
-            == self.solver._fit_to_constraints_boxqp
-        )
+        assert self.solver.fit_to_constraints == self.solver._fit_to_constraints_boxqp
 
     def test_method_selector_invalid(self):
         """Test that method_selector raises a ValueError when an invalid input is passed"""

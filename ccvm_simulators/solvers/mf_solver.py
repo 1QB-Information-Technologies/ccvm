@@ -288,9 +288,9 @@ class MFSolver(CCVMSolver):
                 the problem instance name.
 
         Returns:
-            mu, mu_tilde, sigma (tensor): random variables 
-            mu_sample, sigma_sample (tensor): variables for random samples 
-            solve_time (float): Elapsed time 
+            mu, mu_tilde, sigma (tensor): random variables
+            mu_sample, sigma_sample (tensor): variables for random samples
+            solve_time (float): Elapsed time
             S (float): Saturation bound
         """
         # If the instance and the solver don't specify the same device type, raise an
@@ -335,8 +335,8 @@ class MFSolver(CCVMSolver):
         # Start timing the solve process
         solve_time_start = time.time()
 
-        mu_sample = None 
-        sigma_sample = None 
+        mu_sample = None
+        sigma_sample = None
         if evolution_step_size:
             # Check that the value is valid
             if evolution_step_size < 1:
@@ -424,9 +424,8 @@ class MFSolver(CCVMSolver):
         mu_tilde = self.fit_to_constraints(mu_tilde, -S, S)
 
         solve_time = time.time() - solve_time_start
-        
-        return mu, mu_tilde, sigma, mu_sample, sigma_sample, solve_time, S 
 
+        return mu, mu_tilde, sigma, mu_sample, sigma_sample, solve_time, S
 
     def _solve_adam(
         self,
@@ -458,9 +457,9 @@ class MFSolver(CCVMSolver):
                 the problem instance name.
 
         Returns:
-            mu, mu_tilde, sigma (tensor): random variables 
-            mu_sample, sigma_sample (tensor): variables for random samples 
-            solve_time (float): Elapsed time 
+            mu, mu_tilde, sigma (tensor): random variables
+            mu_sample, sigma_sample (tensor): variables for random samples
+            solve_time (float): Elapsed time
             S (float): Saturation bound
         """
         # If the instance and the solver don't specify the same device type, raise an
@@ -505,8 +504,8 @@ class MFSolver(CCVMSolver):
         # Start timing the solve process
         solve_time_start = time.time()
 
-        mu_sample = None 
-        sigma_sample = None 
+        mu_sample = None
+        sigma_sample = None
         if evolution_step_size:
             # Check that the value is valid
             if evolution_step_size < 1:
@@ -663,7 +662,6 @@ class MFSolver(CCVMSolver):
         solve_time = time.time() - solve_time_start
 
         return mu, mu_tilde, sigma, mu_sample, sigma_sample, solve_time, S
-    
 
     def __call__(
         self,
@@ -714,7 +712,15 @@ class MFSolver(CCVMSolver):
             )
         elif isinstance(algorithm_parameters, AdamParameters):
             # Use the MF solver with Adam algorithm
-            mu, mu_tilde, sigma, mu_sample, sigma_sample, solve_time, S = self._solve_adam(
+            (
+                mu,
+                mu_tilde,
+                sigma,
+                mu_sample,
+                sigma_sample,
+                solve_time,
+                S,
+            ) = self._solve_adam(
                 instance,
                 algorithm_parameters.to_dict(),
                 g,
@@ -726,7 +732,7 @@ class MFSolver(CCVMSolver):
             raise ValueError(
                 f"Solver option type {type(algorithm_parameters)} is not supported."
             )
-            
+
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -786,4 +792,3 @@ class MFSolver(CCVMSolver):
             solution.evolution_file = evolution_file
 
         return solution
-

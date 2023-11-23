@@ -251,7 +251,7 @@ class TestMFSolver(TestCase):
         self.mf_solver.fit_to_constraints = self.mock_fit_to_constraints
         self.mf_solver.change_variables = self.mock_change_variables
         self.mf_solver.calculate_grads = self.mock_calculate_grads
-        
+
         solution = self.mf_solver(instance)
 
         # Check that the solution is correct

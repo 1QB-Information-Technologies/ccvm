@@ -97,8 +97,8 @@ class TestProblemInstance(TestCase):
             file_path=self.file_path,
             file_delimiter="\t",
         )
-        
-        expected_optimal_sol = 152.602291    
+
+        expected_optimal_sol = 152.602291
         expected_best_sol = 147.960031
 
         # check all class variable type if function runs successfully
@@ -109,7 +109,6 @@ class TestProblemInstance(TestCase):
         assert isinstance(problem_instance.sol_time_gb, float)
         assert isinstance(problem_instance.sol_time_bfgs, float)
 
-    
         self.assertGreater(
             problem_instance.optimal_sol, 0, "optimal_sol must be greater than 0"
         )

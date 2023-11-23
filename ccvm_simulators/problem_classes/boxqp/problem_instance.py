@@ -165,14 +165,16 @@ class ProblemInstance:
                 # Read the last line as an additional information
                 solution_vector = []
                 try:
-                    last_raw_data_line = lines[problem_size + 2].split("\n")[0].split(file_delimiter)
+                    last_raw_data_line = (
+                        lines[problem_size + 2].split("\n")[0].split(file_delimiter)
+                    )
                     for v in last_raw_data_line:
                         if not v == "":
                             solution_vector.append(float(v))
                 except IndexError:
                     # solution_vector was not supplied
                     pass
-                        
+
             except Exception as e:
                 raise Exception("Error reading instance file: " + str(e))
 
