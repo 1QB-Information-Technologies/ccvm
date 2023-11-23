@@ -294,7 +294,7 @@ class TestMFSolver(TestCase):
         self.mf_solver.device = "cpu"
         self.mf_solver.parameter_key = self.valid_parameters
         with self.assertRaises(ValueError) as error:
-            self.mf_solver._solve(instance)
+            self.mf_solver(instance)
 
         self.assertEqual(
             str(error.exception),
