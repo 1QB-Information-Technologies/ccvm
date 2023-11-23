@@ -251,6 +251,7 @@ class DLSolver(CCVMSolver):
             device (str): The device to use for the solver. Can be "cpu" or "cuda".
             S (float): Saturation bound.
             dt (float): Simulation time step.
+            pump (float): Pump field strength.
             iterations (int): number of steps.
             noise_ratio (float): noise ratio.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
@@ -345,6 +346,7 @@ class DLSolver(CCVMSolver):
             batch_size (int): The number of times to solve a problem instance
             device (str): The device to use for the solver. Can be "cpu" or "cuda".
             S (float): Saturation bound.
+            pump (float): Pump field strength.
             dt (float): Simulation time step.
             iterations (int): number of steps.
             noise_ratio (float): noise ratio.
