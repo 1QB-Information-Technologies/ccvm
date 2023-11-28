@@ -631,10 +631,10 @@ class MFSolver(CCVMSolver):
 
             # Initialize tensors
             # Store on CPU to keep the memory usage lower on the GPU
-            mu_sample = torch.zeros(
+            self.mu_sample = torch.zeros(
                 (batch_size, problem_size, num_samples), device="cpu"
             )
-            sigma_sample = torch.zeros(
+            self.sigma_sample = torch.zeros(
                 (batch_size, problem_size, num_samples), device="cpu"
             )
             samples_taken = 0
@@ -692,7 +692,7 @@ class MFSolver(CCVMSolver):
                 self.change_variables(mu_tilde, S),
                 self.q_matrix,
                 self.v_vector,
-                device=self.device,
+                device=device,
             )
             pp_time = post_processor_object.pp_time
         else:
@@ -711,8 +711,8 @@ class MFSolver(CCVMSolver):
             batch_index = torch.argmax(-objval)
             with open(evolution_file, "a") as evolution_file_obj:
                 self._append_samples_to_file(
-                    mu_sample=mu_sample[batch_index],
-                    sigma_sample=sigma_sample[batch_index],
+                    mu_sample=self.mu_sample[batch_index],
+                    sigma_sample=self.sigma_sample[batch_index],
                     evolution_file_object=evolution_file_obj,
                 )
 
