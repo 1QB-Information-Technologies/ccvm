@@ -251,7 +251,7 @@ class TestMFSolver(TestCase):
         self.mf_solver.fit_to_constraints = self.mock_fit_to_constraints
         self.mf_solver.change_variables = self.mock_change_variables
         self.mf_solver.calculate_grads = self.mock_calculate_grads
-        
+
         solution = self.mf_solver(instance)
 
         # Check that the solution is correct
@@ -294,7 +294,7 @@ class TestMFSolver(TestCase):
         self.mf_solver.device = "cpu"
         self.mf_solver.parameter_key = self.valid_parameters
         with self.assertRaises(ValueError) as error:
-            self.mf_solver._solve(instance)
+            self.mf_solver(instance)
 
         self.assertEqual(
             str(error.exception),

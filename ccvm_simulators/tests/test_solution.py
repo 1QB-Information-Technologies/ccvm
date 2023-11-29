@@ -5,7 +5,7 @@ import os
 
 
 class TestSolution(unittest.TestCase):
-    def setUp(self):       
+    def setUp(self):
         self.problem_size = 10
         self.batch_size = 5
         self.instance_name = "test_instance"
@@ -173,7 +173,7 @@ class TestSolution(unittest.TestCase):
         assert original_solution_stats == expected_solution_stats
 
     def test_get_meta_dict(self):
-        """Test solution performance for values parameters with no impact on solution stats"""    
+        """Test solution performance for values parameters with no impact on solution stats"""
         solution = Solution(
             self.problem_size,
             self.batch_size,
