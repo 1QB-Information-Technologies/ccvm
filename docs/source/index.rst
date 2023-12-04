@@ -22,9 +22,10 @@ Model Documentation
    :maxdepth: 2
 
    ccvm_equations_of_motion
-   df_ccvm_sde
-   mf_ccvm_sde
    langevin_sde
+   dl_ccvm_sde
+   mf_ccvm_sde
+   
 
 
 Indices and tables

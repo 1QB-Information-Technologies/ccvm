@@ -35,8 +35,7 @@ These parameters, chosen for the three types of solvers implemented within the s
    g & - & - & 0.001\\\hline
    \end{array}
 
-Conclusion
-----------
+.. note::
 
 The CCVM Simulator offers a versatile and powerful platform for exploring and solving a wide range of continuous-variable problems. With its robust architecture and carefully selected parameters, it stands at the forefront of quantum simulation technology.
 
