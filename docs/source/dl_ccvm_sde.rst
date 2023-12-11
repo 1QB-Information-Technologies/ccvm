@@ -39,7 +39,7 @@ Example script: How to solve BoxQP problem using `CCVM Simulators`
 
 If you run the demo script by `$ python ccvm/examples/ccvm_boxqp_dl.py` it will simulate the dynamics of DL-CCVM for an example problem instance with a sample outcome:
 
-.. code-block:: none
+.. code-block:: python
 
     Solution(
         problem_size=20, batch_size=1000, iterations=15000, ...,
