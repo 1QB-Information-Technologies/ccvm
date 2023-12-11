@@ -7,6 +7,7 @@ Architecture of Coherent Continuous Variable Machine (CCVM)
 
 .. figure:: _static/images/ccvm-architecture.png
     :align: center
+    :width: 50%
     :alt: CCVM Architecture
 
     Schematic of the CCVM architecture.
@@ -36,6 +37,8 @@ These parameters, chosen for the three types of solvers implemented within the s
    \end{array}
 
 .. note::
-
-The CCVM Simulator offers a versatile and powerful platform for exploring and solving a wide range of continuous-variable problems. With its robust architecture and carefully selected parameters, it stands at the forefront of quantum simulation technology.
+   The CCVM Simulator offers a versatile and powerful platform for exploring and solving a wide range of continuous-variable problems. 
+   With its robust architecture and carefully selected parameters, it stands at the forefront of quantum simulation technology.
+   
+   
 

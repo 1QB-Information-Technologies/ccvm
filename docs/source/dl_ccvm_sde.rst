@@ -12,7 +12,6 @@ The dynamics describing a CCVM with a delay-line coupling scheme (DL-CCVM) are d
 
    c_i(0)=s_i(0)=0, \quad \forall i=1,\ldots,N
 
-
 where :math:`p(t) = p_0 t/T` is the amplitude of the pump field amplifying the optical pulses normalized to the photon loss rate and :math:`\partial_i f(\mathbf{y}) = \frac{\partial f(\mathbf{y})}{\partial y_i}` is the gradient of the continuous objective function, with :math:`\mathbf{y}\in\{\mathbf{c}, \mathbf{s}\}`.
 
 In our CCVM simulator, :math:`f` refers to the quadratic objective function of a given optimization problem. In the case of the box-constrained quadratic programming (BoxQP) problem, it is given by
@@ -34,3 +33,19 @@ subjected to the box constraints :math:`\ell_i\leq x_i \leq u_i`. The default li
    r(t)=r_0 \exp\Big(-\beta\frac{t}{T}\Big),
 
 has been used as the scheduling function. Here :math:`T=n_\mathrm{iter}\times N\times T_\mathrm{pulse}` is the evolution time for a single round trip. :math:`T_\text{pulse}=100\text{ps}` by default.
+
+Example script: How to solve BoxQP problem using `CCVM Simulators`
+-------------------------------------------------------------------
+
+If you run the demo script by `$ python ccvm/examples/ccvm_boxqp_dl.py` it will simulate the dynamics of DL-CCVM for an example problem instance with a sample outcome:
+
+.. code-block:: none
+
+    Solution(
+        problem_size=20, batch_size=1000, iterations=15000, ...,
+        solve_time=15.929, optimal_value=152.602, best_value=147.96, 
+        solution_performance={
+            'optimal': 0.265, 'one_percent': 0.457, 'two_percent': 0.544, 'three_percent': 0.715, 
+            'four_percent': 0.995, 'five_percent': 0.999, 'ten_percent': 1.0
+        }
+    )

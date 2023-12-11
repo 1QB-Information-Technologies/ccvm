@@ -55,6 +55,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 - Version was intended for PyPI release but encountered deployment issues.
 
+### Documentation
+- Added new pages to Sphinx documentation:
+    - CCVM Simulator - Equations of Motion
+    - Stochastic Differential Equations (SDE) for Langevin dynamics
+    - Stochastic Differential Equations (SDE) for the DL-CCVM
+    - Stochastic Differential Equations (SDE) for the Measurement-Feedback Coherent Continuous Variable Machine (MF-CCVM)
 
 ## [0.1.0] - 2023-01-25
 ### Added
