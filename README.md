@@ -47,7 +47,7 @@ This software package includes solvers for continuous optimization problems. The
     - The `ccvm_boxqp_plot.py` script solves a single problem instance, and will create an image of the resulting TTS plot in a `plots/` directory. The resulting output image, `DL-CCVM_TTS_cpu_plot.png`, will look something like this:
 
 <p align="center">
-    <img src="ccvm_simulators/ccvmplotlib/images/single_instance_TTS_plot.png" width="250" >
+    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/ccvm_simulators/ccvmplotlib/images/single_instance_TTS_plot.png?raw=true" width="250" >
 </p>
 
 ### Extending the Example
@@ -58,7 +58,7 @@ This software package includes solvers for continuous optimization problems. The
     - When solution metadata is saved for multiple problems, the graph becomes more informative, for example:
 
 <p align="center">
-    <img src="ccvm_simulators/ccvmplotlib/images/tts_plot_example.png" width="250" >
+    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/ccvm_simulators/ccvmplotlib/images/tts_plot_example.png?raw=true" width="250" >
 </p>
 
 
@@ -66,7 +66,7 @@ This software package includes solvers for continuous optimization problems. The
     - `ccvmplotlib` can also plot the success probability data, for example:
 
 <p align="center">
-    <img src="ccvm_simulators/ccvmplotlib/images/success_prob_plot_example.png" width="250">
+    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/ccvm_simulators/ccvmplotlib/images/success_prob_plot_example.png?raw=true" width="250">
 </p>
 
 
@@ -78,14 +78,14 @@ they are presented with two distinct options to conclude their process. They can
 choose to either visually plot the solution or to print the results.
 
 <p align="center">
-    <img src="diagrams/example_workflow.png">
+    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/diagrams/example_workflow.png?raw=true">
 </p>
 
 #### High-Level Class Diagram
 This diagram offers a concise visualization of the main classes and their interactions within the `ccvm_simulators` package.
 
 <p align="center">
-    <img src="diagrams/high_level_class_diagram.png">
+    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/diagrams/high_level_class_diagram.png?raw=true">
 </p>
 
 
@@ -94,7 +94,7 @@ The diagram portrays the relationships among different solvers and their
 association with the abstracted CCVM solver class.
 
 <p align="center">
-    <img src="diagrams/solver_ hierarchy.png">
+    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/diagrams/solver_%20hierarchy.png?raw=true">
 </p>
 
 
@@ -103,7 +103,7 @@ The diagram delineates the relationships between various post processors and
 their connection to the abstracted post processor class.
 
 <p align="center">
-    <img src="diagrams/post_processor_ hierarchy.png">
+    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/diagrams/post_processor_%20hierarchy.png?raw=true">
 </p>
 
 
@@ -112,7 +112,7 @@ The diagram provides more details in how plotter library can be used and the ass
 class relationship.
 
 <p align="center">
-    <img src="diagrams/plottor_class_diagram.png">
+    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/diagrams/plottor_class_diagram.png?raw=true">
 </p>
 
 
@@ -179,8 +179,8 @@ print(f"The solving process took {solution.solve_time} seconds")
 The package documentation can be found [here](https://1qb-information-technologies.github.io/ccvm/).
 
 Additional links:
-- Problem definition: [BoxQP problem class](ccvm_simulators/problem_classes/README.md)
-- Plotting library: [ccvmplotlib](ccvm_simulators/ccvmplotlib/README.md)
+- Problem definition: [BoxQP problem class](ccvm/ccvm_simulators/problem_classes/README.md)
+- Plotting library: [ccvmplotlib](ccvm/ccvm_simulators/ccvmplotlib/README.md)
 
 
 ## Contributing
