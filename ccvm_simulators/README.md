@@ -10,12 +10,12 @@ they are presented with two distinct options to conclude their process. They can
 choose to either visually plot the solution or to print the results.
 
 <p align="center">
-    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/diagrams/example_workflow.png?raw=true">
+    <img src="../diagrams/example_workflow.png">
 </p>
 
 ## High-Level Class Diagram
 This diagram offers a concise visualization of the main classes and their interactions within the `ccvm_simulators` package.
 
 <p align="center">
-    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/diagrams/high_level_class_diagram.png?raw=true">
+    <img src="../diagrams/high_level_class_diagram.png">
 </p>

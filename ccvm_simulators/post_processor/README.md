@@ -1,5 +1,5 @@
 # Post Processor
-There are currently five type of post-processing can be applied at the end of a
+There are currently six type of post-processing can be applied at the end of a
 solve.
 
 - `adam.py`: #TODO
@@ -7,11 +7,12 @@ solve.
 - `dfgs.py`: #TODO
 - `lbfgs.py`: #TODO
 - `trust_constr.py`: #TODO
+- `grad_descent.py`: #TODO
 
 ### Post processor hierarchy
 The diagram delineates the relationships between various post processors and
 their connection to the abstracted post processor class.
 
 <p align="center">
-    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/diagrams/post_processor_%20hierarchy.png?raw=true">
+    <img src="../../diagrams/post_processor_ hierarchy.png">
 </p>

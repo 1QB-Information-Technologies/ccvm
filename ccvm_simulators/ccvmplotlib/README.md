@@ -17,7 +17,7 @@ The diagram provides more details in how plotter library can be used and the ass
 class relationship.
 
 <p align="center">
-    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/diagrams/plottor_class_diagram.png?raw=true">
+    <img src="../../diagrams/plottor_class_diagram.png">
 </p>
 
 
