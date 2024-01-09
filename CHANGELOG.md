@@ -9,8 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking Changes
 - Removed the TrustConst post-processor from the codebase due to non-usage. This
   change aims to streamline the code and eliminate unnecessary components.
+
 ### Fixed 
 - Fixed issue where `s` was being updated incorrectly on each iteration  of `DLSolver._solve()`.
+
+### Added
+- Implemented a simple gradient descent post-processing step, as described in the paper.
+  - The new post-processing step is similar to Langevin dynamics but without noise.
+  - Implemented using the Euler method with box constraint imposition at each iteration.
+  - This enhancement is designed to reflect the results outlined in the paper.
+
 ### Changed
 - Streamlined README by relocating and optimizing architecture diagrams.
 - Enhanced post processor clamp function for greater flexibility by replacing

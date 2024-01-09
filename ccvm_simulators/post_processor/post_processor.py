@@ -8,6 +8,7 @@ class MethodType(str, Enum):
     LBFGS = "lbfgs"
     Adam = "adam"
     ASGD = "asgd"
+    GradDescent = "grad_descent"
 
 
 class PostProcessor(ABC):

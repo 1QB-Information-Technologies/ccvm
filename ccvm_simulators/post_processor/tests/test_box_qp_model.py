@@ -3,7 +3,6 @@ import logging
 from ..box_qp_model import BoxQPModel
 from ..post_processor import MethodType
 import torch
-import numpy as np
 
 
 class TestBoxQPModel(TestCase):

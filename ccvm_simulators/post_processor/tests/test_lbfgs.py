@@ -2,7 +2,6 @@ from unittest import TestCase
 import logging
 from ..lbfgs import PostProcessorLBFGS
 import torch
-import numpy as np
 
 
 class TestPostProcessorLBFGS(TestCase):
