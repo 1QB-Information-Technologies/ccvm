@@ -13,5 +13,5 @@ The diagram portrays the relationships among different solvers and their
 association with the abstracted CCVM solver class.
 
 <p align="center">
-    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/diagrams/solver_%20hierarchy.png?raw=true">
+    <img src="../../diagrams/solver_ hierarchy.png">
 </p>
