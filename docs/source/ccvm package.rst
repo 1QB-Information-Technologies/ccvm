@@ -1,4 +1,4 @@
-ccvm
+ccvm package
 ============
 
 

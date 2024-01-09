@@ -9,10 +9,10 @@ The general Langevin dynamics can be described by the following SDE:
 
 where :math:`\lambda` and :math:`\sigma` are hyper-parameters controlling the strengths of the drift and diffusion terms, respectively. We have implemented this solver as a classical solver implemented solely on classical computer, that is, there is no optical simulation of the Langevin dynamics in our ``ccvm`` package.
 
-Example script: How to solve BoxQP problem using `CCVM Simulators`
+Example script to solve BoxQP problem using Langevin solver
 -------------------------------------------------------------------
 
-On the command line, if you run the demo script by `$ python ccvm/examples/langevin_boxqp.py`, it will simulate Langevin dynamics for an example problem instance and then the outcome is displayed as:
+On the command line, if you run the demo script by :code:`$ python ccvm/examples/langevin_boxqp.py`, it will simulate Langevin dynamics for an example problem instance and then the outcome is displayed as:
 
 .. code-block:: python
 

@@ -28,10 +28,10 @@ is the normalized continuous measurement strength scheduled using an exponential
 
 is the vector of measured mean field amplitudes as a function of the mean-field amplitudes within the cavity :math:`\mu` and :math:`dW`, the vector of Wiener processes.
 
-Example script: How to solve BoxQP problem using `CCVM Simulators`
+Example script to solve BoxQP problem using MF-CCVM solver
 --------------------------------------------------------------------
 
-If you run the demo script by executing `$ python ccvm/examples/ccvm_boxqp_mf.py`, it will simulate the dynamics of MF-CCVM for an example problem instance with a sample outcome:
+If you run the demo script by executing :code:`$ python ccvm/examples/ccvm_boxqp_mf.py`, it will simulate the dynamics of MF-CCVM for an example problem instance with a sample outcome:
 
 .. code-block:: python
 

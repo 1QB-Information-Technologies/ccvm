@@ -34,10 +34,10 @@ subjected to the box constraints :math:`\ell_i\leq x_i \leq u_i`. The default li
 
 has been used as the scheduling function. Here :math:`T=n_\mathrm{iter}\times N\times T_\mathrm{pulse}` is the evolution time for a single round trip. :math:`T_\text{pulse}=100\text{ps}` by default.
 
-Example script: How to solve BoxQP problem using `CCVM Simulators`
+Example script to solve BoxQP problem using DL-CCVM solver
 -------------------------------------------------------------------
 
-If you run the demo script by `$ python ccvm/examples/ccvm_boxqp_dl.py` it will simulate the dynamics of DL-CCVM for an example problem instance with a sample outcome:
+If you run the demo script by :code:`$ python ccvm/examples/ccvm_boxqp_dl.py` it will simulate the dynamics of DL-CCVM for an example problem instance with a sample outcome:
 
 .. code-block:: python
 

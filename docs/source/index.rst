@@ -13,7 +13,7 @@ Welcome to ccvm's Documentation!
    :maxdepth: 3
    :caption: Contents:
 
-   ccvm
+   ccvm package
 
 Model Documentation
 -------------------
