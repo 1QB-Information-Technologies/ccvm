@@ -1,13 +1,14 @@
 # Post Processor
-There are currently six type of post-processing can be applied at the end of a
-solve.
+The algorithms in the following modules are used to perform optimization on the
+output of the solver:
 
-- `adam.py`: #TODO
-- `asgd.py`: #TODO
-- `dfgs.py`: #TODO
-- `lbfgs.py`: #TODO
-- `trust_constr.py`: #TODO
-- `grad_descent.py`: #TODO
+- `adam.py`: Adam method from PyTorch.
+- `asgd.py`:  ASGD from PyTorch.
+- `bfgs.py`: BFGS from SciPy.
+- `lbfgs.py`:  LBFGS from SciPy.
+- `trust_constr.py`: Trust-region algorithm from SciPy.
+- `grad_descent.py`: Gradient descent method using Euler-Maruyama method with a constraint enforced at each step.
+
 
 ### Post processor hierarchy
 The diagram delineates the relationships between various post processors and
