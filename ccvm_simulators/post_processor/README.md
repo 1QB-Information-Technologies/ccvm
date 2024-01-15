@@ -11,7 +11,7 @@ solve.
 
 ### Post processor hierarchy
 The diagram delineates the relationships between various post processors and
-their connection to the abstracted post processor class.
+their connection to the abstract post processor class.
 
 <p align="center">
     <img src="../../diagrams/post_processor_ hierarchy.png">
