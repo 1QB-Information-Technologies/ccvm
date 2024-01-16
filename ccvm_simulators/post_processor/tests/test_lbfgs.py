@@ -37,6 +37,22 @@ class TestPostProcessorLBFGS(TestCase):
         error_message = "post_processing time must be greater than 0"
         self.assertGreater(self.post_processor.pp_time, 0, error_message)
 
+    def test_postprocess_default_upper_lower_clamp(self):
+        # Test with custom values for lower_clamp and upper_clamp
+        lower_clamp = -1.0
+        upper_clamp = 2.0
+        output_tensor = self.post_processor.postprocess(
+            self.c, self.q_matrix, self.v_vector, lower_clamp, upper_clamp
+        )
+
+        # check output is a tensor
+        assert torch.is_tensor(output_tensor)
+        # check size of valid
+        assert output_tensor.size() == self.c.size()
+        # check if pp time is valid
+        error_message = "post_processing time must be greater than 0"
+        self.assertGreater(self.post_processor.pp_time, 0, error_message)
+
     # TODO: Not sure if this is an applicable test case
     def test_postprocess_invalid_c_parameter(self):
         """Test postprocess when given valid inputs and verified the pp_time gets
