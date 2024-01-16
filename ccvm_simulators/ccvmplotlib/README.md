@@ -10,6 +10,17 @@
     - Time Evolution Plotting ([issue #28](https://github.com/1QB-Information-Technologies/ccvm/issues/28))
     - Density-Dependent TTS Plotting ([issue #29](https://github.com/1QB-Information-Technologies/ccvm/issues/29))
 
+
+### Class Diagram
+
+The diagram provides more details in how plotter library can be used and the asscoatiated
+class relationship.
+
+<p align="center">
+    <img src="../../diagrams/plottor_class_diagram.png">
+</p>
+
+
 ### Usage
 
 ```python
