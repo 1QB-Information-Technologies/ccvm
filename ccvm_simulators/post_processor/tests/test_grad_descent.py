@@ -31,6 +31,17 @@ class TestPostProcessorGradDescent(TestCase):
         self.assertTrue(torch.is_tensor(output_tensor))
         self.assertEqual(output_tensor.size(), self.c.size())
 
+    def test_postprocess_default_upper_lower_clamp(self):
+        # Test with custom values for lower_clamp and upper_clamp
+        lower_clamp = -1.0
+        upper_clamp = 2.0
+        output_tensor = self.post_processor.postprocess(
+            self.c, self.q_matrix, self.v_vector, lower_clamp, upper_clamp
+        )
+
+        self.assertTrue(torch.is_tensor(output_tensor))
+        self.assertEqual(output_tensor.size(), self.c.size())
+
     def test_postprocess_custom_num_iter_pp(self):
         """Test postprocess with custom num_iter_pp"""
         num_iter_pp = 10
