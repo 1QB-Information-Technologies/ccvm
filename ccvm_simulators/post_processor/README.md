@@ -1,4 +1,4 @@
-# Post Processor
+# Post-processor
 The algorithms in the following modules are used to perform optimization on the
 output of the solver:
 
@@ -10,10 +10,10 @@ output of the solver:
 - `grad_descent.py`: Gradient descent method using Euler-Maruyama method with a constraint enforced at each step.
 
 
-### Post processor hierarchy
-The diagram delineates the relationships between various post processors and
-their connection to the abstract post processor class.
+### Post-processor hierarchy
+The diagram delineates the relationships between various post-processors and
+their connection to the abstract post-processor class.
 
 <p align="center">
-    <img src="../../diagrams/post_processor_ hierarchy.png">
+    <img src="../../diagrams/post_processor_hierarchy.png">
 </p>
