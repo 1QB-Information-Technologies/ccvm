@@ -1,7 +1,7 @@
-from unittest import TestCase
 import logging
-from ..grad_descent import PostProcessorGradDescent
 import torch
+from unittest import TestCase
+from ..grad_descent import PostProcessorGradDescent
 
 
 class TestPostProcessorGradDescent(TestCase):

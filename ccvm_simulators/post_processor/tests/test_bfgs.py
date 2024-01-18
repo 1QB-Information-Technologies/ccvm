@@ -1,8 +1,7 @@
-from unittest import TestCase
 import logging
-from ..bfgs import PostProcessorBFGS
 import torch
-import numpy as np
+from unittest import TestCase
+from ..bfgs import PostProcessorBFGS
 
 
 class TestPostProcessorBFGS(TestCase):
@@ -30,11 +29,14 @@ class TestPostProcessorBFGS(TestCase):
         output_tensor = self.post_processor.postprocess(
             self.c, self.q_matrix, self.v_vector
         )
-        # check output is a tensor
+
+        # Check output is a tensor
         assert torch.is_tensor(output_tensor)
-        # check size of valid
+
+        # Check size of valid
         assert output_tensor.size() == self.c.size()
-        # check if pp time is valid
+
+        # Check if pp time is valid
         error_message = "post_processing time must be greater than 0"
         self.assertGreater(self.post_processor.pp_time, 0, error_message)
 
