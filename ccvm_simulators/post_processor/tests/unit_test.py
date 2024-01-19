@@ -29,13 +29,13 @@
 #         TestPostProcessorAdam("test_postprocess_invalid_qmat_parameter")
 #     )
 #     unit_test_suite.addTest(
-#         TestPostProcessorAdam("test_postprocess_invalid_c_vector_parameter")
+#         TestPostProcessorAdam("test_postprocess_invalid_v_vector_parameter")
 #     )
 #     unit_test_suite.addTest(
 #         TestPostProcessorAdam("test_postprocess_error_for_invalid_c_dimension")
 #     )
 #     unit_test_suite.addTest(
-#         TestPostProcessorAdam("test_postprocess_error_for_invalid_c_vector_shape")
+#         TestPostProcessorAdam("test_postprocess_error_for_invalid_v_vector_shape")
 #     )
 
 #     # ASGD
@@ -47,13 +47,13 @@
 #         TestPostProcessorASGD("test_postprocess_invalid_qmat_parameter")
 #     )
 #     unit_test_suite.addTest(
-#         TestPostProcessorASGD("test_postprocess_invalid_c_vector_parameter")
+#         TestPostProcessorASGD("test_postprocess_invalid_v_vector_parameter")
 #     )
 #     unit_test_suite.addTest(
 #         TestPostProcessorASGD("test_postprocess_error_for_invalid_c_dimension")
 #     )
 #     unit_test_suite.addTest(
-#         TestPostProcessorASGD("test_postprocess_error_for_invalid_c_vector_shape")
+#         TestPostProcessorASGD("test_postprocess_error_for_invalid_v_vector_shape")
 #     )
 
 #     # BFGS
@@ -65,13 +65,13 @@
 #         TestPostProcessorBFGS("test_postprocess_invalid_qmat_parameter")
 #     )
 #     unit_test_suite.addTest(
-#         TestPostProcessorBFGS("test_postprocess_invalid_c_vector_parameter")
+#         TestPostProcessorBFGS("test_postprocess_invalid_v_vector_parameter")
 #     )
 #     unit_test_suite.addTest(
 #         TestPostProcessorBFGS("test_postprocess_error_for_invalid_c_dimension")
 #     )
 #     unit_test_suite.addTest(
-#         TestPostProcessorBFGS("test_postprocess_error_for_invalid_c_vector_shape")
+#         TestPostProcessorBFGS("test_postprocess_error_for_invalid_v_vector_shape")
 #     )
 
 #     # LBFGS
@@ -83,13 +83,13 @@
 #         TestPostProcessorLBFGS("test_postprocess_invalid_qmat_parameter")
 #     )
 #     unit_test_suite.addTest(
-#         TestPostProcessorLBFGS("test_postprocess_invalid_c_vector_parameter")
+#         TestPostProcessorLBFGS("test_postprocess_invalid_v_vector_parameter")
 #     )
 #     unit_test_suite.addTest(
 #         TestPostProcessorLBFGS("test_postprocess_error_for_invalid_c_dimension")
 #     )
 #     unit_test_suite.addTest(
-#         TestPostProcessorLBFGS("test_postprocess_error_for_invalid_c_vector_shape")
+#         TestPostProcessorLBFGS("test_postprocess_error_for_invalid_v_vector_shape")
 #     )
 
 #     # ProcessFactory

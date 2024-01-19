@@ -3,6 +3,7 @@ from .adam import PostProcessorAdam
 from .asgd import PostProcessorASGD
 from .bfgs import PostProcessorBFGS
 from .lbfgs import PostProcessorLBFGS
+from .grad_descent import PostProcessorGradDescent
 
 
 class PostProcessorFactory:
@@ -29,4 +30,6 @@ class PostProcessorFactory:
             return PostProcessorAdam()
         elif method.lower() == MethodType.ASGD.value:
             return PostProcessorASGD()
+        elif method.lower() == MethodType.GradDescent.value:
+            return PostProcessorGradDescent()
         raise AssertionError(f"Method type is not valid. Provided: {method}")

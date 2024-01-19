@@ -72,11 +72,11 @@ class TestPostProcessorGradDescent(TestCase):
         with self.assertRaisesRegex(TypeError, "parameter q_matrix must be a tensor"):
             self.post_processor.postprocess(self.c, invalid_qmat, self.v_vector)
 
-    def test_postprocess_invalid_c_vector_parameter(self):
+    def test_postprocess_invalid_v_vector_parameter(self):
         """Test postprocess with invalid v_vector parameter"""
-        invalid_c_vector = "dummy-v_vector"
+        invalid_v_vector = "dummy-v_vector"
         with self.assertRaisesRegex(TypeError, "parameter v_vector must be a tensor"):
-            self.post_processor.postprocess(self.c, self.q_matrix, invalid_c_vector)
+            self.post_processor.postprocess(self.c, self.q_matrix, invalid_v_vector)
 
     def test_postprocess_error_for_invalid_c_dimension(self):
         """Test postprocess with invalid c dimension"""
@@ -85,7 +85,7 @@ class TestPostProcessorGradDescent(TestCase):
         with self.assertRaises(Exception):
             self.post_processor.postprocess(c, self.q_matrix, self.v_vector)
 
-    def test_postprocess_error_for_invalid_c_vector_shape(self):
+    def test_postprocess_error_for_invalid_v_vector_shape(self):
         """Test postprocess with invalid v_vector shape"""
         N = self.N
         v_vector = torch.FloatTensor(N, N)

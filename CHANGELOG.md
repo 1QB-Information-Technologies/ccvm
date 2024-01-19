@@ -15,9 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Implemented a simple gradient descent post-processing step, as described in the paper.
-  - The new post-processing step is similar to Langevin dynamics but without noise.
-  - Implemented using the Euler method with box constraint imposition at each iteration.
-  - This enhancement is designed to reflect the results outlined in the paper.
+  - Similar to Langevin dynamics but without noise.
+	- Implemented using the Euler method with box constraint imposition at each iteration.
+	- Designed to reflect the results outlined in the paper.
 
 ### Changed
 - Streamlined README by relocating and optimizing architecture diagrams.

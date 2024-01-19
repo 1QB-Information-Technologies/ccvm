@@ -31,7 +31,7 @@ class TestPostProcessorLBFGS(TestCase):
         # Check output is a tensor
         assert torch.is_tensor(output_tensor)
 
-        # Check size of valid
+        # Check size is valid
         assert output_tensor.size() == self.c.size()
 
         # Check if pp time is valid
@@ -49,7 +49,7 @@ class TestPostProcessorLBFGS(TestCase):
         # Check output is a tensor
 
         assert torch.is_tensor(output_tensor)
-        # Check size of valid
+        # Check size is valid
 
         assert output_tensor.size() == self.c.size()
         # Check if pp time is valid
@@ -72,12 +72,12 @@ class TestPostProcessorLBFGS(TestCase):
         with self.assertRaisesRegex(TypeError, "parameter q_matrix must be a tensor"):
             self.post_processor.postprocess(self.c, invalid_qmat, self.v_vector)
 
-    def test_postprocess_invalid_c_vector_parameter(self):
+    def test_postprocess_invalid_v_vector_parameter(self):
         """Test postprocess when v_vector value is not a tensor"""
-        invalid_c_vector = "dummy-v_vector"
+        invalid_v_vector = "dummy-v_vector"
 
         with self.assertRaisesRegex(TypeError, "parameter v_vector must be a tensor"):
-            self.post_processor.postprocess(self.c, self.q_matrix, invalid_c_vector)
+            self.post_processor.postprocess(self.c, self.q_matrix, invalid_v_vector)
 
     def test_postprocess_error_for_invalid_c_dimension(self):
         """Test postprocess when parameter dimensions are inconsistent.
@@ -96,7 +96,7 @@ class TestPostProcessorLBFGS(TestCase):
         else:
             self.fail("Expected Exception not raised")
 
-    def test_postprocess_error_for_invalid_c_vector_shape(self):
+    def test_postprocess_error_for_invalid_v_vector_shape(self):
         """Test postprocess when parameter dimensions are inconsistent.
         We expect to be given an MxN tensor for c, an NxN tensor for q_matrix, and
         a tensor of size N for the v_vector. If any of these are not the correct
