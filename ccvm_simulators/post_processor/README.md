@@ -6,7 +6,6 @@ output of the solver:
 - `asgd.py`:  ASGD from PyTorch.
 - `bfgs.py`: BFGS from SciPy.
 - `lbfgs.py`:  LBFGS from SciPy.
-- `trust_constr.py`: Trust-region algorithm from SciPy.
 - `grad_descent.py`: Gradient descent method using Euler-Maruyama method with a constraint enforced at each step.
 
 
