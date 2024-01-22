@@ -38,15 +38,17 @@ class ccvmplotlib:
             problem (str): A problem type.
             TTS_type (str): A Time-To-Solution type. It is either a CPU time or an
             optic device time.
-            fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure. Defaults to None.
-            ax (matplotlib.axes.Axes, optional): A pre-generated pyplot axis. Defaults to None.
+            fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure.
+            Defaults to None.
+            ax (matplotlib.axes.Axes, optional): A pre-generated pyplot axis.
+            Defaults to None.
 
         Raises:
             ValueError: Raises a ValueError when the plotting data is not valid.
 
         Returns:
-            tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and axis that has
-                the TTS plot with minimal styling.
+            tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and
+            axis that has the TTS plot with minimal styling.
         """
         problem_metadata = ProblemMetadataFactory.create_problem_metadata(problem)
         problem_metadata.ingest_metadata(metadata_filepath)
