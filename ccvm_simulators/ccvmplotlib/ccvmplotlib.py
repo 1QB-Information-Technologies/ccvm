@@ -48,11 +48,9 @@ class ccvmplotlib:
             tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and axis that has
                 the TTS plot with minimal styling.
         """
-        problem_metadata = ProblemMetadataFactory.create_problem_metadata(
-            problem, TTS_type
-        )
+        problem_metadata = ProblemMetadataFactory.create_problem_metadata(problem)
         problem_metadata.ingest_metadata(metadata_filepath)
-        plotting_df = problem_metadata.generate_plot_data()
+        plotting_df = problem_metadata.generate_TTS_plot_data(TTS_type=TTS_type)
 
         x_data = plotting_df.index
 

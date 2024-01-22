@@ -22,7 +22,7 @@ class TTSType(Enum):
 class ProblemMetadata(ABC):
     """Abstract class for the problem metadata."""
 
-    def __init__(self, problem: ProblemType, TTS_type: TTSType) -> None:
+    def __init__(self, problem: ProblemType) -> None:
         """Problem Metadata abstract class object constructor.
 
         The constructor defines and holds common variables for different
@@ -30,10 +30,7 @@ class ProblemMetadata(ABC):
 
         Args:
             problem (ProblemType): A problem type.
-            TTS_type (TTSType): A Time-To-Solution type. It is either a CPU time or an
-                optic device time
         """
-        self.__TTS_type = TTS_type
         self.__problem = problem
 
     @property
@@ -45,30 +42,13 @@ class ProblemMetadata(ABC):
         """
         return self.__problem
 
-    @property
-    def TTS_type(self) -> TTSType:
-        """TTS type getter method.
-
-        Returns:
-            TTSType: TTS Type.
-        """
-        return self.__TTS_type
-
     @abstractmethod
     def ingest_metadata(self) -> None:
         """Take a file path to metadata and convert them into a
         pandas.DataFrame."""
 
     @abstractmethod
-    def generate_arrays_of_TTS(self) -> None:
-        """Generate arrays of TTS data.
-
-        The output of this method gets used to prepare data for plotting.
-        """
-        pass
-
-    @abstractmethod
-    def generate_plot_data(self) -> pd.DataFrame:
+    def generate_TTS_plot_data(self) -> pd.DataFrame:
         """Generate data for plotting.
 
         Plotting data will be varied by a different problem. Thus, for different
