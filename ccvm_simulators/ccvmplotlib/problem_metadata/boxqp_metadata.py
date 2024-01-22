@@ -135,6 +135,96 @@ class BoxQPMetadata(ProblemMetadata):
 
         return best_known_energy_arr, all_results, matching_df[percent_gap].values
 
+    def generate_TTS_plot_data(
+        self,
+        df,
+        gap,
+        basic_hypers,
+        quantile,
+        problem_sizes,
+        method="advanced",
+        bsize=1000,
+        TTS_type="wallclock",
+        device_parameters=None,
+    ) -> pd.DataFrame:
+        """Calculate the time to solution vs problem size for a particular gap and
+        quantile.
+
+        Args:
+            df (pd.DataFrame): All the data
+            gap (float): Percent error to the optimal energy e.g. 0.01, 0.05, 0.1
+            basic_hypers (dictionary): parameters of the solver for which the TTS is found
+            quantile (float): Quantile of the tts over problem files
+            problem_sizes (np.array): the list of problem sizes
+            method (string): determines the method for finding R99. Values are "basic" for
+            using just the data, or "advanced" for using an R99 beta distribution
+        Returns:
+            (pd.Series): The time to solution for each problem size.
+        """
+
+        plotting_df = pd.DataFrame(
+            index=pd.Index(self.__problem_size_list, name="Problem Size (N)"),
+            columns=pd.MultiIndex.from_product(
+                [self.__percent_gap_list, self.__percentile_list],
+                names=["Optimality Type", "Percentile"],
+            ),
+        )
+
+        for percent_gap in self.__percent_gap_list:
+            for problem_size in self.__problem_size_list:
+                matching_df = self.__df.loc[self.__df["problem_size"] == problem_size]
+                for percentile in self.__percentile_list[:-1]:
+                    sampler = SampleTTSMetric(
+                        tau_attribute="time",
+                        percentile=int(percentile),
+                        seed=1,
+                        num_bootstraps=100,
+                    )
+
+                    if TTS_type == "wallclock":
+                        machine_time = np.mean(matching_df["solve_time"].values)
+                    elif TTS_type == "physical":
+                        pp_time = np.mean(matching_df["pp_time"].values)
+                        iterations = matching_df["iterations"].values
+                        roundtrip_time = (
+                            (
+                                device_parameters["FPGA_fixed"]
+                                + device_parameters["FPGA_var_fac"]
+                                * float(problem_size)
+                            )
+                            * device_parameters["FPGA_clock"]
+                            + float(problem_size) * device_parameters["laser_clock"]
+                            + device_parameters["buffer_time"]
+                        )
+                        machine_time = roundtrip_time * iterations + pp_time
+
+                    success_prob = float(matching_df[percent_gap].values)
+                    frac_solved = (success_prob > 0).mean()
+                    if frac_solved < (percentile / 100):
+                        R99 = np.inf
+                    else:
+                        R99_distribution = sampler.calc_R99_distribution(
+                            success_probabilities=success_prob,
+                            num_repeats=self.__batch_size,
+                        )
+                        R99 = np.mean(R99_distribution)
+
+                    mean_TTS = machine_time * R99
+                    plotting_df.at[problem_size, (percent_gap, percentile)] = mean_TTS
+
+                    success_prob_list = matching_df[percent_gap].values
+                    mean_success_prob = np.mean(
+                        np.array(
+                            [float(success_prob) for success_prob in success_prob_list]
+                        )
+                    )
+
+                plotting_df.at[
+                    problem_size, (percent_gap, "success_prob")
+                ] = mean_success_prob
+
+        return plotting_df
+
     def generate_plot_data(self) -> pd.DataFrame:
         """A method to generate data for TTS and success probability plotting.
 
