@@ -91,8 +91,12 @@ class BoxQPMetadata(ProblemMetadata):
         quantile.
 
         Args:
-            method (string): determines the method for finding R99. Values are "basic" for
-            using just the data, or "advanced" for using an R99 beta distribution
+            method (string): determines the method for finding R99. Values are "basic"
+            for using just the data, or "advanced" for using an R99 beta distribution
+            TTS_type (string): A Time-To-Solution type. It is either a CPU time or an
+            optic device time.
+            device_parameters (dict): A device parameter sets used for calculating
+            metrics.
         Returns:
             (pd.Series): The time to solution for each problem size.
         """
