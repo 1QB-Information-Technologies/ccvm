@@ -151,12 +151,32 @@ class BoxQPMetadata(ProblemMetadata):
                     mean_TTS = machine_time * R99
                     plotting_df.at[problem_size, (percent_gap, percentile)] = mean_TTS
 
-                    success_prob_list = matching_df[percent_gap].values
-                    mean_success_prob = np.mean(
-                        np.array(
-                            [float(success_prob) for success_prob in success_prob_list]
-                        )
+        return plotting_df
+
+    def generate_success_prob_plot_data(self) -> pd.DataFrame:
+        """_summary_
+
+        Returns:
+            pd.DataFrame: _description_
+        """
+        plotting_df = pd.DataFrame(
+            index=pd.Index(self.__problem_size_list, name="Problem Size (N)"),
+            columns=pd.MultiIndex.from_product(
+                [self.__percent_gap_list, self.__percentile_list],
+                names=["Optimality Type", "Percentile"],
+            ),
+        )
+
+        for percent_gap in self.__percent_gap_list:
+            for problem_size in self.__problem_size_list:
+                matching_df = self.__df.loc[self.__df["problem_size"] == problem_size]
+
+                success_prob_list = matching_df[percent_gap].values
+                mean_success_prob = np.mean(
+                    np.array(
+                        [float(success_prob) for success_prob in success_prob_list]
                     )
+                )
 
                 plotting_df.at[
                     problem_size, (percent_gap, "success_prob")

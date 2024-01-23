@@ -59,3 +59,12 @@ class ProblemMetadata(ABC):
             pd.DataFrame: A new data for plotting.
         """
         pass
+
+    @abstractmethod
+    def generate_success_prob_plot_data(self) -> pd.DataFrame:
+        """_summary_
+
+        Returns:
+            pd.DataFrame: _description_
+        """
+        pass
