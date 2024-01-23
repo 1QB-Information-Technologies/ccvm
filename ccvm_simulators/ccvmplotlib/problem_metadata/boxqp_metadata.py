@@ -154,10 +154,11 @@ class BoxQPMetadata(ProblemMetadata):
         return plotting_df
 
     def generate_success_prob_plot_data(self) -> pd.DataFrame:
-        """_summary_
+        """Calculate the success probability vs problem size for a particular gap and
+        quantile.
 
         Returns:
-            pd.DataFrame: _description_
+            pd.DataFrame: The success probabaility for each problem size.
         """
         plotting_df = pd.DataFrame(
             index=pd.Index(self.__problem_size_list, name="Problem Size (N)"),
