@@ -122,7 +122,6 @@ class ccvmplotlib:
     def plot_success_prob(
         metadata_filepath: str,
         problem: str,
-        TTS_type: str,
         fig: matplotlib.figure.Figure = None,
         ax: matplotlib.axes.Axes = None,
     ) -> tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]:
@@ -132,8 +131,6 @@ class ccvmplotlib:
         Args:
             metadata_filepath (str): A file path to solution data.
             problem (str): A problem type.
-            TTS_type (str): A Time-To-Solution type. It is either a CPU time or an
-            optic device time
             fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure. Defaults to None.
             ax (matplotlib.axes.Axes, optional): A pre-generated pyplot axis. Defaults to None.
 
@@ -144,11 +141,9 @@ class ccvmplotlib:
             tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and axis that has
                 the success probability plot with minimal styling.
         """
-        problem_metadata = ProblemMetadataFactory.create_problem_metadata(
-            problem, TTS_type
-        )
+        problem_metadata = ProblemMetadataFactory.create_problem_metadata(problem)
         problem_metadata.ingest_metadata(metadata_filepath)
-        plotting_df = problem_metadata.generate_plot_data()
+        plotting_df = problem_metadata.generate_success_prob_plot_data()
         x_data = plotting_df.index.tolist()
 
         if not ax or not fig:
