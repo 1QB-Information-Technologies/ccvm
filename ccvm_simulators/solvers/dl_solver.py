@@ -256,13 +256,13 @@ class DLSolver(CCVMSolver):
             noise_ratio (float): noise ratio.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
             iteration number.
-            g (float): The nonlinearity coefficient.
+            g (float): The nonlinearity coefficient. 
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
                 will be written to a file that can be specified by setting the evolution_file parameter.
             samples_taken (int): sample slice.
-
+            
         Returns:
             c, s (tensor): random variables
         """
@@ -349,12 +349,12 @@ class DLSolver(CCVMSolver):
             iterations (int): number of steps.
             noise_ratio (float): noise ratio.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number.
+            iteration number. 
             g (float): The nonlinearity coefficient.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
+                will be written to a file that can be specified by setting the evolution_file parameter. 
             samples_taken (int): sample slice.
             hyperparameters (dict): Hyperparameters for Adam algorithm.
 
@@ -514,7 +514,7 @@ class DLSolver(CCVMSolver):
 
         # Ensure variables are within any problem constraints
         c = self.fit_to_constraints(c, -S, S)
-
+        
         return c, s
 
     def __call__(
@@ -627,7 +627,7 @@ class DLSolver(CCVMSolver):
                 device="cpu",
             )
             samples_taken = 0
-
+            
         if algorithm_parameters is None:
             # Use the original DL solver
             c, s = self._solve(
@@ -665,10 +665,10 @@ class DLSolver(CCVMSolver):
             raise ValueError(
                 f"Solver option type {type(algorithm_parameters)} is not supported."
             )
-
+        
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
-
+        
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(

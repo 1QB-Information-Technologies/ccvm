@@ -12,16 +12,7 @@ class PostProcessorAdam(PostProcessor):
         self.pp_time = 0
         self.method_type = MethodType.Adam
 
-    def postprocess(
-        self,
-        c,
-        q_matrix,
-        v_vector,
-        lower_clamp=0.0,
-        upper_clamp=1.0,
-        num_iter=1,
-        device="cpu",
-    ):
+    def postprocess(self, c, q_matrix, v_vector, num_iter=1, device="cpu"):
         """Post processing using Adam method.
 
         Args:
@@ -29,10 +20,6 @@ class PostProcessorAdam(PostProcessor):
             variable of the problem in the solution found by the solver.
             q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
             v_vector (torch.tensor): The V vector describing the BoxQP problem.
-            lower_clamp (float, optional): Lower bound of the box constraints. Defaults
-                to 0.0.
-            upper_clamp (float, optional): Upper bound of the box constraints. Defaults
-                to 1.0.
             num_iter (int, optional): The number of iterations. Defaults to 1.
             device (str, optional): Defines which GPU (or the CPU) to use.
                 Defaults to "cpu".
@@ -61,9 +48,7 @@ class PostProcessorAdam(PostProcessor):
             loss.backward(torch.Tensor([1] * batch_size).to(device))
             optimizer.step()
             optimizer.zero_grad()
-            model.params = torch.nn.Parameter(
-                torch.clamp(model.params, lower_clamp, upper_clamp)
-            )
+            model.params = torch.nn.Parameter(torch.clamp(model.params, 0, 1))
         end_time = time.time()
         self.pp_time = end_time - start_time
         return model.params.detach()

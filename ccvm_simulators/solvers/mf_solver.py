@@ -274,7 +274,7 @@ class MFSolver(CCVMSolver):
         pump_rate_flag,
         g,
         evolution_step_size,
-        samples_taken,
+        samples_taken
     ):
         """Solves the given problem instance using the original MF-CCVM solver with
         tuned or specified parameters in the parameter key.
@@ -289,14 +289,14 @@ class MFSolver(CCVMSolver):
             iterations (int): number of steps.
             noise_ratio (float): noise ratio.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number.
+            iteration number. 
             g (float): The nonlinearity coefficient.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
+                will be written to a file that can be specified by setting the evolution_file parameter. 
             samples_taken (int): sample slice.
-
+            
         Returns:
             mu, mu_tilde, sigma (tensor): random variables
         """
@@ -389,12 +389,12 @@ class MFSolver(CCVMSolver):
             iterations (int): number of steps.
             noise_ratio (float): noise ratio.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number.
+            iteration number. 
             g (float): The nonlinearity coefficient.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
+                will be written to a file that can be specified by setting the evolution_file parameter. 
             samples_taken (int): sample slice.
             hyperparameters (dict): Hyperparameters for Adam algorithm.
 
@@ -638,7 +638,7 @@ class MFSolver(CCVMSolver):
                 (batch_size, problem_size, num_samples), device="cpu"
             )
             samples_taken = 0
-
+            
         if algorithm_parameters is None:
             # Use the original MF solver
             mu, mu_tilde, sigma = self._solve(
@@ -658,7 +658,7 @@ class MFSolver(CCVMSolver):
             )
         elif isinstance(algorithm_parameters, AdamParameters):
             # Use the MF solver with Adam algorithm
-            mu, mu_tilde, sigma = self._solve_adam(
+            mu, mu_tilde,  sigma = self._solve_adam(
                 problem_size,
                 batch_size,
                 device,
@@ -678,10 +678,10 @@ class MFSolver(CCVMSolver):
             raise ValueError(
                 f"Solver option type {type(algorithm_parameters)} is not supported."
             )
-
+            
         # Stop the timer
         solve_time = time.time() - solve_time_start
-
+        
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(

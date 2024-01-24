@@ -22,8 +22,8 @@ class TestPostProcessorASGD(TestCase):
     def tearDown(self):
         self.logger.info("Test %s Finished" % (self._testMethodName))
 
-    def test_postprocess_default_values(self):
-        """Test postprocess with default values and verified the pp_time gets
+    def test_postprocess_valid(self):
+        """Test postprocess when given valid inputs and verified the pp_time gets
         updated correctly
         """
         output_tensor = self.post_processor.postprocess(

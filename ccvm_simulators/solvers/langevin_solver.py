@@ -274,7 +274,7 @@ class LangevinSolver(CCVMSolver):
                 # this iteration
                 self.c_sample[:, :, samples_taken] = c
                 samples_taken += 1
-
+        
         return c
 
     def _solve_adam(
@@ -396,7 +396,7 @@ class LangevinSolver(CCVMSolver):
                 # this iteration
                 self.c_sample[:, :, samples_taken] = c
                 samples_taken += 1
-
+        
         return c
 
     def __call__(
