@@ -19,14 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	- Implemented using the Euler method with box constraint imposition at each iteration.
 	- Designed to reflect the results outlined in the paper.
 
-- Streamlined test organization by centralizing all tests under a unified `tests`
-  folder, with subdirectories for unit, integration, and test data. This
-  enhances accessibility and clarity in managing test-related resources.
-
 ### Changed
 - Streamlined README by relocating and optimizing architecture diagrams.
 - Enhanced post processor clamp function for greater flexibility by replacing
   hard-coded values with user-defined variables (lower_clamp and upper_clamp).
+- Consolidated test organization by centralizing all tests under a unified
+  `tests` folder, with subdirectories for unit, integration, and test data. This
+  enhances accessibility and clarity in managing test-related resources.
 
 ## [1.0.1] - 2023-03-09
 ### Fixed
