@@ -1,7 +1,7 @@
 import logging
 import torch
 from unittest import TestCase
-from ..grad_descent import PostProcessorGradDescent
+from ccvm_simulators.post_processor.grad_descent import PostProcessorGradDescent
 
 
 class TestPostProcessorGradDescent(TestCase):

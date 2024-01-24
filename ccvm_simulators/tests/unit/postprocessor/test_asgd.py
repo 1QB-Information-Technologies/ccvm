@@ -1,14 +1,15 @@
 import logging
 import torch
 from unittest import TestCase
-from ..lbfgs import PostProcessorLBFGS
+from ccvm_simulators.post_processor.asgd import PostProcessorASGD
 
 
-class TestPostProcessorLBFGS(TestCase):
+class TestPostProcessorASGD(TestCase):
     @classmethod
     def setUpClass(self):
         self.logger = logging.getLogger()
-        self.post_processor = PostProcessorLBFGS()
+        self.post_processor = PostProcessorASGD()
+
         self.N = 20
         self.M = 100
         self.c = torch.FloatTensor(self.M, self.N)
@@ -21,13 +22,14 @@ class TestPostProcessorLBFGS(TestCase):
     def tearDown(self):
         self.logger.info("Test %s Finished" % (self._testMethodName))
 
-    def test_postprocess_default_values(self):
+    def test_postprocess_valid(self):
         """Test postprocess when given valid inputs and verified the pp_time gets
         updated correctly
         """
         output_tensor = self.post_processor.postprocess(
             self.c, self.q_matrix, self.v_vector
         )
+
         # Check output is a tensor
         assert torch.is_tensor(output_tensor)
 
@@ -47,11 +49,11 @@ class TestPostProcessorLBFGS(TestCase):
         )
 
         # Check output is a tensor
-
         assert torch.is_tensor(output_tensor)
-        # Check size is valid
 
+        # Check size is valid
         assert output_tensor.size() == self.c.size()
+
         # Check if pp time is valid
         error_message = "post_processing time must be greater than 0"
         self.assertGreater(self.post_processor.pp_time, 0, error_message)

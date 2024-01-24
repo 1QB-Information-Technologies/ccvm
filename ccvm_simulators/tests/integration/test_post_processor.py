@@ -2,13 +2,13 @@ import logging
 import os
 import torch
 from unittest import TestCase
-from ..post_processor.adam import PostProcessorAdam
-from ..post_processor.asgd import PostProcessorASGD
-from ..post_processor.bfgs import PostProcessorBFGS
-from ..post_processor.lbfgs import PostProcessorLBFGS
-from ..post_processor.grad_descent import PostProcessorGradDescent
+from ...post_processor.adam import PostProcessorAdam
+from ...post_processor.asgd import PostProcessorASGD
+from ...post_processor.bfgs import PostProcessorBFGS
+from ...post_processor.lbfgs import PostProcessorLBFGS
+from ...post_processor.grad_descent import PostProcessorGradDescent
 
-from ..problem_classes import ProblemInstance
+from ...problem_classes import ProblemInstance
 
 
 class TestPostProcessor(TestCase):

@@ -1,7 +1,7 @@
 from unittest import TestCase
 import logging
-from ..box_qp_model import BoxQPModel
-from ..post_processor import MethodType
+from ccvm_simulators.post_processor.box_qp_model import BoxQPModel
+from ccvm_simulators.post_processor.post_processor import MethodType
 import torch
 
 

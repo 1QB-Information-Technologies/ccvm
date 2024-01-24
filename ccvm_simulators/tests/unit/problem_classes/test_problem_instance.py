@@ -9,8 +9,8 @@ class TestProblemInstance(TestCase):
     def setUp(self):
         self.device = "cpu"
         self.instance_type = "tuning"
-        self.basepath = os.path.dirname(__file__)
-        self.file_path = self.basepath + "/test_instances/test020-100-10.in"
+        self.test_folder_path = "ccvm_simulators/tests/data/test_instances"
+        self.file_path = f"{self.test_folder_path}/test020-100-10.in"
         self.name = "test"
         self.file_delimiter = "\t"
 
@@ -125,7 +125,7 @@ class TestProblemInstance(TestCase):
 
     def test_scale_coefs_one_time(self):
         """Test successfully scaling the instance's coefficients."""
-        file_path = self.basepath + "/test_instances/test002.in"
+        file_path = self.test_folder_path + "/test002.in"
         problem_instance = ProblemInstance(
             device=self.device,
             instance_type=self.instance_type,
@@ -149,7 +149,7 @@ class TestProblemInstance(TestCase):
     def test_compute_energy_times(self):
         """Test compute energy returns the right tensor"""
 
-        file_path = self.basepath + "/test_instances/test002.in"
+        file_path = self.test_folder_path + "/test002.in"
 
         problem_instance = ProblemInstance(
             device=self.device,
@@ -176,7 +176,7 @@ class TestProblemInstance(TestCase):
         assert torch.equal(expected_result, energy)
 
     def test_scale_coefs_multiple_times(self):
-        file_path = self.basepath + "/test_instances/test002.in"
+        file_path = self.test_folder_path + "/test002.in"
         problem_instance = ProblemInstance(
             device=self.device,
             instance_type=self.instance_type,
