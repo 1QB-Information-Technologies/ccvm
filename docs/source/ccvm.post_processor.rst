@@ -15,6 +15,7 @@ Submodules
    ccvm.post_processor.factory
    ccvm.post_processor.lbfgs
    ccvm.post_processor.post_processor
+   ccvm.post_processor.trust_constr
 
 
 ---------------
