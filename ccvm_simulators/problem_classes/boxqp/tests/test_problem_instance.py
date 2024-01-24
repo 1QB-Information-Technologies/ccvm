@@ -101,7 +101,7 @@ class TestProblemInstance(TestCase):
         expected_optimal_sol = 152.602291
         expected_best_sol = 147.960031
 
-        # Check all class variable type if function runs successfully
+        # check all class variable type if function runs successfully
         assert isinstance(problem_instance.optimal_sol, float)
         assert isinstance(problem_instance.best_sol, float)
         assert problem_instance.optimal_sol == expected_optimal_sol
