@@ -49,6 +49,9 @@ class Metadata:
 
         metadata_file_path = f"{file_dir}/{file_name}.json"
 
+        if self.metadata_dict is None:
+            self.finalize_metadata()
+
         try:
             with open(metadata_file_path, "w") as outfile:
                 json.dump(self.metadata_dict, outfile)
