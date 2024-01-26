@@ -29,13 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Consolidated test organization by centralizing all tests under a unified
   `tests` folder, with subdirectories for unit, integration, and test data. This
   enhances accessibility and clarity in managing test-related resources.
-<<<<<<< HEAD
 - Updated the `add_metadata` function in the Metadata class to
   `add_to_result_metadata` for clarity.
-=======
-- Modified the `ingest_metadata` function inside the BoxQPMetadata class to
-  accommodate the changes in the metadata structure.
->>>>>>> 0ea679c... refactored metadata to include device
+
 
 ## [1.0.1] - 2023-03-09
 ### Fixed
