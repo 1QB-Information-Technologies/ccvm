@@ -22,7 +22,7 @@ class TestPostProcessorLBFGS(TestCase):
     def tearDown(self):
         self.logger.info("Test %s Finished" % (self._testMethodName))
 
-    def test_postprocess_valid(self):
+    def test_postprocess_default_values(self):
         """Test postprocess when given valid inputs and verified the pp_time gets
         updated correctly
         """
@@ -37,7 +37,7 @@ class TestPostProcessorLBFGS(TestCase):
         error_message = "post_processing time must be greater than 0"
         self.assertGreater(self.post_processor.pp_time, 0, error_message)
 
-    def test_postprocess_default_upper_lower_clamp(self):
+    def test_postprocess_custom_upper_lower_clamp(self):
         # Test with custom values for lower_clamp and upper_clamp
         lower_clamp = -1.0
         upper_clamp = 2.0

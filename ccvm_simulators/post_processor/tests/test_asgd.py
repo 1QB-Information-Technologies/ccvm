@@ -38,7 +38,7 @@ class TestPostProcessorASGD(TestCase):
         error_message = "post_processing time must be greater than 0"
         self.assertGreater(self.post_processor.pp_time, 0, error_message)
 
-    def test_postprocess_default_upper_lower_clamp(self):
+    def test_postprocess_custom_upper_lower_clamp(self):
         # Test with custom values for lower_clamp and upper_clamp
         lower_clamp = -1.0
         upper_clamp = 2.0
