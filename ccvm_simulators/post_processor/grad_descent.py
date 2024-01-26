@@ -6,6 +6,12 @@ import tqdm
 
 class PostProcessorGradDescent(PostProcessor):
     def __init__(self, num_iter_main):
+        """Initialize the PostProcessorGradDescent class.
+
+        Args:
+            num_iter_main (int): The number of iterations for the main stochastic
+                process.
+        """
         self.pp_time = 0
         self.num_iter_main = num_iter_main
 
@@ -13,13 +19,15 @@ class PostProcessorGradDescent(PostProcessor):
         """Post processing using Gradient Descent method.
 
         Args:
-            c (torch.tensor): The vector of initial values of the variables for the post-processor.
+            c (torch.tensor): The vector of initial values of the variables for the
+                post-processor.
             q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
             v_vector (torch.tensor): The V vector describing the BoxQP problem.
             num_iter_pp (int, optional): The number of iterations for post-processing.
             Defaults to None, in which case it is set to one percent of the number of
             iterations for the main stochastic process.
-            step_size (float, optional): Step size for the gradient descent. Defaults to 0.1.
+            step_size (float, optional): Step size for the gradient descent. Defaults to
+                0.1.
 
         Returns:
             torch.tensor: The vector of variables found using the post-processing method.

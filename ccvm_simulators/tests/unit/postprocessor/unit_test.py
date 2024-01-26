@@ -32,7 +32,7 @@
 #         TestPostProcessorAdam("test_postprocess_invalid_qmat_parameter")
 #     )
 #     unit_test_suite.addTest(
-#         TestPostProcessorAdam("est_postprocess_invalid_v_vector_parameter")
+#         TestPostProcessorAdam("test_postprocess_invalid_v_vector_parameter")
 #     )
 #     unit_test_suite.addTest(
 #         TestPostProcessorAdam("test_postprocess_error_for_invalid_c_dimension")
@@ -50,7 +50,7 @@
 #         TestPostProcessorASGD("test_postprocess_invalid_qmat_parameter")
 #     )
 #     unit_test_suite.addTest(
-#         TestPostProcessorASGD("est_postprocess_invalid_v_vector_parameter")
+#         TestPostProcessorASGD("test_postprocess_invalid_v_vector_parameter")
 #     )
 #     unit_test_suite.addTest(
 #         TestPostProcessorASGD("test_postprocess_error_for_invalid_c_dimension")
@@ -68,7 +68,7 @@
 #         TestPostProcessorBFGS("test_postprocess_invalid_qmat_parameter")
 #     )
 #     unit_test_suite.addTest(
-#         TestPostProcessorBFGS("est_postprocess_invalid_v_vector_parameter")
+#         TestPostProcessorBFGS("test_postprocess_invalid_v_vector_parameter")
 #     )
 #     unit_test_suite.addTest(
 #         TestPostProcessorBFGS("test_postprocess_error_for_invalid_c_dimension")
@@ -86,7 +86,7 @@
 #         TestPostProcessorLBFGS("test_postprocess_invalid_qmat_parameter")
 #     )
 #     unit_test_suite.addTest(
-#         TestPostProcessorLBFGS("est_postprocess_invalid_v_vector_parameter")
+#         TestPostProcessorLBFGS("test_postprocess_invalid_v_vector_parameter")
 #     )
 #     unit_test_suite.addTest(
 #         TestPostProcessorLBFGS("test_postprocess_error_for_invalid_c_dimension")
@@ -104,7 +104,7 @@
 #         TestPostProcessorTrustConstr("test_postprocess_invalid_qmat_parameter")
 #     )
 #     unit_test_suite.addTest(
-#         TestPostProcessorTrustConstr("est_postprocess_invalid_v_vector_parameter")
+#         TestPostProcessorTrustConstr("test_postprocess_invalid_v_vector_parameter")
 #     )
 #     unit_test_suite.addTest(
 #         TestPostProcessorTrustConstr("test_postprocess_error_for_invalid_c_dimension")
