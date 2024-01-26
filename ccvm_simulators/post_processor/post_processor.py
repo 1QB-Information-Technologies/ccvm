@@ -5,7 +5,6 @@ import numpy as np
 
 class MethodType(str, Enum):
     BFGS = "bfgs"
-    TrustConst = "trust-constr"
     LBFGS = "lbfgs"
     Adam = "adam"
     ASGD = "asgd"
@@ -41,7 +40,7 @@ class PostProcessor(ABC):
         Jacobian. The post-processing can still be performed without the
         Jacobian but having it for some post-processing methods can improve the
         performance of the post-processing. Jacobian can only be used with the
-        numpy post-processing methods of "BFGS" and "trust-constr".
+        numpy post-processing methods of "BFGS".
 
         Args:
             c (torch.tensor): The values for each

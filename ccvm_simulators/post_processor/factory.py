@@ -3,7 +3,6 @@ from .adam import PostProcessorAdam
 from .asgd import PostProcessorASGD
 from .bfgs import PostProcessorBFGS
 from .lbfgs import PostProcessorLBFGS
-from .trust_constr import PostProcessorTrustConstr
 
 
 class PostProcessorFactory:
@@ -24,8 +23,6 @@ class PostProcessorFactory:
         """
         if method.lower() == MethodType.BFGS.value:
             return PostProcessorBFGS()
-        elif method.lower() == MethodType.TrustConst.value:
-            return PostProcessorTrustConstr()
         elif method.lower() == MethodType.LBFGS.value:
             return PostProcessorLBFGS()
         elif method.lower() == MethodType.Adam.value:

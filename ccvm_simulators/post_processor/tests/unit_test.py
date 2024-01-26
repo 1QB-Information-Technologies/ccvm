@@ -8,9 +8,6 @@
 # from ccvm_simulators.post_processor.tests.test_bfgs import TestPostProcessorBFGS
 # from ccvm_simulators.post_processor.tests.test_asgd import TestPostProcessorASGD
 # from ccvm_simulators.post_processor.tests.test_lbfgs import TestPostProcessorLBFGS
-# from ccvm_simulators.post_processor.tests.test_trust_constr import (
-#     TestPostProcessorTrustConstr,
-# )
 # from ccvm_simulators.post_processor.tests.test_factory import (
 #     TestPostProcessorFactory,
 # )
@@ -93,26 +90,6 @@
 #     )
 #     unit_test_suite.addTest(
 #         TestPostProcessorLBFGS("test_postprocess_error_for_invalid_c_vector_shape")
-#     )
-
-#     # TrustConstr
-#     unit_test_suite.addTest(TestPostProcessorTrustConstr("test_postprocess_valid"))
-#     unit_test_suite.addTest(
-#         TestPostProcessorTrustConstr("test_postprocess_invalid_c_parameter")
-#     )
-#     unit_test_suite.addTest(
-#         TestPostProcessorTrustConstr("test_postprocess_invalid_qmat_parameter")
-#     )
-#     unit_test_suite.addTest(
-#         TestPostProcessorTrustConstr("test_postprocess_invalid_c_vector_parameter")
-#     )
-#     unit_test_suite.addTest(
-#         TestPostProcessorTrustConstr("test_postprocess_error_for_invalid_c_dimension")
-#     )
-#     unit_test_suite.addTest(
-#         TestPostProcessorTrustConstr(
-#             "test_postprocess_error_for_invalid_c_vector_shape"
-#         )
 #     )
 
 #     # ProcessFactory
