@@ -50,10 +50,17 @@ if __name__ == "__main__":
     # Save metadata to file
     metadata_filepath = metadata_list.save_metadata_to_file(METADATA_DIR)
 
+    # Customize machine_parameters
+    machine_parameters = {
+        "cpu_power": {20: 5.0, 30: 5.0, 40: 5.0, 50: 5.0, 60: 5.0, 70: 5.0}
+    }
+
     plot_fig, plot_ax = ccvmplotlib.plot_TTS(
         metadata_filepath=metadata_filepath,
         problem="BoxQP",
-        TTS_type="wallclock",
+        machine_time_func=solver.cpu_machine_time(
+            machine_parameters=machine_parameters
+        ),
     )
 
     ccvmplotlib.apply_default_tts_styling(plot_fig, plot_ax)  # apply default styling
