@@ -83,15 +83,15 @@ class BoxQPMetadata(ProblemMetadata):
 
     def generate_TTS_plot_data(
         self,
-        TTS_type="wallclock",
+        machine_time_calc: callable,
         device_parameters=None,
     ) -> pd.DataFrame:
         """Calculate the time to solution vs problem size for a particular gap and
         quantile.
 
         Args:
-            TTS_type (string): A Time-To-Solution type. It is either a CPU time or an
-            optic device time.
+            machine_time_calc (callable): A callback function that calculates the
+            machine time, which is used to compute the TTS.
             device_parameters (dict): A device parameter sets used for calculating
             metrics.
         Returns:
@@ -117,22 +117,7 @@ class BoxQPMetadata(ProblemMetadata):
                         num_bootstraps=100,
                     )
 
-                    if TTSType(TTS_type) == TTSType.wallclock:
-                        machine_time = np.mean(matching_df["solve_time"].values)
-                    elif TTSType(TTS_type) == TTSType.physical:
-                        pp_time = np.mean(matching_df["pp_time"].values)
-                        iterations = matching_df["iterations"].values
-                        roundtrip_time = (
-                            (
-                                device_parameters["FPGA_fixed"]
-                                + device_parameters["FPGA_var_fac"]
-                                * float(problem_size)
-                            )
-                            * device_parameters["FPGA_clock"]
-                            + float(problem_size) * device_parameters["laser_clock"]
-                            + device_parameters["buffer_time"]
-                        )
-                        machine_time = roundtrip_time * iterations + pp_time
+                    machine_time = machine_time_calc(matching_df=matching_df)
 
                     success_prob = float(matching_df[percent_gap].values)
                     frac_solved = (success_prob > 0).mean()
