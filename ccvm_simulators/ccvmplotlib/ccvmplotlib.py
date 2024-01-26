@@ -26,7 +26,7 @@ class ccvmplotlib:
     def plot_TTS(
         metadata_filepath: str,
         problem: str,
-        TTS_type: str,
+        machine_time_func: callable,
         fig: matplotlib.figure.Figure = None,
         ax: matplotlib.axes.Axes = None,
     ) -> tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]:
@@ -36,8 +36,8 @@ class ccvmplotlib:
         Args:
             metadata_filepath (str): A file path to metadata.
             problem (str): A problem type.
-            TTS_type (str): A Time-To-Solution type. It is either a CPU time or an
-            optic device time.
+            machine_time_func (callable): A callback function that calculates the
+            machine time, which is used to compute the TTS.
             fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure.
             Defaults to None.
             ax (matplotlib.axes.Axes, optional): A pre-generated pyplot axis.
@@ -52,7 +52,9 @@ class ccvmplotlib:
         """
         problem_metadata = ProblemMetadataFactory.create_problem_metadata(problem)
         problem_metadata.ingest_metadata(metadata_filepath)
-        plotting_df = problem_metadata.generate_TTS_plot_data(TTS_type=TTS_type)
+        plotting_df = problem_metadata.generate_TTS_plot_data(
+            machine_time_func=machine_time_func
+        )
 
         x_data = plotting_df.index
 

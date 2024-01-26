@@ -83,17 +83,14 @@ class BoxQPMetadata(ProblemMetadata):
 
     def generate_TTS_plot_data(
         self,
-        machine_time_calc: callable,
-        device_parameters=None,
+        machine_time_func: callable,
     ) -> pd.DataFrame:
         """Calculate the time to solution vs problem size for a particular gap and
         quantile.
 
         Args:
-            machine_time_calc (callable): A callback function that calculates the
+            machine_time_func (callable): A callback function that calculates the
             machine time, which is used to compute the TTS.
-            device_parameters (dict): A device parameter sets used for calculating
-            metrics.
         Returns:
             (pd.Series): The time to solution for each problem size.
         """
@@ -117,7 +114,7 @@ class BoxQPMetadata(ProblemMetadata):
                         num_bootstraps=100,
                     )
 
-                    machine_time = machine_time_calc(matching_df=matching_df)
+                    machine_time = machine_time_func(matching_df=matching_df)
 
                     success_prob = float(matching_df[percent_gap].values)
                     frac_solved = (success_prob > 0).mean()
