@@ -1,9 +1,13 @@
 
-CCVM Simulator - Equations of Motion
+Coherent Continuous-Variable Machine Simulator - Equations of Motion
 ====================================
 
-Architecture of Coherent Continuous Variable Machine (CCVM)
+Architecture of Coherent Continuous-Variable Machines
 -----------------------------------------------------------
+
+The CCVM Simulator offers a versatile and powerful platform for exploring and solving a wide range of continuous-variable problems.
+With its robust architecture and carefully selected parameters, it stands at the forefront of quantum simulation technology.
+
 
 .. figure:: _static/images/ccvm-architecture.png
     :align: center
@@ -12,8 +16,13 @@ Architecture of Coherent Continuous Variable Machine (CCVM)
 
     Schematic of the CCVM architecture.
 
-This figure shows the schematic of the architecture of a coherent continuous-variable machine (CCVM), as described in Farhad et al 2022. Squeezed coherent states of light are generated and amplified using an optical parametric amplifier (OPA) that includes a nonlinear crystal pumped by a laser that, together with a ring cavity, constitutes a degenerate optical parametric oscillator (DOPO). Information is encoded in the amplitudes of the time-multiplexed optical pulses that propagate within the resonator, which are coherently amplified each time they pass through the OPA element. Coupling between each pair of optical pulses is implemented by taking a portion of each pulse using an output coupler, calculating the gradient of the objective function using either a delay-line network or a measurement-feedback scheme, and feeding the result into each optical pulse using an injection coupler. These couplers, in general, can be variable beamsplitters. Using this scheme, and repeating this process an arbitrary number of times, the system is driven towards the minimum of the objective function, whose gradient is implemented using the coupling mechanism. The solution of the optimization problem is represented by the final values of the amplitudes of the optical pulses in the cavity.
-
+This figure shows the schematic of the architecture of a coherent continuous-variable machine (CCVM), as described in Khosravi et al. (2022).
+Squeezed coherent states of light are generated and amplified using an optical parametric amplifier (OPA) that includes a nonlinear crystal pumped by a laser that, together with a ring cavity, constitutes a degenerate optical parametric oscillator (DOPO).
+Information is encoded in the amplitudes of the time-multiplexed optical pulses that propagate within the resonator, which are coherently amplified each time they pass through the OPA element.
+Coupling between each pair of optical pulses is implemented by taking a portion of each pulse using an output coupler, calculating the gradient of the objective function using either a delay-line network or a measurement-feedback scheme, and feeding the result into each optical pulse using an injection coupler.
+These couplers, in general, are variable beamsplitters.
+Using this scheme, and repeating this process an arbitrary number of times, the system is driven towards the minimum of the objective function, whose gradient is implemented using the coupling mechanism.
+The solution of the optimization problem is represented by the final values of the amplitudes of the optical pulses in the cavity.
 
 Parameter values
 ----------------
@@ -36,9 +45,12 @@ These parameters, chosen for the three types of solvers implemented within the s
    g & - & - & 0.001\\\hline
    \end{array}
 
-.. note::
-   The CCVM Simulator offers a versatile and powerful platform for exploring and solving a wide range of continuous-variable problems. 
-   With its robust architecture and carefully selected parameters, it stands at the forefront of quantum simulation technology.
-   
-   
+Specific equations and their respective parameters are discussed in the solver-specific pages:
 
+.. toctree::
+   :maxdepth: 3
+   :caption: Contents:
+
+   langevin_sde
+   dl_ccvm_sde
+   mf_ccvm_sde

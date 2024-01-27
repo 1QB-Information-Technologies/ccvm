@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to ccvm's Documentation!
-================================
+Welcome to the CCVM Documentation!
+==================================
 
 .. include:: readme.md
    :parser: myst_parser.sphinx_
@@ -13,19 +13,8 @@ Welcome to ccvm's Documentation!
    :maxdepth: 3
    :caption: Contents:
 
-   ccvm package
-
-Model Documentation
--------------------
-
-.. toctree::
-   :maxdepth: 2
-
+   ccvm_simulators_api_reference
    ccvm_equations_of_motion
-   langevin_sde
-   dl_ccvm_sde
-   mf_ccvm_sde
-   
 
 
 Indices and tables
