@@ -74,7 +74,7 @@ class ccvmplotlib:
     def plot_TTS(
         metadata_filepath: str,
         problem: str,
-        TTS_type: str,
+        machine_time_func: callable,
         fig: matplotlib.figure.Figure = None,
         ax: matplotlib.axes.Axes = None,
     ) -> tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]:
@@ -84,8 +84,8 @@ class ccvmplotlib:
         Args:
             metadata_filepath (str): A file path to metadata.
             problem (str): A problem type.
-            TTS_type (str): A Time-To-Solution type. It is either a CPU time or an
-            optic device time.
+            machine_time_func (callable): A callback function that calculates the
+            machine time, which is used to compute the TTS.
             fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure. Defaults to None.
             ax (matplotlib.axes.Axes, optional): A pre-generated pyplot axis. Defaults to None.
 
@@ -98,7 +98,7 @@ class ccvmplotlib:
         """
         problem_metadata = ProblemMetadataFactory.create_problem_metadata(problem)
         problem_metadata.ingest_metadata(metadata_filepath)
-        plotting_df = problem_metadata.generate_TTS_plot_data(TTS_type=TTS_type)
+        plotting_df = problem_metadata.generate_plot_data(metric_func=machine_time_func)
 
         (fig, ax) = ccvmplotlib.__plot_core(plotting_df, fig, ax)
 
@@ -125,6 +125,42 @@ class ccvmplotlib:
         # Make sure x-axis only has integer values
         x_data = plotting_df.index
         ax.set_xticks(x_data)
+
+        return (fig, ax)
+
+    @staticmethod
+    def plot_ETS(
+        metadata_filepath: str,
+        problem: str,
+        energy_max_func: callable,
+        fig: matplotlib.figure.Figure = None,
+        ax: matplotlib.axes.Axes = None,
+    ) -> tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]:
+        """Plot a problem-specific Time-To-Solution metadata solved by a CCVM
+        solver.
+
+        Args:
+            metadata_filepath (str): A file path to metadata.
+            problem (str): A problem type.
+            energy_max_func (callable): A callback function that calculates the
+            energy max, which is used to compute the ETS.
+            fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure.
+            Defaults to None.
+            ax (matplotlib.axes.Axes, optional): A pre-generated pyplot axis.
+            Defaults to None.
+
+        Raises:
+            ValueError: Raises a ValueError when the plotting data is not valid.
+
+        Returns:
+            tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and axis that has
+                the TTS plot with minimal styling.
+        """
+        problem_metadata = ProblemMetadataFactory.create_problem_metadata(problem)
+        problem_metadata.ingest_metadata(metadata_filepath)
+        plotting_df = problem_metadata.generate_plot_data(metric_func=energy_max_func)
+
+        (fig, ax) = ccvmplotlib.__plot_core(plotting_df, fig, ax)
 
         return (fig, ax)
 
@@ -186,10 +222,6 @@ class ccvmplotlib:
         ax.set_xticks(x_data)
 
         return (fig, ax)
-
-    @staticmethod
-    def plot_ETS(metadata_filepath: str):
-        pass
 
     @staticmethod
     def set_default_figsize(fig: matplotlib.figure.Figure) -> None:

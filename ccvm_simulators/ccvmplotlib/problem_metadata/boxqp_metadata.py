@@ -80,16 +80,35 @@ class BoxQPMetadata(ProblemMetadata):
         self.__batch_size = self.__df["batch_size"][0]
         self.__problem_size_list = sorted(self.__df["problem_size"].unique().tolist())
 
-    def generate_TTS_plot_data(
+    def __compute_R99(
         self,
-        machine_time_func: callable,
+        sampler: SampleTTSMetric,
+        frac_solved: float,
+        success_prob: float,
+        percentile: float,
+    ) -> float:
+        if frac_solved < (percentile / 100):
+            R99 = np.inf
+        else:
+            R99_distribution = sampler.calc_R99_distribution(
+                success_probabilities=success_prob,
+                num_repeats=self.__batch_size,
+            )
+            R99 = np.mean(R99_distribution)
+
+        return R99
+
+    def generate_plot_data(
+        self,
+        metric_func: callable,
     ) -> pd.DataFrame:
         """Calculate the time to solution vs problem size for a particular gap and
         quantile.
 
         Args:
-            machine_time_func (callable): A callback function that calculates the
-            machine time, which is used to compute the TTS.
+            metric_func (callable): A callback function that calculates a metrics.
+            It can be either machine time or energy max calculating function, which
+            is used to compute the TTS and ETS, respectively.
         Returns:
             (pd.Series): The time to solution for each problem size.
         """
@@ -113,7 +132,7 @@ class BoxQPMetadata(ProblemMetadata):
                         num_bootstraps=100,
                     )
 
-                    machine_time = machine_time_func(matching_df=matching_df)
+                    metric_value = metric_func(matching_df=matching_df)
 
                     success_prob = matching_df[percent_gap].values
                     frac_solved = (success_prob > 0).mean()
@@ -126,7 +145,7 @@ class BoxQPMetadata(ProblemMetadata):
                         )
                         R99 = np.mean(R99_distribution)
 
-                    mean_TTS = machine_time * R99
+                    mean_TTS = metric_value * R99
                     plotting_df.at[problem_size, (percent_gap, percentile)] = mean_TTS
 
         return plotting_df
