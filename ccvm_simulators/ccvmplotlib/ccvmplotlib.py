@@ -162,6 +162,10 @@ class ccvmplotlib:
 
         (fig, ax) = ccvmplotlib.__plot_core(plotting_df, fig, ax)
 
+        # Make sure x-axis only has integer values
+        x_data = plotting_df.index
+        ax.set_xticks(x_data)
+
         return (fig, ax)
 
     @staticmethod
@@ -319,6 +323,35 @@ class ccvmplotlib:
         # set x & y labels
         ccvmplotlib.set_default_xlabel(ax, "Problem Size, $N$")
         ccvmplotlib.set_default_ylabel(ax, "TTS (seconds)")
+
+        # set x & y ticks
+        ccvmplotlib.set_default_ticks(ax)
+
+        # set legend
+        ccvmplotlib.set_default_legend(ax)
+
+        # set grid
+        ccvmplotlib.set_default_grid(ax)
+
+        # call tight layout
+        fig.tight_layout()
+
+    @staticmethod
+    def apply_default_ets_styling(
+        fig: matplotlib.figure.Figure, ax: matplotlib.axes.Axes
+    ) -> None:
+        """A method to apply the default styling to a ETS plot.
+
+        Args:
+            fig (matplotlib.figure.Figure): A pyplot figure to be set.
+            ax (matplotlib.axes.Axes): A pyplot axis to be set.
+        """
+        # set figure size
+        ccvmplotlib.set_default_figsize(fig)
+
+        # set x & y labels
+        ccvmplotlib.set_default_xlabel(ax, "Problem Size, $N$")
+        ccvmplotlib.set_default_ylabel(ax, "ETS (joules)")
 
         # set x & y ticks
         ccvmplotlib.set_default_ticks(ax)
