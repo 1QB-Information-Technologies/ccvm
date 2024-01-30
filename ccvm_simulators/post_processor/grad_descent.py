@@ -10,7 +10,7 @@ class PostProcessorGradDescent(PostProcessor):
         """Initialize the PostProcessorGradDescent class."""
         self.pp_time = 0
 
-    def postprocess(self, c, q_matrix, v_vector, num_iter_main, num_iter_pp=None, step_size=0.1):
+    def postprocess(self, c, q_matrix, v_vector, num_iter_main=100, num_iter_pp=None, step_size=0.1):
         """Post processing using Gradient Descent method.
 
         Args:
@@ -18,7 +18,8 @@ class PostProcessorGradDescent(PostProcessor):
                 post-processor.
             q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
             v_vector (torch.tensor): The V vector describing the BoxQP problem.
-            num_iter_main (int): The number of iterations for the main stochastic process.
+            num_iter_main (int): The number of iterations for the main stochastic
+                process. Defaults to 100.
             num_iter_pp (int, optional): The number of iterations for post-processing.
             Defaults to None, in which case it is set to one percent of the number of
             iterations for the main stochastic process.

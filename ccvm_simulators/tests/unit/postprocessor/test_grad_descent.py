@@ -8,9 +8,8 @@ class TestPostProcessorGradDescent(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.logger = logging.getLogger()
-        cls.num_iter_main = 100
         cls.default_step_size = 0.1
-        cls.post_processor = PostProcessorGradDescent(cls.num_iter_main)
+        cls.post_processor = PostProcessorGradDescent()
         cls.N = 20
         cls.M = 100
         cls.c = torch.FloatTensor(cls.M, cls.N)
