@@ -12,7 +12,9 @@ class PostProcessorLBFGS(PostProcessor):
         self.pp_time = 0
         self.method_type = MethodType.LBFGS
 
-    def postprocess(self, c, q_matrix, v_vector, num_iter=1):
+    def postprocess(
+        self, c, q_matrix, v_vector, lower_clamp=0.0, upper_clamp=1.0, num_iter=1
+    ):
         """Post processing using LBFGS method.
 
         Args:
@@ -20,6 +22,10 @@ class PostProcessorLBFGS(PostProcessor):
             variable of the problem in the solution found by the solver.
             q_matrix (torch.tensor): Coefficients of the quadratic terms.
             v_vector (torch.tensor): Coefficients of the linear terms.
+            lower_clamp (float, optional): Lower bound of the box constraints. Defaults
+                to 0.0.
+            upper_clamp (float, optional): Upper bound of the box constraints. Defaults
+                to 1.0.
             num_iter (int, optional): The number of iterations. Defaults to 1.
 
         Returns:
@@ -51,7 +57,9 @@ class PostProcessorLBFGS(PostProcessor):
                     return loss
 
                 optimizer.step(closure)
-                model.params = torch.nn.Parameter(torch.clamp(model.params, 0, 1))
+                model.params = torch.nn.Parameter(
+                    torch.clamp(model.params, lower_clamp, upper_clamp)
+                )
             variables_pp[bb] = model.params.detach()
         end_time = time.time()
         self.pp_time = end_time - start_time
