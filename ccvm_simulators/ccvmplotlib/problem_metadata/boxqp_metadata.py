@@ -137,7 +137,7 @@ class BoxQPMetadata(ProblemMetadata):
         quantile.
 
         Returns:
-            pd.DataFrame: The success probabaility for each problem size.
+            pd.DataFrame: The success probability for each problem size.
         """
         plotting_df = pd.DataFrame(
             index=pd.Index(self.__problem_size_list, name="Problem Size (N)"),
