@@ -5,17 +5,12 @@ import tqdm
 
 
 class PostProcessorGradDescent(PostProcessor):
-    def __init__(self, num_iter_main):
-        """Initialize the PostProcessorGradDescent class.
-
-        Args:
-            num_iter_main (int): The number of iterations for the main stochastic
-                process.
-        """
+    #TODO: Issue 156 will allow constructor to take in num_iter_main.
+    def __init__(self):
+        """Initialize the PostProcessorGradDescent class."""
         self.pp_time = 0
-        self.num_iter_main = num_iter_main
 
-    def postprocess(self, c, q_matrix, v_vector, num_iter_pp=None, step_size=0.1):
+    def postprocess(self, c, q_matrix, v_vector, num_iter_main, num_iter_pp=None, step_size=0.1):
         """Post processing using Gradient Descent method.
 
         Args:
@@ -23,6 +18,7 @@ class PostProcessorGradDescent(PostProcessor):
                 post-processor.
             q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
             v_vector (torch.tensor): The V vector describing the BoxQP problem.
+            num_iter_main (int): The number of iterations for the main stochastic process.
             num_iter_pp (int, optional): The number of iterations for post-processing.
             Defaults to None, in which case it is set to one percent of the number of
             iterations for the main stochastic process.
@@ -45,7 +41,7 @@ class PostProcessorGradDescent(PostProcessor):
             raise e
 
         if num_iter_pp is None:
-            num_iter_pp = int(self.num_iter_main * 0.01)
+            num_iter_pp = int(num_iter_main * 0.01)
 
         for _ in tqdm.tqdm(range(num_iter_pp)):
             c_grads = torch.einsum("bi,ij -> bj", c, q_matrix) + v_vector
