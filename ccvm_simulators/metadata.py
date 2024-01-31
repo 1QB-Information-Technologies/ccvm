@@ -9,23 +9,21 @@ class Metadata:
         """The constructor for metadata."""
         self.device = device
         self.result_metadata = []
-        self.metadata_dict = None
+        self.metadata_dict = {
+            "device": self.device,
+            "result_metadata": self.result_metadata,
+        }
 
     def add_to_result_metadata(self, result_dict):
-        """Add result dict to the result metadata list.
+        """Add result dict to the result metadata list and update metadata dict.
 
         Args:
             result_dict (dict): The result dict to be added to the result metadata list.
         """
         self.result_metadata.append(result_dict)
 
-    def finalize_metadata(self):
-        """Finalize the metadata list."""
-
-        self.metadata_dict = {
-            "device": self.device,
-            "result_metadata": self.result_metadata,
-        }
+        # Update the metadata dict result_metadata list
+        self.metadata_dict["result_metadata"] = self.result_metadata
 
     def save_metadata_to_file(self, file_dir="./metadata", file_name="metadata"):
         """Save the metadata dict to the defined file.
@@ -51,9 +49,6 @@ class Metadata:
             raise Exception(f"Failed to create the folder path: {e}")
 
         metadata_file_path = f"{file_dir}/{file_name}.json"
-
-        if self.metadata_dict is None:
-            self.finalize_metadata()
 
         try:
             with open(metadata_file_path, "w") as outfile:
