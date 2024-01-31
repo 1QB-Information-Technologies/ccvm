@@ -6,6 +6,8 @@ from ccvm_simulators.metadata_list import MetadataList
 from ccvm_simulators.solvers import DLSolver
 
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 METADATA_DIR = "./metadata"
 TEST_OUTPUT_DEST = f"{METADATA_DIR}/DL-CCVM_LGFGS_cpu_test.txt"
@@ -55,12 +57,14 @@ if __name__ == "__main__":
         "cpu_power": {20: 5.0, 30: 5.0, 40: 5.0, 50: 5.0, 60: 5.0, 70: 5.0}
     }
 
+    # Customize machine time calculating function
+    def cpu_machine_func(matching_df: pd.DataFrame):
+        return np.mean(matching_df["solve_time"].values)
+
     plot_fig, plot_ax = ccvmplotlib.plot_TTS(
         metadata_filepath=metadata_filepath,
         problem="BoxQP",
-        machine_time_func=solver.cpu_machine_time(
-            machine_parameters=machine_parameters
-        ),
+        machine_time_func=cpu_machine_func,
     )
 
     ccvmplotlib.apply_default_tts_styling(plot_fig, plot_ax)  # apply default styling
