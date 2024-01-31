@@ -1,6 +1,5 @@
 from ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata import (
     ProblemType,
-    TTSType,
     ProblemMetadata,
 )
 from ccvm_simulators.ccvmplotlib.utils.sampleTTSmetric import SampleTTSMetric
