@@ -11,7 +11,15 @@ class PostProcessorGradDescent(PostProcessor):
         self.pp_time = 0
 
     def postprocess(
-        self, c, q_matrix, v_vector, num_iter_main=100, num_iter_pp=None, step_size=0.1
+        self,
+        c,
+        q_matrix,
+        v_vector,
+        lower_clamp=0.0,
+        upper_clamp=1.0,
+        num_iter_main=100,
+        num_iter_pp=None,
+        step_size=0.1,
     ):
         """Post processing using Gradient Descent method.
 
@@ -20,6 +28,10 @@ class PostProcessorGradDescent(PostProcessor):
                 post-processor.
             q_matrix (torch.tensor): The Q matrix describing the BoxQP problem.
             v_vector (torch.tensor): The V vector describing the BoxQP problem.
+            lower_clamp (float, optional): Lower bound of the box constraints. Defaults
+                to 0.0.
+            upper_clamp (float, optional): Upper bound of the box constraints. Defaults
+                to 1.0.
             num_iter_main (int): The number of iterations for the main stochastic
                 process. Defaults to 100.
             num_iter_pp (int, optional): The number of iterations for post-processing.
@@ -49,7 +61,7 @@ class PostProcessorGradDescent(PostProcessor):
         for _ in tqdm.tqdm(range(num_iter_pp)):
             c_grads = torch.einsum("bi,ij -> bj", c, q_matrix) + v_vector
             c += -step_size * c_grads
-            c = torch.clamp(c, 0, 1)
+            c = torch.clamp(c, lower_clamp, upper_clamp)
 
         end_time = time.time()
         self.pp_time = end_time - start_time
