@@ -7,10 +7,9 @@ class Metadata:
 
     def __init__(self, device):
         """The constructor for metadata."""
-        self.device = device
         self.result_metadata = []
         self.metadata_dict = {
-            "device": self.device,
+            "device": device,
             "result_metadata": self.result_metadata,
         }
 
