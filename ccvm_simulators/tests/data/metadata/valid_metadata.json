@@ -5,7 +5,7 @@
     "instance_name": "instance_name",
     "solve_time": 34.706756048314766,
     "pp_time": 0.06253677046990525,
-    "optimal_ value": 591.0,
+    "optimal_value": 591.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9037996770985329,
@@ -23,7 +23,7 @@
     "instance_name": "instance_name",
     "solve_time": 12.668577338172671,
     "pp_time": 0.04194999226759277,
-    "optimal_ value": 374.0,
+    "optimal_value": 374.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.371593692940582,
@@ -41,7 +41,7 @@
     "instance_name": "instance_name",
     "solve_time": 5.806979762006492,
     "pp_time": 0.3186729396582426,
-    "optimal_ value": 598.0,
+    "optimal_value": 598.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.6236545744888051,
@@ -59,7 +59,7 @@
     "instance_name": "instance_name",
     "solve_time": 43.27244971302962,
     "pp_time": 0.06606038375403156,
-    "optimal_ value": 692.0,
+    "optimal_value": 692.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.17399502155579494,
@@ -77,7 +77,7 @@
     "instance_name": "instance_name",
     "solve_time": 21.46364776895326,
     "pp_time": 0.7435625324632581,
-    "optimal_ value": 1009.0,
+    "optimal_value": 1009.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9811917942434131,
@@ -95,7 +95,7 @@
     "instance_name": "instance_name",
     "solve_time": 46.132211484920965,
     "pp_time": 0.835578560102309,
-    "optimal_ value": 1060.0,
+    "optimal_value": 1060.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.973536797891121,
@@ -113,7 +113,7 @@
     "instance_name": "instance_name",
     "solve_time": 40.52672904031036,
     "pp_time": 0.33079510700951686,
-    "optimal_ value": 669.0,
+    "optimal_value": 669.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.13621145224907383,
@@ -131,7 +131,7 @@
     "instance_name": "instance_name",
     "solve_time": 32.478661658340094,
     "pp_time": 0.6172440566944017,
-    "optimal_ value": 576.0,
+    "optimal_value": 576.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9722169234678452,
@@ -149,7 +149,7 @@
     "instance_name": "instance_name",
     "solve_time": 28.78763998495445,
     "pp_time": 0.26138203501043156,
-    "optimal_ value": 996.0,
+    "optimal_value": 996.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.5328287392530875,
@@ -167,7 +167,7 @@
     "instance_name": "instance_name",
     "solve_time": 40.38890129451444,
     "pp_time": 0.01664037141864083,
-    "optimal_ value": 978.0,
+    "optimal_value": 978.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.7847907490722882,
@@ -185,7 +185,7 @@
     "instance_name": "instance_name",
     "solve_time": 15.729555072026002,
     "pp_time": 0.6468101460878566,
-    "optimal_ value": 362.0,
+    "optimal_value": 362.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.5034174220399412,
@@ -203,7 +203,7 @@
     "instance_name": "instance_name",
     "solve_time": 11.307233623733238,
     "pp_time": 0.5070874241026774,
-    "optimal_ value": 591.0,
+    "optimal_value": 591.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.055654179888928734,
@@ -221,7 +221,7 @@
     "instance_name": "instance_name",
     "solve_time": 29.722317201146385,
     "pp_time": 0.4361321259793798,
-    "optimal_ value": 486.0,
+    "optimal_value": 486.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.8912096799481611,
@@ -239,7 +239,7 @@
     "instance_name": "instance_name",
     "solve_time": 36.22183351295583,
     "pp_time": 0.43514912140862627,
-    "optimal_ value": 466.0,
+    "optimal_value": 466.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9158701912307439,
@@ -257,7 +257,7 @@
     "instance_name": "instance_name",
     "solve_time": 14.717837794470912,
     "pp_time": 0.033164036600760616,
-    "optimal_ value": 1072.0,
+    "optimal_value": 1072.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.12434387037931505,
@@ -275,7 +275,7 @@
     "instance_name": "instance_name",
     "solve_time": 8.769253622732442,
     "pp_time": 0.9213767689910437,
-    "optimal_ value": 1059.0,
+    "optimal_value": 1059.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.5903473687582094,
@@ -293,7 +293,7 @@
     "instance_name": "instance_name",
     "solve_time": 34.047065493146825,
     "pp_time": 0.22906690597967516,
-    "optimal_ value": 450.0,
+    "optimal_value": 450.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.4560255376320467,
@@ -311,7 +311,7 @@
     "instance_name": "instance_name",
     "solve_time": 1.7772777954874086,
     "pp_time": 0.9051657989389703,
-    "optimal_ value": 719.0,
+    "optimal_value": 719.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.6809864317732383,
@@ -329,7 +329,7 @@
     "instance_name": "instance_name",
     "solve_time": 45.59951868818439,
     "pp_time": 0.8663591589311082,
-    "optimal_ value": 253.0,
+    "optimal_value": 253.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.308309710971703,
@@ -347,7 +347,7 @@
     "instance_name": "instance_name",
     "solve_time": 29.98476646647244,
     "pp_time": 0.45860465390022154,
-    "optimal_ value": 309.0,
+    "optimal_value": 309.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.5738541779900825,
@@ -365,7 +365,7 @@
     "instance_name": "instance_name",
     "solve_time": 47.90280230149031,
     "pp_time": 0.8263126984129957,
-    "optimal_ value": 940.0,
+    "optimal_value": 940.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9565965465981953,
@@ -383,7 +383,7 @@
     "instance_name": "instance_name",
     "solve_time": 44.12291100409403,
     "pp_time": 0.5286698687697445,
-    "optimal_ value": 435.0,
+    "optimal_value": 435.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.2401696922292097,
@@ -401,7 +401,7 @@
     "instance_name": "instance_name",
     "solve_time": 19.219387684566158,
     "pp_time": 0.3918294076179831,
-    "optimal_ value": 410.0,
+    "optimal_value": 410.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.3232154747046201,
@@ -419,7 +419,7 @@
     "instance_name": "instance_name",
     "solve_time": 28.353777170228252,
     "pp_time": 0.9488556649016838,
-    "optimal_ value": 629.0,
+    "optimal_value": 629.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.036314313385316876,
@@ -437,7 +437,7 @@
     "instance_name": "instance_name",
     "solve_time": 32.63597918396932,
     "pp_time": 0.6579054220406086,
-    "optimal_ value": 765.0,
+    "optimal_value": 765.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.7407547565154173,
@@ -455,7 +455,7 @@
     "instance_name": "instance_name",
     "solve_time": 14.022958938143487,
     "pp_time": 0.9068337275208052,
-    "optimal_ value": 833.0,
+    "optimal_value": 833.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.25833927498238995,
@@ -473,7 +473,7 @@
     "instance_name": "instance_name",
     "solve_time": 24.676534164438536,
     "pp_time": 0.6682956715687043,
-    "optimal_ value": 473.0,
+    "optimal_value": 473.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.821556643639375,
@@ -491,7 +491,7 @@
     "instance_name": "instance_name",
     "solve_time": 39.612637837307055,
     "pp_time": 0.21263562504870548,
-    "optimal_ value": 347.0,
+    "optimal_value": 347.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.710847328012773,
@@ -509,7 +509,7 @@
     "instance_name": "instance_name",
     "solve_time": 10.266540361319764,
     "pp_time": 0.7451875450986953,
-    "optimal_ value": 961.0,
+    "optimal_value": 961.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.6678003523794651,
@@ -527,7 +527,7 @@
     "instance_name": "instance_name",
     "solve_time": 26.376151265702497,
     "pp_time": 0.985174553394027,
-    "optimal_ value": 401.0,
+    "optimal_value": 401.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.13275995368109705,
@@ -545,7 +545,7 @@
     "instance_name": "instance_name",
     "solve_time": 5.902523843858915,
     "pp_time": 0.5724860774435322,
-    "optimal_ value": 470.0,
+    "optimal_value": 470.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.7265427290936971,
@@ -563,7 +563,7 @@
     "instance_name": "instance_name",
     "solve_time": 26.63155752095956,
     "pp_time": 0.3027409186606185,
-    "optimal_ value": 476.0,
+    "optimal_value": 476.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.44067502308068196,
@@ -581,7 +581,7 @@
     "instance_name": "instance_name",
     "solve_time": 3.087360174243342,
     "pp_time": 0.1502450673495047,
-    "optimal_ value": 824.0,
+    "optimal_value": 824.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.3269616802253309,
@@ -599,7 +599,7 @@
     "instance_name": "instance_name",
     "solve_time": 4.999447430359661,
     "pp_time": 0.8785576822925266,
-    "optimal_ value": 323.0,
+    "optimal_value": 323.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.7456426670192962,
@@ -617,7 +617,7 @@
     "instance_name": "instance_name",
     "solve_time": 33.320755518090905,
     "pp_time": 0.9866709070597514,
-    "optimal_ value": 349.0,
+    "optimal_value": 349.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.8573365798851359,
@@ -635,7 +635,7 @@
     "instance_name": "instance_name",
     "solve_time": 4.107967333117163,
     "pp_time": 0.23390820499512033,
-    "optimal_ value": 239.0,
+    "optimal_value": 239.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.01217649917926289,
@@ -653,7 +653,7 @@
     "instance_name": "instance_name",
     "solve_time": 38.29371396036091,
     "pp_time": 0.6806760742435078,
-    "optimal_ value": 723.0,
+    "optimal_value": 723.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.7439230606310717,
@@ -671,7 +671,7 @@
     "instance_name": "instance_name",
     "solve_time": 16.459651760222798,
     "pp_time": 0.795813896272262,
-    "optimal_ value": 984.0,
+    "optimal_value": 984.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.7955088251410509,
@@ -689,7 +689,7 @@
     "instance_name": "instance_name",
     "solve_time": 35.00963112687842,
     "pp_time": 0.12734663080190356,
-    "optimal_ value": 313.0,
+    "optimal_value": 313.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.30119764084355993,
@@ -707,7 +707,7 @@
     "instance_name": "instance_name",
     "solve_time": 45.050898404165046,
     "pp_time": 0.6812038404321229,
-    "optimal_ value": 452.0,
+    "optimal_value": 452.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9147534493682309,
@@ -725,7 +725,7 @@
     "instance_name": "instance_name",
     "solve_time": 34.00186956984672,
     "pp_time": 0.8429403567041461,
-    "optimal_ value": 569.0,
+    "optimal_value": 569.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9312654738478897,
@@ -743,7 +743,7 @@
     "instance_name": "instance_name",
     "solve_time": 13.17814942954763,
     "pp_time": 0.8645867213659367,
-    "optimal_ value": 932.0,
+    "optimal_value": 932.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.7353141552862417,
@@ -761,7 +761,7 @@
     "instance_name": "instance_name",
     "solve_time": 3.849825197659457,
     "pp_time": 0.8540387963140634,
-    "optimal_ value": 1040.0,
+    "optimal_value": 1040.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.8649803392224773,
@@ -779,7 +779,7 @@
     "instance_name": "instance_name",
     "solve_time": 23.68756876522527,
     "pp_time": 0.9717203026635646,
-    "optimal_ value": 934.0,
+    "optimal_value": 934.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.11868827274450577,
@@ -797,7 +797,7 @@
     "instance_name": "instance_name",
     "solve_time": 36.57003157566387,
     "pp_time": 0.4769627943387761,
-    "optimal_ value": 438.0,
+    "optimal_value": 438.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.3211775926059507,
@@ -815,7 +815,7 @@
     "instance_name": "instance_name",
     "solve_time": 5.98349246395472,
     "pp_time": 0.3597815020045485,
-    "optimal_ value": 1098.0,
+    "optimal_value": 1098.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.5430548962375875,
@@ -833,7 +833,7 @@
     "instance_name": "instance_name",
     "solve_time": 28.117360048290486,
     "pp_time": 0.19025970466119047,
-    "optimal_ value": 820.0,
+    "optimal_value": 820.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.22324027952163605,
@@ -851,7 +851,7 @@
     "instance_name": "instance_name",
     "solve_time": 17.830062675010893,
     "pp_time": 0.5122634685478729,
-    "optimal_ value": 866.0,
+    "optimal_value": 866.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.5929837402595295,
@@ -869,7 +869,7 @@
     "instance_name": "instance_name",
     "solve_time": 48.97699008049457,
     "pp_time": 0.07456731306449227,
-    "optimal_ value": 806.0,
+    "optimal_value": 806.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.06955835185641002,
@@ -887,7 +887,7 @@
     "instance_name": "instance_name",
     "solve_time": 30.704282326434406,
     "pp_time": 0.2701274791162577,
-    "optimal_ value": 276.0,
+    "optimal_value": 276.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.39442287383006225,
@@ -905,7 +905,7 @@
     "instance_name": "instance_name",
     "solve_time": 45.81904730214317,
     "pp_time": 0.3359151700982923,
-    "optimal_ value": 717.0,
+    "optimal_value": 717.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.4468743105496261,
@@ -923,7 +923,7 @@
     "instance_name": "instance_name",
     "solve_time": 18.816865482908447,
     "pp_time": 0.9783196344414605,
-    "optimal_ value": 352.0,
+    "optimal_value": 352.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.0950166272919899,
@@ -941,7 +941,7 @@
     "instance_name": "instance_name",
     "solve_time": 49.52475035505985,
     "pp_time": 0.9090857929254128,
-    "optimal_ value": 882.0,
+    "optimal_value": 882.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.6326833845758177,
@@ -959,7 +959,7 @@
     "instance_name": "instance_name",
     "solve_time": 19.611334578040662,
     "pp_time": 0.8094347936033452,
-    "optimal_ value": 819.0,
+    "optimal_value": 819.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.06653085801788772,
@@ -977,7 +977,7 @@
     "instance_name": "instance_name",
     "solve_time": 27.405289312078253,
     "pp_time": 0.27270528272948313,
-    "optimal_ value": 1039.0,
+    "optimal_value": 1039.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9593654460574241,
@@ -995,7 +995,7 @@
     "instance_name": "instance_name",
     "solve_time": 36.54100166249845,
     "pp_time": 0.6872396996978073,
-    "optimal_ value": 493.0,
+    "optimal_value": 493.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.7397728858905281,
@@ -1013,7 +1013,7 @@
     "instance_name": "instance_name",
     "solve_time": 7.563773352970088,
     "pp_time": 0.6517940796804884,
-    "optimal_ value": 475.0,
+    "optimal_value": 475.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.8855990410300035,
@@ -1031,7 +1031,7 @@
     "instance_name": "instance_name",
     "solve_time": 41.25524778528805,
     "pp_time": 0.06926373056022372,
-    "optimal_ value": 950.0,
+    "optimal_value": 950.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9842231124032593,
@@ -1049,7 +1049,7 @@
     "instance_name": "instance_name",
     "solve_time": 30.54155511833822,
     "pp_time": 0.521212196758034,
-    "optimal_ value": 1089.0,
+    "optimal_value": 1089.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9898606401710074,
@@ -1067,7 +1067,7 @@
     "instance_name": "instance_name",
     "solve_time": 11.20574032423296,
     "pp_time": 0.2934234383082379,
-    "optimal_ value": 607.0,
+    "optimal_value": 607.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.3845955606460475,
@@ -1085,7 +1085,7 @@
     "instance_name": "instance_name",
     "solve_time": 3.628649725482985,
     "pp_time": 0.20126817948418885,
-    "optimal_ value": 440.0,
+    "optimal_value": 440.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.15219082644008985,
@@ -1103,7 +1103,7 @@
     "instance_name": "instance_name",
     "solve_time": 4.130674115791217,
     "pp_time": 0.20739102256628494,
-    "optimal_ value": 282.0,
+    "optimal_value": 282.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.8378997177560387,
@@ -1121,7 +1121,7 @@
     "instance_name": "instance_name",
     "solve_time": 4.850098587365103,
     "pp_time": 0.9015256984593149,
-    "optimal_ value": 501.0,
+    "optimal_value": 501.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.4301841470102781,
@@ -1139,7 +1139,7 @@
     "instance_name": "instance_name",
     "solve_time": 42.96573856099044,
     "pp_time": 0.5580967258139081,
-    "optimal_ value": 234.0,
+    "optimal_value": 234.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9221574815220444,
@@ -1157,7 +1157,7 @@
     "instance_name": "instance_name",
     "solve_time": 9.602918544672468,
     "pp_time": 0.8186404613073369,
-    "optimal_ value": 318.0,
+    "optimal_value": 318.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.3929787319650029,
@@ -1175,7 +1175,7 @@
     "instance_name": "instance_name",
     "solve_time": 36.26993389137795,
     "pp_time": 0.16558779041216842,
-    "optimal_ value": 997.0,
+    "optimal_value": 997.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9487919601359928,
@@ -1193,7 +1193,7 @@
     "instance_name": "instance_name",
     "solve_time": 16.174747658279724,
     "pp_time": 0.8786579924023737,
-    "optimal_ value": 394.0,
+    "optimal_value": 394.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.8366661471952891,
@@ -1211,7 +1211,7 @@
     "instance_name": "instance_name",
     "solve_time": 37.36431242896096,
     "pp_time": 0.5525462626529525,
-    "optimal_ value": 359.0,
+    "optimal_value": 359.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.3675707619758847,
@@ -1229,7 +1229,7 @@
     "instance_name": "instance_name",
     "solve_time": 31.692698489326222,
     "pp_time": 0.8645961333784516,
-    "optimal_ value": 1091.0,
+    "optimal_value": 1091.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.48566399155514195,
@@ -1247,7 +1247,7 @@
     "instance_name": "instance_name",
     "solve_time": 32.49612351620066,
     "pp_time": 0.43874511603057986,
-    "optimal_ value": 588.0,
+    "optimal_value": 588.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.3536279179087879,
@@ -1265,7 +1265,7 @@
     "instance_name": "instance_name",
     "solve_time": 15.118486950658456,
     "pp_time": 0.5442805982896654,
-    "optimal_ value": 706.0,
+    "optimal_value": 706.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.6546385219248826,
@@ -1283,7 +1283,7 @@
     "instance_name": "instance_name",
     "solve_time": 37.68564091894361,
     "pp_time": 0.1680546152850272,
-    "optimal_ value": 896.0,
+    "optimal_value": 896.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9226016307525989,
@@ -1301,7 +1301,7 @@
     "instance_name": "instance_name",
     "solve_time": 18.908485484734825,
     "pp_time": 0.28410730170175935,
-    "optimal_ value": 656.0,
+    "optimal_value": 656.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.2696265189843534,
@@ -1319,7 +1319,7 @@
     "instance_name": "instance_name",
     "solve_time": 13.810129964547757,
     "pp_time": 0.33263699370277455,
-    "optimal_ value": 295.0,
+    "optimal_value": 295.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9198308966173028,
@@ -1337,7 +1337,7 @@
     "instance_name": "instance_name",
     "solve_time": 39.11234737656404,
     "pp_time": 0.7143769939396242,
-    "optimal_ value": 990.0,
+    "optimal_value": 990.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.047220465943420664,
@@ -1355,7 +1355,7 @@
     "instance_name": "instance_name",
     "solve_time": 18.341401179466814,
     "pp_time": 0.6002693336639555,
-    "optimal_ value": 214.0,
+    "optimal_value": 214.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.2897946825929263,
@@ -1373,7 +1373,7 @@
     "instance_name": "instance_name",
     "solve_time": 38.26385348133311,
     "pp_time": 0.061079008104256816,
-    "optimal_ value": 664.0,
+    "optimal_value": 664.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.8865292770588515,
@@ -1391,7 +1391,7 @@
     "instance_name": "instance_name",
     "solve_time": 3.201871385531607,
     "pp_time": 0.005277160667564007,
-    "optimal_ value": 472.0,
+    "optimal_value": 472.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.08067565570855761,
@@ -1409,7 +1409,7 @@
     "instance_name": "instance_name",
     "solve_time": 13.022847246581664,
     "pp_time": 0.47453710597489074,
-    "optimal_ value": 802.0,
+    "optimal_value": 802.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9838950807847066,
@@ -1427,7 +1427,7 @@
     "instance_name": "instance_name",
     "solve_time": 30.81876685019861,
     "pp_time": 0.31957255432262566,
-    "optimal_ value": 430.0,
+    "optimal_value": 430.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.09546412608351384,
@@ -1445,7 +1445,7 @@
     "instance_name": "instance_name",
     "solve_time": 1.9898929256928932,
     "pp_time": 0.06883105239058607,
-    "optimal_ value": 448.0,
+    "optimal_value": 448.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.4437044095786489,
@@ -1463,7 +1463,7 @@
     "instance_name": "instance_name",
     "solve_time": 24.80628800783753,
     "pp_time": 0.8326915349571705,
-    "optimal_ value": 403.0,
+    "optimal_value": 403.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.6076915730718786,
@@ -1481,7 +1481,7 @@
     "instance_name": "instance_name",
     "solve_time": 24.20682044772008,
     "pp_time": 0.4031357500526114,
-    "optimal_ value": 516.0,
+    "optimal_value": 516.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.23322872191894828,
@@ -1499,7 +1499,7 @@
     "instance_name": "instance_name",
     "solve_time": 35.223641065454075,
     "pp_time": 0.6536003800195557,
-    "optimal_ value": 243.0,
+    "optimal_value": 243.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.4481931180530895,
@@ -1517,7 +1517,7 @@
     "instance_name": "instance_name",
     "solve_time": 8.222682895519085,
     "pp_time": 0.5999452759209443,
-    "optimal_ value": 900.0,
+    "optimal_value": 900.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9444049680058977,
@@ -1535,7 +1535,7 @@
     "instance_name": "instance_name",
     "solve_time": 34.106080708016435,
     "pp_time": 0.5566218571342629,
-    "optimal_ value": 1026.0,
+    "optimal_value": 1026.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.8091508789493712,
@@ -1553,7 +1553,7 @@
     "instance_name": "instance_name",
     "solve_time": 11.901071062027174,
     "pp_time": 0.4666169975108445,
-    "optimal_ value": 660.0,
+    "optimal_value": 660.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.30298756353689116,
@@ -1571,7 +1571,7 @@
     "instance_name": "instance_name",
     "solve_time": 41.80901860824615,
     "pp_time": 0.2156162975226703,
-    "optimal_ value": 918.0,
+    "optimal_value": 918.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.6158050730223458,
@@ -1589,7 +1589,7 @@
     "instance_name": "instance_name",
     "solve_time": 2.9685421804856285,
     "pp_time": 0.07591169917776963,
-    "optimal_ value": 854.0,
+    "optimal_value": 854.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9840982071749717,
@@ -1607,7 +1607,7 @@
     "instance_name": "instance_name",
     "solve_time": 45.23357622530704,
     "pp_time": 0.964518322247143,
-    "optimal_ value": 215.0,
+    "optimal_value": 215.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.2958261044429209,
@@ -1625,7 +1625,7 @@
     "instance_name": "instance_name",
     "solve_time": 36.85142332133179,
     "pp_time": 0.2926233402840115,
-    "optimal_ value": 799.0,
+    "optimal_value": 799.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.7010162185202675,
@@ -1643,7 +1643,7 @@
     "instance_name": "instance_name",
     "solve_time": 12.445580647528276,
     "pp_time": 0.9044119656254587,
-    "optimal_ value": 389.0,
+    "optimal_value": 389.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.026148836720693125,
@@ -1661,7 +1661,7 @@
     "instance_name": "instance_name",
     "solve_time": 40.237675994193765,
     "pp_time": 0.4789029073081541,
-    "optimal_ value": 791.0,
+    "optimal_value": 791.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.311637241120284,
@@ -1679,7 +1679,7 @@
     "instance_name": "instance_name",
     "solve_time": 33.7120418925403,
     "pp_time": 0.20187238483861525,
-    "optimal_ value": 431.0,
+    "optimal_value": 431.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.07062353876350225,
@@ -1697,7 +1697,7 @@
     "instance_name": "instance_name",
     "solve_time": 18.063156542562847,
     "pp_time": 0.7380138531612938,
-    "optimal_ value": 868.0,
+    "optimal_value": 868.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.8087984183463509,
@@ -1715,7 +1715,7 @@
     "instance_name": "instance_name",
     "solve_time": 40.23198763130278,
     "pp_time": 0.1444729445253362,
-    "optimal_ value": 500.0,
+    "optimal_value": 500.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9611490848403665,
@@ -1733,7 +1733,7 @@
     "instance_name": "instance_name",
     "solve_time": 26.88088888716507,
     "pp_time": 0.015194404646736048,
-    "optimal_ value": 367.0,
+    "optimal_value": 367.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.2140268171935097,
@@ -1751,7 +1751,7 @@
     "instance_name": "instance_name",
     "solve_time": 30.039968278094165,
     "pp_time": 0.6670825117459439,
-    "optimal_ value": 477.0,
+    "optimal_value": 477.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.4022832777680406,
@@ -1769,7 +1769,7 @@
     "instance_name": "instance_name",
     "solve_time": 10.520020597409662,
     "pp_time": 0.31571954498053156,
-    "optimal_ value": 706.0,
+    "optimal_value": 706.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.6593111893062326,
@@ -1787,7 +1787,7 @@
     "instance_name": "instance_name",
     "solve_time": 9.882230704066174,
     "pp_time": 0.9804134563495458,
-    "optimal_ value": 868.0,
+    "optimal_value": 868.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.27549927807125785,
@@ -1805,7 +1805,7 @@
     "instance_name": "instance_name",
     "solve_time": 49.390608112984566,
     "pp_time": 0.42236928472163526,
-    "optimal_ value": 410.0,
+    "optimal_value": 410.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.6919396185253769,
@@ -1823,7 +1823,7 @@
     "instance_name": "instance_name",
     "solve_time": 12.759682297667412,
     "pp_time": 0.7341536767363628,
-    "optimal_ value": 715.0,
+    "optimal_value": 715.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.33863648526828904,
@@ -1841,7 +1841,7 @@
     "instance_name": "instance_name",
     "solve_time": 3.3172713946040986,
     "pp_time": 0.872938300863994,
-    "optimal_ value": 890.0,
+    "optimal_value": 890.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.7955708219520125,
@@ -1859,7 +1859,7 @@
     "instance_name": "instance_name",
     "solve_time": 36.663557582588425,
     "pp_time": 0.2463542735896307,
-    "optimal_ value": 925.0,
+    "optimal_value": 925.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.6494245300850825,
@@ -1877,7 +1877,7 @@
     "instance_name": "instance_name",
     "solve_time": 40.80430242345706,
     "pp_time": 0.2050798005528881,
-    "optimal_ value": 343.0,
+    "optimal_value": 343.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.19015447766009197,
@@ -1895,7 +1895,7 @@
     "instance_name": "instance_name",
     "solve_time": 12.903594592925655,
     "pp_time": 0.007906746750771632,
-    "optimal_ value": 515.0,
+    "optimal_value": 515.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9687185260938235,
@@ -1913,7 +1913,7 @@
     "instance_name": "instance_name",
     "solve_time": 17.122254715980073,
     "pp_time": 0.6230869919987778,
-    "optimal_ value": 1023.0,
+    "optimal_value": 1023.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.7937583564916977,
@@ -1931,7 +1931,7 @@
     "instance_name": "instance_name",
     "solve_time": 1.136492985873322,
     "pp_time": 0.8345832586546414,
-    "optimal_ value": 410.0,
+    "optimal_value": 410.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.5497411234571644,
@@ -1949,7 +1949,7 @@
     "instance_name": "instance_name",
     "solve_time": 43.94439405684262,
     "pp_time": 0.5975666424038094,
-    "optimal_ value": 991.0,
+    "optimal_value": 991.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.02123548164880773,
@@ -1967,7 +1967,7 @@
     "instance_name": "instance_name",
     "solve_time": 35.10530245460743,
     "pp_time": 0.13543467680497234,
-    "optimal_ value": 960.0,
+    "optimal_value": 960.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.29698838774287417,
@@ -1985,7 +1985,7 @@
     "instance_name": "instance_name",
     "solve_time": 39.72051022509625,
     "pp_time": 0.4115725608980507,
-    "optimal_ value": 562.0,
+    "optimal_value": 562.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.09116510141300238,
@@ -2003,7 +2003,7 @@
     "instance_name": "instance_name",
     "solve_time": 27.147257392724704,
     "pp_time": 0.4165438920911033,
-    "optimal_ value": 219.0,
+    "optimal_value": 219.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.6395800604480179,
@@ -2021,7 +2021,7 @@
     "instance_name": "instance_name",
     "solve_time": 26.337334683627567,
     "pp_time": 0.44163733185273446,
-    "optimal_ value": 827.0,
+    "optimal_value": 827.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.6503305955090857,
@@ -2039,7 +2039,7 @@
     "instance_name": "instance_name",
     "solve_time": 49.05065933137857,
     "pp_time": 0.2833130792516021,
-    "optimal_ value": 883.0,
+    "optimal_value": 883.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.7054091988712997,
@@ -2057,7 +2057,7 @@
     "instance_name": "instance_name",
     "solve_time": 41.148106128532056,
     "pp_time": 0.2300169652739983,
-    "optimal_ value": 818.0,
+    "optimal_value": 818.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.371419433950832,
@@ -2075,7 +2075,7 @@
     "instance_name": "instance_name",
     "solve_time": 24.050890527971593,
     "pp_time": 0.7475481380783793,
-    "optimal_ value": 207.0,
+    "optimal_value": 207.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9012061545785104,
@@ -2093,7 +2093,7 @@
     "instance_name": "instance_name",
     "solve_time": 48.1260707291181,
     "pp_time": 0.6209049255509014,
-    "optimal_ value": 504.0,
+    "optimal_value": 504.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.4224815005795908,
@@ -2111,7 +2111,7 @@
     "instance_name": "instance_name",
     "solve_time": 42.96892480665168,
     "pp_time": 0.3760216680807158,
-    "optimal_ value": 897.0,
+    "optimal_value": 897.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.43712156879053077,
@@ -2129,7 +2129,7 @@
     "instance_name": "instance_name",
     "solve_time": 1.5741061381749022,
     "pp_time": 0.2444998511036922,
-    "optimal_ value": 267.0,
+    "optimal_value": 267.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.46462239784974824,
@@ -2147,7 +2147,7 @@
     "instance_name": "instance_name",
     "solve_time": 33.84878458795975,
     "pp_time": 0.37798816764988985,
-    "optimal_ value": 366.0,
+    "optimal_value": 366.0,
     "iterations": 1500,
     "solution_performance": {
       "optimal": 0.9108334923004578,

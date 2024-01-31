@@ -16,9 +16,8 @@ class TestBoxQPMetadata(TestCase):
         self.valid_metadata_filepath = (
             "ccvm_simulators/ccvmplotlib/tests/metadata/valid_metadata.json"
         )
-        self.invalid_metadata_filepath = (
-            "ccvm_simulators/ccvmplotlib/tests/metadata/invalid_metadata.json"
-        )
+        self.invalid_zero_perf_metadata_filepath = "ccvm_simulators/ccvmplotlib/tests/metadata/invalid_zero_performance_metadata.json"
+        self.invalid_incorrect_field_metadata_filepath = "ccvm_simulators/ccvmplotlib/tests/metadata/invalid_incorrect_field_metadata.json"
 
         def valid_machine_func(matching_df: pd.DataFrame) -> float:
             return np.mean(matching_df["solve_time"].values, dtype=float)
@@ -71,8 +70,10 @@ class TestBoxQPMetadata(TestCase):
         # TODO: Implementation
         """
         boxqp_metadata = BoxQPMetadata(self.valid_problem_type)
-        with self.assertRaises(ValueError):
-            boxqp_metadata.ingest_metadata(self.invalid_metadata_filepath)
+        with self.assertRaises(KeyError):
+            boxqp_metadata.ingest_metadata(
+                self.invalid_incorrect_field_metadata_filepath
+            )
 
     def test_generate_TTS_plot_data_valid(self):
         """Test BoxQP Metadata class "generate_TTS_plot_data" method when valid
