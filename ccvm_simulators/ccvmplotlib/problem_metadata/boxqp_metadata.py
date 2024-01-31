@@ -116,9 +116,9 @@ class BoxQPMetadata(ProblemMetadata):
 
                     machine_time = machine_time_func(matching_df=matching_df)
 
-                    success_prob = float(matching_df[percent_gap].values)
+                    success_prob = matching_df[percent_gap].values
                     frac_solved = (success_prob > 0).mean()
-                    if frac_solved < (percentile / 100):
+                    if frac_solved < (int(percentile) / 100):
                         R99 = np.inf
                     else:
                         R99_distribution = sampler.calc_R99_distribution(
