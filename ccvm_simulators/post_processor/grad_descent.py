@@ -5,12 +5,14 @@ import tqdm
 
 
 class PostProcessorGradDescent(PostProcessor):
-    #TODO: Issue 156 will allow constructor to take in num_iter_main.
+    # TODO: Issue 156 will allow constructor to take in num_iter_main.
     def __init__(self):
         """Initialize the PostProcessorGradDescent class."""
         self.pp_time = 0
 
-    def postprocess(self, c, q_matrix, v_vector, num_iter_main=100, num_iter_pp=None, step_size=0.1):
+    def postprocess(
+        self, c, q_matrix, v_vector, num_iter_main=100, num_iter_pp=None, step_size=0.1
+    ):
         """Post processing using Gradient Descent method.
 
         Args:
