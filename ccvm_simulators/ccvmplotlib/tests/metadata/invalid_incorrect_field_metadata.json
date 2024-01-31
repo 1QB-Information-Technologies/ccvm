@@ -1,0 +1,2162 @@
+[
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 34.706756048314766,
+      "pp_time": 0.06253677046990525,
+      "optimal_value": 591.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9037996770985329,
+        "one_percent": 0.5971425807860888,
+        "two_percent": 0.4320140986778883,
+        "three_percent": 0.9777280020530906,
+        "four_percent": 0.3770865541582782,
+        "five_percent": 0.40016136643180544,
+        "ten_percent": 0.6554454749795524
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 12.668577338172671,
+      "pp_time": 0.04194999226759277,
+      "optimal_value": 374.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.371593692940582,
+        "one_percent": 0.496635209085709,
+        "two_percent": 0.48490831134960444,
+        "three_percent": 0.3015667726408767,
+        "four_percent": 0.9364083189742632,
+        "five_percent": 0.6500575138072764,
+        "ten_percent": 0.787066599670648
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 5.806979762006492,
+      "pp_time": 0.3186729396582426,
+      "optimal_value": 598.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.6236545744888051,
+        "one_percent": 0.07717344979828322,
+        "two_percent": 0.5081915792374002,
+        "three_percent": 0.5370972129819204,
+        "four_percent": 0.10543562836701603,
+        "five_percent": 0.2060404187362591,
+        "ten_percent": 0.06582812766104806
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 43.27244971302962,
+      "pp_time": 0.06606038375403156,
+      "optimal_value": 692.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.17399502155579494,
+        "one_percent": 0.14523277097289977,
+        "two_percent": 0.25158589903760187,
+        "three_percent": 0.9068203318445376,
+        "four_percent": 0.7341304119653158,
+        "five_percent": 0.8470902573562062,
+        "ten_percent": 0.9965428691340386
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 21.46364776895326,
+      "pp_time": 0.7435625324632581,
+      "optimal_value": 1009.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9811917942434131,
+        "one_percent": 0.09011206799717286,
+        "two_percent": 0.44617097032697106,
+        "three_percent": 0.29334912382782086,
+        "four_percent": 0.5024649539175233,
+        "five_percent": 0.1543751031908025,
+        "ten_percent": 0.42912233610133743
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 46.132211484920965,
+      "pp_time": 0.835578560102309,
+      "optimal_value": 1060.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.973536797891121,
+        "one_percent": 0.7375544322464316,
+        "two_percent": 0.11878333371369243,
+        "three_percent": 0.32427267685219097,
+        "four_percent": 0.040597298938319426,
+        "five_percent": 0.5396657195317823,
+        "ten_percent": 0.6411372258263164
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 40.52672904031036,
+      "pp_time": 0.33079510700951686,
+      "optimal_value": 669.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.13621145224907383,
+        "one_percent": 0.650805349918316,
+        "two_percent": 0.30077541758833126,
+        "three_percent": 0.4055445199124109,
+        "four_percent": 0.8392793823796181,
+        "five_percent": 0.6888964152913428,
+        "ten_percent": 0.01740641199061632
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 32.478661658340094,
+      "pp_time": 0.6172440566944017,
+      "optimal_value": 576.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9722169234678452,
+        "one_percent": 0.10995606297084604,
+        "two_percent": 0.1931108586116994,
+        "three_percent": 0.11167566379276528,
+        "four_percent": 0.5591987026608735,
+        "five_percent": 0.9770706444930098,
+        "ten_percent": 0.9109059500068395
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 28.78763998495445,
+      "pp_time": 0.26138203501043156,
+      "optimal_value": 996.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.5328287392530875,
+        "one_percent": 0.4925719269755443,
+        "two_percent": 0.1628859004357378,
+        "three_percent": 0.05283127791350717,
+        "four_percent": 0.7909777651068047,
+        "five_percent": 0.3697479463098188,
+        "ten_percent": 0.6486819266382647
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 40.38890129451444,
+      "pp_time": 0.01664037141864083,
+      "optimal_value": 978.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.7847907490722882,
+        "one_percent": 0.8629339967841821,
+        "two_percent": 0.4531813261431581,
+        "three_percent": 0.30997193333021855,
+        "four_percent": 0.034347798809104546,
+        "five_percent": 0.9671418672244393,
+        "ten_percent": 0.8141495549084475
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 15.729555072026002,
+      "pp_time": 0.6468101460878566,
+      "optimal_value": 362.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.5034174220399412,
+        "one_percent": 0.3016004518010943,
+        "two_percent": 0.28762392989024044,
+        "three_percent": 0.5275616314710516,
+        "four_percent": 0.46322070704886187,
+        "five_percent": 0.9566028112574038,
+        "ten_percent": 0.4159680391763748
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 11.307233623733238,
+      "pp_time": 0.5070874241026774,
+      "optimal_value": 591.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.055654179888928734,
+        "one_percent": 0.1096766831209125,
+        "two_percent": 0.5723560534706208,
+        "three_percent": 0.5285184668350379,
+        "four_percent": 0.8382674304619894,
+        "five_percent": 0.1076655058280398,
+        "ten_percent": 0.06767833412203228
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 29.722317201146385,
+      "pp_time": 0.4361321259793798,
+      "optimal_value": 486.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.8912096799481611,
+        "one_percent": 0.31246117411923924,
+        "two_percent": 0.061737963579688415,
+        "three_percent": 0.4275600627055688,
+        "four_percent": 0.099854651602591,
+        "five_percent": 0.6551380991592813,
+        "ten_percent": 0.13220844871672766
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 36.22183351295583,
+      "pp_time": 0.43514912140862627,
+      "optimal_value": 466.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9158701912307439,
+        "one_percent": 0.5684131988210248,
+        "two_percent": 0.9154560525903042,
+        "three_percent": 0.06525525957652178,
+        "four_percent": 0.8462608955764399,
+        "five_percent": 0.5673701557938599,
+        "ten_percent": 0.37982406222631704
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 14.717837794470912,
+      "pp_time": 0.033164036600760616,
+      "optimal_value": 1072.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.12434387037931505,
+        "one_percent": 0.8980578951765433,
+        "two_percent": 0.2694922641197993,
+        "three_percent": 0.5267810447307026,
+        "four_percent": 0.8533510243006452,
+        "five_percent": 0.18283664572836,
+        "ten_percent": 0.5626439652709427
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 8.769253622732442,
+      "pp_time": 0.9213767689910437,
+      "optimal_value": 1059.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.5903473687582094,
+        "one_percent": 0.521353767532356,
+        "two_percent": 0.7192016579095841,
+        "three_percent": 0.6161337234489369,
+        "four_percent": 0.2550886569463221,
+        "five_percent": 0.36570719860981904,
+        "ten_percent": 0.8160170013320444
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 34.047065493146825,
+      "pp_time": 0.22906690597967516,
+      "optimal_value": 450.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.4560255376320467,
+        "one_percent": 0.7328583811860357,
+        "two_percent": 0.7334812034449372,
+        "three_percent": 0.17187765308622027,
+        "four_percent": 0.9693964022950147,
+        "five_percent": 0.946204333560976,
+        "ten_percent": 0.6995883220681292
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 1.7772777954874086,
+      "pp_time": 0.9051657989389703,
+      "optimal_value": 719.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.6809864317732383,
+        "one_percent": 0.45540096621651593,
+        "two_percent": 0.572577628164826,
+        "three_percent": 0.24708594818747476,
+        "four_percent": 0.8794902437220826,
+        "five_percent": 0.4033875914445644,
+        "ten_percent": 0.4619596419129045
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 45.59951868818439,
+      "pp_time": 0.8663591589311082,
+      "optimal_value": 253.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.308309710971703,
+        "one_percent": 0.3567227663065049,
+        "two_percent": 0.7012985472856031,
+        "three_percent": 0.3095929774455807,
+        "four_percent": 0.2789950141731118,
+        "five_percent": 0.5675797999997437,
+        "ten_percent": 0.749185065411576
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 29.98476646647244,
+      "pp_time": 0.45860465390022154,
+      "optimal_value": 309.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.5738541779900825,
+        "one_percent": 0.04700156674199596,
+        "two_percent": 0.9068968515802301,
+        "three_percent": 0.1093280904434678,
+        "four_percent": 0.8302230083277214,
+        "five_percent": 0.4951819710991232,
+        "ten_percent": 0.04153206499750184
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 47.90280230149031,
+      "pp_time": 0.8263126984129957,
+      "optimal_value": 940.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9565965465981953,
+        "one_percent": 0.5528437166662452,
+        "two_percent": 0.9949208039559031,
+        "three_percent": 0.2692518968123796,
+        "four_percent": 0.15935891686564474,
+        "five_percent": 0.8472430152898146,
+        "ten_percent": 0.7756070468918131
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 44.12291100409403,
+      "pp_time": 0.5286698687697445,
+      "optimal_value": 435.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.2401696922292097,
+        "one_percent": 0.03952336211031793,
+        "two_percent": 0.08157378886269151,
+        "three_percent": 0.2000047276719964,
+        "four_percent": 0.051585502269947514,
+        "five_percent": 0.36834335416931685,
+        "ten_percent": 0.25436413964155224
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 19.219387684566158,
+      "pp_time": 0.3918294076179831,
+      "optimal_value": 410.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.3232154747046201,
+        "one_percent": 0.8977062806001405,
+        "two_percent": 0.185301994787476,
+        "three_percent": 0.2627195493834761,
+        "four_percent": 0.3905350237700327,
+        "five_percent": 0.740647151744875,
+        "ten_percent": 0.5588649898239636
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 28.353777170228252,
+      "pp_time": 0.9488556649016838,
+      "optimal_value": 629.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.036314313385316876,
+        "one_percent": 0.9243453646301121,
+        "two_percent": 0.25004395839455296,
+        "three_percent": 0.1397856092175056,
+        "four_percent": 0.18202718438276588,
+        "five_percent": 0.21868935936626377,
+        "ten_percent": 0.45629531969219417
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 32.63597918396932,
+      "pp_time": 0.6579054220406086,
+      "optimal_value": 765.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.7407547565154173,
+        "one_percent": 0.06061809259777151,
+        "two_percent": 0.1599906858447866,
+        "three_percent": 0.7842852881569087,
+        "four_percent": 0.12686085663204805,
+        "five_percent": 0.692220240913642,
+        "ten_percent": 0.19822983233545832
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 14.022958938143487,
+      "pp_time": 0.9068337275208052,
+      "optimal_value": 833.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.25833927498238995,
+        "one_percent": 0.8966790227771742,
+        "two_percent": 0.42381492055216563,
+        "three_percent": 0.665993084522073,
+        "four_percent": 0.7189583149731871,
+        "five_percent": 0.3325258143136077,
+        "ten_percent": 0.8363801184891647
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 24.676534164438536,
+      "pp_time": 0.6682956715687043,
+      "optimal_value": 473.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.821556643639375,
+        "one_percent": 0.2396463557862154,
+        "two_percent": 0.35520777731538566,
+        "three_percent": 0.5916369678253198,
+        "four_percent": 0.520243005811617,
+        "five_percent": 0.6432563537153876,
+        "ten_percent": 0.5216882141036902
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 39.612637837307055,
+      "pp_time": 0.21263562504870548,
+      "optimal_value": 347.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.710847328012773,
+        "one_percent": 0.24801838751657102,
+        "two_percent": 0.6546563881142713,
+        "three_percent": 0.10141966801372859,
+        "four_percent": 0.9730141272163516,
+        "five_percent": 0.5955284398876809,
+        "ten_percent": 0.10715797010946426
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 10.266540361319764,
+      "pp_time": 0.7451875450986953,
+      "optimal_value": 961.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.6678003523794651,
+        "one_percent": 0.23236968131494062,
+        "two_percent": 0.4640116726156477,
+        "three_percent": 0.5503298182393147,
+        "four_percent": 0.9811605245102641,
+        "five_percent": 0.7394537082985515,
+        "ten_percent": 0.03112873487870016
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 26.376151265702497,
+      "pp_time": 0.985174553394027,
+      "optimal_value": 401.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.13275995368109705,
+        "one_percent": 0.28311703179308323,
+        "two_percent": 0.13204453365483282,
+        "three_percent": 0.19303455881261578,
+        "four_percent": 0.11694706772209573,
+        "five_percent": 0.5394282820000257,
+        "ten_percent": 0.18241608394360043
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 5.902523843858915,
+      "pp_time": 0.5724860774435322,
+      "optimal_value": 470.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.7265427290936971,
+        "one_percent": 0.719055643865879,
+        "two_percent": 0.950809960441436,
+        "three_percent": 0.22747854508389231,
+        "four_percent": 0.5955520227629474,
+        "five_percent": 0.24434636582845193,
+        "ten_percent": 0.9258177808360327
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 26.63155752095956,
+      "pp_time": 0.3027409186606185,
+      "optimal_value": 476.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.44067502308068196,
+        "one_percent": 0.8870777436262383,
+        "two_percent": 0.6729234485433383,
+        "three_percent": 0.19932178284357815,
+        "four_percent": 0.3521590336274415,
+        "five_percent": 0.28261222075341774,
+        "ten_percent": 0.008731834593912136
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 3.087360174243342,
+      "pp_time": 0.1502450673495047,
+      "optimal_value": 824.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.3269616802253309,
+        "one_percent": 0.4975123773440451,
+        "two_percent": 0.7345057203006721,
+        "three_percent": 0.15079145099255886,
+        "four_percent": 0.3132624008548873,
+        "five_percent": 0.06893068680743908,
+        "ten_percent": 0.3622983767495159
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 4.999447430359661,
+      "pp_time": 0.8785576822925266,
+      "optimal_value": 323.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.7456426670192962,
+        "one_percent": 0.5591424586376137,
+        "two_percent": 0.3736676978442248,
+        "three_percent": 0.8283376880570106,
+        "four_percent": 0.8563777377468609,
+        "five_percent": 0.20032585554483306,
+        "ten_percent": 0.06791133606092348
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 33.320755518090905,
+      "pp_time": 0.9866709070597514,
+      "optimal_value": 349.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.8573365798851359,
+        "one_percent": 0.6193476395112097,
+        "two_percent": 0.3400985949999433,
+        "three_percent": 0.9135538369454869,
+        "four_percent": 0.47071115639258043,
+        "five_percent": 0.9375227162577885,
+        "ten_percent": 0.010364925723761798
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 4.107967333117163,
+      "pp_time": 0.23390820499512033,
+      "optimal_value": 239.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.01217649917926289,
+        "one_percent": 0.06710645189444431,
+        "two_percent": 0.08892903000717234,
+        "three_percent": 0.2860257461038811,
+        "four_percent": 0.6572723400522192,
+        "five_percent": 0.9912735239350595,
+        "ten_percent": 0.6753413833333817
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 38.29371396036091,
+      "pp_time": 0.6806760742435078,
+      "optimal_value": 723.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.7439230606310717,
+        "one_percent": 0.4762066326160065,
+        "two_percent": 0.25525148451885815,
+        "three_percent": 0.8757827798379535,
+        "four_percent": 0.6520448167306739,
+        "five_percent": 0.4953870768400849,
+        "ten_percent": 0.7416625859946577
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 16.459651760222798,
+      "pp_time": 0.795813896272262,
+      "optimal_value": 984.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.7955088251410509,
+        "one_percent": 0.7305462029009324,
+        "two_percent": 0.4703463607241224,
+        "three_percent": 0.5581288226997158,
+        "four_percent": 0.34048047197524056,
+        "five_percent": 0.46492928330829997,
+        "ten_percent": 0.9417111410523894
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 35.00963112687842,
+      "pp_time": 0.12734663080190356,
+      "optimal_value": 313.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.30119764084355993,
+        "one_percent": 0.18997090440233322,
+        "two_percent": 0.10635900039187063,
+        "three_percent": 0.4893212142062635,
+        "four_percent": 0.8309724155666246,
+        "five_percent": 0.8864137898510849,
+        "ten_percent": 0.6970474635489169
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 45.050898404165046,
+      "pp_time": 0.6812038404321229,
+      "optimal_value": 452.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9147534493682309,
+        "one_percent": 0.3680610352857464,
+        "two_percent": 0.7467678559711437,
+        "three_percent": 0.9143348948526805,
+        "four_percent": 0.47503930453080323,
+        "five_percent": 0.345259027845606,
+        "ten_percent": 0.2449063273310268
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 34.00186956984672,
+      "pp_time": 0.8429403567041461,
+      "optimal_value": 569.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9312654738478897,
+        "one_percent": 0.3863609752070932,
+        "two_percent": 0.7979831613238021,
+        "three_percent": 0.9260807748051447,
+        "four_percent": 0.14657417538414552,
+        "five_percent": 0.6069414526789506,
+        "ten_percent": 0.9271002013468501
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 13.17814942954763,
+      "pp_time": 0.8645867213659367,
+      "optimal_value": 932.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.7353141552862417,
+        "one_percent": 0.9486641709462041,
+        "two_percent": 0.22543562609817258,
+        "three_percent": 0.15084530951807362,
+        "four_percent": 0.6254772161004399,
+        "five_percent": 0.7699060017831237,
+        "ten_percent": 0.38880365763196356
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 3.849825197659457,
+      "pp_time": 0.8540387963140634,
+      "optimal_value": 1040.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.8649803392224773,
+        "one_percent": 0.21933695235218975,
+        "two_percent": 0.8141513805343126,
+        "three_percent": 0.8419693378564193,
+        "four_percent": 0.08198746972405724,
+        "five_percent": 0.25013982293920667,
+        "ten_percent": 0.6360443391325733
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 23.68756876522527,
+      "pp_time": 0.9717203026635646,
+      "optimal_value": 934.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.11868827274450577,
+        "one_percent": 0.062259681193900795,
+        "two_percent": 0.8339879898322606,
+        "three_percent": 0.8990282325372999,
+        "four_percent": 0.8775342001946164,
+        "five_percent": 0.10078036672082213,
+        "ten_percent": 0.25357752827462554
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 36.57003157566387,
+      "pp_time": 0.4769627943387761,
+      "optimal_value": 438.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.3211775926059507,
+        "one_percent": 0.11856103402842744,
+        "two_percent": 0.3864277067663936,
+        "three_percent": 0.9411299431982669,
+        "four_percent": 0.4273831068873598,
+        "five_percent": 0.9478859128463832,
+        "ten_percent": 0.32458571366195266
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 5.98349246395472,
+      "pp_time": 0.3597815020045485,
+      "optimal_value": 1098.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.5430548962375875,
+        "one_percent": 0.07351312051321146,
+        "two_percent": 0.7179507450071577,
+        "three_percent": 0.052633521569970254,
+        "four_percent": 0.14528067960548552,
+        "five_percent": 0.12491044444224353,
+        "ten_percent": 0.013460245070593735
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 28.117360048290486,
+      "pp_time": 0.19025970466119047,
+      "optimal_value": 820.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.22324027952163605,
+        "one_percent": 0.2884302701168111,
+        "two_percent": 0.7169562254454441,
+        "three_percent": 0.7003799284227111,
+        "four_percent": 0.9792889757955395,
+        "five_percent": 0.6490715165635003,
+        "ten_percent": 0.01472189440799343
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 17.830062675010893,
+      "pp_time": 0.5122634685478729,
+      "optimal_value": 866.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.5929837402595295,
+        "one_percent": 0.18297008424791816,
+        "two_percent": 0.8313723978117635,
+        "three_percent": 0.213039725379649,
+        "four_percent": 0.0828028014832809,
+        "five_percent": 0.0946227306891606,
+        "ten_percent": 0.034539982642627254
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 48.97699008049457,
+      "pp_time": 0.07456731306449227,
+      "optimal_value": 806.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.06955835185641002,
+        "one_percent": 0.20825438355208814,
+        "two_percent": 0.6350800870739147,
+        "three_percent": 0.32737501332899266,
+        "four_percent": 0.8026655494929332,
+        "five_percent": 0.8804156973054427,
+        "ten_percent": 0.500792740943483
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 30.704282326434406,
+      "pp_time": 0.2701274791162577,
+      "optimal_value": 276.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.39442287383006225,
+        "one_percent": 0.6929152536789155,
+        "two_percent": 0.4168144036098872,
+        "three_percent": 0.32767171643533477,
+        "four_percent": 0.7580742226879643,
+        "five_percent": 0.010715454397231317,
+        "ten_percent": 0.21799579815695524
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 45.81904730214317,
+      "pp_time": 0.3359151700982923,
+      "optimal_value": 717.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.4468743105496261,
+        "one_percent": 0.66985968324482,
+        "two_percent": 0.7966826898631258,
+        "three_percent": 0.22634720928944219,
+        "four_percent": 0.4542915813031768,
+        "five_percent": 0.09677734105707791,
+        "ten_percent": 0.6606954085506574
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 18.816865482908447,
+      "pp_time": 0.9783196344414605,
+      "optimal_value": 352.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.0950166272919899,
+        "one_percent": 0.9453208345463796,
+        "two_percent": 0.5543823417280344,
+        "three_percent": 0.9575442708214668,
+        "four_percent": 0.40633107188645035,
+        "five_percent": 0.1522400505494288,
+        "ten_percent": 0.9838455696738904
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 49.52475035505985,
+      "pp_time": 0.9090857929254128,
+      "optimal_value": 882.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.6326833845758177,
+        "one_percent": 0.10639939081558358,
+        "two_percent": 0.5544070183838533,
+        "three_percent": 0.9153305534764858,
+        "four_percent": 0.32335485698275357,
+        "five_percent": 0.08250899462813421,
+        "ten_percent": 0.47949318721713685
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 19.611334578040662,
+      "pp_time": 0.8094347936033452,
+      "optimal_value": 819.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.06653085801788772,
+        "one_percent": 0.4165281898597085,
+        "two_percent": 0.5284815256309873,
+        "three_percent": 0.19691512498752395,
+        "four_percent": 0.27628755250809345,
+        "five_percent": 0.4262509159555192,
+        "ten_percent": 0.2545942058103815
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 27.405289312078253,
+      "pp_time": 0.27270528272948313,
+      "optimal_value": 1039.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9593654460574241,
+        "one_percent": 0.04980517020211361,
+        "two_percent": 0.8681688290752876,
+        "three_percent": 0.8464804784448821,
+        "four_percent": 0.9348865116957109,
+        "five_percent": 0.9092817747561504,
+        "ten_percent": 0.6718803040892696
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 36.54100166249845,
+      "pp_time": 0.6872396996978073,
+      "optimal_value": 493.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.7397728858905281,
+        "one_percent": 0.06009298599537305,
+        "two_percent": 0.4182675096333316,
+        "three_percent": 0.7166799988406137,
+        "four_percent": 0.8353009944719931,
+        "five_percent": 0.27829177381038184,
+        "ten_percent": 0.24014875546459769
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 7.563773352970088,
+      "pp_time": 0.6517940796804884,
+      "optimal_value": 475.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.8855990410300035,
+        "one_percent": 0.7694600280448946,
+        "two_percent": 0.7611027912307029,
+        "three_percent": 0.5303293138200793,
+        "four_percent": 0.24956495656703281,
+        "five_percent": 0.5981792255448213,
+        "ten_percent": 0.981068702842082
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 41.25524778528805,
+      "pp_time": 0.06926373056022372,
+      "optimal_value": 950.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9842231124032593,
+        "one_percent": 0.3631388290565609,
+        "two_percent": 0.3754347066454635,
+        "three_percent": 0.9534032342472274,
+        "four_percent": 0.010621723637917357,
+        "five_percent": 0.6253402011914668,
+        "ten_percent": 0.7265246807191961
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 30.54155511833822,
+      "pp_time": 0.521212196758034,
+      "optimal_value": 1089.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9898606401710074,
+        "one_percent": 0.6148248075656265,
+        "two_percent": 0.6814396008660322,
+        "three_percent": 0.9056802088592651,
+        "four_percent": 0.4614989075780841,
+        "five_percent": 0.22666400110990137,
+        "ten_percent": 0.8285178076509317
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 11.20574032423296,
+      "pp_time": 0.2934234383082379,
+      "optimal_value": 607.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.3845955606460475,
+        "one_percent": 0.8229916858198503,
+        "two_percent": 0.3034903289811909,
+        "three_percent": 0.12429830676274345,
+        "four_percent": 0.22476535117471186,
+        "five_percent": 0.151000074738586,
+        "ten_percent": 0.9428747269668979
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 3.628649725482985,
+      "pp_time": 0.20126817948418885,
+      "optimal_value": 440.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.15219082644008985,
+        "one_percent": 0.23486048192664621,
+        "two_percent": 0.6752303964796343,
+        "three_percent": 0.7855230307445955,
+        "four_percent": 0.4660581020783269,
+        "five_percent": 0.009995350350555765,
+        "ten_percent": 0.5466619273878162
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 4.130674115791217,
+      "pp_time": 0.20739102256628494,
+      "optimal_value": 282.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.8378997177560387,
+        "one_percent": 0.3125278062816589,
+        "two_percent": 0.49649669027091925,
+        "three_percent": 0.1450949045805453,
+        "four_percent": 0.03327652889931321,
+        "five_percent": 0.2971212914175245,
+        "ten_percent": 0.9309214300216897
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 4.850098587365103,
+      "pp_time": 0.9015256984593149,
+      "optimal_value": 501.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.4301841470102781,
+        "one_percent": 0.19256699240651687,
+        "two_percent": 0.8840493277280003,
+        "three_percent": 0.7757317160905557,
+        "four_percent": 0.08208658333080598,
+        "five_percent": 0.19421888860430414,
+        "ten_percent": 0.983078465815383
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 42.96573856099044,
+      "pp_time": 0.5580967258139081,
+      "optimal_value": 234.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9221574815220444,
+        "one_percent": 0.4949158509431312,
+        "two_percent": 0.24795596267275732,
+        "three_percent": 0.7535672350652566,
+        "four_percent": 0.5050695667386459,
+        "five_percent": 0.9091290950763042,
+        "ten_percent": 0.28354147187683
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 9.602918544672468,
+      "pp_time": 0.8186404613073369,
+      "optimal_value": 318.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.3929787319650029,
+        "one_percent": 0.957171121903244,
+        "two_percent": 0.9988473025979643,
+        "three_percent": 0.5518915263366152,
+        "four_percent": 0.7158111671940915,
+        "five_percent": 0.08561492897873957,
+        "ten_percent": 0.25561779126653783
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 36.26993389137795,
+      "pp_time": 0.16558779041216842,
+      "optimal_value": 997.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9487919601359928,
+        "one_percent": 0.9142822227723851,
+        "two_percent": 0.8110939466793651,
+        "three_percent": 0.5479353545926802,
+        "four_percent": 0.04854260697713231,
+        "five_percent": 0.6124033841074632,
+        "ten_percent": 0.3051596168037133
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 16.174747658279724,
+      "pp_time": 0.8786579924023737,
+      "optimal_value": 394.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.8366661471952891,
+        "one_percent": 0.03446682576994886,
+        "two_percent": 0.5266051716393828,
+        "three_percent": 0.4201476185745384,
+        "four_percent": 0.31611438949861825,
+        "five_percent": 0.20866431071622737,
+        "ten_percent": 0.7007998416713945
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 37.36431242896096,
+      "pp_time": 0.5525462626529525,
+      "optimal_value": 359.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.3675707619758847,
+        "one_percent": 0.7734764061822349,
+        "two_percent": 0.8413522500923293,
+        "three_percent": 0.26122856153094975,
+        "four_percent": 0.526417056681702,
+        "five_percent": 0.08200948283296805,
+        "ten_percent": 0.8319344680918114
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 31.692698489326222,
+      "pp_time": 0.8645961333784516,
+      "optimal_value": 1091.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.48566399155514195,
+        "one_percent": 0.11216848595125606,
+        "two_percent": 0.6505851296131534,
+        "three_percent": 0.8792231356262901,
+        "four_percent": 0.45114352005927216,
+        "five_percent": 0.6569440730981978,
+        "ten_percent": 0.5344208988457826
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 32.49612351620066,
+      "pp_time": 0.43874511603057986,
+      "optimal_value": 588.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.3536279179087879,
+        "one_percent": 0.8716781464133261,
+        "two_percent": 0.129619267853198,
+        "three_percent": 0.3999554552915012,
+        "four_percent": 0.5647576728543311,
+        "five_percent": 0.869789834840933,
+        "ten_percent": 0.9935966766947225
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 15.118486950658456,
+      "pp_time": 0.5442805982896654,
+      "optimal_value": 706.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.6546385219248826,
+        "one_percent": 0.1634274946119768,
+        "two_percent": 0.9384611294340287,
+        "three_percent": 0.13760800865653455,
+        "four_percent": 0.7456276102014161,
+        "five_percent": 0.7754392497681767,
+        "ten_percent": 0.3303727090959986
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 37.68564091894361,
+      "pp_time": 0.1680546152850272,
+      "optimal_value": 896.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9226016307525989,
+        "one_percent": 0.48136834552001606,
+        "two_percent": 0.32683182057389704,
+        "three_percent": 0.8948882394594037,
+        "four_percent": 0.7035026478653691,
+        "five_percent": 0.6108141446028676,
+        "ten_percent": 0.4589812228013327
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 18.908485484734825,
+      "pp_time": 0.28410730170175935,
+      "optimal_value": 656.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.2696265189843534,
+        "one_percent": 0.8079728800982292,
+        "two_percent": 0.46984628997576494,
+        "three_percent": 0.3503848561990611,
+        "four_percent": 0.0346042914109016,
+        "five_percent": 0.8393266927406957,
+        "ten_percent": 0.1539907018264418
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 13.810129964547757,
+      "pp_time": 0.33263699370277455,
+      "optimal_value": 295.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9198308966173028,
+        "one_percent": 0.29130412403065986,
+        "two_percent": 0.5932910120512279,
+        "three_percent": 0.14926628701733335,
+        "four_percent": 0.5935541286292398,
+        "five_percent": 0.20632069971512013,
+        "ten_percent": 0.0028539375219558405
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 39.11234737656404,
+      "pp_time": 0.7143769939396242,
+      "optimal_value": 990.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.047220465943420664,
+        "one_percent": 0.10295503657275273,
+        "two_percent": 0.5846519491688316,
+        "three_percent": 0.08670284293549746,
+        "four_percent": 0.23322226917000755,
+        "five_percent": 0.5424145128474722,
+        "ten_percent": 0.5823088832216216
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 18.341401179466814,
+      "pp_time": 0.6002693336639555,
+      "optimal_value": 214.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.2897946825929263,
+        "one_percent": 0.6939987534740194,
+        "two_percent": 0.2926879439744783,
+        "three_percent": 0.6416402812142286,
+        "four_percent": 0.7099775395780727,
+        "five_percent": 0.7331963077726348,
+        "ten_percent": 0.30717318869291066
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 38.26385348133311,
+      "pp_time": 0.061079008104256816,
+      "optimal_value": 664.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.8865292770588515,
+        "one_percent": 0.9065248309536799,
+        "two_percent": 0.14374306219198318,
+        "three_percent": 0.5943767807123584,
+        "four_percent": 0.7989221689918431,
+        "five_percent": 0.6108938961979974,
+        "ten_percent": 0.12156749691183222
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 3.201871385531607,
+      "pp_time": 0.005277160667564007,
+      "optimal_value": 472.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.08067565570855761,
+        "one_percent": 0.7389680869284939,
+        "two_percent": 0.28961806063859297,
+        "three_percent": 0.40203494979910326,
+        "four_percent": 0.3096798301734992,
+        "five_percent": 0.7637641256933608,
+        "ten_percent": 0.5729053216710279
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 13.022847246581664,
+      "pp_time": 0.47453710597489074,
+      "optimal_value": 802.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9838950807847066,
+        "one_percent": 0.2724185161764706,
+        "two_percent": 0.792347645536491,
+        "three_percent": 0.7522400858303362,
+        "four_percent": 0.01291652382596531,
+        "five_percent": 0.9218182124090002,
+        "ten_percent": 0.5037294400353828
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 30.81876685019861,
+      "pp_time": 0.31957255432262566,
+      "optimal_value": 430.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.09546412608351384,
+        "one_percent": 0.9935343656066935,
+        "two_percent": 0.8740190869962825,
+        "three_percent": 0.5062747688297402,
+        "four_percent": 0.31494604006469407,
+        "five_percent": 0.6912248337417716,
+        "ten_percent": 0.815199065250482
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 1.9898929256928932,
+      "pp_time": 0.06883105239058607,
+      "optimal_value": 448.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.4437044095786489,
+        "one_percent": 0.5023895238524132,
+        "two_percent": 0.19431669688095266,
+        "three_percent": 0.4832002582208764,
+        "four_percent": 0.22155353918631004,
+        "five_percent": 0.5835198250326523,
+        "ten_percent": 0.3564341197113281
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 24.80628800783753,
+      "pp_time": 0.8326915349571705,
+      "optimal_value": 403.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.6076915730718786,
+        "one_percent": 0.9639443824840532,
+        "two_percent": 0.6186646266107646,
+        "three_percent": 0.2265588187522266,
+        "four_percent": 0.25860545275842817,
+        "five_percent": 0.6585587176654341,
+        "ten_percent": 0.14080018878906086
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 24.20682044772008,
+      "pp_time": 0.4031357500526114,
+      "optimal_value": 516.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.23322872191894828,
+        "one_percent": 0.45939676394532813,
+        "two_percent": 0.5224608304709477,
+        "three_percent": 0.05436205428715313,
+        "four_percent": 0.6011018545033606,
+        "five_percent": 0.6956914622675757,
+        "ten_percent": 0.3106474220111918
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 35.223641065454075,
+      "pp_time": 0.6536003800195557,
+      "optimal_value": 243.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.4481931180530895,
+        "one_percent": 0.9029165866127505,
+        "two_percent": 0.28137670363830203,
+        "three_percent": 0.029288324290322465,
+        "four_percent": 0.7797278893542681,
+        "five_percent": 0.908533437415156,
+        "ten_percent": 0.811368633814215
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 8.222682895519085,
+      "pp_time": 0.5999452759209443,
+      "optimal_value": 900.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9444049680058977,
+        "one_percent": 0.014903403436721474,
+        "two_percent": 0.9322532859869144,
+        "three_percent": 0.05828888577458968,
+        "four_percent": 0.11857797032527173,
+        "five_percent": 0.5193525332574342,
+        "ten_percent": 0.24456154824509102
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 34.106080708016435,
+      "pp_time": 0.5566218571342629,
+      "optimal_value": 1026.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.8091508789493712,
+        "one_percent": 0.6179930364853397,
+        "two_percent": 0.9056458160478096,
+        "three_percent": 0.007916194899400986,
+        "four_percent": 0.38876258650099227,
+        "five_percent": 0.08259740921488423,
+        "ten_percent": 0.6806121715920539
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 11.901071062027174,
+      "pp_time": 0.4666169975108445,
+      "optimal_value": 660.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.30298756353689116,
+        "one_percent": 0.41228650841425296,
+        "two_percent": 0.9238985814651299,
+        "three_percent": 0.7707279341058652,
+        "four_percent": 0.9539600574440634,
+        "five_percent": 0.9891358407441708,
+        "ten_percent": 0.18873620400100743
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 41.80901860824615,
+      "pp_time": 0.2156162975226703,
+      "optimal_value": 918.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.6158050730223458,
+        "one_percent": 0.7217851725946457,
+        "two_percent": 0.6581028650830189,
+        "three_percent": 0.36186913447066293,
+        "four_percent": 0.031153484843918777,
+        "five_percent": 0.4880205515021435,
+        "ten_percent": 0.912686215134572
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 2.9685421804856285,
+      "pp_time": 0.07591169917776963,
+      "optimal_value": 854.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9840982071749717,
+        "one_percent": 0.3426399243491759,
+        "two_percent": 0.1821583050692258,
+        "three_percent": 0.9140650598216903,
+        "four_percent": 0.4913207834020187,
+        "five_percent": 0.142873552683897,
+        "ten_percent": 0.35620848737971533
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 45.23357622530704,
+      "pp_time": 0.964518322247143,
+      "optimal_value": 215.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.2958261044429209,
+        "one_percent": 0.5826642000739924,
+        "two_percent": 0.678683433976975,
+        "three_percent": 0.03883057199991247,
+        "four_percent": 0.7233329234125689,
+        "five_percent": 0.9628599831673879,
+        "ten_percent": 0.7074701496395872
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 36.85142332133179,
+      "pp_time": 0.2926233402840115,
+      "optimal_value": 799.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.7010162185202675,
+        "one_percent": 0.7954678414317585,
+        "two_percent": 0.649509571436922,
+        "three_percent": 0.7810666187503894,
+        "four_percent": 0.13930332273175294,
+        "five_percent": 0.9472241231752325,
+        "ten_percent": 0.11641968646105494
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 12.445580647528276,
+      "pp_time": 0.9044119656254587,
+      "optimal_value": 389.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.026148836720693125,
+        "one_percent": 0.9874898878683288,
+        "two_percent": 0.03382418529585418,
+        "three_percent": 0.9699599227752522,
+        "four_percent": 0.913913330925331,
+        "five_percent": 0.7026972724468231,
+        "ten_percent": 0.7046858810499022
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 40.237675994193765,
+      "pp_time": 0.4789029073081541,
+      "optimal_value": 791.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.311637241120284,
+        "one_percent": 0.7935550450121177,
+        "two_percent": 0.1770148073633916,
+        "three_percent": 0.6395451796025337,
+        "four_percent": 0.28507749295110707,
+        "five_percent": 0.07157653866891389,
+        "ten_percent": 0.14830825197880093
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 33.7120418925403,
+      "pp_time": 0.20187238483861525,
+      "optimal_value": 431.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.07062353876350225,
+        "one_percent": 0.273808200165502,
+        "two_percent": 0.060003068470893206,
+        "three_percent": 0.5151361653531,
+        "four_percent": 0.39613478212116093,
+        "five_percent": 0.3038361390432096,
+        "ten_percent": 0.05769504834848471
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 18.063156542562847,
+      "pp_time": 0.7380138531612938,
+      "optimal_value": 868.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.8087984183463509,
+        "one_percent": 0.682675898415431,
+        "two_percent": 0.6443416567762643,
+        "three_percent": 0.9440045492322782,
+        "four_percent": 0.6377786166235909,
+        "five_percent": 0.46396217508431303,
+        "ten_percent": 0.3395686291614005
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 40.23198763130278,
+      "pp_time": 0.1444729445253362,
+      "optimal_value": 500.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9611490848403665,
+        "one_percent": 0.14668405377952531,
+        "two_percent": 0.21910634286000474,
+        "three_percent": 0.8838759083744266,
+        "four_percent": 0.06914660635674319,
+        "five_percent": 0.03608887176003717,
+        "ten_percent": 0.9119516928137855
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 26.88088888716507,
+      "pp_time": 0.015194404646736048,
+      "optimal_value": 367.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.2140268171935097,
+        "one_percent": 0.11156075892715345,
+        "two_percent": 0.09296934898390974,
+        "three_percent": 0.9922956522771039,
+        "four_percent": 0.020820904661592032,
+        "five_percent": 0.5780838334125592,
+        "ten_percent": 0.5746262858914504
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 30.039968278094165,
+      "pp_time": 0.6670825117459439,
+      "optimal_value": 477.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.4022832777680406,
+        "one_percent": 0.5653513066085012,
+        "two_percent": 0.892669627258168,
+        "three_percent": 0.69743275035892,
+        "four_percent": 0.16843666763566,
+        "five_percent": 0.9946432842148647,
+        "ten_percent": 0.8784826494989076
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 10.520020597409662,
+      "pp_time": 0.31571954498053156,
+      "optimal_value": 706.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.6593111893062326,
+        "one_percent": 0.07212019052083363,
+        "two_percent": 0.0780141478015407,
+        "three_percent": 0.28063180725209547,
+        "four_percent": 0.7569338102124251,
+        "five_percent": 0.8431545142635143,
+        "ten_percent": 0.9650221068142654
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 9.882230704066174,
+      "pp_time": 0.9804134563495458,
+      "optimal_value": 868.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.27549927807125785,
+        "one_percent": 0.9570942105632888,
+        "two_percent": 0.39155267700913055,
+        "three_percent": 0.11061770572456397,
+        "four_percent": 0.10209703655825753,
+        "five_percent": 0.26669138913709745,
+        "ten_percent": 0.8804023647866128
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 49.390608112984566,
+      "pp_time": 0.42236928472163526,
+      "optimal_value": 410.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.6919396185253769,
+        "one_percent": 0.46939943510000537,
+        "two_percent": 0.5735600536162418,
+        "three_percent": 0.6418604689611463,
+        "four_percent": 0.6418274301556214,
+        "five_percent": 0.05205950345601251,
+        "ten_percent": 0.7806949208981949
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 12.759682297667412,
+      "pp_time": 0.7341536767363628,
+      "optimal_value": 715.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.33863648526828904,
+        "one_percent": 0.384522444590891,
+        "two_percent": 0.4906418028080952,
+        "three_percent": 0.0710770783348098,
+        "four_percent": 0.8836752068843251,
+        "five_percent": 0.33890637598719475,
+        "ten_percent": 0.6695740124511407
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 3.3172713946040986,
+      "pp_time": 0.872938300863994,
+      "optimal_value": 890.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.7955708219520125,
+        "one_percent": 0.944790466367065,
+        "two_percent": 0.20508739916673258,
+        "three_percent": 0.6673627389721632,
+        "four_percent": 0.827265320567384,
+        "five_percent": 0.5070222214806197,
+        "ten_percent": 0.7304159960133505
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 36.663557582588425,
+      "pp_time": 0.2463542735896307,
+      "optimal_value": 925.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.6494245300850825,
+        "one_percent": 0.4025055943584457,
+        "two_percent": 0.1502540894011012,
+        "three_percent": 0.3362219396455357,
+        "four_percent": 0.4182354289533887,
+        "five_percent": 0.14217961166215143,
+        "ten_percent": 0.3079061951842127
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 40.80430242345706,
+      "pp_time": 0.2050798005528881,
+      "optimal_value": 343.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.19015447766009197,
+        "one_percent": 0.16939436505077998,
+        "two_percent": 0.07281170683359728,
+        "three_percent": 0.7794172826862653,
+        "four_percent": 0.8425753110482154,
+        "five_percent": 0.9216697929041315,
+        "ten_percent": 0.0031885712563427537
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 12.903594592925655,
+      "pp_time": 0.007906746750771632,
+      "optimal_value": 515.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9687185260938235,
+        "one_percent": 0.0707358843191237,
+        "two_percent": 0.9459500339590589,
+        "three_percent": 0.3318670801325385,
+        "four_percent": 0.5804830138373757,
+        "five_percent": 0.920151952203647,
+        "ten_percent": 0.566173578111788
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 17.122254715980073,
+      "pp_time": 0.6230869919987778,
+      "optimal_value": 1023.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.7937583564916977,
+        "one_percent": 0.5390527917900537,
+        "two_percent": 0.06398872280939372,
+        "three_percent": 0.5523820698751516,
+        "four_percent": 0.995416426450945,
+        "five_percent": 0.13974033144676257,
+        "ten_percent": 0.9861157874282102
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 1.136492985873322,
+      "pp_time": 0.8345832586546414,
+      "optimal_value": 410.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.5497411234571644,
+        "one_percent": 0.5778946416465904,
+        "two_percent": 0.25658288054350464,
+        "three_percent": 0.0005913781503157356,
+        "four_percent": 0.38174911740286976,
+        "five_percent": 0.9859482734577151,
+        "ten_percent": 0.9017669078468901
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 43.94439405684262,
+      "pp_time": 0.5975666424038094,
+      "optimal_value": 991.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.02123548164880773,
+        "one_percent": 0.7116370552648887,
+        "two_percent": 0.8303718484637356,
+        "three_percent": 0.9149336723397387,
+        "four_percent": 0.39147830636326886,
+        "five_percent": 0.4653373299055662,
+        "ten_percent": 0.24116058259662376
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 35.10530245460743,
+      "pp_time": 0.13543467680497234,
+      "optimal_value": 960.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.29698838774287417,
+        "one_percent": 0.639169211865458,
+        "two_percent": 0.1497931061931531,
+        "three_percent": 0.12386056124355316,
+        "four_percent": 0.7867328035651223,
+        "five_percent": 0.8783604141285719,
+        "ten_percent": 0.7029874187967263
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 39.72051022509625,
+      "pp_time": 0.4115725608980507,
+      "optimal_value": 562.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.09116510141300238,
+        "one_percent": 0.3188450405186666,
+        "two_percent": 0.052762180026882266,
+        "three_percent": 0.5397003018429949,
+        "four_percent": 0.1272984573561512,
+        "five_percent": 0.32189988278001314,
+        "ten_percent": 0.7595307258923938
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 27.147257392724704,
+      "pp_time": 0.4165438920911033,
+      "optimal_value": 219.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.6395800604480179,
+        "one_percent": 0.24473517592757243,
+        "two_percent": 0.9974172760371125,
+        "three_percent": 0.7950746219654269,
+        "four_percent": 0.9866795603744892,
+        "five_percent": 0.8856379338670458,
+        "ten_percent": 0.020974220433445767
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 26.337334683627567,
+      "pp_time": 0.44163733185273446,
+      "optimal_value": 827.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.6503305955090857,
+        "one_percent": 0.4840760282312424,
+        "two_percent": 0.22628950559179994,
+        "three_percent": 0.21663185773490168,
+        "four_percent": 0.6946024246193376,
+        "five_percent": 0.8358350452510122,
+        "ten_percent": 0.3948673490888027
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 49.05065933137857,
+      "pp_time": 0.2833130792516021,
+      "optimal_value": 883.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.7054091988712997,
+        "one_percent": 0.6890503072204908,
+        "two_percent": 0.6681310670583669,
+        "three_percent": 0.8150749137633595,
+        "four_percent": 0.9004462483370013,
+        "five_percent": 0.9974435672147698,
+        "ten_percent": 0.6270784649987751
+      }
+    },
+    {
+      "problem_size": 20,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 41.148106128532056,
+      "pp_time": 0.2300169652739983,
+      "optimal_value": 818.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.371419433950832,
+        "one_percent": 0.5764263156242511,
+        "two_percent": 0.3311213543848849,
+        "three_percent": 0.8748075311601828,
+        "four_percent": 0.6822120584881961,
+        "five_percent": 0.6388228664969141,
+        "ten_percent": 0.19254736235310188
+      }
+    },
+    {
+      "problem_size": 30,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 24.050890527971593,
+      "pp_time": 0.7475481380783793,
+      "optimal_value": 207.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9012061545785104,
+        "one_percent": 0.42543059792560767,
+        "two_percent": 0.1577851741199391,
+        "three_percent": 0.4337081438941389,
+        "four_percent": 0.5424473052226181,
+        "five_percent": 0.16042378391370327,
+        "ten_percent": 0.6418731969096801
+      }
+    },
+    {
+      "problem_size": 40,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 48.1260707291181,
+      "pp_time": 0.6209049255509014,
+      "optimal_value": 504.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.4224815005795908,
+        "one_percent": 0.3437262922352756,
+        "two_percent": 0.3690089395360472,
+        "three_percent": 0.454211223397314,
+        "four_percent": 0.6922491233463905,
+        "five_percent": 0.7271455722123993,
+        "ten_percent": 0.6608050078135086
+      }
+    },
+    {
+      "problem_size": 50,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 42.96892480665168,
+      "pp_time": 0.3760216680807158,
+      "optimal_value": 897.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.43712156879053077,
+        "one_percent": 0.49497366680601573,
+        "two_percent": 0.30332567194073734,
+        "three_percent": 0.9516596678932283,
+        "four_percent": 0.31549588885378954,
+        "five_percent": 0.48969861316434204,
+        "ten_percent": 0.03341351002221615
+      }
+    },
+    {
+      "problem_size": 60,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 1.5741061381749022,
+      "pp_time": 0.2444998511036922,
+      "optimal_value": 267.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.46462239784974824,
+        "one_percent": 0.833980434093354,
+        "two_percent": 0.05692153190176252,
+        "three_percent": 0.43857486718835714,
+        "four_percent": 0.05744686514667108,
+        "five_percent": 0.23861757973735032,
+        "ten_percent": 0.09971462201409909
+      }
+    },
+    {
+      "problem_size": 70,
+      "batch_size": 100,
+      "instance_name": "instance_name",
+      "solve_time": 33.84878458795975,
+      "pp_time": 0.37798816764988985,
+      "optimal_value": 366.0,
+      "iterations": 1500,
+      "sol_performance": {
+        "optimal": 0.9108334923004578,
+        "one_percent": 0.5491728779615571,
+        "two_percent": 0.24937727666460963,
+        "three_percent": 0.4378225502488756,
+        "four_percent": 0.838669500470006,
+        "five_percent": 0.5856034255677947,
+        "ten_percent": 0.5186610773466586
+      }
+    }
+  ]
