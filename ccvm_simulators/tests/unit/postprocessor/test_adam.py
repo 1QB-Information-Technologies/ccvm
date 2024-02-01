@@ -6,15 +6,17 @@ from ccvm_simulators.post_processor.adam import PostProcessorAdam
 
 class TestPostProcessorAdam(TestCase):
     @classmethod
-    def setUpClass(self):
-        self.logger = logging.getLogger()
-        self.post_processor = PostProcessorAdam()
-
-        self.N = 20
-        self.M = 100
-        self.c = torch.FloatTensor(self.M, self.N)
-        self.q_matrix = torch.FloatTensor(self.N, self.N)
-        self.v_vector = torch.FloatTensor(self.N)
+    def setUpClass(cls):
+        cls.logger = logging.getLogger()
+        cls.post_processor = PostProcessorAdam()
+        cls.N = 20
+        cls.M = 100
+        cls.c = torch.zeros(cls.M, cls.N)
+        cls.q_matrix_asym = torch.randint(-50, 50, [cls.N, cls.N], dtype=torch.float)
+        cls.v_vector = torch.randint(-50, 50, [cls.N], dtype=torch.float)
+        cls.q_matrix = (
+            torch.triu(cls.q_matrix_asym) + torch.triu(cls.q_matrix_asym, diagonal=1).T
+        )
 
     def setUp(self):
         self.logger.info("Test %s Started" % (self._testMethodName))
