@@ -34,18 +34,33 @@ subjected to the box constraints :math:`\ell_i\leq x_i \leq u_i`. The default li
 
 has been used as the scheduling function. Here :math:`T=n_\mathrm{iter}\times N\times T_\mathrm{pulse}` is the evolution time for a single round trip. :math:`T_\text{pulse}=100\text{ps}` by default.
 
-Example script to solve BoxQP problem using DL-CCVM solver
+Example script for solving a box-constrained quadratic programming problem using the DL-CCVM solver
 -------------------------------------------------------------------
 
-If you run the demo script by :code:`$ python ccvm/examples/ccvm_boxqp_dl.py` it will simulate the dynamics of DL-CCVM for an example problem instance with a sample outcome:
+The demo script, `ccvm_boxqp_dl.py`, in the examples folder simulates the dynamics of the DL-CCVM for an example problem instance.
+It can be run from the project's root directory using the following command in the terminal:
+
+:code:`$ python ccvm/examples/ccvm_boxqp_dl.py`
+
+The script will print the solution, similar to the example output below.
 
 .. code-block:: python
 
-    Solution(
-        problem_size=20, batch_size=1000, iterations=15000, ...,
-        solve_time=15.929, optimal_value=152.602, best_value=147.96,
-        solution_performance={
-            'optimal': 0.265, 'one_percent': 0.457, 'two_percent': 0.544, 'three_percent': 0.715,
-            'four_percent': 0.995, 'five_percent': 0.999, 'ten_percent': 1.0
-        }
-    )
+   Solution(
+      problem_size=20,
+      batch_size=1000,
+      iterations=15000,
+      ...,
+      solve_time=15.929,
+      optimal_value=152.602,
+      best_value=147.96,
+      solution_performance={
+         'optimal': 0.265,
+         'one_percent': 0.457,
+         'two_percent': 0.544,
+         'three_percent': 0.715,
+         'four_percent': 0.995,
+         'five_percent': 0.999,
+         'ten_percent': 1.0
+      }
+   )

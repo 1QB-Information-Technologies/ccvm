@@ -28,18 +28,33 @@ is the normalized continuous measurement strength scheduled using an exponential
 
 is the vector of measured mean field amplitudes as a function of the mean-field amplitudes within the cavity :math:`\mu` and :math:`dW`, the vector of Wiener processes.
 
-Example script to solve box-constrained quadratic programming (BoxQP) problem using MF-CCVM solver
+Example script for solving a box-constrained quadratic programming problem using the MF-CCVM solver
 --------------------------------------------------------------------
 
-If you run the demo script by executing :code:`$ python ccvm/examples/ccvm_boxqp_mf.py`, it will simulate the dynamics of MF-CCVM for an example problem instance with a sample outcome:
+The demo script, `ccvm_boxqp_mf.py`, in the examples folder simulates the dynamics of the MF-CCVM for an example problem instance.
+It can be run from the project's root directory using the following command in the terminal:
+
+:code:`$ python ccvm/examples/ccvm_boxqp_mf.py`
+
+The script will print the solution, similar to the example output below.
 
 .. code-block:: python
 
     Solution(
-        problem_size=20, batch_size=1000, iterations=15000,
-        solve_time=10.338, optimal_value=152.602, best_value=147.960,
+        problem_size=20,
+        batch_size=1000,
+        iterations=15000,
+        ...,
+        solve_time=10.338,
+        optimal_value=152.602,
+        best_value=147.960,
         solution_performance={
-            'optimal': 0.666, 'one_percent': 0.666, 'two_percent': 0.666, 'three_percent': 0.684,
-            'four_percent': 0.994, 'five_percent': 0.994, 'ten_percent': 0.995
+            'optimal': 0.666,
+            'one_percent': 0.666,
+            'two_percent': 0.666,
+            'three_percent': 0.684,
+            'four_percent': 0.994,
+            'five_percent': 0.994,
+            'ten_percent': 0.995
         }
     )
