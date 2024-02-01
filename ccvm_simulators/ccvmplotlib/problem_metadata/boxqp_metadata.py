@@ -80,24 +80,6 @@ class BoxQPMetadata(ProblemMetadata):
         self.__batch_size = self.__df["batch_size"][0]
         self.__problem_size_list = sorted(self.__df["problem_size"].unique().tolist())
 
-    def __compute_R99(
-        self,
-        sampler: SampleTTSMetric,
-        frac_solved: float,
-        success_prob: float,
-        percentile: float,
-    ) -> float:
-        if frac_solved < (percentile / 100):
-            R99 = np.inf
-        else:
-            R99_distribution = sampler.calc_R99_distribution(
-                success_probabilities=success_prob,
-                num_repeats=self.__batch_size,
-            )
-            R99 = np.mean(R99_distribution)
-
-        return R99
-
     def generate_plot_data(
         self,
         metric_func: callable,
