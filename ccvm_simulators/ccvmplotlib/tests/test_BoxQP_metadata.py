@@ -22,11 +22,22 @@ class TestBoxQPMetadata(TestCase):
         def valid_machine_func(matching_df: pd.DataFrame) -> float:
             return np.mean(matching_df["solve_time"].values, dtype=float)
 
-        def invalid_machine_func() -> float:
+        def valid_energy_func(matching_df: pd.DataFrame) -> float:
+            global problem_size
+            machine_parameters = {
+                "cpu_power": {20: 5.0, 30: 5.0, 40: 5.0, 50: 5.0, 60: 5.0, 70: 5.0}
+            }
+            machine_time = np.mean(matching_df["energy_max"].values)
+            power_max = machine_parameters["cpu_power"][problem_size]
+            energy_max = power_max * machine_time
+            return energy_max
+
+        def invalid_func() -> float:
             return
 
         self.valid_machine_func: callable = valid_machine_func
-        self.invalid_machine_func: callable = invalid_machine_func
+        self.valid_energy_func: callable = valid_energy_func
+        self.invalid_func: callable = invalid_func
 
     def test_BoxQP_metadata_valid(self):
         """Test BoxQP Metadata class object when valid inputs are given."""
@@ -54,8 +65,6 @@ class TestBoxQPMetadata(TestCase):
     def test_ingest_result_data_method_valid(self):
         """Test BoxQP Metadata class "ingest_result_data" method when valid
         inputs are given.
-
-        # TODO: Implementation
         """
         boxqp_metadata = BoxQPMetadata(self.valid_problem_type)
         boxqp_metadata.ingest_metadata(self.valid_metadata_filepath)
@@ -66,8 +75,6 @@ class TestBoxQPMetadata(TestCase):
     def test_ingest_result_data_method_invalid(self):
         """Test BoxQP Metadata class "ingest_result_data" method when invalid
         inputs are given.
-
-        # TODO: Implementation
         """
         boxqp_metadata = BoxQPMetadata(self.valid_problem_type)
         with self.assertRaises(KeyError):
@@ -88,6 +95,15 @@ class TestBoxQPMetadata(TestCase):
         self.assertIsInstance(TTS_plot_data, pd.DataFrame)
         self.assertGreater(TTS_plot_data.size, 0)
 
+        # TODO: update this once the valid_metatdata.json is updated with "energy_max" field.
+        # boxqp_metadata = BoxQPMetadata(self.valid_problem_type)
+        # boxqp_metadata.ingest_metadata(self.valid_metadata_filepath)
+        # ETS_plot_data = boxqp_metadata.generate_plot_data(
+        #     metric_func=self.valid_energy_func
+        # )
+        # self.assertIsInstance(ETS_plot_data, pd.DataFrame)
+        # self.assertGreater(ETS_plot_data.size, 0)
+
     def test_generate_plot_data_invalid(self):
         """Test BoxQP Metadata class "generate_plot_data" method when
         invalid inputs are given.
@@ -97,7 +113,7 @@ class TestBoxQPMetadata(TestCase):
         boxqp_metadata = BoxQPMetadata(self.valid_problem_type)
         boxqp_metadata.ingest_metadata(self.valid_metadata_filepath)
         with self.assertRaises(TypeError):
-            boxqp_metadata.generate_plot_data(metric_func=self.invalid_machine_func)
+            boxqp_metadata.generate_plot_data(metric_func=self.invalid_func)
 
     def test_generate_success_prob_plot_data_valid(self):
         """Test BoxQP Metadata class "generate_success_prob_plot_data" method
