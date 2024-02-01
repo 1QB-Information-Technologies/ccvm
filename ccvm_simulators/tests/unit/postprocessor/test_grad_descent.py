@@ -12,9 +12,12 @@ class TestPostProcessorGradDescent(TestCase):
         cls.post_processor = PostProcessorGradDescent()
         cls.N = 20
         cls.M = 100
-        cls.c = torch.FloatTensor(cls.M, cls.N)
-        cls.q_matrix = torch.FloatTensor(cls.N, cls.N)
-        cls.v_vector = torch.FloatTensor(cls.N)
+        cls.c = torch.zeros(cls.M, cls.N)
+        cls.q_matrix_asym = torch.randint(-50, 50, [cls.N, cls.N])
+        cls.v_vector = torch.randint(-50, 50, [cls.N])
+        cls.q_matrix = (
+            torch.triu(cls.q_matrix_asym) + torch.triu(cls.q_matrix_asym, diagonal=1).T
+        )
 
     def setUp(self):
         self.logger.info(f"Test {self._testMethodName} Started")
@@ -51,15 +54,27 @@ class TestPostProcessorGradDescent(TestCase):
     def test_postprocess_custom_num_iter_pp(self):
         """Test postprocess with custom num_iter_pp"""
         num_iter_pp = 10
+        print("c", self.c)
+        print("v_vector", self.v_vector)
+        print("q_matrix", self.q_matrix)
         output_tensor = self.post_processor.postprocess(
             self.c, self.q_matrix, self.v_vector, num_iter_pp=num_iter_pp
         )
+        print("output_tensor", output_tensor)
+
         self.assertTrue(torch.is_tensor(output_tensor))
+
+        print("output_tensor.size()", output_tensor.size())
+        print("self.c.size()", self.c.size())
+
         self.assertEqual(output_tensor.size(), self.c.size())
 
     def test_step_size_custom_step_size(self):
         """Test postprocess with custom step_size"""
         step_size = 0.05
+        print("c2", self.c)
+        print("v_vector2", self.v_vector)
+        print("q_matrix2", self.q_matrix)
         output_tensor = self.post_processor.postprocess(
             self.c, self.q_matrix, self.v_vector, step_size=step_size
         )
