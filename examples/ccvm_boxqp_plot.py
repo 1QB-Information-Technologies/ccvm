@@ -73,7 +73,7 @@ if __name__ == "__main__":
     plt.show()  # show plot in a new window
 
     def cpu_energy_max_func(matching_df: pd.DataFrame, problem_size: int) -> float:
-        machine_time = np.mean(matching_df["energy_max"].values)
+        machine_time = np.mean(matching_df["solve_time"].values)
         power_max = machine_parameters["cpu_power"][problem_size]
         energy_max = power_max * machine_time
         return energy_max
