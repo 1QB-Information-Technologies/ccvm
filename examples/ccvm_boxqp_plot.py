@@ -58,8 +58,7 @@ if __name__ == "__main__":
     }
 
     # Customize machine time calculating function
-    def cpu_machine_func(matching_df: pd.DataFrame):
-        global problem_size
+    def cpu_machine_func(matching_df: pd.DataFrame, **_: any) -> float:
         return np.mean(matching_df["solve_time"].values)
 
     tts_plot_fig, tts_plot_ax = ccvmplotlib.plot_TTS(
@@ -73,8 +72,7 @@ if __name__ == "__main__":
     )  # apply default styling
     plt.show()  # show plot in a new window
 
-    def cpu_energy_max_func(matching_df: pd.DataFrame):
-        global problem_size
+    def cpu_energy_max_func(matching_df: pd.DataFrame, problem_size: int) -> float:
         machine_time = np.mean(matching_df["energy_max"].values)
         power_max = machine_parameters["cpu_power"][problem_size]
         energy_max = power_max * machine_time

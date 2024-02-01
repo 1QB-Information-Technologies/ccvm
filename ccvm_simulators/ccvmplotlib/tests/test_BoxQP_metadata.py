@@ -19,15 +19,14 @@ class TestBoxQPMetadata(TestCase):
         self.invalid_zero_perf_metadata_filepath = "ccvm_simulators/ccvmplotlib/tests/metadata/invalid_zero_performance_metadata.json"
         self.invalid_incorrect_field_metadata_filepath = "ccvm_simulators/ccvmplotlib/tests/metadata/invalid_incorrect_field_metadata.json"
 
-        def valid_machine_func(matching_df: pd.DataFrame) -> float:
+        def valid_machine_func(matching_df: pd.DataFrame, **_: any) -> float:
             return np.mean(matching_df["solve_time"].values, dtype=float)
 
-        def valid_energy_func(matching_df: pd.DataFrame) -> float:
-            global problem_size
+        def valid_energy_func(matching_df: pd.DataFrame, problem_size: int) -> float:
             machine_parameters = {
                 "cpu_power": {20: 5.0, 30: 5.0, 40: 5.0, 50: 5.0, 60: 5.0, 70: 5.0}
             }
-            machine_time = np.mean(matching_df["energy_max"].values)
+            machine_time = np.mean(matching_df["solve_time"].values)
             power_max = machine_parameters["cpu_power"][problem_size]
             energy_max = power_max * machine_time
             return energy_max
@@ -95,14 +94,11 @@ class TestBoxQPMetadata(TestCase):
         self.assertIsInstance(TTS_plot_data, pd.DataFrame)
         self.assertGreater(TTS_plot_data.size, 0)
 
-        # TODO: update this once the valid_metatdata.json is updated with "energy_max" field.
-        # boxqp_metadata = BoxQPMetadata(self.valid_problem_type)
-        # boxqp_metadata.ingest_metadata(self.valid_metadata_filepath)
-        # ETS_plot_data = boxqp_metadata.generate_plot_data(
-        #     metric_func=self.valid_energy_func
-        # )
-        # self.assertIsInstance(ETS_plot_data, pd.DataFrame)
-        # self.assertGreater(ETS_plot_data.size, 0)
+        ETS_plot_data = boxqp_metadata.generate_plot_data(
+            metric_func=self.valid_energy_func
+        )
+        self.assertIsInstance(ETS_plot_data, pd.DataFrame)
+        self.assertGreater(ETS_plot_data.size, 0)
 
     def test_generate_plot_data_invalid(self):
         """Test BoxQP Metadata class "generate_plot_data" method when

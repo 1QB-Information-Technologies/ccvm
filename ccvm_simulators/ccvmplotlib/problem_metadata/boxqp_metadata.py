@@ -114,7 +114,9 @@ class BoxQPMetadata(ProblemMetadata):
                         num_bootstraps=100,
                     )
 
-                    metric_value = metric_func(matching_df=matching_df)
+                    metric_value = metric_func(
+                        matching_df=matching_df, problem_size=problem_size
+                    )
 
                     success_prob = matching_df[percent_gap].values
                     frac_solved = (success_prob > 0).mean()
