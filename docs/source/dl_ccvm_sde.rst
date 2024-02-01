@@ -1,7 +1,7 @@
-Stochastic Differential Equations (SDE) for the DL-CCVM
+Stochastic Differential Equations for the Delay-Line Coherent Continuous-Variable Machine
 ========================================================
 
-The dynamics describing a CCVM with a delay-line coupling scheme (DL-CCVM) are described by the following system of stochastic differential equations (SDE):
+The dynamics describing a coherent continuous-variable machine with a delay-line coupling scheme (DL-CCVM) are described by the following system of stochastic differential equations (SDE):
 
 .. math::
 
@@ -43,9 +43,9 @@ If you run the demo script by :code:`$ python ccvm/examples/ccvm_boxqp_dl.py` it
 
     Solution(
         problem_size=20, batch_size=1000, iterations=15000, ...,
-        solve_time=15.929, optimal_value=152.602, best_value=147.96, 
+        solve_time=15.929, optimal_value=152.602, best_value=147.96,
         solution_performance={
-            'optimal': 0.265, 'one_percent': 0.457, 'two_percent': 0.544, 'three_percent': 0.715, 
+            'optimal': 0.265, 'one_percent': 0.457, 'two_percent': 0.544, 'three_percent': 0.715,
             'four_percent': 0.995, 'five_percent': 0.999, 'ten_percent': 1.0
         }
     )

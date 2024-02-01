@@ -1,7 +1,7 @@
-Stochastic Differential Equations (SDE) for the Measurement-Feedback Coherent Continuous Variable Machine (MF-CCVM)
+Stochastic Differential Equations for the Measurement-Feedback Coherent Continuous-Variable Machine
 ==================================================================================================================
 
-The dynamics describing a CCVM with a measurement-feedback (MF-CCVM) coupling scheme is represented by the following set of SDEs. In this model, the DOPO pulses are assumed to maintain Gaussian distribution throughout the time evolution with the mean values :math:`\mu` and variances :math:`\sigma`:
+The dynamics describing a coherent continuous-variable machine with a measurement-feedback coupling scheme (MF-CCVM) are represented by the following set of stochastic differential equations (SDE). In this model, the degenerate optical parametric oscillator (DOPO) pulses are assumed to maintain Gaussian distribution throughout the time evolution with the mean values :math:`\mu` and variances :math:`\sigma`:
 
 .. math::
 
@@ -28,7 +28,7 @@ is the normalized continuous measurement strength scheduled using an exponential
 
 is the vector of measured mean field amplitudes as a function of the mean-field amplitudes within the cavity :math:`\mu` and :math:`dW`, the vector of Wiener processes.
 
-Example script to solve BoxQP problem using MF-CCVM solver
+Example script to solve box-constrained quadratic programming (BoxQP) problem using MF-CCVM solver
 --------------------------------------------------------------------
 
 If you run the demo script by executing :code:`$ python ccvm/examples/ccvm_boxqp_mf.py`, it will simulate the dynamics of MF-CCVM for an example problem instance with a sample outcome:
@@ -36,10 +36,10 @@ If you run the demo script by executing :code:`$ python ccvm/examples/ccvm_boxqp
 .. code-block:: python
 
     Solution(
-        problem_size=20, batch_size=1000, iterations=15000, 
+        problem_size=20, batch_size=1000, iterations=15000,
         solve_time=10.338, optimal_value=152.602, best_value=147.960,
         solution_performance={
-            'optimal': 0.666, 'one_percent': 0.666, 'two_percent': 0.666, 'three_percent': 0.684, 
+            'optimal': 0.666, 'one_percent': 0.666, 'two_percent': 0.666, 'three_percent': 0.684,
             'four_percent': 0.994, 'five_percent': 0.994, 'ten_percent': 0.995
         }
     )
