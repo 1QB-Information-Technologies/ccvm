@@ -75,21 +75,21 @@ class TestBoxQPMetadata(TestCase):
                 self.invalid_incorrect_field_metadata_filepath
             )
 
-    def test_generate_TTS_plot_data_valid(self):
-        """Test BoxQP Metadata class "generate_TTS_plot_data" method when valid
+    def test_generate_plot_data_valid(self):
+        """Test BoxQP Metadata class "generate_plot_data" method when valid
         inputs are given.
         """
         boxqp_metadata = BoxQPMetadata(self.valid_problem_type)
         boxqp_metadata.ingest_metadata(self.valid_metadata_filepath)
-        TTS_plot_data = boxqp_metadata.generate_TTS_plot_data(
-            machine_time_func=self.valid_machine_func
+        TTS_plot_data = boxqp_metadata.generate_plot_data(
+            metric_func=self.valid_machine_func
         )
 
         self.assertIsInstance(TTS_plot_data, pd.DataFrame)
         self.assertGreater(TTS_plot_data.size, 0)
 
-    def test_generate_TTS_plot_data_invalid(self):
-        """Test BoxQP Metadata class "generate_TTS_plot_data" method when
+    def test_generate_plot_data_invalid(self):
+        """Test BoxQP Metadata class "generate_plot_data" method when
         invalid inputs are given.
 
         # TODO: Implementation
@@ -97,9 +97,7 @@ class TestBoxQPMetadata(TestCase):
         boxqp_metadata = BoxQPMetadata(self.valid_problem_type)
         boxqp_metadata.ingest_metadata(self.valid_metadata_filepath)
         with self.assertRaises(TypeError):
-            boxqp_metadata.generate_TTS_plot_data(
-                machine_time_func=self.invalid_machine_func
-            )
+            boxqp_metadata.generate_plot_data(metric_func=self.invalid_machine_func)
 
     def test_generate_success_prob_plot_data_valid(self):
         """Test BoxQP Metadata class "generate_success_prob_plot_data" method
