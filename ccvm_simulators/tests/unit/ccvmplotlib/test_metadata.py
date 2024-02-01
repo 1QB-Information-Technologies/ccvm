@@ -20,7 +20,21 @@ class TestMetadataClass(unittest.TestCase):
 
     def test_add_to_result_metadata(self):
         result_dict = {"problem_size": 20, "batch_size": 1000}
+
+        # Check if metadta.result_metadata is empty
+        self.assertEqual(self.metadata.result_metadata, [])
+
         self.metadata.add_to_result_metadata(result_dict)
+
+        # Check if self.metadata.result_metadata contains result_dict
+        self.assertIn(result_dict, self.metadata.result_metadata)
+
+        # Check if self.metadata.metadata_dict is updated
+        self.assertEqual(
+            self.metadata.metadata_dict,
+            {"device": self.device, "result_metadata": [result_dict]},
+        )
+
         self.assertEqual(self.metadata.result_metadata, [result_dict])
 
     def test_save_metadata_to_file(self):
