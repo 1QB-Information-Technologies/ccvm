@@ -45,11 +45,11 @@ These parameters, chosen for the three types of solvers implemented within the s
    g & - & - & 0.001\\\hline
    \end{array}
 
-Specific equations and their respective parameters are discussed in the solver-specific pages:
+For details on how these values were chosen, refer to Khosravi et al. (2022).
+For further discussion on specific equations and their respective parameters, refer to the solver-specific pages linked here:
 
 .. toctree::
    :maxdepth: 3
-   :caption: Contents:
 
    langevin_sde
    dl_ccvm_sde
