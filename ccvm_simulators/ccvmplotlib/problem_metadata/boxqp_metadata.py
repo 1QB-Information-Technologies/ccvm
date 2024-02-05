@@ -129,8 +129,10 @@ class BoxQPMetadata(ProblemMetadata):
                         )
                         R99 = np.mean(R99_distribution)
 
-                    mean_TTS = metric_value * R99
-                    plotting_df.at[problem_size, (percent_gap, percentile)] = mean_TTS
+                    mean_metric = metric_value * R99
+                    plotting_df.at[problem_size, (percent_gap, percentile)] = (
+                        mean_metric
+                    )
 
         return plotting_df
 
@@ -160,8 +162,8 @@ class BoxQPMetadata(ProblemMetadata):
                     )
                 )
 
-                plotting_df.at[
-                    problem_size, (percent_gap, "success_prob")
-                ] = mean_success_prob
+                plotting_df.at[problem_size, (percent_gap, "success_prob")] = (
+                    mean_success_prob
+                )
 
         return plotting_df
