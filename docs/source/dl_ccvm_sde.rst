@@ -1,5 +1,8 @@
-Stochastic Differential Equations for the Delay-Line Coherent Continuous-Variable Machine
-========================================================
+The Delay-Line Coherent Continuous-Variable Machine
+====================================================
+
+Stochastic differential equations
+----------------------------------
 
 The dynamics describing a coherent continuous-variable machine with a delay-line coupling scheme (DL-CCVM) are described by the following system of stochastic differential equations (SDE):
 
@@ -35,7 +38,7 @@ subjected to the box constraints :math:`\ell_i\leq x_i \leq u_i`. The default li
 has been used as the scheduling function. Here :math:`T=n_\mathrm{iter}\times N\times T_\mathrm{pulse}` is the evolution time for a single round trip. :math:`T_\text{pulse}=100\text{ps}` by default.
 
 Example script for solving a box-constrained quadratic programming problem using the DL-CCVM solver
--------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
 The demo script, `ccvm_boxqp_dl.py`, in the examples folder simulates the dynamics of the DL-CCVM for an example problem instance.
 It can be run from the project's root directory using the following command in the terminal:

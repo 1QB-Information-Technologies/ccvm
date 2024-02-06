@@ -1,5 +1,8 @@
-Stochastic Differential Equations for Langevin Dynamics
-=============================================================
+The Langevin Dynamics Solver
+=============================
+
+Stochastic differential equations
+----------------------------------
 
 General Langevin dynamics can be described by the following stochastic differential equation (SDE):
 
@@ -10,7 +13,7 @@ General Langevin dynamics can be described by the following stochastic different
 where :math:`\lambda` and :math:`\sigma` are hyperparameters controlling the strengths of the drift and diffusion terms, respectively. We have implemented this solver as a classical solver implemented solely on classical computers, that is, there is no optical simulation of Langevin dynamics in our ``ccvm_simulators`` package.
 
 Example script for solving a box-constrained quadratic programming problem using the Langevin solver
--------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
 
 The demo script, `ccvm_boxqp_langevin.py`, in the examples folder simulates the Langevin dynamics for an example problem instance. It can be run from the project's root directory using the following command in the terminal:
 

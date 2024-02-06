@@ -1,5 +1,8 @@
-Stochastic Differential Equations for the Measurement-Feedback Coherent Continuous-Variable Machine
-==================================================================================================================
+The Measurement-Feedback Coherent Continuous-Variable Machine
+==============================================================
+
+Stochastic differential equations
+----------------------------------
 
 The dynamics describing a coherent continuous-variable machine with a measurement-feedback coupling scheme (MF-CCVM) are represented by the following set of stochastic differential equations (SDE). In this model, the degenerate optical parametric oscillator (DOPO) pulses are assumed to maintain Gaussian distribution throughout the time evolution with the mean values :math:`\mu` and variances :math:`\sigma`:
 
@@ -29,7 +32,7 @@ is the normalized continuous measurement strength scheduled using an exponential
 is the vector of measured mean field amplitudes as a function of the mean-field amplitudes within the cavity :math:`\mu` and :math:`dW`, the vector of Wiener processes.
 
 Example script for solving a box-constrained quadratic programming problem using the MF-CCVM solver
---------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
 The demo script, `ccvm_boxqp_mf.py`, in the examples folder simulates the dynamics of the MF-CCVM for an example problem instance.
 It can be run from the project's root directory using the following command in the terminal:
