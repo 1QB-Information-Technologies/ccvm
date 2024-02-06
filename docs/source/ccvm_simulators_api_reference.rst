@@ -1,5 +1,5 @@
-ccvm
-============
+ccvm_simulators - API Reference
+=============================
 
 
 Subpackages
@@ -26,7 +26,7 @@ Submodules
 
 ---------------
 
-.. automodule:: ccvm
+.. automodule:: ccvm_simulators
    :members:
    :undoc-members:
    :show-inheritance:
