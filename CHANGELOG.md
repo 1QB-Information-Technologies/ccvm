@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking Changes
 - Removed the TrustConst post-processor from the codebase due to non-usage. This
   change aims to streamline the code and eliminate unnecessary components.
-
+### Fixed 
+- Fixed issue where `s` was being updated incorrectly on each iteration  of `DLSolver._solve()`.
 ### Changed
-- Fixed `s` update in `DLSolver._solve()` in ccvm_simulators.solvers.dl_solver.py
 - Streamlined README by relocating and optimizing architecture diagrams.
 - Enhanced post processor clamp function for greater flexibility by replacing
   hard-coded values with user-defined variables (lower_clamp and upper_clamp).
