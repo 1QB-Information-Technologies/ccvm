@@ -16,7 +16,6 @@ class TestPostProcessor(TestCase):
     def setUpClass(cls):
         cls.logger = logging.getLogger()
         cls.default_step_size = 0.1
-        # cls.file_path = "examples/test_instances/test020-100-10.in"
 
         # Get the base path of the current file
         base_path = os.path.abspath(os.path.dirname(__file__))
