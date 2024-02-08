@@ -1,7 +1,7 @@
 from unittest import TestCase
 import logging
-from ..factory import PostProcessorFactory
-from ..adam import PostProcessorAdam
+from ccvm_simulators.post_processor.factory import PostProcessorFactory
+from ccvm_simulators.post_processor.adam import PostProcessorAdam
 
 
 class TestPostProcessorFactory(TestCase):
