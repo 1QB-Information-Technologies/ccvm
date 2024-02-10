@@ -1,6 +1,7 @@
 import unittest
 import numpy as np
 import pandas as pd
+import json
 from unittest import TestCase
 from ccvm_simulators.ccvmplotlib.problem_metadata import ProblemType
 from ccvm_simulators.ccvmplotlib.problem_metadata import BoxQPMetadata
@@ -58,8 +59,19 @@ class TestBoxQPMetadata(TestCase):
         boxqp_metadata = BoxQPMetadata(self.valid_problem_type)
         boxqp_metadata.ingest_metadata(self.valid_metadata_filepath)
 
-        self.assertGreater(boxqp_metadata._BoxQPMetadata__batch_size, 0)
-        self.assertGreater(len(boxqp_metadata._BoxQPMetadata__problem_size_list), 0)
+        valid_metadata_json = json.load(open(self.valid_metadata_filepath))
+        valid_batch_size = valid_metadata_json[0]["batch_size"]
+
+        problem_size_set: set = set()
+        for data in valid_metadata_json:
+            problem_size_set.add(data["problem_size"])
+        valid_problem_size_len = len(problem_size_set)
+
+        self.assertEqual(boxqp_metadata._BoxQPMetadata__batch_size, valid_batch_size)
+        self.assertEqual(
+            len(boxqp_metadata._BoxQPMetadata__problem_size_list),
+            valid_problem_size_len,
+        )
 
     def test_ingest_result_data_method_invalid(self):
         """Test BoxQP Metadata class "ingest_result_data" method when invalid
