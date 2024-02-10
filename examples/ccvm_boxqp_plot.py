@@ -52,11 +52,6 @@ if __name__ == "__main__":
     # Save metadata to file
     metadata_filepath = metadata_list.save_metadata_to_file(METADATA_DIR)
 
-    # Customize machine_parameters
-    machine_parameters = {
-        "cpu_power": {20: 5.0, 30: 5.0, 40: 5.0, 50: 5.0, 60: 5.0, 70: 5.0}
-    }
-
     # Customize machine time calculating function
     def cpu_machine_func(matching_df: pd.DataFrame):
         return np.mean(matching_df["solve_time"].values)
