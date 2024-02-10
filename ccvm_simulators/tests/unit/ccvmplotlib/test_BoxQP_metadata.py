@@ -54,8 +54,6 @@ class TestBoxQPMetadata(TestCase):
     def test_ingest_result_data_method_valid(self):
         """Test BoxQP Metadata class "ingest_result_data" method when valid
         inputs are given.
-
-        # TODO: Implementation
         """
         boxqp_metadata = BoxQPMetadata(self.valid_problem_type)
         boxqp_metadata.ingest_metadata(self.valid_metadata_filepath)
@@ -66,8 +64,6 @@ class TestBoxQPMetadata(TestCase):
     def test_ingest_result_data_method_invalid(self):
         """Test BoxQP Metadata class "ingest_result_data" method when invalid
         inputs are given.
-
-        # TODO: Implementation
         """
         boxqp_metadata = BoxQPMetadata(self.valid_problem_type)
         with self.assertRaises(KeyError):
@@ -91,8 +87,6 @@ class TestBoxQPMetadata(TestCase):
     def test_generate_TTS_plot_data_invalid(self):
         """Test BoxQP Metadata class "generate_TTS_plot_data" method when
         invalid inputs are given.
-
-        # TODO: Implementation
         """
         boxqp_metadata = BoxQPMetadata(self.valid_problem_type)
         boxqp_metadata.ingest_metadata(self.valid_metadata_filepath)
