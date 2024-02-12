@@ -140,3 +140,4 @@ _build
 .project
 .pydevproject
 metadata/
+!ccvm_simulators/tests/data/*
