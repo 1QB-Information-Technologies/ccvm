@@ -15,10 +15,14 @@ class TestBoxQPMetadata(TestCase):
         self.invalid_problem_type_str = "CCVM"
 
         self.valid_metadata_filepath = (
-            "ccvm_simulators/ccvmplotlib/tests/metadata/valid_metadata.json"
+            "ccvm_simulators/tests/data/metadata/valid_metadata.json"
         )
-        self.invalid_zero_perf_metadata_filepath = "ccvm_simulators/ccvmplotlib/tests/metadata/invalid_zero_performance_metadata.json"
-        self.invalid_incorrect_field_metadata_filepath = "ccvm_simulators/ccvmplotlib/tests/metadata/invalid_incorrect_field_metadata.json"
+        self.invalid_zero_perf_metadata_filepath = (
+            "ccvm_simulators/tests/data/metadata/invalid_zero_performance_metadata.json"
+        )
+        self.invalid_incorrect_field_metadata_filepath = (
+            "ccvm_simulators/tests/data/metadata/invalid_incorrect_field_metadata.json"
+        )
 
         def valid_machine_func(matching_df: pd.DataFrame) -> float:
             return np.mean(matching_df["solve_time"].values, dtype=float)
