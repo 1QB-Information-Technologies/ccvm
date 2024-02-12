@@ -57,6 +57,12 @@ if __name__ == "__main__":
         "cpu_power": {20: 5.0, 30: 5.0, 40: 5.0, 50: 5.0, 60: 5.0, 70: 5.0}
     }
 
+    # If PLOT_OUTPUT_DIR not exists, create the path
+    if not os.path.isdir(PLOT_OUTPUT_DIR):
+        os.makedirs(PLOT_OUTPUT_DIR)
+        print("Plot folder doesn't exist yet. Creating: ", PLOT_OUTPUT_DIR)
+
+    # Plotting TTS
     # Customize machine time calculating function
     def cpu_machine_func(matching_df: pd.DataFrame, **_: any) -> float:
         return np.mean(matching_df["solve_time"].values)
@@ -72,6 +78,12 @@ if __name__ == "__main__":
     )  # apply default styling
     plt.show()  # show plot in a new window
 
+    # Save to local
+    tts_plot_fig.savefig(PLOT_OUTPUT_DEST)
+    print(f"Sucessfully saved the plot to {PLOT_OUTPUT_DEST}")
+
+    # Plotting ETS
+    # Customize energy_max calculating function
     def cpu_energy_max_func(matching_df: pd.DataFrame, problem_size: int) -> float:
         machine_time = np.mean(matching_df["solve_time"].values)
         power_max = machine_parameters["cpu_power"][problem_size]
@@ -89,11 +101,6 @@ if __name__ == "__main__":
     )  # apply default styling
     plt.show()
 
-    # If PLOT_OUTPUT_DIR not exists, create the path
-    if not os.path.isdir(PLOT_OUTPUT_DIR):
-        os.makedirs(PLOT_OUTPUT_DIR)
-        print("Plot folder doesn't exist yet. Creating: ", PLOT_OUTPUT_DIR)
-
     # Save to local
-    tts_plot_fig.savefig(PLOT_OUTPUT_DEST)
+    ets_plot_fig.savefig(PLOT_OUTPUT_DEST)
     print(f"Sucessfully saved the plot to {PLOT_OUTPUT_DEST}")
