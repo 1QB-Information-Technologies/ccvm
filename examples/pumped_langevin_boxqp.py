@@ -12,7 +12,7 @@ if __name__ == "__main__":
     solver = PumpedLangevinSolver(device="cpu", batch_size=batch_size,  S=0.5)  # or "cuda"
 
     # Supply solver parameters for different problem sizes
-    #TODO: Consult default parameter values
+    #TODO: Consult for default parameter values
     solver.parameter_key = {
         20: {
             "pump": 2.0, # p0 
