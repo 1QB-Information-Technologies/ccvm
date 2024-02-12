@@ -47,4 +47,5 @@ if __name__ == "__main__":
             # ),
         )
 
-        print(solution)
+        # print(solution)
+        print(f"solution_performance={solution.solution_performance},\tsolve_time={solution.solve_time:0.3f}s")

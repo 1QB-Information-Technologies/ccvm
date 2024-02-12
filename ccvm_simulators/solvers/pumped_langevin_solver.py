@@ -116,7 +116,7 @@ class PumpedLangevinSolver(CCVMSolver):
         # TODO: Make the multiplication of scaler first
         c_drift_1 = torch.einsum("bi,ij -> bj", (c + S) / (2 * S), self.q_matrix)   
         c_drift_2 = self.v_vector 
-
+        # TODO: Normalization?
         c_drift = c_drift_0 - (c_drift_1 + c_drift_2)/ (2 * S)
 
         return c_drift
@@ -283,6 +283,7 @@ class PumpedLangevinSolver(CCVMSolver):
             
             # Ensure variables are within any problem constraints
             # The lower bound is determined by ell=-S, and upper bound by u=S
+            # TODO: Consult if c needs calibration (c+S)/(2*S) in the loop
             c = self.fit_to_constraints(c, -S, S)
 
             # If evolution_step_size is specified, save the values if this iteration
