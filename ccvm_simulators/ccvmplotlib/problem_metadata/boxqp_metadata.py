@@ -80,16 +80,17 @@ class BoxQPMetadata(ProblemMetadata):
         self.__batch_size = self.__df["batch_size"][0]
         self.__problem_size_list = sorted(self.__df["problem_size"].unique().tolist())
 
-    def generate_TTS_plot_data(
+    def generate_plot_data(
         self,
-        machine_time_func: callable,
+        metric_func: callable,
     ) -> pd.DataFrame:
         """Calculate the time to solution vs problem size for a particular gap and
         quantile.
 
         Args:
-            machine_time_func (callable): A callback function that calculates the
-            machine time, which is used to compute the TTS.
+            metric_func (callable): A callback function that is used when calculating
+            the metrics either to determine the `machine_time` or the `energy_max`,
+            which are used when computing the TTS or ETS, respectively.
         Returns:
             (pd.Series): The time to solution for each problem size.
         """
@@ -113,7 +114,9 @@ class BoxQPMetadata(ProblemMetadata):
                         num_bootstraps=100,
                     )
 
-                    machine_time = machine_time_func(matching_df=matching_df)
+                    metric_value = metric_func(
+                        matching_df=matching_df, problem_size=problem_size
+                    )
 
                     success_prob = matching_df[percent_gap].values
                     frac_solved = (success_prob > 0).mean()
@@ -126,8 +129,10 @@ class BoxQPMetadata(ProblemMetadata):
                         )
                         R99 = np.mean(R99_distribution)
 
-                    mean_TTS = machine_time * R99
-                    plotting_df.at[problem_size, (percent_gap, percentile)] = mean_TTS
+                    mean_metric = metric_value * R99
+                    plotting_df.at[problem_size, (percent_gap, percentile)] = (
+                        mean_metric
+                    )
 
         return plotting_df
 
@@ -157,8 +162,8 @@ class BoxQPMetadata(ProblemMetadata):
                     )
                 )
 
-                plotting_df.at[
-                    problem_size, (percent_gap, "success_prob")
-                ] = mean_success_prob
+                plotting_df.at[problem_size, (percent_gap, "success_prob")] = (
+                    mean_success_prob
+                )
 
         return plotting_df

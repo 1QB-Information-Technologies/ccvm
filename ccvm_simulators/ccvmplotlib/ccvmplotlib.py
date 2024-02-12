@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 from matplotlib import cm
+import pandas
 
 from ccvm_simulators.ccvmplotlib.problem_metadata import ProblemMetadataFactory
 
@@ -23,39 +24,11 @@ class ccvmplotlib:
     """A generic plotting library for a problem solved by a CCVM solver."""
 
     @staticmethod
-    def plot_TTS(
-        metadata_filepath: str,
-        problem: str,
-        machine_time_func: callable,
+    def __plot_core(
+        plotting_df: pandas.DataFrame,
         fig: matplotlib.figure.Figure = None,
         ax: matplotlib.axes.Axes = None,
     ) -> tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]:
-        """Plot a problem-specific Time-To-Solution metadata solved by a CCVM
-        solver.
-
-        Args:
-            metadata_filepath (str): A file path to metadata.
-            problem (str): A problem type.
-            machine_time_func (callable): A callback function that calculates the
-            machine time, which is used to compute the TTS.
-            fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure.
-            Defaults to None.
-            ax (matplotlib.axes.Axes, optional): A pre-generated pyplot axis.
-            Defaults to None.
-
-        Raises:
-            ValueError: Raises a ValueError when the plotting data is not valid.
-
-        Returns:
-            tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and
-            axis that has the TTS plot with minimal styling.
-        """
-        problem_metadata = ProblemMetadataFactory.create_problem_metadata(problem)
-        problem_metadata.ingest_metadata(metadata_filepath)
-        plotting_df = problem_metadata.generate_TTS_plot_data(
-            machine_time_func=machine_time_func
-        )
-
         x_data = plotting_df.index
 
         if not ax or not fig:
@@ -77,9 +50,11 @@ class ccvmplotlib:
                 plotting_df[lvl0_column_name, "50"],
                 linestyle="-",
                 marker="s",
-                label=PERC_GAP_LABEL_MAP[lvl0_column_name]
-                if lvl0_column_name in PERC_GAP_LABEL_MAP
-                else lvl0_column_name,
+                label=(
+                    PERC_GAP_LABEL_MAP[lvl0_column_name]
+                    if lvl0_column_name in PERC_GAP_LABEL_MAP
+                    else lvl0_column_name
+                ),
                 color=color,
                 linewidth=4.0,
             )
@@ -94,6 +69,40 @@ class ccvmplotlib:
             linewidth=4.0,
         )
         ax.fill_between([], [], alpha=0.2, label="(IQR)")
+
+        return (fig, ax)
+
+    @staticmethod
+    def plot_TTS(
+        metadata_filepath: str,
+        problem: str,
+        machine_time_func: callable,
+        fig: matplotlib.figure.Figure = None,
+        ax: matplotlib.axes.Axes = None,
+    ) -> tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]:
+        """Plot a problem-specific Time-To-Solution metadata solved by a CCVM
+        solver.
+
+        Args:
+            metadata_filepath (str): A file path to metadata.
+            problem (str): A problem type.
+            machine_time_func (callable): A callback function that calculates the
+            machine time, which is used to compute the TTS.
+            fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure. Defaults to None.
+            ax (matplotlib.axes.Axes, optional): A pre-generated pyplot axis. Defaults to None.
+
+        Raises:
+            ValueError: Raises a ValueError when the plotting data is not valid.
+
+        Returns:
+            tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and axis that has
+                the TTS plot with minimal styling.
+        """
+        problem_metadata = ProblemMetadataFactory.create_problem_metadata(problem)
+        problem_metadata.ingest_metadata(metadata_filepath)
+        plotting_df = problem_metadata.generate_plot_data(metric_func=machine_time_func)
+
+        (fig, ax) = ccvmplotlib.__plot_core(plotting_df, fig, ax)
 
         # Get max & min median TTS values
         min_median = np.inf
@@ -116,6 +125,47 @@ class ccvmplotlib:
         ax.set_yscale("log")  # log scale
 
         # Make sure x-axis only has integer values
+        x_data = plotting_df.index
+        ax.set_xticks(x_data)
+
+        return (fig, ax)
+
+    @staticmethod
+    def plot_ETS(
+        metadata_filepath: str,
+        problem: str,
+        energy_max_func: callable,
+        fig: matplotlib.figure.Figure = None,
+        ax: matplotlib.axes.Axes = None,
+    ) -> tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]:
+        """Plot a problem-specific Time-To-Solution metadata solved by a CCVM
+        solver.
+
+        Args:
+            metadata_filepath (str): A file path to metadata.
+            problem (str): A problem type.
+            energy_max_func (callable): A callback function that calculates the
+            energy max, which is used to compute the ETS.
+            fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure.
+            Defaults to None.
+            ax (matplotlib.axes.Axes, optional): A pre-generated pyplot axis.
+            Defaults to None.
+
+        Raises:
+            ValueError: Raises a ValueError when the plotting data is not valid.
+
+        Returns:
+            tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and axis that has
+                the TTS plot with minimal styling.
+        """
+        problem_metadata = ProblemMetadataFactory.create_problem_metadata(problem)
+        problem_metadata.ingest_metadata(metadata_filepath)
+        plotting_df = problem_metadata.generate_plot_data(metric_func=energy_max_func)
+
+        (fig, ax) = ccvmplotlib.__plot_core(plotting_df, fig, ax)
+
+        # Make sure x-axis only has integer values
+        x_data = plotting_df.index
         ax.set_xticks(x_data)
 
         return (fig, ax)
@@ -162,9 +212,11 @@ class ccvmplotlib:
                 plotting_df[lvl0_column_name, "success_prob"],
                 linestyle="-",
                 marker="s",
-                label=PERC_GAP_LABEL_MAP[lvl0_column_name]
-                if lvl0_column_name in PERC_GAP_LABEL_MAP
-                else lvl0_column_name,
+                label=(
+                    PERC_GAP_LABEL_MAP[lvl0_column_name]
+                    if lvl0_column_name in PERC_GAP_LABEL_MAP
+                    else lvl0_column_name
+                ),
                 color=color,
             )
         if max_succ_prob == 0.0:
@@ -275,6 +327,35 @@ class ccvmplotlib:
         # set x & y labels
         ccvmplotlib.set_default_xlabel(ax, "Problem Size, $N$")
         ccvmplotlib.set_default_ylabel(ax, "TTS (seconds)")
+
+        # set x & y ticks
+        ccvmplotlib.set_default_ticks(ax)
+
+        # set legend
+        ccvmplotlib.set_default_legend(ax)
+
+        # set grid
+        ccvmplotlib.set_default_grid(ax)
+
+        # call tight layout
+        fig.tight_layout()
+
+    @staticmethod
+    def apply_default_ets_styling(
+        fig: matplotlib.figure.Figure, ax: matplotlib.axes.Axes
+    ) -> None:
+        """A method to apply the default styling to a ETS plot.
+
+        Args:
+            fig (matplotlib.figure.Figure): A pyplot figure to be set.
+            ax (matplotlib.axes.Axes): A pyplot axis to be set.
+        """
+        # set figure size
+        ccvmplotlib.set_default_figsize(fig)
+
+        # set x & y labels
+        ccvmplotlib.set_default_xlabel(ax, "Problem Size, $N$")
+        ccvmplotlib.set_default_ylabel(ax, "ETS (joules)")
 
         # set x & y ticks
         ccvmplotlib.set_default_ticks(ax)

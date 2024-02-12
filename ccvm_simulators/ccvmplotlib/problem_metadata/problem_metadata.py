@@ -48,7 +48,7 @@ class ProblemMetadata(ABC):
         pandas.DataFrame."""
 
     @abstractmethod
-    def generate_TTS_plot_data(self) -> pd.DataFrame:
+    def generate_plot_data(self) -> pd.DataFrame:
         """Generate data for plotting.
 
         Plotting data will be varied by a different problem. Thus, for different
