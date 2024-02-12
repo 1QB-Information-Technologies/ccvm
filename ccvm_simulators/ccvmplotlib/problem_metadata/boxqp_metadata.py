@@ -88,7 +88,9 @@ class BoxQPMetadata(ProblemMetadata):
         quantile.
 
         Args:
-            metric_func (callable): A callback function that is used when calculating the metrics either to determine the `machine_time` or the `energy_max`, which are used when computing the TTS or ETS, respectively.
+            metric_func (callable): A callback function that is used when calculating
+            the metrics either to determine the `machine_time` or the `energy_max`,
+            which are used when computing the TTS or ETS, respectively.
         Returns:
             (pd.Series): The time to solution for each problem size.
         """
