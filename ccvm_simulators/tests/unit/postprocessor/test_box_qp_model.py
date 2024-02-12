@@ -1,21 +1,22 @@
 from unittest import TestCase
 import logging
-from ..box_qp_model import BoxQPModel
-from ..post_processor import MethodType
+from ccvm_simulators.post_processor.box_qp_model import BoxQPModel
+from ccvm_simulators.post_processor.post_processor import MethodType
 import torch
-import numpy as np
 
 
 class TestBoxQPModel(TestCase):
     @classmethod
-    def setUpClass(self):
-        self.logger = logging.getLogger()
-
-        self.N = 20
-        self.M = 100
-        self.c = torch.FloatTensor(self.M, self.N)
-        self.q_matrix = torch.FloatTensor(self.N, self.N)
-        self.v_vector = torch.FloatTensor(self.N)
+    def setUpClass(cls):
+        cls.logger = logging.getLogger()
+        cls.N = 20
+        cls.M = 100
+        cls.c = torch.zeros(cls.M, cls.N)
+        cls.q_matrix_asym = torch.randint(-50, 50, [cls.N, cls.N], dtype=torch.float)
+        cls.v_vector = torch.randint(-50, 50, [cls.N], dtype=torch.float)
+        cls.q_matrix = (
+            torch.triu(cls.q_matrix_asym) + torch.triu(cls.q_matrix_asym, diagonal=1).T
+        )
 
     def setUp(self):
         self.logger.info("Test %s Started" % (self._testMethodName))

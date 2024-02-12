@@ -7,7 +7,7 @@
       "pp_time": 0.06253677046990525,
       "optimal_value": 591.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9037996770985329,
         "one_percent": 0.5971425807860888,
         "two_percent": 0.4320140986778883,
@@ -25,7 +25,7 @@
       "pp_time": 0.04194999226759277,
       "optimal_value": 374.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.371593692940582,
         "one_percent": 0.496635209085709,
         "two_percent": 0.48490831134960444,
@@ -43,7 +43,7 @@
       "pp_time": 0.3186729396582426,
       "optimal_value": 598.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.6236545744888051,
         "one_percent": 0.07717344979828322,
         "two_percent": 0.5081915792374002,
@@ -61,7 +61,7 @@
       "pp_time": 0.06606038375403156,
       "optimal_value": 692.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.17399502155579494,
         "one_percent": 0.14523277097289977,
         "two_percent": 0.25158589903760187,
@@ -79,7 +79,7 @@
       "pp_time": 0.7435625324632581,
       "optimal_value": 1009.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9811917942434131,
         "one_percent": 0.09011206799717286,
         "two_percent": 0.44617097032697106,
@@ -97,7 +97,7 @@
       "pp_time": 0.835578560102309,
       "optimal_value": 1060.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.973536797891121,
         "one_percent": 0.7375544322464316,
         "two_percent": 0.11878333371369243,
@@ -115,7 +115,7 @@
       "pp_time": 0.33079510700951686,
       "optimal_value": 669.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.13621145224907383,
         "one_percent": 0.650805349918316,
         "two_percent": 0.30077541758833126,
@@ -133,7 +133,7 @@
       "pp_time": 0.6172440566944017,
       "optimal_value": 576.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9722169234678452,
         "one_percent": 0.10995606297084604,
         "two_percent": 0.1931108586116994,
@@ -151,7 +151,7 @@
       "pp_time": 0.26138203501043156,
       "optimal_value": 996.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.5328287392530875,
         "one_percent": 0.4925719269755443,
         "two_percent": 0.1628859004357378,
@@ -169,7 +169,7 @@
       "pp_time": 0.01664037141864083,
       "optimal_value": 978.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.7847907490722882,
         "one_percent": 0.8629339967841821,
         "two_percent": 0.4531813261431581,
@@ -187,7 +187,7 @@
       "pp_time": 0.6468101460878566,
       "optimal_value": 362.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.5034174220399412,
         "one_percent": 0.3016004518010943,
         "two_percent": 0.28762392989024044,
@@ -205,7 +205,7 @@
       "pp_time": 0.5070874241026774,
       "optimal_value": 591.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.055654179888928734,
         "one_percent": 0.1096766831209125,
         "two_percent": 0.5723560534706208,
@@ -223,7 +223,7 @@
       "pp_time": 0.4361321259793798,
       "optimal_value": 486.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.8912096799481611,
         "one_percent": 0.31246117411923924,
         "two_percent": 0.061737963579688415,
@@ -241,7 +241,7 @@
       "pp_time": 0.43514912140862627,
       "optimal_value": 466.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9158701912307439,
         "one_percent": 0.5684131988210248,
         "two_percent": 0.9154560525903042,
@@ -259,7 +259,7 @@
       "pp_time": 0.033164036600760616,
       "optimal_value": 1072.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.12434387037931505,
         "one_percent": 0.8980578951765433,
         "two_percent": 0.2694922641197993,
@@ -277,7 +277,7 @@
       "pp_time": 0.9213767689910437,
       "optimal_value": 1059.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.5903473687582094,
         "one_percent": 0.521353767532356,
         "two_percent": 0.7192016579095841,
@@ -295,7 +295,7 @@
       "pp_time": 0.22906690597967516,
       "optimal_value": 450.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.4560255376320467,
         "one_percent": 0.7328583811860357,
         "two_percent": 0.7334812034449372,
@@ -313,7 +313,7 @@
       "pp_time": 0.9051657989389703,
       "optimal_value": 719.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.6809864317732383,
         "one_percent": 0.45540096621651593,
         "two_percent": 0.572577628164826,
@@ -331,7 +331,7 @@
       "pp_time": 0.8663591589311082,
       "optimal_value": 253.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.308309710971703,
         "one_percent": 0.3567227663065049,
         "two_percent": 0.7012985472856031,
@@ -349,7 +349,7 @@
       "pp_time": 0.45860465390022154,
       "optimal_value": 309.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.5738541779900825,
         "one_percent": 0.04700156674199596,
         "two_percent": 0.9068968515802301,
@@ -367,7 +367,7 @@
       "pp_time": 0.8263126984129957,
       "optimal_value": 940.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9565965465981953,
         "one_percent": 0.5528437166662452,
         "two_percent": 0.9949208039559031,
@@ -385,7 +385,7 @@
       "pp_time": 0.5286698687697445,
       "optimal_value": 435.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.2401696922292097,
         "one_percent": 0.03952336211031793,
         "two_percent": 0.08157378886269151,
@@ -403,7 +403,7 @@
       "pp_time": 0.3918294076179831,
       "optimal_value": 410.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.3232154747046201,
         "one_percent": 0.8977062806001405,
         "two_percent": 0.185301994787476,
@@ -421,7 +421,7 @@
       "pp_time": 0.9488556649016838,
       "optimal_value": 629.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.036314313385316876,
         "one_percent": 0.9243453646301121,
         "two_percent": 0.25004395839455296,
@@ -439,7 +439,7 @@
       "pp_time": 0.6579054220406086,
       "optimal_value": 765.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.7407547565154173,
         "one_percent": 0.06061809259777151,
         "two_percent": 0.1599906858447866,
@@ -457,7 +457,7 @@
       "pp_time": 0.9068337275208052,
       "optimal_value": 833.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.25833927498238995,
         "one_percent": 0.8966790227771742,
         "two_percent": 0.42381492055216563,
@@ -475,7 +475,7 @@
       "pp_time": 0.6682956715687043,
       "optimal_value": 473.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.821556643639375,
         "one_percent": 0.2396463557862154,
         "two_percent": 0.35520777731538566,
@@ -493,7 +493,7 @@
       "pp_time": 0.21263562504870548,
       "optimal_value": 347.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.710847328012773,
         "one_percent": 0.24801838751657102,
         "two_percent": 0.6546563881142713,
@@ -511,7 +511,7 @@
       "pp_time": 0.7451875450986953,
       "optimal_value": 961.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.6678003523794651,
         "one_percent": 0.23236968131494062,
         "two_percent": 0.4640116726156477,
@@ -529,7 +529,7 @@
       "pp_time": 0.985174553394027,
       "optimal_value": 401.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.13275995368109705,
         "one_percent": 0.28311703179308323,
         "two_percent": 0.13204453365483282,
@@ -547,7 +547,7 @@
       "pp_time": 0.5724860774435322,
       "optimal_value": 470.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.7265427290936971,
         "one_percent": 0.719055643865879,
         "two_percent": 0.950809960441436,
@@ -565,7 +565,7 @@
       "pp_time": 0.3027409186606185,
       "optimal_value": 476.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.44067502308068196,
         "one_percent": 0.8870777436262383,
         "two_percent": 0.6729234485433383,
@@ -583,7 +583,7 @@
       "pp_time": 0.1502450673495047,
       "optimal_value": 824.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.3269616802253309,
         "one_percent": 0.4975123773440451,
         "two_percent": 0.7345057203006721,
@@ -601,7 +601,7 @@
       "pp_time": 0.8785576822925266,
       "optimal_value": 323.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.7456426670192962,
         "one_percent": 0.5591424586376137,
         "two_percent": 0.3736676978442248,
@@ -619,7 +619,7 @@
       "pp_time": 0.9866709070597514,
       "optimal_value": 349.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.8573365798851359,
         "one_percent": 0.6193476395112097,
         "two_percent": 0.3400985949999433,
@@ -637,7 +637,7 @@
       "pp_time": 0.23390820499512033,
       "optimal_value": 239.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.01217649917926289,
         "one_percent": 0.06710645189444431,
         "two_percent": 0.08892903000717234,
@@ -655,7 +655,7 @@
       "pp_time": 0.6806760742435078,
       "optimal_value": 723.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.7439230606310717,
         "one_percent": 0.4762066326160065,
         "two_percent": 0.25525148451885815,
@@ -673,7 +673,7 @@
       "pp_time": 0.795813896272262,
       "optimal_value": 984.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.7955088251410509,
         "one_percent": 0.7305462029009324,
         "two_percent": 0.4703463607241224,
@@ -691,7 +691,7 @@
       "pp_time": 0.12734663080190356,
       "optimal_value": 313.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.30119764084355993,
         "one_percent": 0.18997090440233322,
         "two_percent": 0.10635900039187063,
@@ -709,7 +709,7 @@
       "pp_time": 0.6812038404321229,
       "optimal_value": 452.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9147534493682309,
         "one_percent": 0.3680610352857464,
         "two_percent": 0.7467678559711437,
@@ -727,7 +727,7 @@
       "pp_time": 0.8429403567041461,
       "optimal_value": 569.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9312654738478897,
         "one_percent": 0.3863609752070932,
         "two_percent": 0.7979831613238021,
@@ -745,7 +745,7 @@
       "pp_time": 0.8645867213659367,
       "optimal_value": 932.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.7353141552862417,
         "one_percent": 0.9486641709462041,
         "two_percent": 0.22543562609817258,
@@ -763,7 +763,7 @@
       "pp_time": 0.8540387963140634,
       "optimal_value": 1040.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.8649803392224773,
         "one_percent": 0.21933695235218975,
         "two_percent": 0.8141513805343126,
@@ -781,7 +781,7 @@
       "pp_time": 0.9717203026635646,
       "optimal_value": 934.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.11868827274450577,
         "one_percent": 0.062259681193900795,
         "two_percent": 0.8339879898322606,
@@ -799,7 +799,7 @@
       "pp_time": 0.4769627943387761,
       "optimal_value": 438.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.3211775926059507,
         "one_percent": 0.11856103402842744,
         "two_percent": 0.3864277067663936,
@@ -817,7 +817,7 @@
       "pp_time": 0.3597815020045485,
       "optimal_value": 1098.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.5430548962375875,
         "one_percent": 0.07351312051321146,
         "two_percent": 0.7179507450071577,
@@ -835,7 +835,7 @@
       "pp_time": 0.19025970466119047,
       "optimal_value": 820.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.22324027952163605,
         "one_percent": 0.2884302701168111,
         "two_percent": 0.7169562254454441,
@@ -853,7 +853,7 @@
       "pp_time": 0.5122634685478729,
       "optimal_value": 866.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.5929837402595295,
         "one_percent": 0.18297008424791816,
         "two_percent": 0.8313723978117635,
@@ -871,7 +871,7 @@
       "pp_time": 0.07456731306449227,
       "optimal_value": 806.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.06955835185641002,
         "one_percent": 0.20825438355208814,
         "two_percent": 0.6350800870739147,
@@ -889,7 +889,7 @@
       "pp_time": 0.2701274791162577,
       "optimal_value": 276.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.39442287383006225,
         "one_percent": 0.6929152536789155,
         "two_percent": 0.4168144036098872,
@@ -907,7 +907,7 @@
       "pp_time": 0.3359151700982923,
       "optimal_value": 717.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.4468743105496261,
         "one_percent": 0.66985968324482,
         "two_percent": 0.7966826898631258,
@@ -925,7 +925,7 @@
       "pp_time": 0.9783196344414605,
       "optimal_value": 352.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.0950166272919899,
         "one_percent": 0.9453208345463796,
         "two_percent": 0.5543823417280344,
@@ -943,7 +943,7 @@
       "pp_time": 0.9090857929254128,
       "optimal_value": 882.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.6326833845758177,
         "one_percent": 0.10639939081558358,
         "two_percent": 0.5544070183838533,
@@ -961,7 +961,7 @@
       "pp_time": 0.8094347936033452,
       "optimal_value": 819.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.06653085801788772,
         "one_percent": 0.4165281898597085,
         "two_percent": 0.5284815256309873,
@@ -979,7 +979,7 @@
       "pp_time": 0.27270528272948313,
       "optimal_value": 1039.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9593654460574241,
         "one_percent": 0.04980517020211361,
         "two_percent": 0.8681688290752876,
@@ -997,7 +997,7 @@
       "pp_time": 0.6872396996978073,
       "optimal_value": 493.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.7397728858905281,
         "one_percent": 0.06009298599537305,
         "two_percent": 0.4182675096333316,
@@ -1015,7 +1015,7 @@
       "pp_time": 0.6517940796804884,
       "optimal_value": 475.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.8855990410300035,
         "one_percent": 0.7694600280448946,
         "two_percent": 0.7611027912307029,
@@ -1033,7 +1033,7 @@
       "pp_time": 0.06926373056022372,
       "optimal_value": 950.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9842231124032593,
         "one_percent": 0.3631388290565609,
         "two_percent": 0.3754347066454635,
@@ -1051,7 +1051,7 @@
       "pp_time": 0.521212196758034,
       "optimal_value": 1089.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9898606401710074,
         "one_percent": 0.6148248075656265,
         "two_percent": 0.6814396008660322,
@@ -1069,7 +1069,7 @@
       "pp_time": 0.2934234383082379,
       "optimal_value": 607.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.3845955606460475,
         "one_percent": 0.8229916858198503,
         "two_percent": 0.3034903289811909,
@@ -1087,7 +1087,7 @@
       "pp_time": 0.20126817948418885,
       "optimal_value": 440.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.15219082644008985,
         "one_percent": 0.23486048192664621,
         "two_percent": 0.6752303964796343,
@@ -1105,7 +1105,7 @@
       "pp_time": 0.20739102256628494,
       "optimal_value": 282.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.8378997177560387,
         "one_percent": 0.3125278062816589,
         "two_percent": 0.49649669027091925,
@@ -1123,7 +1123,7 @@
       "pp_time": 0.9015256984593149,
       "optimal_value": 501.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.4301841470102781,
         "one_percent": 0.19256699240651687,
         "two_percent": 0.8840493277280003,
@@ -1141,7 +1141,7 @@
       "pp_time": 0.5580967258139081,
       "optimal_value": 234.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9221574815220444,
         "one_percent": 0.4949158509431312,
         "two_percent": 0.24795596267275732,
@@ -1159,7 +1159,7 @@
       "pp_time": 0.8186404613073369,
       "optimal_value": 318.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.3929787319650029,
         "one_percent": 0.957171121903244,
         "two_percent": 0.9988473025979643,
@@ -1177,7 +1177,7 @@
       "pp_time": 0.16558779041216842,
       "optimal_value": 997.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9487919601359928,
         "one_percent": 0.9142822227723851,
         "two_percent": 0.8110939466793651,
@@ -1195,7 +1195,7 @@
       "pp_time": 0.8786579924023737,
       "optimal_value": 394.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.8366661471952891,
         "one_percent": 0.03446682576994886,
         "two_percent": 0.5266051716393828,
@@ -1213,7 +1213,7 @@
       "pp_time": 0.5525462626529525,
       "optimal_value": 359.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.3675707619758847,
         "one_percent": 0.7734764061822349,
         "two_percent": 0.8413522500923293,
@@ -1231,7 +1231,7 @@
       "pp_time": 0.8645961333784516,
       "optimal_value": 1091.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.48566399155514195,
         "one_percent": 0.11216848595125606,
         "two_percent": 0.6505851296131534,
@@ -1249,7 +1249,7 @@
       "pp_time": 0.43874511603057986,
       "optimal_value": 588.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.3536279179087879,
         "one_percent": 0.8716781464133261,
         "two_percent": 0.129619267853198,
@@ -1267,7 +1267,7 @@
       "pp_time": 0.5442805982896654,
       "optimal_value": 706.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.6546385219248826,
         "one_percent": 0.1634274946119768,
         "two_percent": 0.9384611294340287,
@@ -1285,7 +1285,7 @@
       "pp_time": 0.1680546152850272,
       "optimal_value": 896.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9226016307525989,
         "one_percent": 0.48136834552001606,
         "two_percent": 0.32683182057389704,
@@ -1303,7 +1303,7 @@
       "pp_time": 0.28410730170175935,
       "optimal_value": 656.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.2696265189843534,
         "one_percent": 0.8079728800982292,
         "two_percent": 0.46984628997576494,
@@ -1321,7 +1321,7 @@
       "pp_time": 0.33263699370277455,
       "optimal_value": 295.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9198308966173028,
         "one_percent": 0.29130412403065986,
         "two_percent": 0.5932910120512279,
@@ -1339,7 +1339,7 @@
       "pp_time": 0.7143769939396242,
       "optimal_value": 990.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.047220465943420664,
         "one_percent": 0.10295503657275273,
         "two_percent": 0.5846519491688316,
@@ -1357,7 +1357,7 @@
       "pp_time": 0.6002693336639555,
       "optimal_value": 214.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.2897946825929263,
         "one_percent": 0.6939987534740194,
         "two_percent": 0.2926879439744783,
@@ -1375,7 +1375,7 @@
       "pp_time": 0.061079008104256816,
       "optimal_value": 664.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.8865292770588515,
         "one_percent": 0.9065248309536799,
         "two_percent": 0.14374306219198318,
@@ -1393,7 +1393,7 @@
       "pp_time": 0.005277160667564007,
       "optimal_value": 472.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.08067565570855761,
         "one_percent": 0.7389680869284939,
         "two_percent": 0.28961806063859297,
@@ -1411,7 +1411,7 @@
       "pp_time": 0.47453710597489074,
       "optimal_value": 802.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9838950807847066,
         "one_percent": 0.2724185161764706,
         "two_percent": 0.792347645536491,
@@ -1429,7 +1429,7 @@
       "pp_time": 0.31957255432262566,
       "optimal_value": 430.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.09546412608351384,
         "one_percent": 0.9935343656066935,
         "two_percent": 0.8740190869962825,
@@ -1447,7 +1447,7 @@
       "pp_time": 0.06883105239058607,
       "optimal_value": 448.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.4437044095786489,
         "one_percent": 0.5023895238524132,
         "two_percent": 0.19431669688095266,
@@ -1465,7 +1465,7 @@
       "pp_time": 0.8326915349571705,
       "optimal_value": 403.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.6076915730718786,
         "one_percent": 0.9639443824840532,
         "two_percent": 0.6186646266107646,
@@ -1483,7 +1483,7 @@
       "pp_time": 0.4031357500526114,
       "optimal_value": 516.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.23322872191894828,
         "one_percent": 0.45939676394532813,
         "two_percent": 0.5224608304709477,
@@ -1501,7 +1501,7 @@
       "pp_time": 0.6536003800195557,
       "optimal_value": 243.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.4481931180530895,
         "one_percent": 0.9029165866127505,
         "two_percent": 0.28137670363830203,
@@ -1519,7 +1519,7 @@
       "pp_time": 0.5999452759209443,
       "optimal_value": 900.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9444049680058977,
         "one_percent": 0.014903403436721474,
         "two_percent": 0.9322532859869144,
@@ -1537,7 +1537,7 @@
       "pp_time": 0.5566218571342629,
       "optimal_value": 1026.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.8091508789493712,
         "one_percent": 0.6179930364853397,
         "two_percent": 0.9056458160478096,
@@ -1555,7 +1555,7 @@
       "pp_time": 0.4666169975108445,
       "optimal_value": 660.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.30298756353689116,
         "one_percent": 0.41228650841425296,
         "two_percent": 0.9238985814651299,
@@ -1573,7 +1573,7 @@
       "pp_time": 0.2156162975226703,
       "optimal_value": 918.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.6158050730223458,
         "one_percent": 0.7217851725946457,
         "two_percent": 0.6581028650830189,
@@ -1591,7 +1591,7 @@
       "pp_time": 0.07591169917776963,
       "optimal_value": 854.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9840982071749717,
         "one_percent": 0.3426399243491759,
         "two_percent": 0.1821583050692258,
@@ -1609,7 +1609,7 @@
       "pp_time": 0.964518322247143,
       "optimal_value": 215.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.2958261044429209,
         "one_percent": 0.5826642000739924,
         "two_percent": 0.678683433976975,
@@ -1627,7 +1627,7 @@
       "pp_time": 0.2926233402840115,
       "optimal_value": 799.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.7010162185202675,
         "one_percent": 0.7954678414317585,
         "two_percent": 0.649509571436922,
@@ -1645,7 +1645,7 @@
       "pp_time": 0.9044119656254587,
       "optimal_value": 389.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.026148836720693125,
         "one_percent": 0.9874898878683288,
         "two_percent": 0.03382418529585418,
@@ -1663,7 +1663,7 @@
       "pp_time": 0.4789029073081541,
       "optimal_value": 791.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.311637241120284,
         "one_percent": 0.7935550450121177,
         "two_percent": 0.1770148073633916,
@@ -1681,7 +1681,7 @@
       "pp_time": 0.20187238483861525,
       "optimal_value": 431.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.07062353876350225,
         "one_percent": 0.273808200165502,
         "two_percent": 0.060003068470893206,
@@ -1699,7 +1699,7 @@
       "pp_time": 0.7380138531612938,
       "optimal_value": 868.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.8087984183463509,
         "one_percent": 0.682675898415431,
         "two_percent": 0.6443416567762643,
@@ -1717,7 +1717,7 @@
       "pp_time": 0.1444729445253362,
       "optimal_value": 500.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9611490848403665,
         "one_percent": 0.14668405377952531,
         "two_percent": 0.21910634286000474,
@@ -1735,7 +1735,7 @@
       "pp_time": 0.015194404646736048,
       "optimal_value": 367.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.2140268171935097,
         "one_percent": 0.11156075892715345,
         "two_percent": 0.09296934898390974,
@@ -1753,7 +1753,7 @@
       "pp_time": 0.6670825117459439,
       "optimal_value": 477.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.4022832777680406,
         "one_percent": 0.5653513066085012,
         "two_percent": 0.892669627258168,
@@ -1771,7 +1771,7 @@
       "pp_time": 0.31571954498053156,
       "optimal_value": 706.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.6593111893062326,
         "one_percent": 0.07212019052083363,
         "two_percent": 0.0780141478015407,
@@ -1789,7 +1789,7 @@
       "pp_time": 0.9804134563495458,
       "optimal_value": 868.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.27549927807125785,
         "one_percent": 0.9570942105632888,
         "two_percent": 0.39155267700913055,
@@ -1807,7 +1807,7 @@
       "pp_time": 0.42236928472163526,
       "optimal_value": 410.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.6919396185253769,
         "one_percent": 0.46939943510000537,
         "two_percent": 0.5735600536162418,
@@ -1825,7 +1825,7 @@
       "pp_time": 0.7341536767363628,
       "optimal_value": 715.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.33863648526828904,
         "one_percent": 0.384522444590891,
         "two_percent": 0.4906418028080952,
@@ -1843,7 +1843,7 @@
       "pp_time": 0.872938300863994,
       "optimal_value": 890.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.7955708219520125,
         "one_percent": 0.944790466367065,
         "two_percent": 0.20508739916673258,
@@ -1861,7 +1861,7 @@
       "pp_time": 0.2463542735896307,
       "optimal_value": 925.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.6494245300850825,
         "one_percent": 0.4025055943584457,
         "two_percent": 0.1502540894011012,
@@ -1879,7 +1879,7 @@
       "pp_time": 0.2050798005528881,
       "optimal_value": 343.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.19015447766009197,
         "one_percent": 0.16939436505077998,
         "two_percent": 0.07281170683359728,
@@ -1897,7 +1897,7 @@
       "pp_time": 0.007906746750771632,
       "optimal_value": 515.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9687185260938235,
         "one_percent": 0.0707358843191237,
         "two_percent": 0.9459500339590589,
@@ -1915,7 +1915,7 @@
       "pp_time": 0.6230869919987778,
       "optimal_value": 1023.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.7937583564916977,
         "one_percent": 0.5390527917900537,
         "two_percent": 0.06398872280939372,
@@ -1933,7 +1933,7 @@
       "pp_time": 0.8345832586546414,
       "optimal_value": 410.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.5497411234571644,
         "one_percent": 0.5778946416465904,
         "two_percent": 0.25658288054350464,
@@ -1951,7 +1951,7 @@
       "pp_time": 0.5975666424038094,
       "optimal_value": 991.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.02123548164880773,
         "one_percent": 0.7116370552648887,
         "two_percent": 0.8303718484637356,
@@ -1969,7 +1969,7 @@
       "pp_time": 0.13543467680497234,
       "optimal_value": 960.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.29698838774287417,
         "one_percent": 0.639169211865458,
         "two_percent": 0.1497931061931531,
@@ -1987,7 +1987,7 @@
       "pp_time": 0.4115725608980507,
       "optimal_value": 562.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.09116510141300238,
         "one_percent": 0.3188450405186666,
         "two_percent": 0.052762180026882266,
@@ -2005,7 +2005,7 @@
       "pp_time": 0.4165438920911033,
       "optimal_value": 219.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.6395800604480179,
         "one_percent": 0.24473517592757243,
         "two_percent": 0.9974172760371125,
@@ -2023,7 +2023,7 @@
       "pp_time": 0.44163733185273446,
       "optimal_value": 827.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.6503305955090857,
         "one_percent": 0.4840760282312424,
         "two_percent": 0.22628950559179994,
@@ -2041,7 +2041,7 @@
       "pp_time": 0.2833130792516021,
       "optimal_value": 883.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.7054091988712997,
         "one_percent": 0.6890503072204908,
         "two_percent": 0.6681310670583669,
@@ -2059,7 +2059,7 @@
       "pp_time": 0.2300169652739983,
       "optimal_value": 818.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.371419433950832,
         "one_percent": 0.5764263156242511,
         "two_percent": 0.3311213543848849,
@@ -2077,7 +2077,7 @@
       "pp_time": 0.7475481380783793,
       "optimal_value": 207.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9012061545785104,
         "one_percent": 0.42543059792560767,
         "two_percent": 0.1577851741199391,
@@ -2095,7 +2095,7 @@
       "pp_time": 0.6209049255509014,
       "optimal_value": 504.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.4224815005795908,
         "one_percent": 0.3437262922352756,
         "two_percent": 0.3690089395360472,
@@ -2113,7 +2113,7 @@
       "pp_time": 0.3760216680807158,
       "optimal_value": 897.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.43712156879053077,
         "one_percent": 0.49497366680601573,
         "two_percent": 0.30332567194073734,
@@ -2131,7 +2131,7 @@
       "pp_time": 0.2444998511036922,
       "optimal_value": 267.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.46462239784974824,
         "one_percent": 0.833980434093354,
         "two_percent": 0.05692153190176252,
@@ -2149,7 +2149,7 @@
       "pp_time": 0.37798816764988985,
       "optimal_value": 366.0,
       "iterations": 1500,
-      "sol_performance": {
+      "incorrect_field_name": {
         "optimal": 0.9108334923004578,
         "one_percent": 0.5491728779615571,
         "two_percent": 0.24937727666460963,

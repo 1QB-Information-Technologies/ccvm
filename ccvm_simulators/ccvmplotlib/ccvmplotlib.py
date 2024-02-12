@@ -50,9 +50,11 @@ class ccvmplotlib:
                 plotting_df[lvl0_column_name, "50"],
                 linestyle="-",
                 marker="s",
-                label=PERC_GAP_LABEL_MAP[lvl0_column_name]
-                if lvl0_column_name in PERC_GAP_LABEL_MAP
-                else lvl0_column_name,
+                label=(
+                    PERC_GAP_LABEL_MAP[lvl0_column_name]
+                    if lvl0_column_name in PERC_GAP_LABEL_MAP
+                    else lvl0_column_name
+                ),
                 color=color,
                 linewidth=4.0,
             )
@@ -210,9 +212,11 @@ class ccvmplotlib:
                 plotting_df[lvl0_column_name, "success_prob"],
                 linestyle="-",
                 marker="s",
-                label=PERC_GAP_LABEL_MAP[lvl0_column_name]
-                if lvl0_column_name in PERC_GAP_LABEL_MAP
-                else lvl0_column_name,
+                label=(
+                    PERC_GAP_LABEL_MAP[lvl0_column_name]
+                    if lvl0_column_name in PERC_GAP_LABEL_MAP
+                    else lvl0_column_name
+                ),
                 color=color,
             )
         if max_succ_prob == 0.0:

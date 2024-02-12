@@ -1,20 +1,22 @@
-from unittest import TestCase
 import logging
-from ..trust_constr import PostProcessorTrustConstr
 import torch
-import numpy as np
+from unittest import TestCase
+from ccvm_simulators.post_processor.bfgs import PostProcessorBFGS
 
 
-class TestPostProcessorTrustConstr(TestCase):
+class TestPostProcessorBFGS(TestCase):
     @classmethod
-    def setUpClass(self):
-        self.logger = logging.getLogger()
-        self.post_processor = PostProcessorTrustConstr()
-        self.N = 20
-        self.M = 100
-        self.c = torch.FloatTensor(self.M, self.N)
-        self.q_matrix = torch.FloatTensor(self.N, self.N)
-        self.v_vector = torch.FloatTensor(self.N)
+    def setUpClass(cls):
+        cls.logger = logging.getLogger()
+        cls.post_processor = PostProcessorBFGS()
+        cls.N = 20
+        cls.M = 100
+        cls.c = torch.zeros(cls.M, cls.N)
+        cls.q_matrix_asym = torch.randint(-50, 50, [cls.N, cls.N], dtype=torch.float)
+        cls.v_vector = torch.randint(-50, 50, [cls.N], dtype=torch.float)
+        cls.q_matrix = (
+            torch.triu(cls.q_matrix_asym) + torch.triu(cls.q_matrix_asym, diagonal=1).T
+        )
 
     def setUp(self):
         self.logger.info("Test %s Started" % (self._testMethodName))
@@ -22,21 +24,23 @@ class TestPostProcessorTrustConstr(TestCase):
     def tearDown(self):
         self.logger.info("Test %s Finished" % (self._testMethodName))
 
-    # TODO
-    # def test_postprocess_valid(self):
-    #     """Test postprocess when given valid inputs and verified the pp_time gets
-    #     updated correctly
-    #     """
-    #     output_tensor = self.post_processor.postprocess(
-    #         self.c, self.q_matrix, self.v_vector
-    #     )
-    #     # check output is a tensor
-    #     assert torch.is_tensor(output_tensor)
-    #     # check size of valid
-    #     assert output_tensor.size() == self.c.size()
-    #     # check if pp time is valid
-    #     error_message = "post_processing time must be greater than 0"
-    #     self.assertGreater(self.post_processor.pp_time, 0, error_message)
+    def test_postprocess_valid(self):
+        """Test postprocess when given valid inputs and verified the pp_time gets
+        updated correctly
+        """
+        output_tensor = self.post_processor.postprocess(
+            self.c, self.q_matrix, self.v_vector
+        )
+
+        # Check output is a tensor
+        assert torch.is_tensor(output_tensor)
+
+        # Check size is valid
+        assert output_tensor.size() == self.c.size()
+
+        # Check if pp time is valid
+        error_message = "post_processing time must be greater than 0"
+        self.assertGreater(self.post_processor.pp_time, 0, error_message)
 
     # TODO: Not sure if this is an applicable test case
     def test_postprocess_invalid_c_parameter(self):
@@ -54,12 +58,12 @@ class TestPostProcessorTrustConstr(TestCase):
         with self.assertRaisesRegex(TypeError, "parameter q_matrix must be a tensor"):
             self.post_processor.postprocess(self.c, invalid_qmat, self.v_vector)
 
-    def test_postprocess_invalid_c_vector_parameter(self):
+    def test_postprocess_invalid_v_vector_parameter(self):
         """Test postprocess when v_vector value is not a tensor"""
-        invalid_c_vector = "dummy-v_vector"
+        invalid_v_vector = "dummy-v_vector"
 
         with self.assertRaisesRegex(TypeError, "parameter v_vector must be a tensor"):
-            self.post_processor.postprocess(self.c, self.q_matrix, invalid_c_vector)
+            self.post_processor.postprocess(self.c, self.q_matrix, invalid_v_vector)
 
     def test_postprocess_error_for_invalid_c_dimension(self):
         """Test postprocess when parameter dimensions are inconsistent.
@@ -79,7 +83,7 @@ class TestPostProcessorTrustConstr(TestCase):
         else:
             self.fail("Expected Exception not raised")
 
-    def test_postprocess_error_for_invalid_c_vector_shape(self):
+    def test_postprocess_error_for_invalid_v_vector_shape(self):
         """Test postprocess when parameter dimensions are inconsistent.
         We expect to be given an MxN tensor for c, an NxN tensor for q_matrix, and
         a tensor of size N for the v_vector. If any of these are not the correct

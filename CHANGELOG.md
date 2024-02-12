@@ -6,8 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Breaking Changes
+- Removed the TrustConst post-processor from the codebase due to non-usage. This
+  change aims to streamline the code and eliminate unnecessary components.
+
+### Fixed 
+- Fixed issue where `s` was being updated incorrectly on each iteration  of `DLSolver._solve()`.
+
+### Added
+- Implemented a simple gradient descent post-processing step, as described in the paper.
+  - Similar to Langevin dynamics but without noise.
+  - Implemented using the Euler method with box constraint imposition at each iteration.
+  - Designed to reflect the results outlined in the paper.
+
 ### Changed
 - Streamlined README by relocating and optimizing architecture diagrams.
+- Enhanced post processor clamp function for greater flexibility by replacing
+  hard-coded values with user-defined variables (lower_clamp and upper_clamp).
+- Consolidated test organization by centralizing all tests under a unified
+  `tests` folder, with subdirectories for unit, integration, and test data. This
+  enhances accessibility and clarity in managing test-related resources.
 
 ## [1.0.1] - 2023-03-09
 ### Fixed
@@ -49,6 +67,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 - Version was intended for PyPI release but encountered deployment issues.
 
+### Documentation
+- Added new page to Sphinx documentation, `Coherent Continuous-Variable Machine Simulator - Equations of Motion`, along with subpages specific to:
+    - `The Langevin Dynamics Solver`
+    - `The Measurement-Feedback Coherent Continuous-Variable Machine`
+    - `The Delay-Line Coherent Continuous-Variable Machine`
 
 ## [0.1.0] - 2023-01-25
 ### Added

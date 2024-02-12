@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.abspath("../../"))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "ccvm"
+project = "ccvm_simulators"
 copyright = "2023, 1QBit"
 author = "1QBit"
 
@@ -40,3 +40,4 @@ add_module_names = False
 
 html_theme = "furo"
 html_static_path = ["_static"]
+html_css_files = ['custom.css']

@@ -13,7 +13,6 @@ Submodules
    ccvm.post_processor.tests.test_box_qp_model
    ccvm.post_processor.tests.test_factory
    ccvm.post_processor.tests.test_lbfgs
-   ccvm.post_processor.tests.test_trust_constr
    ccvm.post_processor.tests.unit_test
 
 

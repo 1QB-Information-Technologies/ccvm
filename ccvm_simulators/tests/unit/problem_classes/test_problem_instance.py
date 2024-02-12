@@ -7,12 +7,23 @@ import torch
 
 class TestProblemInstance(TestCase):
     def setUp(self):
+        # Set default values
         self.device = "cpu"
         self.instance_type = "tuning"
-        self.basepath = os.path.dirname(__file__)
-        self.file_path = self.basepath + "/test_instances/test020-100-10.in"
         self.name = "test"
         self.file_delimiter = "\t"
+
+        # Get the base path of the current file
+        base_path = os.path.abspath(os.path.dirname(__file__))
+
+        # Construct the path to the 'tests' folder
+        test_folder = os.path.abspath(os.path.join(base_path, os.pardir, os.pardir))
+
+        # Construct the path to the 'test_instances' folder
+        self.test_instance_folder = os.path.join(test_folder, "data", "test_instances")
+
+        # Set the file path
+        self.file_path = os.path.join(self.test_instance_folder, "test020-100-10.in")
 
     def test_constructor_with_valid_file_path(self):
         """Test the constructor when valid file path is provided"""
@@ -101,7 +112,7 @@ class TestProblemInstance(TestCase):
         expected_optimal_sol = 152.602291
         expected_best_sol = 147.960031
 
-        # check all class variable type if function runs successfully
+        # Check all class variable type if function runs successfully
         assert isinstance(problem_instance.optimal_sol, float)
         assert isinstance(problem_instance.best_sol, float)
         assert problem_instance.optimal_sol == expected_optimal_sol
@@ -125,7 +136,7 @@ class TestProblemInstance(TestCase):
 
     def test_scale_coefs_one_time(self):
         """Test successfully scaling the instance's coefficients."""
-        file_path = self.basepath + "/test_instances/test002.in"
+        file_path = self.test_instance_folder + "/test002.in"
         problem_instance = ProblemInstance(
             device=self.device,
             instance_type=self.instance_type,
@@ -149,7 +160,7 @@ class TestProblemInstance(TestCase):
     def test_compute_energy_times(self):
         """Test compute energy returns the right tensor"""
 
-        file_path = self.basepath + "/test_instances/test002.in"
+        file_path = self.test_instance_folder + "/test002.in"
 
         problem_instance = ProblemInstance(
             device=self.device,
@@ -176,7 +187,7 @@ class TestProblemInstance(TestCase):
         assert torch.equal(expected_result, energy)
 
     def test_scale_coefs_multiple_times(self):
-        file_path = self.basepath + "/test_instances/test002.in"
+        file_path = self.test_instance_folder + "/test002.in"
         problem_instance = ProblemInstance(
             device=self.device,
             instance_type=self.instance_type,
