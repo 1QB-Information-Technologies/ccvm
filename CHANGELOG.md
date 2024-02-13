@@ -15,10 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Restructured the metadata object to include a `device` field, a
   `result_metadata` list, and a `metadata_dict`.
 
-### Added
-- Introduced a new `finalize_metadata` function inside the metadata class to
-  update the metadata_dict field.
-
 ### Fixed 
 - Fixed issue where `s` was being updated incorrectly on each iteration  of `DLSolver._solve()`.
 
