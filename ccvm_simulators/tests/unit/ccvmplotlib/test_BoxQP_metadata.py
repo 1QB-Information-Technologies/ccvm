@@ -116,7 +116,7 @@ class TestBoxQPMetadata(TestCase):
         self.assertIsInstance(ETS_plot_data, pd.DataFrame)
         self.assertGreater(ETS_plot_data.size, 0)
 
-    def test_generate_plot_data_invalid(self):
+    def test_generate_plot_invalid_metric_func(self):
         """Test BoxQP Metadata class "generate_plot_data" method when
         invalid inputs are given.
         """
