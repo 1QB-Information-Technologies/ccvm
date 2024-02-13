@@ -52,11 +52,6 @@ if __name__ == "__main__":
     # Save metadata to file
     metadata_filepath = metadata_list.save_metadata_to_file(METADATA_DIR)
 
-    # Customize machine_parameters
-    machine_parameters = {
-        "cpu_power": {20: 5.0, 30: 5.0, 40: 5.0, 50: 5.0, 60: 5.0, 70: 5.0}
-    }
-
     # If PLOT_OUTPUT_DIR not exists, create the path
     if not os.path.isdir(PLOT_OUTPUT_DIR):
         os.makedirs(PLOT_OUTPUT_DIR)
@@ -83,6 +78,11 @@ if __name__ == "__main__":
     print(f"Sucessfully saved the plot to {PLOT_OUTPUT_DEST}")
 
     # Plotting ETS
+    # Customize machine_parameters
+    machine_parameters = {
+        "cpu_power": {20: 5.0, 30: 5.0, 40: 5.0, 50: 5.0, 60: 5.0, 70: 5.0}
+    }
+
     # Customize energy_max calculating function
     def cpu_energy_max_func(matching_df: pd.DataFrame, problem_size: int) -> float:
         machine_time = np.mean(matching_df["solve_time"].values)
