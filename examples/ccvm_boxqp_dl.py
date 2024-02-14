@@ -28,7 +28,7 @@ if __name__ == "__main__":
         # Scale the problem's coefficients for more stable optimization
         boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 
-        # Solve the problem with one of the methods by setting 
+        # Solve the problem with one of the methods by setting
         # (1) algorithm_parameters=None (Default) for original algorithm
         # (2) algorithm_parameters=AdamParameters(..) for the Adam algorithm
         solution = solver(

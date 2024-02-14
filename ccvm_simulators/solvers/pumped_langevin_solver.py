@@ -94,8 +94,7 @@ class PumpedLangevinSolver(CCVMSolver):
         # If we get here, the parameter key is valid
         self._parameter_key = parameters
         self._is_tuned = False
-    
-    
+
     def _calculate_drift_boxqp(self, c, p, S):
         """We treat the SDE that simulates the CIM of NTT as drift
         calculation.
@@ -103,7 +102,7 @@ class PumpedLangevinSolver(CCVMSolver):
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
             p (float): Instance of pump field
-            S (float): The saturation value of the amplitudes. 
+            S (float): The saturation value of the amplitudes.
 
         Returns:
             tensor: The calculated change in the variable amplitude.
@@ -111,7 +110,7 @@ class PumpedLangevinSolver(CCVMSolver):
 
         c_pow = torch.pow(c, 2)
         c_drift_0 = torch.einsum("cj,cj -> cj", -1 + p - c_pow, c)
-        
+
         c_drift = c_drift_0 + self._calculate_grads_boxqp(c, S)
 
         return c_drift
@@ -128,10 +127,12 @@ class PumpedLangevinSolver(CCVMSolver):
         Returns:
             tensor: The calculated change in the variable amplitude.
         """
-        
+
         # TODO: Make the multiplication of scaler first
-        c_grad_1 = torch.einsum("bi,ij -> bj", (c + S) / (2 * S), self.q_matrix) / (2 * S)  
-        c_grad_2 = self.v_vector / (2 * S) 
+        c_grad_1 = torch.einsum("bi,ij -> bj", (c + S) / (2 * S), self.q_matrix) / (
+            2 * S
+        )
+        c_grad_2 = self.v_vector / (2 * S)
 
         c_grads = -c_grad_1 - c_grad_2
 
@@ -259,30 +260,28 @@ class PumpedLangevinSolver(CCVMSolver):
             torch.tensor([0.0] * batch_size, device=device),
             torch.tensor([1.0] * batch_size, device=device),
         )
-        
-        # Define a method conditionally for estimating instantaneous pump rate 
+
+        # Define a method conditionally for estimating instantaneous pump rate
         if pump_rate_flag:
-            pump_field = lambda n: pump * (n+1) / iterations 
+            pump_field = lambda n: pump * (n + 1) / iterations
         else:
-            pump_field = lambda n: pump 
-        
+            pump_field = lambda n: pump
+
         # Perform the solve over the specified number of iterations
-        
+
         for i in range(iterations):
-                
             c_drift = self.calculate_drift(c, pump_field(i), S)
 
             wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(
                 0, 1
             ) * np.sqrt(dt)
 
-            
             c += dt * feedback_scale * c_drift + sigma * wiener_increment_c
-            
+
             # Ensure variables are within any problem constraints
             # The lower bound is determined by ell=-S, and upper bound by u=S
             c = self.fit_to_constraints(c, -S, S)
-            
+
             # If evolution_step_size is specified, save the values if this iteration
             # aligns with the step size or if this is the last iteration
             if evolution_step_size and (
@@ -290,9 +289,11 @@ class PumpedLangevinSolver(CCVMSolver):
             ):
                 # Update the record of the sample values with the values found at
                 # this iteration
-                self.c_sample[:, :, samples_taken] = c # TODO: Consult if c needs calibration (c+S)/(2*S)
+                self.c_sample[
+                    :, :, samples_taken
+                ] = c  # TODO: Consult if c needs calibration (c+S)/(2*S)
                 samples_taken += 1
-        
+
         return c
 
     def _solve_adam(
@@ -371,12 +372,12 @@ class PumpedLangevinSolver(CCVMSolver):
             )
         else:
             v_c = None
-            
-        # Define a method conditionally for estimating instantaneous pump rate 
+
+        # Define a method conditionally for estimating instantaneous pump rate
         if pump_rate_flag:
-            pump_field = lambda n: pump * (n+1) / iterations 
+            pump_field = lambda n: pump * (n + 1) / iterations
         else:
-            pump_field = lambda n: pump 
+            pump_field = lambda n: pump
 
         # Perform the solve with Adam over the specified number of iterations
         for i in range(iterations):
@@ -413,10 +414,10 @@ class PumpedLangevinSolver(CCVMSolver):
             # Calculate contribution of pumped field
             c_pow = torch.pow(c, 2)
             c_pump = torch.einsum("cj,cj -> cj", -1 + pump_field(i) - c_pow, c)
-            
-            # Update variable 
+
+            # Update variable
             c += dt * feedback_scale * (c_pump + c_grads) + sigma * wiener_increment_c
-            
+
             # Ensure variables are within any problem constraints
             # The lower bound is determined by ell=-S, and upper bound by u=S
             c = self.fit_to_constraints(c, -S, S)
@@ -430,7 +431,7 @@ class PumpedLangevinSolver(CCVMSolver):
                 # this iteration
                 self.c_sample[:, :, samples_taken] = c
                 samples_taken += 1
-        
+
         return c
 
     def __call__(
@@ -579,7 +580,7 @@ class PumpedLangevinSolver(CCVMSolver):
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
 
-        # Calibrate the variable 
+        # Calibrate the variable
         c_prime = (c + S) / (2 * S)
 
         # Run the post processor on the results, if specified

@@ -9,13 +9,15 @@ TEST_INSTANCES_DIR = "./tuning_instances/"
 if __name__ == "__main__":
     # Initialize solver
     batch_size = 1000
-    solver = PumpedLangevinSolver(device="cpu", batch_size=batch_size,  S=0.5)  # or "cuda"
+    solver = PumpedLangevinSolver(
+        device="cpu", batch_size=batch_size, S=0.5
+    )  # or "cuda"
 
     # Supply solver parameters for different problem sizes
-    #TODO: Consult for default parameter values
+    # TODO: Consult for default parameter values
     solver.parameter_key = {
         20: {
-            "pump": 2.0, # p0 
+            "pump": 2.0,  # p0
             "dt": 0.002,
             "iterations": 15000,
             "sigma": 0.5,
@@ -36,7 +38,7 @@ if __name__ == "__main__":
         # Scale the problem's coefficients for more stable optimization
         boxqp_instance.scale_coefs(solver.get_scaling_factor(boxqp_instance.q_matrix))
 
-        # Solve the problem with one of the methods by setting 
+        # Solve the problem with one of the methods by setting
         # (1) algorithm_parameters=None for original algorithm
         # (2) algorithm_parameters=AdamParameters(..) for the Adam algorithm
         solution = solver(
