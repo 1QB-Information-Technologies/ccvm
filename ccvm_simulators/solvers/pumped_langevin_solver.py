@@ -36,7 +36,7 @@ class PumpedLangevinSolver(CCVMSolver):
             ValueError: If the problem category is not supported by the solver.
 
         Returns:
-            LangevinSolver: The LangevinSolver object.
+            PumpedLangevinSolver: The PumpedLangevinSolver object.
         """
         super().__init__(device)
         self.batch_size = batch_size
@@ -95,15 +95,39 @@ class PumpedLangevinSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-    def _calculate_drift_boxqp(self, c, pump, rate, S):
+    
+    def _calculate_drift_boxqp_original(self, c, p, S):
         """We treat the SDE that simulates the CIM of NTT as drift
         calculation.
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
-            pump (float): The maximum pump field strength
-            rate (float): The multiplier for the pump field strength at a given instance of time.
-            S (float): The saturation value of the amplitudes. Defaults to 1.
+            p (float): Instance of pump field.
+            S (float): The saturation value of the amplitudes. 
+
+        Returns:
+            tensor: The calculated change in the variable amplitude.
+        """
+        c_pow = torch.pow(c, 2)
+        # TODO: Verify the validity of this expression
+        c_drift_0 = torch.einsum("cj,cj -> cj", -1 + p - c_pow, c)
+        # TODO: Make the multiplication of scaler first
+        c_drift_1 = torch.einsum("bi,ij -> bj", (c + S) / (2 * S), self.q_matrix)   
+        c_drift_2 = self.v_vector 
+        # TODO: Normalization?
+        c_drift = c_drift_0 - (c_drift_1 + c_drift_2) / (2 * S)
+        return c_drift
+
+    
+    
+    def _calculate_drift_boxqp(self, c, p, S):
+        """We treat the SDE that simulates the CIM of NTT as drift
+        calculation.
+
+        Args:
+            c (torch.Tensor): In-phase amplitudes of the solver
+            p (float): Instance of pump field
+            S (float): The saturation value of the amplitudes. 
 
         Returns:
             tensor: The calculated change in the variable amplitude.
@@ -112,12 +136,9 @@ class PumpedLangevinSolver(CCVMSolver):
         c_pow = torch.pow(c, 2)
         
         # TODO: Verify the validity of this expression
-        c_drift_0 = torch.einsum("cj,cj -> cj", -1 + pump * rate - c_pow, c)
-        # TODO: Make the multiplication of scaler first
-        c_drift_1 = torch.einsum("bi,ij -> bj", (c + S) / (2 * S), self.q_matrix)   
-        c_drift_2 = self.v_vector 
-        # TODO: Normalization?
-        c_drift = c_drift_0 - (c_drift_1 + c_drift_2)/ (2 * S)
+        c_drift_0 = torch.einsum("cj,cj -> cj", -1 + p - c_pow, c)
+        
+        c_drift = c_drift_0 + self._calculate_grads_boxqp(c, S) / (2 * S)
 
         return c_drift
 
@@ -264,15 +285,18 @@ class PumpedLangevinSolver(CCVMSolver):
             torch.tensor([0.0] * batch_size, device=device),
             torch.tensor([1.0] * batch_size, device=device),
         )
-
+        
+        # Define a method conditionally for estimating instantaneous pump rate 
+        if pump_rate_flag:
+            pump_field = lambda n: pump * (n+1) / iterations 
+        else:
+            pump_field = lambda n: pump 
+        
         # Perform the solve over the specified number of iterations
-        pump_rate = 1
+        
         for i in range(iterations):
-            
-            if pump_rate_flag:
-                pump_rate = (i + 1) / iterations
                 
-            c_drift = self.calculate_drift(c, pump, pump_rate, S)
+            c_drift = self.calculate_drift(c, pump_field(i), S)
 
             wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(
                 0, 1
@@ -285,7 +309,7 @@ class PumpedLangevinSolver(CCVMSolver):
             # The lower bound is determined by ell=-S, and upper bound by u=S
             # TODO: Consult if c needs calibration (c+S)/(2*S) in the loop
             c = self.fit_to_constraints(c, -S, S)
-
+            
             # If evolution_step_size is specified, save the values if this iteration
             # aligns with the step size or if this is the last iteration
             if evolution_step_size and (
@@ -295,7 +319,11 @@ class PumpedLangevinSolver(CCVMSolver):
                 # this iteration
                 self.c_sample[:, :, samples_taken] = c # TODO: Consult if c needs calibration (c+S)/(2*S)
                 samples_taken += 1
-        
+                
+        #=======================================================================
+        # #TODO: Check if the variable constraint is outside of the loop
+        # c = self.fit_to_constraints(c, -S, S)
+        #=======================================================================
         return c
 
     def _solve_adam(
