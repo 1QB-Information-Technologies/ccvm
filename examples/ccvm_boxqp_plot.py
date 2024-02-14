@@ -13,7 +13,8 @@ METADATA_DIR = "./metadata"
 TEST_OUTPUT_DEST = f"{METADATA_DIR}/DL-CCVM_LGFGS_cpu_test.txt"
 TEST_INSTANCES_DIR = "./test_instances/"
 PLOT_OUTPUT_DIR = "./plots"
-PLOT_OUTPUT_DEST = f"{PLOT_OUTPUT_DIR}/DL-CCVM_TTS_cpu_plot.png"
+TTS_PLOT_OUTPUT_DEST = f"{PLOT_OUTPUT_DIR}/DL-CCVM_TTS_cpu_plot.png"
+ETS_PLOT_OUTPUT_DEST = f"{PLOT_OUTPUT_DIR}/DL-CCVM_ETS_cpu_plot.png"
 
 
 if __name__ == "__main__":
@@ -73,9 +74,9 @@ if __name__ == "__main__":
     )  # apply default styling
     plt.show()  # show plot in a new window
 
-    # Save to local
-    tts_plot_fig.savefig(PLOT_OUTPUT_DEST)
-    print(f"Sucessfully saved the plot to {PLOT_OUTPUT_DEST}")
+    # Save TTS plot to local
+    tts_plot_fig.savefig(TTS_PLOT_OUTPUT_DEST)
+    print(f"Sucessfully saved the plot to {TTS_PLOT_OUTPUT_DEST}")
 
     # Plotting ETS
     # Customize machine_parameters
@@ -101,6 +102,6 @@ if __name__ == "__main__":
     )  # apply default styling
     plt.show()
 
-    # Save to local
-    ets_plot_fig.savefig(PLOT_OUTPUT_DEST)
-    print(f"Sucessfully saved the plot to {PLOT_OUTPUT_DEST}")
+    # Save ETS plot to local
+    ets_plot_fig.savefig(ETS_PLOT_OUTPUT_DEST)
+    print(f"Sucessfully saved the plot to {ETS_PLOT_OUTPUT_DEST}")
