@@ -1,6 +1,6 @@
 #  Problem Classes
 
-##  BoxQP 
+##  BoxQP
 
 The box-constrained quadratic programming (BoxQP) problem is a non-convex continuous-variable optimization problem written formally as:
 
@@ -18,13 +18,9 @@ The CCVM receives the `Q` matrix and the `V` vector of the BoxQP problem and imp
 
 ## Problem instance file
 
-In the current folder structure, there are two folders inside the `examples` folder,
-`tuning_instances` and `test_instances`, which contains the random instances
-generated. The instances have the same properties except that different seed
-numbers have been used to generate them. The instances in the `tuning_instances`
-folder are used to tune the parameters of the solver. Then we used those parameters to
-solve the instances in the `test_instances` to make sure the performance of the solver is
-independet of the particular random instances generated.
+In the current folder structure, there is a folder inside the `examples` folder named
+`benchmarking_instances`, which contains subfolders of randomly generated instances of various sizes. There is also a subfolder containing a single instance, which can be used as an example problem set to quickly run the scripts in the `examples` folder.
+Within each subfolder of `benchmarking_instances`, the contained problems have the same properties except that different seed numbers have been used to generate them.
 
 ### Format of the instance file
 
@@ -33,7 +29,7 @@ The first line of each instance file contains the following information, in this
 - optimum solution (example files used the Gurobi solver to determine these values)
 - best solution (example files used the BFGS solver to determine these values)
 - whether the solution is optimal (`True` or `False`)
-- solution time for Gurobi to solve it 
+- solution time for Gurobi to solve it
 - solution time for BFGS to solve it
 - the seed number used for generating the instance in `torch`.
 - number of fractional values in the solution
@@ -50,7 +46,7 @@ provide it when initializing the ProblemInstance.
 ```
 boxqp_instance = ProblemInstance(
     instance_type="test",
-    file_path="./examples/test_instances/test020-100-10.in",
+    file_path="./examples/single_test_instance/test020-100-10.in",
     device=solver.device,
     file_delimiter="YOUR CHOICE",
 )
