@@ -42,9 +42,9 @@ if __name__ == "__main__":
         solution = solver(
             instance=boxqp_instance,
             post_processor=None,
-            algorithm_parameters=AdamParameters(
-                alpha=0.001, beta1=0.9, beta2=0.999, add_assign=True
-            ),
+            # algorithm_parameters=AdamParameters(
+            #     alpha=0.001, beta1=0.9, beta2=0.999, add_assign=True
+            # ),
         )
 
         print(solution)
