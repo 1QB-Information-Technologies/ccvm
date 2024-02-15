@@ -40,9 +40,9 @@ class TestMetadataClass(unittest.TestCase):
     def test_save_metadata_to_file(self):
         test_dir = self.test_dir
 
-        # Check the test directory and delete the file if it exists
+        # Check the test directory and delete it if it exists
         if os.path.exists(test_dir):
-            os.rmdir(test_dir)
+            shutil.rmtree(test_dir)
 
         # Test saving metadata to a file
         metadata_file_path = self.metadata.save_metadata_to_file(
