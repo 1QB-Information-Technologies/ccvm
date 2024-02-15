@@ -1,6 +1,8 @@
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 import torch
 import enum
+import numpy as np
+from pandas import DataFrame
 
 
 class DeviceType(enum.Enum):
@@ -8,6 +10,16 @@ class DeviceType(enum.Enum):
 
     CPU_DEVICE = "cpu"
     CUDA_DEVICE = "cuda"
+
+
+class MachineType(enum.Enum):
+    """The type of machine we are simulating."""
+
+    CPU = "cpu"
+    CUDA = "cuda"
+    FPGA = "fpga"
+    DL_CCVM = "dl-ccvm"
+    MF_CCVM = "mf-ccvm"
 
 
 class CCVMSolver(ABC):
@@ -25,6 +37,19 @@ class CCVMSolver(ABC):
         self._is_tuned = False
         self._scaling_multiplier = None
         self._parameter_key = None
+        self._default_cpu_machine_parameters = {
+            "cpu_power": {20: 4.93, 30: 5.19, 40: 5.0, 50: 5.01, 60: 5.0, 70: 5.22}
+        }
+        self._default_cuda_machine_parameters = {
+            "gpu_power": {
+                20: 28.93,
+                30: 29.8,
+                40: 31.09,
+                50: 31.29,
+                60: 31.49,
+                70: 32.28,
+            }
+        }
         self.calculate_grads = None
         self.change_variables = None
         self.fit_to_constraints = None
@@ -142,3 +167,173 @@ class CCVMSolver(ABC):
                 "The given instance is not a valid problem category."
                 f" Given category: {problem_category}"
             )
+
+    def _validate_dataframe_columns(self, dataframe):
+        """Validates that the given dataframe contains the required columns when
+        calculating optics machine energy on DL-CCVM and MF-CCVM solvers.
+
+        Args:
+            dataframe (DataFrame): The dataframe to validate.
+
+        Raises:
+            ValueError: If the given dataframe is missing any of the required columns.
+        """
+        required_columns = ["pp_time", "iterations"]
+
+        missing_columns = [
+            col for col in required_columns if col not in dataframe.columns
+        ]
+
+        if missing_columns:
+            raise ValueError(
+                f"The given dataframe is missing the following columns: {missing_columns}"
+            )
+
+    def cpu_energy_max(self, machine_parameters: dict = None):
+        """The wrapper function of calculating the maximum energy consumption of the
+        solver simulating on a CPU machine.
+
+        Args:
+            machine_parameters (dict, optional): Parameters of the. Defaults to None.
+
+        Raises:
+            ValueError: when the given machine parameters are not valid.
+            ValueError: when the given dataframe does not contain the required columns.
+
+        Returns:
+            Callable: A callable function that takes in a dataframe and problem size and
+                returns the maximum energy consumption of the solver.
+        """
+        if machine_parameters is None:
+            machine_parameters = self._default_cpu_machine_parameters
+        else:
+            if "cpu_power" not in machine_parameters.keys():
+                raise ValueError(
+                    "The given machine parameters are not valid. "
+                    "The dictionary must contain the key 'cpu_power'"
+                )
+
+        def cpu_energy_max_callable(matching_df: DataFrame, problem_size: int):
+            """Calculate the maximum power consumption of the solver simulating on a cpu
+                machine.
+
+            Args:
+                matching_df (DataFrame): The necessary data to calculate the maximum power.
+                problem_size (int): The size of the problem.
+
+            Raises:
+                ValueError: when the given dataframe does not contain the required columns.
+
+            Returns:
+                float: The maximum power consumption of the solver.
+            """
+            if "solve_time" not in matching_df.columns:
+                raise ValueError(
+                    "The given dataframe does not contain the column 'solve_time'"
+                )
+            machine_time = np.mean(matching_df["solve_time"].values)
+            power_max = machine_parameters["cpu_power"][problem_size]
+            energy_max = power_max * machine_time
+            return energy_max
+
+        return cpu_energy_max_callable
+
+    def cuda_energy_max(self, machine_parameters: dict = None):
+        """The wrapper function of calculating the maximum energy consumption of the
+        solver simulating on a cuda machine.
+
+        Args:
+            machine_parameters (dict, optional): Parameters of the. Defaults to None.
+
+        Raises:
+            ValueError: when the given machine parameters are not valid.
+            ValueError: when the given dataframe does not contain the required columns.
+
+        Returns:
+            Callable: A callable function that takes in a dataframe and problem size and
+                returns the maximum energy consumption of the solver.
+        """
+        if machine_parameters is None:
+            machine_parameters = self._default_cuda_machine_parameters
+        else:
+            if "gpu_power" not in machine_parameters.keys():
+                raise ValueError(
+                    "The given machine parameters are not valid. "
+                    "The dictionary must contain the key 'gpu_power'"
+                )
+
+        def cuda_energy_max_callable(matching_df: DataFrame, problem_size: int):
+            """Calculate the maximum power consumption of the solver simulating on a
+                cuda machine.
+
+            Args:
+                matching_df (DataFrame): The necessary data to calculate the maximum power.
+                problem_size (int): The size of the problem.
+
+            Raises:
+                ValueError: when the given dataframe does not contain the required columns.
+
+            Returns:
+                float: The maximum power consumption of the solver.
+            """
+            if "solve_time" not in matching_df.columns:
+                raise ValueError(
+                    "The given dataframe does not contain the column 'solve_time'"
+                )
+
+            machine_time = np.mean(matching_df["solve_time"].values)
+            power_max = machine_parameters["gpu_power"][problem_size]
+            energy_max = power_max * machine_time
+            return energy_max
+
+        return cuda_energy_max_callable
+
+    def energy_max(self, machine: MachineType, machine_parameters: dict = None):
+        """Calculate the maximum power consumption of the solver simulating on a given machine.
+
+        Args:
+            machine (MachineType): The type of machine to calculate the maximum power consumption.
+            machine_parameters (dict): Parameters of the machine. Defaults to None.
+
+        Raises:
+            ValueError: If the provided machine is not an instance of MachineType enum.
+            ValueError: If the given machine type is not valid.
+            ValueError: If there is a mismatch between the solver and the machine type.
+        Returns:
+            Callable: A callable function that calculates the maximum power consumption of
+            the solver based on the given machine type.
+        """
+        solver_energy_methods = {
+            MachineType.CPU: self.cpu_energy_max,
+            MachineType.CUDA: self.cuda_energy_max,
+            MachineType.DL_CCVM: self.optics_machine_energy
+            if self.__class__.__name__ == "DLSolver"
+            else None,
+            MachineType.MF_CCVM: self.optics_machine_energy
+            if self.__class__.__name__ == "MFSolver"
+            else None,
+            MachineType.FPGA: self.fpga_energy_max
+            if self.__class__.__name__ == "LangevinSolver"
+            else None,
+        }
+
+        if not isinstance(machine, MachineType):
+            raise ValueError(
+                "The provided machine must be an instance of MachineType enum."
+            )
+
+        if machine not in MachineType:
+            raise ValueError(
+                f"The given machine type is not valid. "
+                f"The machine type must be one of {', '.join(m.value for m in MachineType)}"
+            )
+
+        energy_method = solver_energy_methods[machine]
+
+        if not energy_method:
+            raise ValueError(
+                f"Mismatch between the solver and the machine type. "
+                f"Provided machine type: {machine}, solver type: {self.__class__.__name__}"
+            )
+
+        return energy_method(machine_parameters)

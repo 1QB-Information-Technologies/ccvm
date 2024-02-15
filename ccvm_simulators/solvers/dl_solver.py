@@ -1,11 +1,13 @@
-from ccvm_simulators.solvers import CCVMSolver
-from ccvm_simulators.solvers.algorithms import AdamParameters
-from ccvm_simulators.solution import Solution
-from ccvm_simulators.post_processor.factory import PostProcessorFactory
 import torch
 import numpy as np
 import torch.distributions as tdist
 import time
+from pandas import DataFrame
+
+from ccvm_simulators.solvers import CCVMSolver
+from ccvm_simulators.solvers.algorithms import AdamParameters
+from ccvm_simulators.solution import Solution
+from ccvm_simulators.post_processor.factory import PostProcessorFactory
 
 DL_SCALING_MULTIPLIER = 0.5
 """The value used by the DLSolver when calculating a scaling value in
@@ -41,6 +43,23 @@ class DLSolver(CCVMSolver):
         super().__init__(device)
         self.batch_size = batch_size
         self.S = S
+        self._default_optics_machine_parameters = {
+            "laser_power": 1200e-6,
+            "modulators_power": 10e-3,
+            "squeezing_power": 180e-3,
+            "electronics_power": 0.0,
+            "amplifiers_power": 222.2e-3,
+            "electronics_latency": 1e-9,
+            "laser_clock": 10e-12,
+            "postprocessing_power": {
+                20: 4.96,
+                30: 5.1,
+                40: 4.95,
+                50: 5.26,
+                60: 5.11,
+                70: 5.09,
+            },
+        }
         self._scaling_multiplier = DL_SCALING_MULTIPLIER
         # Use the method selector to choose the problem-specific methods to use
         self._method_selector(problem_category)
@@ -209,6 +228,35 @@ class DLSolver(CCVMSolver):
                 evolution_file_object.write("\t")
             evolution_file_object.write("\n")
 
+    def _is_valid_optics_machine_parameters(self, machine_parameters):
+        """Validates that the given optics machine parameters are valid for this solver.
+
+        Args:
+            machine_parameters (dict): The machine parameters to validate.
+
+        Raises:
+            ValueError: If the given machine parameters are invalid.
+        """
+
+        required_keys = [
+            "laser_power",
+            "modulators_power",
+            "squeezing_power",
+            "electronics_power",
+            "amplifiers_power",
+            "electronics_latency",
+            "laser_clock",
+            "postprocessing_power",
+        ]
+
+        # Check that all required keys are present
+        missing_keys = [key for key in required_keys if key not in machine_parameters]
+
+        if missing_keys:
+            raise ValueError(
+                f"Invalid optics_machine_parameters: Missing required keys - {missing_keys}"
+            )
+
     def tune(self, instances, post_processor=None, pump_rate_flag=True, g=0.05):
         """Determines the best parameters for the solver to use by adjusting each
         parameter over a number of iterations on the problems in the given set of
@@ -227,6 +275,83 @@ class DLSolver(CCVMSolver):
         # TODO: This implementation is a placeholder; full implementation is a
         #       future consideration
         self.is_tuned = True
+
+    def optics_machine_energy(self, machine_parameters=None):
+        """The wrapper function of calculating the maximum energy consumption of the
+        solver simulating on a DL-CCVM machine.
+
+        Args:
+            machine_parameters (dict, optional): Parameters of the. Defaults to None.
+
+        Raises:
+            ValueError: when the given machine parameters are not valid.
+            ValueError: when the given dataframe does not contain the required columns.
+
+        Returns:
+            Callable: A callable function that takes in a dataframe and problem size and
+                returns the maximum energy consumption of the solver.
+        """
+
+        if machine_parameters is None:
+            machine_parameters = self._default_optics_machine_parameters
+        else:
+            self._is_valid_optics_machine_parameters(machine_parameters)
+
+        def optics_machine_energy_callable(matching_df: DataFrame, problem_size: int):
+            """Calculate the maximum power consumption of the solver simulating on a
+                DL-CCVM machine.
+
+            Args:
+                matching_df (DataFrame): The necessary data to calculate the maximum power.
+                problem_size (int): The size of the problem.
+
+            Raises:
+                ValueError: when the given dataframe does not contain the required columns.
+
+            Returns:
+                float: The maximum power consumption of the solver.
+            """
+            if "solve_time" not in matching_df.columns:
+                raise ValueError(
+                    "The given dataframe does not contain the column 'solve_time'"
+                )
+            self._validate_dataframe_columns(matching_df)
+
+            try:
+                pump = self.parameter_key[problem_size]["pump"]
+            except KeyError as e:
+                raise KeyError(
+                    f"Pump for the given instance size: {problem_size} is not defined."
+                )
+
+            T_clock = machine_parameters["laser_clock"]
+            P_opt = machine_parameters["laser_power"]
+            T_elec = machine_parameters["electronics_latency"]
+            P_mod = machine_parameters["modulators_power"]
+            P_sq = machine_parameters["squeezing_power"]
+            P_elec = machine_parameters["electronics_power"]
+            P_opa = machine_parameters["amplifiers_power"]
+            postprocessing_time = np.mean(matching_df["pp_time"].values)
+            iterations = matching_df["iterations"].values
+            optics_energy = (
+                pump * P_opt * T_elec
+                + pump * P_opt * T_clock * float(problem_size)
+                + 2 * P_mod * T_clock * float(problem_size) * (float(problem_size) - 1)
+                + P_sq * T_elec
+                + P_sq * T_clock * float(problem_size)
+                + P_elec * T_elec
+                + P_elec * T_clock * float(problem_size)
+                + P_opa * T_elec * (float(problem_size) - 1)
+                + P_opa * T_clock * float(problem_size) * (float(problem_size) - 1)
+            ) * iterations
+            postprocessing_energy = (
+                machine_parameters["postprocessing_power"][problem_size]
+                * postprocessing_time
+            )
+            energy_max = optics_energy + postprocessing_energy
+            return energy_max
+
+        return optics_machine_energy_callable
 
     def _solve(
         self,
