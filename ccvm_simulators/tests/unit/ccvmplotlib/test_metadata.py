@@ -21,7 +21,7 @@ class TestMetadataClass(unittest.TestCase):
     def test_add_to_result_metadata(self):
         result_dict = {"problem_size": 20, "batch_size": 1000}
 
-        # Check if metadta.result_metadata is empty
+        # Check if metadata.result_metadata is empty
         self.assertEqual(self.metadata.result_metadata, [])
 
         self.metadata.add_to_result_metadata(result_dict)
@@ -40,8 +40,9 @@ class TestMetadataClass(unittest.TestCase):
     def test_save_metadata_to_file(self):
         test_dir = self.test_dir
 
-        # Check the test directory does not exist
-        self.assertFalse(os.path.exists(test_dir))
+        # Check the test directory and delete the file if it exists
+        if os.path.exists(test_dir):
+            os.rmdir(test_dir)
 
         # Test saving metadata to a file
         metadata_file_path = self.metadata.save_metadata_to_file(
