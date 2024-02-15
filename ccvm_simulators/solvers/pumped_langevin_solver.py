@@ -8,7 +8,7 @@ import torch.distributions as tdist
 import time
 
 LANGEVIN_SCALING_MULTIPLIER = 0.05
-"""The value used by the LangevinSolver when calculating a scaling value in
+"""The value used by the pumped Langevin solver when calculating a scaling value in
 super.get_scaling_factor()"""
 
 
@@ -94,7 +94,7 @@ class PumpedLangevinSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-    def _calculate_drift_boxqp(self, c, p, S):
+    def _calculate_drift_boxqp(self, c, p, S, feedback_scale):
         """We treat the SDE that simulates the CIM of NTT as drift
         calculation.
 
@@ -102,6 +102,7 @@ class PumpedLangevinSolver(CCVMSolver):
             c (torch.Tensor): In-phase amplitudes of the solver
             p (float): Instance of pump field
             S (float): The saturation value of the amplitudes.
+            feedback_scale (float): feedback scale for gradient.
 
         Returns:
             tensor: The calculated change in the variable amplitude.
@@ -110,7 +111,7 @@ class PumpedLangevinSolver(CCVMSolver):
         c_pow = torch.pow(c, 2)
         c_drift_0 = torch.einsum("cj,cj -> cj", -1 + p - c_pow, c)
 
-        c_drift = c_drift_0 + self._calculate_grads_boxqp(c, S)
+        c_drift = c_drift_0 + feedback_scale * self._calculate_grads_boxqp(c, S)
 
         return c_drift
 
@@ -228,7 +229,7 @@ class PumpedLangevinSolver(CCVMSolver):
         evolution_step_size,
         samples_taken,
     ):
-        """Solves the given problem instance using the original Langevin solver.
+        """Solves the given problem instance using the pumped Langevin solver.
 
         Args:
             problem_size (int): instance size.
@@ -268,13 +269,13 @@ class PumpedLangevinSolver(CCVMSolver):
         # Perform the solve over the specified number of iterations
 
         for i in range(iterations):
-            c_drift = self.calculate_drift(c, pump_field(i), S)
+            c_drift = self.calculate_drift(c, pump_field(i), S, feedback_scale)
 
             wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(
                 0, 1
             ) * np.sqrt(dt)
 
-            c += dt * feedback_scale * c_drift + sigma * wiener_increment_c
+            c += dt * c_drift + sigma * wiener_increment_c
 
             # Ensure variables are within any problem constraints
             # The lower bound is determined by ell=-S, and upper bound by u=S
@@ -289,7 +290,7 @@ class PumpedLangevinSolver(CCVMSolver):
                 # this iteration
                 self.c_sample[
                     :, :, samples_taken
-                ] = c  # TODO: Consult if c needs calibration (c+S)/(2*S)
+                ] = c  
                 samples_taken += 1
 
         return c
@@ -310,7 +311,7 @@ class PumpedLangevinSolver(CCVMSolver):
         samples_taken,
         hyperparameters,
     ):
-        """Solves the given problem instance using the Langevin solver with Adam algorithm.
+        """Solves the given problem instance using the pumped Langevin solver with Adam algorithm.
 
         Args:
             problem_size (int): instance size.
@@ -414,7 +415,7 @@ class PumpedLangevinSolver(CCVMSolver):
             c_pump = torch.einsum("cj,cj -> cj", -1 + pump_field(i) - c_pow, c)
 
             # Update variable
-            c += dt * feedback_scale * (c_pump + c_grads) + sigma * wiener_increment_c
+            c += dt * (c_pump + feedback_scale * c_grads) + sigma * wiener_increment_c
 
             # Ensure variables are within any problem constraints
             # The lower bound is determined by ell=-S, and upper bound by u=S
@@ -441,7 +442,9 @@ class PumpedLangevinSolver(CCVMSolver):
         evolution_file=None,
         algorithm_parameters=None,
     ):
-        """Solves the given problem instance by using pumped Langevin solver with or without Adam algorithm defined by users.
+        """Solves the box-constrained programming problem using the pumped Langevin solver using 
+        either Adam algorithm for the calculation of the gradient of the objective function or 
+        the simple gradient descent method. This choice can be set in the argument of `algorithm_parameters`.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.

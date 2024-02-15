@@ -15,12 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Added `PumpedLangevinSolver`, which is an extension of `LangevinSolver` to simulate pumped Langevin dynamics with a demo script in the examples directory.
-- Implemented a simple gradient descent post-processing step, as described in the paper.
-- Similar to Langevin dynamics but without noise.
-- Implemented using the Euler method with box constraint imposition at each iteration.
-- Designed to reflect the results outlined in the paper.
-
--  Implemented a simple gradient descent post-processing step, as described in the paper, similar to Langevin dynamics but without noise; uses the Euler method with box constraint imposition at each iteration.
+- Implemented a simple gradient descent post-processing step, as described in the paper, similar to Langevin dynamics but without noise; uses the Euler. method with box constraint imposition at each iteration.
 
 ### Changed
 - Streamlined README by relocating and optimizing architecture diagrams.
