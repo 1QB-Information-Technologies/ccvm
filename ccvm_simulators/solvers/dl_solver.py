@@ -425,12 +425,14 @@ class DLSolver(CCVMSolver):
                 * np.sqrt(dt)
                 / noise_ratio_i
             )
-
-            diff = 2 * g * torch.sqrt(c**2 + s**2 + 0.5)
-
-            c += dt * c_drift + diff * wiener_increment_c
-
-            s += dt * s_drift + diff * wiener_increment_s
+            c += (
+                dt * c_drift
+                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_c
+            )
+            s += (
+                dt * s_drift
+                + 2 * g * torch.sqrt(c**2 + s**2 + 0.5) * wiener_increment_s
+            )
 
             # If evolution_step_size is specified, save the values if this iteration
             # aligns with the step size or if this is the last iteration
