@@ -32,7 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated the `add_metadata` function in the Metadata class to
   `add_to_result_metadata` for clarity.
 
-
 ## [1.0.1] - 2023-03-09
 ### Fixed
 - Corrected the readme diagrams missing issue with the PyPI deployment for version 1.0.0.
