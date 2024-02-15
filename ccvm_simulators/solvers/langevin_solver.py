@@ -76,17 +76,17 @@ class LangevinSolver(CCVMSolver):
 
     @parameter_key.setter
     def parameter_key(self, parameters):
-        expected_dlparameter_key_set = set(
+        expected_lparameter_key_set = set(
             ["dt", "iterations", "sigma", "feedback_scale"]
         )
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
         for parameter_key in parameter_key_list:
-            if parameter_key.keys() != expected_dlparameter_key_set:
+            if parameter_key.keys() != expected_lparameter_key_set:
                 # The parameter key is not valid for this solver
                 raise ValueError(
                     "The parameter key is not valid for this solver. Expected keys: "
-                    + str(expected_dlparameter_key_set)
+                    + str(expected_lparameter_key_set)
                     + " Given keys: "
                     + str(parameter_key.keys())
                 )

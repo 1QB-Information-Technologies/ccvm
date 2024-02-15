@@ -3,8 +3,7 @@ from ccvm_simulators.problem_classes.boxqp import ProblemInstance
 from ccvm_simulators.solvers import PumpedLangevinSolver
 from ccvm_simulators.solvers.algorithms import AdamParameters
 
-# TEST_INSTANCES_DIR = "./test_instances/"
-TEST_INSTANCES_DIR = "./tuning_instances/"
+TEST_INSTANCES_DIR = "./test_instances/"  # "./tuning_instances/"
 
 if __name__ == "__main__":
     # Initialize solver
@@ -14,7 +13,6 @@ if __name__ == "__main__":
     )  # or "cuda"
 
     # Supply solver parameters for different problem sizes
-    # TODO: Consult for default parameter values
     solver.parameter_key = {
         20: {
             "pump": 2.0,  # p0

@@ -13,8 +13,7 @@ super.get_scaling_factor()"""
 
 
 class PumpedLangevinSolver(CCVMSolver):
-    """The LangevinSolver class models typical Langevin dynamics as a system of
-    SDE."""
+    """This class models pumped Langevin dynamics as a system of SDEs."""
 
     def __init__(
         self,
@@ -76,17 +75,17 @@ class PumpedLangevinSolver(CCVMSolver):
 
     @parameter_key.setter
     def parameter_key(self, parameters):
-        expected_dlparameter_key_set = set(
+        expected_pl_parameter_key_set = set(
             ["pump", "dt", "iterations", "sigma", "feedback_scale"]
         )
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
         for parameter_key in parameter_key_list:
-            if parameter_key.keys() != expected_dlparameter_key_set:
+            if parameter_key.keys() != expected_pl_parameter_key_set:
                 # The parameter key is not valid for this solver
                 raise ValueError(
                     "The parameter key is not valid for this solver. Expected keys: "
-                    + str(expected_dlparameter_key_set)
+                    + str(expected_pl_parameter_key_set)
                     + " Given keys: "
                     + str(parameter_key.keys())
                 )
@@ -128,7 +127,6 @@ class PumpedLangevinSolver(CCVMSolver):
             tensor: The calculated change in the variable amplitude.
         """
 
-        # TODO: Make the multiplication of scaler first
         c_grad_1 = torch.einsum("bi,ij -> bj", (c + S) / (2 * S), self.q_matrix) / (
             2 * S
         )
@@ -443,7 +441,7 @@ class PumpedLangevinSolver(CCVMSolver):
         evolution_file=None,
         algorithm_parameters=None,
     ):
-        """Solves the given problem instance by choosing one of the available Langevin solvers.
+        """Solves the given problem instance by using pumped Langevin solver with or without Adam algorithm defined by users.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
