@@ -4,6 +4,7 @@ from ccvm_simulators.ccvmplotlib import ccvmplotlib
 from ccvm_simulators.problem_classes.boxqp import ProblemInstance
 from ccvm_simulators.metadata import Metadata
 from ccvm_simulators.solvers import DLSolver
+from ccvm_simulators.solvers.ccvm_solver import MachineType
 
 import matplotlib.pyplot as plt
 import numpy as np
