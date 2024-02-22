@@ -8,6 +8,7 @@ There are currently two methods available for each solver class [DL-CCVM, MF-CCV
 - `ccvm_boxqp_dl.py`: Solves DL-CCVM using the Adam algorithm, without plotting. The original solver can be used by removing the `algorithm_parameters` argument.
 - `ccvm_boxqp_mf.py`: Solves MF-CCVM using the Adam algorithm, without plotting. The original solver can be used by removing the `algorithm_parameters` argument.
 - `langevin_boxqp.py`: Solves Langevin equation using the Adam algorithm, without plotting. The original solver can be used by removing the `algorithm_parameters` argument.
+- `pumped_langevin_boxqp.py`: Solves pumped Langevin equation by either Adam algorithm or original solver with a use of `algorithm_parameters` argument.
 - `benchmarking_studies.py`: Benchmark DL-CCVM against a Langevin solver (**to be implemented**)
 
 

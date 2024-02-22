@@ -7,14 +7,13 @@ import numpy as np
 import torch.distributions as tdist
 import time
 
-LANGEVIN_SCALING_MULTIPLIER = 0.5
-"""The value used by the LangevinSolver when calculating a scaling value in
+LANGEVIN_SCALING_MULTIPLIER = 0.05
+"""The value used by the pumped Langevin solver when calculating a scaling value in
 super.get_scaling_factor()"""
 
 
-class LangevinSolver(CCVMSolver):
-    """The LangevinSolver class models typical Langevin dynamics as a system of
-    SDE."""
+class PumpedLangevinSolver(CCVMSolver):
+    """This class models pumped Langevin dynamics as a system of SDEs."""
 
     def __init__(
         self,
@@ -36,7 +35,7 @@ class LangevinSolver(CCVMSolver):
             ValueError: If the problem category is not supported by the solver.
 
         Returns:
-            LangevinSolver: The LangevinSolver object.
+            PumpedLangevinSolver: The PumpedLangevinSolver object.
         """
         super().__init__(device)
         self.batch_size = batch_size
@@ -76,17 +75,17 @@ class LangevinSolver(CCVMSolver):
 
     @parameter_key.setter
     def parameter_key(self, parameters):
-        expected_lparameter_key_set = set(
-            ["dt", "iterations", "sigma", "feedback_scale"]
+        expected_pl_parameter_key_set = set(
+            ["pump", "dt", "iterations", "sigma", "feedback_scale"]
         )
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
         for parameter_key in parameter_key_list:
-            if parameter_key.keys() != expected_lparameter_key_set:
+            if parameter_key.keys() != expected_pl_parameter_key_set:
                 # The parameter key is not valid for this solver
                 raise ValueError(
                     "The parameter key is not valid for this solver. Expected keys: "
-                    + str(expected_lparameter_key_set)
+                    + str(expected_pl_parameter_key_set)
                     + " Given keys: "
                     + str(parameter_key.keys())
                 )
@@ -95,26 +94,28 @@ class LangevinSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-    def _calculate_drift_boxqp(self, c, S=1):
+    def _calculate_drift_boxqp(self, c, p, S, feedback_scale):
         """We treat the SDE that simulates the CIM of NTT as drift
         calculation.
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
-            S (float): The saturation value of the amplitudes. Defaults to 1.
+            p (float): Instance of pump field
+            S (float): The saturation value of the amplitudes.
+            feedback_scale (float): feedback scale for gradient.
 
         Returns:
             tensor: The calculated change in the variable amplitude.
         """
 
-        c_drift_1 = torch.einsum("bi,ij -> bj", c, self.q_matrix)
-        c_drift_2 = self.v_vector
+        c_pow = torch.pow(c, 2)
+        c_drift_0 = torch.einsum("cj,cj -> cj", -1 + p - c_pow, c)
 
-        c_drift = -c_drift_1 - c_drift_2
+        c_drift = c_drift_0 + feedback_scale * self._calculate_grads_boxqp(c, S)
 
         return c_drift
 
-    def _calculate_grads_boxqp(self, c):
+    def _calculate_grads_boxqp(self, c, S=1):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
@@ -127,8 +128,10 @@ class LangevinSolver(CCVMSolver):
             tensor: The calculated change in the variable amplitude.
         """
 
-        c_grad_1 = torch.einsum("bi,ij -> bj", c, self.q_matrix)
-        c_grad_2 = self.v_vector
+        c_grad_1 = torch.einsum("bi,ij -> bj", (c + S) / (2 * S), self.q_matrix) / (
+            2 * S
+        )
+        c_grad_2 = self.v_vector / (2 * S)
 
         c_grads = -c_grad_1 - c_grad_2
 
@@ -217,23 +220,28 @@ class LangevinSolver(CCVMSolver):
         batch_size,
         device,
         S,
+        pump,
         dt,
         iterations,
         sigma,
+        pump_rate_flag,
         feedback_scale,
         evolution_step_size,
         samples_taken,
     ):
-        """Solves the given problem instance using the original Langevin solver.
+        """Solves the given problem instance using the pumped Langevin solver.
 
         Args:
             problem_size (int): instance size.
             batch_size (int): The number of times to solve a problem instance
             device (str): The device to use for the solver. Can be "cpu" or "cuda".
             S (float): Saturation bound.
+            pump (float): Pump field strength.
             dt (float): Simulation time step.
             iterations (int): number of steps.
             sigma (float): diffusion constant.
+            pump_rate_flag (bool): Whether or not to scale the pump rate based on the
+            iteration number.
             feedback_scale (float): feedback scale.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
@@ -252,18 +260,26 @@ class LangevinSolver(CCVMSolver):
             torch.tensor([1.0] * batch_size, device=device),
         )
 
+        # Define a method conditionally for estimating instantaneous pump rate
+        if pump_rate_flag:
+            pump_field = lambda n: pump * (n + 1) / iterations
+        else:
+            pump_field = lambda n: pump
+
         # Perform the solve over the specified number of iterations
+
         for i in range(iterations):
-            c_drift = self.calculate_drift(c, S)
+            c_drift = self.calculate_drift(c, pump_field(i), S, feedback_scale)
 
             wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(
                 0, 1
             ) * np.sqrt(dt)
 
-            c += dt * feedback_scale * c_drift + sigma * wiener_increment_c
+            c += dt * c_drift + sigma * wiener_increment_c
+
             # Ensure variables are within any problem constraints
-            # The lower bound is determined by ell=0, and upper bound by u=1
-            c = self.fit_to_constraints(c, 0, 1.0)
+            # The lower bound is determined by ell=-S, and upper bound by u=S
+            c = self.fit_to_constraints(c, -S, S)
 
             # If evolution_step_size is specified, save the values if this iteration
             # aligns with the step size or if this is the last iteration
@@ -272,7 +288,9 @@ class LangevinSolver(CCVMSolver):
             ):
                 # Update the record of the sample values with the values found at
                 # this iteration
-                self.c_sample[:, :, samples_taken] = c
+                self.c_sample[
+                    :, :, samples_taken
+                ] = c  
                 samples_taken += 1
 
         return c
@@ -283,24 +301,28 @@ class LangevinSolver(CCVMSolver):
         batch_size,
         device,
         S,
+        pump,
         dt,
         iterations,
         sigma,
+        pump_rate_flag,
         feedback_scale,
         evolution_step_size,
         samples_taken,
         hyperparameters,
     ):
-        """Solves the given problem instance using the Langevin solver with Adam algorithm.
+        """Solves the given problem instance using the pumped Langevin solver with Adam algorithm.
 
         Args:
             problem_size (int): instance size.
             batch_size (int): The number of times to solve a problem instance
             device (str): The device to use for the solver. Can be "cpu" or "cuda".
             S (float): Saturation bound.
+            pump (float): Pump field strength.
             dt (float): Simulation time step.
             iterations (int): number of steps.
             sigma (float): diffusion constant.
+            pump_rate_flag (bool): Whether or not to scale the pump rate based on the
             feedback_scale (float): feedback scale.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
@@ -350,10 +372,16 @@ class LangevinSolver(CCVMSolver):
         else:
             v_c = None
 
+        # Define a method conditionally for estimating instantaneous pump rate
+        if pump_rate_flag:
+            pump_field = lambda n: pump * (n + 1) / iterations
+        else:
+            pump_field = lambda n: pump
+
         # Perform the solve with Adam over the specified number of iterations
         for i in range(iterations):
             # Calculate gradient
-            c_grads = self.calculate_grads(c)
+            c_grads = self.calculate_grads(c, S)
 
             # Update biased first moment estimate
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
@@ -382,10 +410,16 @@ class LangevinSolver(CCVMSolver):
                 0, 1
             ) * np.sqrt(dt)
 
-            c += dt * feedback_scale * c_grads + sigma * wiener_increment_c
+            # Calculate contribution of pumped field
+            c_pow = torch.pow(c, 2)
+            c_pump = torch.einsum("cj,cj -> cj", -1 + pump_field(i) - c_pow, c)
+
+            # Update variable
+            c += dt * (c_pump + feedback_scale * c_grads) + sigma * wiener_increment_c
+
             # Ensure variables are within any problem constraints
-            # The lower bound is determined by ell=0, and upper bound by u=1
-            c = self.fit_to_constraints(c, 0, 1.0)
+            # The lower bound is determined by ell=-S, and upper bound by u=S
+            c = self.fit_to_constraints(c, -S, S)
 
             # If evolution_step_size is specified, save the values if this iteration
             # aligns with the step size or if this is the last iteration
@@ -403,16 +437,21 @@ class LangevinSolver(CCVMSolver):
         self,
         instance,
         post_processor=None,
+        pump_rate_flag=True,
         evolution_step_size=None,
         evolution_file=None,
         algorithm_parameters=None,
     ):
-        """Solves the given problem instance by choosing one of the available Langevin solvers.
+        """Solves the box-constrained programming problem using the pumped Langevin solver using 
+        either Adam algorithm for the calculation of the gradient of the objective function or 
+        the simple gradient descent method. This choice can be set in the argument of `algorithm_parameters`.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
             post_processor (str): The name of the post processor to use to process the results of the solver.
                 None if no post processing is desired. Defaults to None.
+            pump_rate_flag (bool): Whether or not to scale the pump rate based on the
+                iteration number. If False, the pump rate will be 1.0. Defaults to True.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
@@ -449,6 +488,7 @@ class LangevinSolver(CCVMSolver):
 
         # Get parameters from parameter_key
         try:
+            pump = self.parameter_key[problem_size]["pump"]
             dt = self.parameter_key[problem_size]["dt"]
             iterations = self.parameter_key[problem_size]["iterations"]
             sigma = self.parameter_key[problem_size]["sigma"]
@@ -507,9 +547,11 @@ class LangevinSolver(CCVMSolver):
                 batch_size,
                 device,
                 S,
+                pump,
                 dt,
                 iterations,
                 sigma,
+                pump_rate_flag,
                 feedback_scale,
                 evolution_step_size,
                 samples_taken,
@@ -521,9 +563,11 @@ class LangevinSolver(CCVMSolver):
                 batch_size,
                 device,
                 S,
+                pump,
                 dt,
                 iterations,
                 sigma,
+                pump_rate_flag,
                 feedback_scale,
                 evolution_step_size,
                 samples_taken,
@@ -537,6 +581,9 @@ class LangevinSolver(CCVMSolver):
         # Stop the timer for the solve
         solve_time = time.time() - solve_time_start
 
+        # Calibrate the variable
+        c_prime = (c + S) / (2 * S)
+
         # Run the post processor on the results, if specified
         if post_processor:
             post_processor_object = PostProcessorFactory.create_postprocessor(
@@ -544,11 +591,11 @@ class LangevinSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                c, self.q_matrix, self.v_vector
+                c_prime, self.q_matrix, self.v_vector
             )
             pp_time = post_processor_object.pp_time
         else:
-            problem_variables = c
+            problem_variables = c_prime
             pp_time = 0.0
 
         # Calculate the objective value

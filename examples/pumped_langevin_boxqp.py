@@ -1,22 +1,24 @@
 import glob
 from ccvm_simulators.problem_classes.boxqp import ProblemInstance
-from ccvm_simulators.solvers import LangevinSolver
+from ccvm_simulators.solvers import PumpedLangevinSolver
 from ccvm_simulators.solvers.algorithms import AdamParameters
 
-# TEST_INSTANCES_DIR = "./test_instances/"
-TEST_INSTANCES_DIR = "./tuning_instances/"
+TEST_INSTANCES_DIR = "./test_instances/"  # "./tuning_instances/"
 
 if __name__ == "__main__":
     # Initialize solver
     batch_size = 1000
-    solver = LangevinSolver(device="cpu", batch_size=batch_size)  # or "cuda"
+    solver = PumpedLangevinSolver(
+        device="cpu", batch_size=batch_size, S=0.5
+    )  # or "cuda"
 
     # Supply solver parameters for different problem sizes
     solver.parameter_key = {
         20: {
-            "dt": 0.005,
+            "pump": 2.0,  # p0
+            "dt": 0.002,
             "iterations": 15000,
-            "sigma": 0.02,
+            "sigma": 0.5,
             "feedback_scale": 1.0,
         },
     }
@@ -41,7 +43,7 @@ if __name__ == "__main__":
             instance=boxqp_instance,
             post_processor=None,
             # algorithm_parameters=AdamParameters(
-            #     alpha=0.001, beta1=0.9, beta2=0.999, add_assign=False
+            #     alpha=0.001, beta1=0.9, beta2=0.999, add_assign=True
             # ),
         )
 
