@@ -93,7 +93,7 @@ solver.parameter_key = {
 ```python
 boxqp_instance = ProblemInstance(
     instance_type="test",
-    file_path="./examples/test_instances/test020-100-10.in",
+    file_path="./examples/benchmarking_instances/single_test_instance/test020-100-10.in",
     device=solver.device,
 )
 ```

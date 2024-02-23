@@ -3,7 +3,9 @@ from ccvm_simulators.problem_classes.boxqp import ProblemInstance
 from ccvm_simulators.solvers import DLSolver
 from ccvm_simulators.solvers.algorithms import AdamParameters
 
-TEST_INSTANCES_DIR = "./test_instances/"
+# Inputs
+TEST_INSTANCES_DIR_NAME = "single_test_instance"
+TEST_INSTANCES_PATH = f"./benchmarking_instances/{TEST_INSTANCES_DIR_NAME}/"
 
 if __name__ == "__main__":
     # Initialize solver
@@ -16,7 +18,7 @@ if __name__ == "__main__":
     }
 
     # Load test instances to solve
-    test_instances_files = [f for f in glob.glob(TEST_INSTANCES_DIR + "*.in")]
+    test_instances_files = [f for f in glob.glob(TEST_INSTANCES_PATH + "*.in")]
     for instance_file in test_instances_files:
         # Load the problem from the problem file into the instance
         boxqp_instance = ProblemInstance(
