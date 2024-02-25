@@ -249,16 +249,16 @@ class LangevinSolver(CCVMSolver):
         #       future consideration
         self.is_tuned = True
 
-    def fpga_energy_max(self, machine_parameters=None):
-        """The wrapper function of calculating the maximum energy consumption of the
+    def _fpga_machine_energy(self, machine_parameters=None):
+        """The wrapper function of calculating the average energy consumption of the
         solver simulating on a fpga machine.
 
         Args:
-            machine_parameters (dict, optional): Parameters of the. Defaults to None.
+            machine_parameters (dict, optional): Parameters of the machine. Defaults to None.
 
         Returns:
             Callable: a function that takes the problem size as input and returns the
-                maximum power consumption.
+                average energy consumption.
         """
         # Set default machine parameters if none are given
         if machine_parameters is None:
@@ -266,23 +266,23 @@ class LangevinSolver(CCVMSolver):
         else:
             self._validate_fpga_machine_parameters(machine_parameters)
 
-        def fpga_energy_max_callable(matching_df: DataFrame, problem_size: int):
-            """The function that takes the problem size as input and returns the maximum
-            power consumption.
+        def _fpga_machine_energy_callable(matching_df: DataFrame, problem_size: int):
+            """The function that takes the problem size as input and returns the average
+            energy consumption.
 
             Args:
-                matching_df (DataFrame): The data to calculate the maximum power.
-                problem_size (int): The problem size to calculate the maximum power.
+                matching_df (DataFrame): The data to calculate the average energy.
+                problem_size (int): The problem size to calculate the average energy.
 
             Returns:
-                float: The maximum power consumption.
+                float: The average energy consumption.
             """
             machine_time = machine_parameters["fpga_runtimes"][problem_size]
-            power_max = machine_parameters["fpga_power"][problem_size]
-            energy_max = power_max * machine_time
-            return energy_max
+            machine_power = machine_parameters["fpga_power"][problem_size]
+            machine_energy = machine_power * machine_time
+            return machine_energy
 
-        return fpga_energy_max_callable
+        return _fpga_machine_energy_callable
 
     def _solve(
         self,

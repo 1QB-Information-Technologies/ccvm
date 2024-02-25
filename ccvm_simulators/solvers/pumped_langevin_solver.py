@@ -288,9 +288,7 @@ class PumpedLangevinSolver(CCVMSolver):
             ):
                 # Update the record of the sample values with the values found at
                 # this iteration
-                self.c_sample[
-                    :, :, samples_taken
-                ] = c  
+                self.c_sample[:, :, samples_taken] = c
                 samples_taken += 1
 
         return c
@@ -442,8 +440,8 @@ class PumpedLangevinSolver(CCVMSolver):
         evolution_file=None,
         algorithm_parameters=None,
     ):
-        """Solves the box-constrained programming problem using the pumped Langevin solver using 
-        either Adam algorithm for the calculation of the gradient of the objective function or 
+        """Solves the box-constrained programming problem using the pumped Langevin solver using
+        either Adam algorithm for the calculation of the gradient of the objective function or
         the simple gradient descent method. This choice can be set in the argument of `algorithm_parameters`.
 
         Args:

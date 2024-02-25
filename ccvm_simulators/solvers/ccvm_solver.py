@@ -16,7 +16,7 @@ class MachineType(enum.Enum):
     """The type of machine we are simulating."""
 
     CPU = "cpu"
-    CUDA = "cuda"
+    GPU = "gpu"
     FPGA = "fpga"
     DL_CCVM = "dl-ccvm"
     MF_CCVM = "mf-ccvm"
@@ -189,8 +189,8 @@ class CCVMSolver(ABC):
                 f"The given dataframe is missing the following columns: {missing_columns}"
             )
 
-    def cpu_energy_max(self, machine_parameters: dict = None):
-        """The wrapper function of calculating the maximum energy consumption of the
+    def _cpu_machine_energy(self, machine_parameters: dict = None):
+        """The wrapper function of calculating the average energy consumption of the
         solver simulating on a CPU machine.
 
         Args:
@@ -202,7 +202,7 @@ class CCVMSolver(ABC):
 
         Returns:
             Callable: A callable function that takes in a dataframe and problem size and
-                returns the maximum energy consumption of the solver.
+                returns the average energy consumption of the solver.
         """
         if machine_parameters is None:
             machine_parameters = self._default_cpu_machine_parameters
@@ -213,34 +213,35 @@ class CCVMSolver(ABC):
                     "The dictionary must contain the key 'cpu_power'"
                 )
 
-        def cpu_energy_max_callable(matching_df: DataFrame, problem_size: int):
-            """Calculate the maximum power consumption of the solver simulating on a cpu
+        def cpu_machine_energy_callable(matching_df: DataFrame, problem_size: int):
+            """Calculate the average energy consumption of the solver simulating on a cpu
                 machine.
 
             Args:
-                matching_df (DataFrame): The necessary data to calculate the maximum power.
+                matching_df (DataFrame): The necessary data to calculate the average
+                energy.
                 problem_size (int): The size of the problem.
 
             Raises:
                 ValueError: when the given dataframe does not contain the required columns.
 
             Returns:
-                float: The maximum power consumption of the solver.
+                float: The average energy consumption of the solver.
             """
             if "solve_time" not in matching_df.columns:
                 raise ValueError(
                     "The given dataframe does not contain the column 'solve_time'"
                 )
             machine_time = np.mean(matching_df["solve_time"].values)
-            power_max = machine_parameters["cpu_power"][problem_size]
-            energy_max = power_max * machine_time
-            return energy_max
+            machine_power = machine_parameters["cpu_power"][problem_size]
+            machine_energy = machine_power * machine_time
+            return machine_energy
 
-        return cpu_energy_max_callable
+        return cpu_machine_energy_callable
 
-    def cuda_energy_max(self, machine_parameters: dict = None):
-        """The wrapper function of calculating the maximum energy consumption of the
-        solver simulating on a cuda machine.
+    def _cuda_machine_energy(self, machine_parameters: dict = None):
+        """The wrapper function of calculating the average energy consumption of the
+        solver simulating on system equipped with CUDA-capable GPUs.
 
         Args:
             machine_parameters (dict, optional): Parameters of the. Defaults to None.
@@ -251,7 +252,7 @@ class CCVMSolver(ABC):
 
         Returns:
             Callable: A callable function that takes in a dataframe and problem size and
-                returns the maximum energy consumption of the solver.
+                returns the average energy consumption of the solver.
         """
         if machine_parameters is None:
             machine_parameters = self._default_cuda_machine_parameters
@@ -262,19 +263,19 @@ class CCVMSolver(ABC):
                     "The dictionary must contain the key 'gpu_power'"
                 )
 
-        def cuda_energy_max_callable(matching_df: DataFrame, problem_size: int):
-            """Calculate the maximum power consumption of the solver simulating on a
-                cuda machine.
+        def _cuda_machine_energy_callable(matching_df: DataFrame, problem_size: int):
+            """Calculate the average energy consumption of the solver simulating on a
+            system equipped with CUDA-capable GPUs.
 
             Args:
-                matching_df (DataFrame): The necessary data to calculate the maximum power.
+                matching_df (DataFrame): The necessary data to calculate the average energy.
                 problem_size (int): The size of the problem.
 
             Raises:
                 ValueError: when the given dataframe does not contain the required columns.
 
             Returns:
-                float: The maximum power consumption of the solver.
+                float: The average power consumption of the solver.
             """
             if "solve_time" not in matching_df.columns:
                 raise ValueError(
@@ -282,17 +283,18 @@ class CCVMSolver(ABC):
                 )
 
             machine_time = np.mean(matching_df["solve_time"].values)
-            power_max = machine_parameters["gpu_power"][problem_size]
-            energy_max = power_max * machine_time
-            return energy_max
+            machine_power = machine_parameters["gpu_power"][problem_size]
+            machine_energy = machine_power * machine_time
+            return machine_energy
 
-        return cuda_energy_max_callable
+        return _cuda_machine_energy_callable
 
-    def energy_max(self, machine: MachineType, machine_parameters: dict = None):
-        """Calculate the maximum power consumption of the solver simulating on a given machine.
+    def machine_energy(self, machine: MachineType, machine_parameters: dict = None):
+        """Calculates the average energy consumed by the specified hardware for a given
+        problem size.
 
         Args:
-            machine (MachineType): The type of machine to calculate the maximum power consumption.
+            machine (MachineType): The type of machine to calculate the average energy consumption.
             machine_parameters (dict): Parameters of the machine. Defaults to None.
 
         Raises:
@@ -300,32 +302,27 @@ class CCVMSolver(ABC):
             ValueError: If the given machine type is not valid.
             ValueError: If there is a mismatch between the solver and the machine type.
         Returns:
-            Callable: A callable function that calculates the maximum power consumption of
+            Callable: A callable function that calculates the average energy consumption of
             the solver based on the given machine type.
         """
         solver_energy_methods = {
-            MachineType.CPU: self.cpu_energy_max,
-            MachineType.CUDA: self.cuda_energy_max,
-            MachineType.DL_CCVM: self.optics_machine_energy
+            "cpu": self._cpu_machine_energy,
+            "gpu": self._cuda_machine_energy,
+            "dl-ccvm": self._optics_machine_energy
             if self.__class__.__name__ == "DLSolver"
             else None,
-            MachineType.MF_CCVM: self.optics_machine_energy
+            "mf-ccvm": self._optics_machine_energy
             if self.__class__.__name__ == "MFSolver"
             else None,
-            MachineType.FPGA: self.fpga_energy_max
+            "fpga": self._fpga_machine_energy
             if self.__class__.__name__ == "LangevinSolver"
             else None,
         }
 
-        if not isinstance(machine, MachineType):
-            raise ValueError(
-                "The provided machine must be an instance of MachineType enum."
-            )
-
-        if machine not in MachineType:
+        if machine not in solver_energy_methods:
             raise ValueError(
                 f"The given machine type is not valid. "
-                f"The machine type must be one of {', '.join(m.value for m in MachineType)}"
+                f"The machine type must be one of {', '.join(solver_energy_methods.keys())}"
             )
 
         energy_method = solver_energy_methods[machine]

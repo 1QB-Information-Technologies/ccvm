@@ -276,12 +276,13 @@ class DLSolver(CCVMSolver):
         #       future consideration
         self.is_tuned = True
 
-    def optics_machine_energy(self, machine_parameters=None):
-        """The wrapper function of calculating the maximum energy consumption of the
-        solver simulating on a DL-CCVM machine.
+    def _optics_machine_energy(self, machine_parameters=None):
+        """The wrapper function of calculating the average energy consumption of the
+            solver, as if the solving process was to be performed on an optical DL-CCVM
+            machine.
 
         Args:
-            machine_parameters (dict, optional): Parameters of the. Defaults to None.
+            machine_parameters (dict, optional): Parameters of the machine. Defaults to None.
 
         Raises:
             ValueError: when the given machine parameters are not valid.
@@ -289,7 +290,7 @@ class DLSolver(CCVMSolver):
 
         Returns:
             Callable: A callable function that takes in a dataframe and problem size and
-                returns the maximum energy consumption of the solver.
+                returns the average energy consumption of the solver.
         """
 
         if machine_parameters is None:
@@ -297,19 +298,19 @@ class DLSolver(CCVMSolver):
         else:
             self._is_valid_optics_machine_parameters(machine_parameters)
 
-        def optics_machine_energy_callable(matching_df: DataFrame, problem_size: int):
-            """Calculate the maximum power consumption of the solver simulating on a
+        def _optics_machine_energy_callable(matching_df: DataFrame, problem_size: int):
+            """Calculate the average energy consumption of the solver simulating on a
                 DL-CCVM machine.
 
             Args:
-                matching_df (DataFrame): The necessary data to calculate the maximum power.
+                matching_df (DataFrame): The necessary data to calculate the average energy.
                 problem_size (int): The size of the problem.
 
             Raises:
                 ValueError: when the given dataframe does not contain the required columns.
 
             Returns:
-                float: The maximum power consumption of the solver.
+                float: The average energy consumption of the solver.
             """
             if "solve_time" not in matching_df.columns:
                 raise ValueError(
@@ -348,10 +349,10 @@ class DLSolver(CCVMSolver):
                 machine_parameters["postprocessing_power"][problem_size]
                 * postprocessing_time
             )
-            energy_max = optics_energy + postprocessing_energy
-            return energy_max
+            machine_energy = optics_energy + postprocessing_energy
+            return machine_energy
 
-        return optics_machine_energy_callable
+        return _optics_machine_energy_callable
 
     def _solve(
         self,
