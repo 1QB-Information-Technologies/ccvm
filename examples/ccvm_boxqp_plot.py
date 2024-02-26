@@ -4,19 +4,15 @@ from ccvm_simulators.ccvmplotlib import ccvmplotlib
 from ccvm_simulators.problem_classes.boxqp import ProblemInstance
 from ccvm_simulators.metadata import Metadata
 from ccvm_simulators.solvers import DLSolver
-from ccvm_simulators.solvers.ccvm_solver import MachineType
+
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-# Inputs
-TEST_INSTANCES_DIR_NAME = "single_test_instance"
-TEST_INSTANCES_PATH = f"./benchmarking_instances/{TEST_INSTANCES_DIR_NAME}/"
-
-# Outputs
 METADATA_DIR = "./metadata"
 TEST_OUTPUT_DEST = f"{METADATA_DIR}/DL-CCVM_LGFGS_cpu_test.txt"
+TEST_INSTANCES_DIR = "./benchmarking_instances/single_test_instance/"
 PLOT_OUTPUT_DIR = "./plots"
 TTS_PLOT_OUTPUT_DEST = f"{PLOT_OUTPUT_DIR}/DL-CCVM_TTS_cpu_plot.png"
 ETS_PLOT_OUTPUT_DEST = f"{PLOT_OUTPUT_DIR}/DL-CCVM_ETS_cpu_plot.png"
@@ -35,7 +31,7 @@ if __name__ == "__main__":
 
     metadata_obj = Metadata(device=solver.device)
     # Load test instances to solve
-    test_instances_files = [f for f in glob.glob(TEST_INSTANCES_PATH + "*.in")]
+    test_instances_files = [f for f in glob.glob(TEST_INSTANCES_DIR + "*.in")]
     for instance_file in test_instances_files:
         # Load the problem from the problem file into the instance
         boxqp_instance = ProblemInstance(
@@ -88,18 +84,13 @@ if __name__ == "__main__":
     machine_parameters = {
         "cpu_power": {20: 5.0, 30: 5.0, 40: 5.0, 50: 5.0, 60: 5.0, 70: 5.0}
     }
-
-    # Customize machine_energy calculating function
-    def cpu_machine_energy_func(matching_df: pd.DataFrame, problem_size: int) -> float:
-        machine_time = np.mean(matching_df["solve_time"].values)
-        machine_power = machine_parameters["cpu_power"][problem_size]
-        machine_energy = machine_power * machine_time
-        return machine_energy
-
+    machine = "cpu"
     ets_plot_fig, ets_plot_ax = ccvmplotlib.plot_ETS(
         metadata_filepath=metadata_filepath,
         problem="BoxQP",
-        machine_energy_func=cpu_machine_energy_func,
+        machine_energy_func=solver.machine_energy(
+            machine=machine, machine_parameters=machine_parameters
+        ),
     )
 
     ccvmplotlib.apply_default_ets_styling(
