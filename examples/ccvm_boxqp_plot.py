@@ -10,9 +10,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+# Inputs
+TEST_INSTANCES_DIR_NAME = "single_test_instance"
+TEST_INSTANCES_PATH = f"./benchmarking_instances/{TEST_INSTANCES_DIR_NAME}/"
+
+# Outputs
 METADATA_DIR = "./metadata"
 TEST_OUTPUT_DEST = f"{METADATA_DIR}/DL-CCVM_LGFGS_cpu_test.txt"
-TEST_INSTANCES_DIR = "./benchmarking_instances/single_test_instance/"
 PLOT_OUTPUT_DIR = "./plots"
 TTS_PLOT_OUTPUT_DEST = f"{PLOT_OUTPUT_DIR}/DL-CCVM_TTS_cpu_plot.png"
 ETS_PLOT_OUTPUT_DEST = f"{PLOT_OUTPUT_DIR}/DL-CCVM_ETS_cpu_plot.png"
@@ -31,7 +35,7 @@ if __name__ == "__main__":
 
     metadata_obj = Metadata(device=solver.device)
     # Load test instances to solve
-    test_instances_files = [f for f in glob.glob(TEST_INSTANCES_DIR + "*.in")]
+    test_instances_files = [f for f in glob.glob(TEST_INSTANCES_PATH + "*.in")]
     for instance_file in test_instances_files:
         # Load the problem from the problem file into the instance
         boxqp_instance = ProblemInstance(
