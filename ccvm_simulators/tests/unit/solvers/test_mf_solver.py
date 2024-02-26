@@ -300,3 +300,39 @@ class TestMFSolver(TestCase):
             str(error.exception),
             "The device type of the instance (cuda) and the solver (cpu) must match.",
         )
+
+    def test_optics_machine_energy_default_parameters(self):
+        """Test that _optics_machine_energy returns a callable function with default parameters"""
+        energy_callable = self.mf_solver._optics_machine_energy()
+        self.assertTrue(callable(energy_callable))
+
+    def test_optics_machine_energy_custom_parameters(self):
+        """Test that _optics_machine_energy returns a callable function with custom parameters"""
+        custom_parameters = {
+            "laser_clock": 100e-12,
+            "FPGA_clock": 3.33e-9,
+            "FPGA_fixed": 34,
+            "FPGA_var_fac": 0.1,
+            "FPGA_power": {
+                20: 11.74,
+                30: 14.97,
+                40: 16.54,
+                50: 18.25,
+                60: 20.08,
+                70: 22.01,
+            },
+            "buffer_time": 3.33e-9,
+            "laser_power": 1000e-6,
+            "postprocessing_power": {
+                20: 4.96,
+                30: 5.1,
+                40: 4.95,
+                50: 5.26,
+                60: 5.11,
+                70: 5.09,
+            },
+        }
+        energy_callable = self.mf_solver._optics_machine_energy(
+            machine_parameters=custom_parameters
+        )
+        self.assertTrue(callable(energy_callable))

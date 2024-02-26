@@ -1,6 +1,16 @@
-from unittest import TestCase
-from ccvm_simulators.solvers.ccvm_solver import CCVMSolver, DeviceType
+import pandas as pd
 import torch
+
+from unittest import TestCase
+from unittest.mock import MagicMock
+from ccvm_simulators.solvers.ccvm_solver import (
+    CCVMSolver,
+    DeviceType,
+    MachineType,
+)
+from ccvm_simulators.solvers.dl_solver import DLSolver
+from ccvm_simulators.solvers.mf_solver import MFSolver
+from ccvm_simulators.solvers.langevin_solver import LangevinSolver
 
 DUMMY_SCALING_MULTIPLIER = 0.1
 
@@ -55,6 +65,9 @@ class TestCCVMSolver(TestCase):
     def setUp(self):
         self.device = DeviceType.CPU_DEVICE.value
         self.solver = DummyConcreteSolver(device=self.device)
+        self.dl_solver = DLSolver(device=self.device)
+        self.mf_solver = MFSolver(device=self.device)
+        self.langevin_solver = LangevinSolver(device=self.device)
 
     def test_constructor_with_invalid_device(self):
         """Test the CCVM solver constructor when pass in invalid device"""
@@ -99,4 +112,187 @@ class TestCCVMSolver(TestCase):
         assert (
             str(error.exception)
             == f"The given instance is not a valid problem category. Given category: {invalid_problem_category}"
+        )
+
+    def test_validate_dataframe_columns_success(self):
+        """Test that _validate_dataframe_columns does not raise an error when the dataframe"""
+
+        dataframe = pd.DataFrame(
+            {"pp_time": [0.5, 0.6, 0.7], "iterations": [100, 200, 300]}
+        )
+
+        # No exception should be raised
+        self.solver._validate_dataframe_columns(dataframe)
+
+    def test_validate_dataframe_columns_missing_columns(self):
+        """Test that _validate_dataframe_columns raises an error when the dataframe is
+        missing columns"""
+        # "iterations" column is missing
+        dataframe = pd.DataFrame(
+            {
+                "pp_time": [0.5, 0.6, 0.7],
+            }
+        )
+
+        with self.assertRaises(ValueError):
+            self.solver._validate_dataframe_columns(dataframe)
+
+    def test_extra_columns(self):
+        """Test that _validate_dataframe_columns ignores extra columns in the dataframe"""
+
+        dataframe = pd.DataFrame(
+            {
+                "pp_time": [0.5, 0.6, 0.7],
+                "iterations": [100, 200, 300],
+                "extra_column": [1, 2, 3],
+            }
+        )
+
+        # No exception should be raised
+        self.solver._validate_dataframe_columns(dataframe)
+
+    def test_machine_energy_invalid_machine_type(self):
+        """Test if ValueError is raised when machine type is invalid."""
+        with self.assertRaises(ValueError):
+            self.dl_solver.machine_energy("invalid_machine_type")
+
+    def test_machine_energy_mismatch_solver_machine_type(self):
+        """Test if ValueError is raised when machine type is not compatible with the solver."""
+        with self.assertRaises(ValueError):
+            self.langevin_solver.machine_energy(MachineType.DL_CCVM.value)
+
+    def test_machine_energy_dl_solver_with_cpu_machine(self):
+        """Test if machine_energy works correctly when machine type is cpu for
+        DLSolver."""
+        self.dl_solver._cpu_machine_energy = MagicMock(return_value=40.0)
+        machine_energy = self.dl_solver.machine_energy(MachineType.CPU.value)
+        self.assertEqual(machine_energy, 40.0)
+        self.dl_solver._cpu_machine_energy.assert_called_once_with(None)
+
+    def test_machine_energy_dl_solver_with_gpu_machine(self):
+        """Test if machine_energy works correctly when machine type is gpu for DLSolver."""
+        self.dl_solver._cuda_machine_energy = MagicMock(return_value=41.0)
+        machine_energy = self.dl_solver.machine_energy(MachineType.GPU.value)
+        self.assertEqual(machine_energy, 41.0)
+        self.dl_solver._cuda_machine_energy.assert_called_once_with(None)
+
+    def test_machine_energy_dl_solver_with_dl_machine(self):
+        """Test if machine_energy works correctly when machine type is dl-ccvm for DLSolver."""
+        self.dl_solver._optics_machine_energy = MagicMock(return_value=42.0)
+        machine_parameters = {
+            "laser_power": 1200e-6,
+            "modulators_power": 10e-3,
+            "squeezing_power": 180e-3,
+            "electronics_power": 0.0,
+            "amplifiers_power": 222.2e-3,
+            "electronics_latency": 1e-9,
+            "laser_clock": 10e-12,
+            "postprocessing_power": {
+                20: 4.96,
+                30: 5.1,
+                40: 4.95,
+                50: 5.26,
+                60: 5.11,
+                70: 5.09,
+            },
+        }
+        machine_energy = self.dl_solver.machine_energy(
+            MachineType.DL_CCVM.value, machine_parameters
+        )
+        self.assertEqual(machine_energy, 42.0)
+        self.dl_solver._optics_machine_energy.assert_called_once_with(
+            machine_parameters
+        )
+
+    def test_machine_energy_mf_solver_with_cpu_machine(self):
+        """Test if machine_energy works correctly when machine type is cpu for MFSolver."""
+        self.mf_solver._cpu_machine_energy = MagicMock(return_value=40.0)
+        machine_energy = self.mf_solver.machine_energy(MachineType.CPU.value)
+        self.assertEqual(machine_energy, 40.0)
+        self.mf_solver._cpu_machine_energy.assert_called_once_with(None)
+
+    def test_machine_energy_mf_solver_with_gpu_machine(self):
+        """Test if machine_energy works correctly when machine type is gpu for MFSolver."""
+        self.mf_solver._cuda_machine_energy = MagicMock(return_value=41.0)
+        machine_energy = self.mf_solver.machine_energy(MachineType.GPU.value)
+        self.assertEqual(machine_energy, 41.0)
+        self.mf_solver._cuda_machine_energy.assert_called_once_with(None)
+
+    def test_machine_energy_mf_solver_with_mf_machine(self):
+        """Test if machine_energy works correctly when machine type is mf-ccvm for MFSolver."""
+        self.mf_solver._optics_machine_energy = MagicMock(return_value=43.0)
+        machine_parameters = {
+            "laser_clock": 100e-12,
+            "FPGA_clock": 3.33e-9,
+            "FPGA_fixed": 34,
+            "FPGA_var_fac": 0.1,
+            "FPGA_power": {
+                20: 11.74,
+                30: 14.97,
+                40: 16.54,
+                50: 18.25,
+                60: 20.08,
+                70: 22.01,
+            },
+            "buffer_time": 3.33e-9,
+            "laser_power": 1000e-6,
+            "postprocessing_power": {
+                20: 4.96,
+                30: 5.1,
+                40: 4.95,
+                50: 5.26,
+                60: 5.11,
+                70: 5.09,
+            },
+        }
+        machine_energy = self.mf_solver.machine_energy(
+            MachineType.MF_CCVM.value, machine_parameters
+        )
+        self.assertEqual(machine_energy, 43.0)
+        self.mf_solver._optics_machine_energy.assert_called_once_with(
+            machine_parameters
+        )
+
+    def test_machine_energy_langevin_solver_with_cpu_machine(self):
+        """Test if machine_energy works correctly when machine type is cpu for Langevin Solver."""
+        self.langevin_solver._cpu_machine_energy = MagicMock(return_value=40.0)
+        machine_energy = self.langevin_solver.machine_energy(MachineType.CPU.value)
+        self.assertEqual(machine_energy, 40.0)
+        self.langevin_solver._cpu_machine_energy.assert_called_once_with(None)
+
+    def test_machine_energy_mf_solver_with_gpu_machine(self):
+        """Test if machine_energy works correctly when machine type is gpu for Langevin Solver."""
+        self.langevin_solver._cuda_machine_energy = MagicMock(return_value=41.0)
+        machine_energy = self.langevin_solver.machine_energy(MachineType.GPU.value)
+        self.assertEqual(machine_energy, 41.0)
+        self.langevin_solver._cuda_machine_energy.assert_called_once_with(None)
+
+    def test_machine_energy_langevin_solver_with_fpga_machine(self):
+        """Test if machine_energy works correctly when machine type is fpga for LangevinSolver."""
+        self.langevin_solver._fpga_machine_energy = MagicMock(return_value=44.0)
+
+        machine_parameters = {
+            "fpga_power": {
+                20: 17.18,
+                30: 18.13,
+                40: 18.45,
+                50: 19.03,
+                60: 19.22,
+                70: 19.32,
+            },
+            "fpga_runtimes": {
+                20: 133e-6,
+                30: 265e-6,
+                40: 327e-6,
+                50: 437e-6,
+                60: 511e-6,
+                70: 662e-6,
+            },
+        }
+        machine_energy = self.langevin_solver.machine_energy(
+            MachineType.FPGA.value, machine_parameters
+        )
+        self.assertEqual(machine_energy, 44.0)
+        self.langevin_solver._fpga_machine_energy.assert_called_once_with(
+            machine_parameters
         )

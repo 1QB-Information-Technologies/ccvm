@@ -213,7 +213,7 @@ class CCVMSolver(ABC):
                     "The dictionary must contain the key 'cpu_power'"
                 )
 
-        def cpu_machine_energy_callable(matching_df: DataFrame, problem_size: int):
+        def _cpu_machine_energy_callable(matching_df: DataFrame, problem_size: int):
             """Calculate the average energy consumption of the solver simulating on a cpu
                 machine.
 
@@ -237,7 +237,7 @@ class CCVMSolver(ABC):
             machine_energy = machine_power * machine_time
             return machine_energy
 
-        return cpu_machine_energy_callable
+        return _cpu_machine_energy_callable
 
     def _cuda_machine_energy(self, machine_parameters: dict = None):
         """The wrapper function of calculating the average energy consumption of the
@@ -289,17 +289,16 @@ class CCVMSolver(ABC):
 
         return _cuda_machine_energy_callable
 
-    def machine_energy(self, machine: MachineType, machine_parameters: dict = None):
+    def machine_energy(self, machine: str, machine_parameters: dict = None):
         """Calculates the average energy consumed by the specified hardware for a given
         problem size.
 
         Args:
-            machine (MachineType): The type of machine to calculate the average energy consumption.
+            machine (str): The type of machine to calculate the average energy consumption.
             machine_parameters (dict): Parameters of the machine. Defaults to None.
 
         Raises:
-            ValueError: If the provided machine is not an instance of MachineType enum.
-            ValueError: If the given machine type is not valid.
+            ValueError: If the given machine is not a valid machine type.
             ValueError: If there is a mismatch between the solver and the machine type.
         Returns:
             Callable: A callable function that calculates the average energy consumption of
