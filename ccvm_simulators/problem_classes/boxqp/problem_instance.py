@@ -27,6 +27,7 @@ class ProblemInstance:
         file_path=None,
         file_delimiter="\t",
         name=None,
+        solution_bounds=(0.0, 1.0),
     ):
         """Problem instance constructor.
 
@@ -41,6 +42,9 @@ class ProblemInstance:
                 file. Defaults to "\t".
             name (str, optional): The name of the problem instance. If not
                 given, defaults to the file name when an instance is loaded.
+            solution_bounds (tuple(float), optional): The minimum and maximum value allowed
+                (inclusively) in the solution vector. The first value is the minimum, the
+                second is the maximum. Defaults to (0.0,1.0).
 
         Attributes:
             problem_size (int): instance size. Defaults to None.
@@ -87,6 +91,27 @@ class ProblemInstance:
                 file_delimiter=file_delimiter,
             )
         self.problem_category = "boxqp"
+        self.solution_bounds = solution_bounds
+
+
+    @property
+    def solution_bounds(self):
+        """ The minimum and maximum value allowed (inclusively) in the solution vector.
+        The first value is the minimum, the second is the maximum.
+
+        Returns:
+            tuple(float): The minimum and maximum solution bounds.
+        """
+        return self._solution_bounds
+
+    @solution_bounds.setter
+    def solution_bounds(self, bounds):
+        if len(bounds) != 2:
+            raise ValueError("solution_bounds must be a tuple of size 2, containing the minimum and maximum bounds (inclusive)")
+        elif bounds[0] >= bounds[1]:
+            raise ValueError("Minimum solution bound must be less than maximum solution bound")
+        else:
+            self._solution_bounds = bounds
 
     def load_instance(
         self, device="cpu", instance_type="tuning", file_path=None, file_delimiter=None
