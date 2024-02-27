@@ -9,7 +9,7 @@ TEST_INSTANCES_PATH = f"./benchmarking_instances/{TEST_INSTANCES_DIR_NAME}/"
 
 if __name__ == "__main__":
     # Initialize solver
-    batch_size = 10
+    batch_size = 1000
     solver = PumpedLangevinSolver(
         device="cpu", batch_size=batch_size, S=0.5
     )  # or "cuda"
@@ -19,7 +19,7 @@ if __name__ == "__main__":
         20: {
             "pump": 2.0,  # p0
             "dt": 0.002,
-            "iterations": 10,
+            "iterations": 15000,
             "sigma": 0.5,
             "feedback_scale": 1.0,
         },
