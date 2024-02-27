@@ -3,11 +3,13 @@ from ccvm_simulators.problem_classes.boxqp import ProblemInstance
 from ccvm_simulators.solvers import PumpedLangevinSolver
 from ccvm_simulators.solvers.algorithms import AdamParameters
 
-TEST_INSTANCES_DIR = "./test_instances/"  # "./tuning_instances/"
+# Inputs
+TEST_INSTANCES_DIR_NAME = "single_test_instance"
+TEST_INSTANCES_PATH = f"./benchmarking_instances/{TEST_INSTANCES_DIR_NAME}/"
 
 if __name__ == "__main__":
     # Initialize solver
-    batch_size = 1000
+    batch_size = 10
     solver = PumpedLangevinSolver(
         device="cpu", batch_size=batch_size, S=0.5
     )  # or "cuda"
@@ -17,14 +19,14 @@ if __name__ == "__main__":
         20: {
             "pump": 2.0,  # p0
             "dt": 0.002,
-            "iterations": 15000,
+            "iterations": 10,
             "sigma": 0.5,
             "feedback_scale": 1.0,
         },
     }
 
     # Load test instances to solve
-    test_instances_files = [f for f in glob.glob(TEST_INSTANCES_DIR + "*.in")]
+    test_instances_files = [f for f in glob.glob(TEST_INSTANCES_PATH + "*.in")]
     for instance_file in test_instances_files:
         # Load the problem from the problem file into the instance
         boxqp_instance = ProblemInstance(
