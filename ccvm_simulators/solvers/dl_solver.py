@@ -7,7 +7,7 @@ import numpy as np
 import torch.distributions as tdist
 import time
 
-DL_SCALING_MULTIPLIER = 0.5
+DL_SCALING_MULTIPLIER = 0.2
 """The value used by the DLSolver when calculating a scaling value in
 super.get_scaling_factor()"""
 
@@ -76,7 +76,9 @@ class DLSolver(CCVMSolver):
 
     @parameter_key.setter
     def parameter_key(self, parameters):
-        expected_dlparameter_key_set = set(["pump", "dt", "iterations", "noise_ratio"])
+        expected_dlparameter_key_set = set(
+            ["pump", "dt", "iterations", "noise_ratio", "feedback_scale"]
+        )
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
         for parameter_key in parameter_key_list:
@@ -93,7 +95,7 @@ class DLSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-    def _calculate_drift_boxqp(self, c, s, pump, rate, S=1):
+    def _calculate_drift_boxqp(self, c, s, pump, rate, feedback_scale=100, S=1):
         """We treat the SDE that simulates the CIM of NTT as drift
         calculation.
 
@@ -122,8 +124,9 @@ class DLSolver(CCVMSolver):
         s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
         s_grad_3 = self.v_vector / 2 / S
 
-        c_drift = -c_grad_1 + c_grad_2 - c_grad_3
-        s_drift = -s_grad_1 + s_grad_2 - s_grad_3
+        l_fact = feedback_scale * (0.5 + rate)
+        c_drift = -l_fact * c_grad_1 + c_grad_2 - l_fact * c_grad_3
+        s_drift = -l_fact * s_grad_1 + s_grad_2 - l_fact * s_grad_3
         return c_drift, s_drift
 
     def _calculate_grads_boxqp(self, c, s, S=1):
@@ -238,6 +241,7 @@ class DLSolver(CCVMSolver):
         dt,
         iterations,
         noise_ratio,
+        feedback_scale,
         pump_rate_flag,
         g,
         evolution_step_size,
@@ -287,7 +291,9 @@ class DLSolver(CCVMSolver):
 
             noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
 
-            c_drift, s_drift = self.calculate_drift(c, s, pump, pump_rate)
+            c_drift, s_drift = self.calculate_drift(
+                c, s, pump, pump_rate, feedback_scale
+            )
             wiener_increment_c = (
                 wiener_dist_c.sample((problem_size,)).transpose(0, 1)
                 * np.sqrt(dt)
@@ -576,6 +582,7 @@ class DLSolver(CCVMSolver):
             dt = self.parameter_key[problem_size]["dt"]
             iterations = self.parameter_key[problem_size]["iterations"]
             noise_ratio = self.parameter_key[problem_size]["noise_ratio"]
+            feedback_scale = self.parameter_key[problem_size]["feedback_scale"]
         except KeyError as e:
             raise KeyError(
                 f"The parameter '{e.args[0]}' for the given instance size is not defined."
@@ -639,6 +646,7 @@ class DLSolver(CCVMSolver):
                 dt,
                 iterations,
                 noise_ratio,
+                feedback_scale,
                 pump_rate_flag,
                 g,
                 evolution_step_size,
@@ -655,6 +663,7 @@ class DLSolver(CCVMSolver):
                 dt,
                 iterations,
                 noise_ratio,
+                feedback_scale,
                 pump_rate_flag,
                 g,
                 evolution_step_size,

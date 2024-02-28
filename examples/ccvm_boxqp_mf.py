@@ -15,12 +15,12 @@ if __name__ == "__main__":
     # Supply solver parameters for different problem sizes
     solver.parameter_key = {
         20: {
-            "pump": 0.5,
-            "feedback_scale": 20,
-            "j": 20,
-            "S": 0.2,
+            "pump": 0.0,
+            "feedback_scale": 4000,
+            "j": 5.0,
+            "S": 20.0,
             "dt": 0.0025,
-            "iterations": 15000,
+            "iterations": 1500,
         }
     }
 
@@ -42,10 +42,10 @@ if __name__ == "__main__":
         # (2) algorithm_parameters=AdamParameters(..) for the Adam algorithm
         solution = solver(
             instance=boxqp_instance,
-            post_processor=None,
-            algorithm_parameters=AdamParameters(
-                alpha=0.001, beta1=0.9, beta2=0.999, add_assign=False
-            ),
+            post_processor="grad-descent",
+            # algorithm_parameters=AdamParameters(
+            #     alpha=0.001, beta1=0.9, beta2=0.999, add_assign=False
+            # ),
         )
 
         print(solution)

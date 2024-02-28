@@ -7,7 +7,7 @@ import numpy as np
 import torch.distributions as tdist
 import time
 
-MF_SCALING_MULTIPLIER = 0.1
+MF_SCALING_MULTIPLIER = 0.05
 """The value used by the MFSolver when calculating a scaling value in
 super.get_scaling_factor()"""
 
@@ -689,10 +689,7 @@ class MFSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                self.change_variables(mu_tilde, S),
-                self.q_matrix,
-                self.v_vector,
-                device=device,
+                self.change_variables(mu_tilde, S), self.q_matrix, self.v_vector
             )
             pp_time = post_processor_object.pp_time
         else:

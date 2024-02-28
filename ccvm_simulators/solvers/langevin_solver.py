@@ -7,7 +7,7 @@ import numpy as np
 import torch.distributions as tdist
 import time
 
-LANGEVIN_SCALING_MULTIPLIER = 0.5
+LANGEVIN_SCALING_MULTIPLIER = 0.05
 """The value used by the LangevinSolver when calculating a scaling value in
 super.get_scaling_factor()"""
 
@@ -21,7 +21,6 @@ class LangevinSolver(CCVMSolver):
         device,
         problem_category="boxqp",
         batch_size=1000,
-        S=1,
     ):
         """
         Args:
@@ -40,7 +39,6 @@ class LangevinSolver(CCVMSolver):
         """
         super().__init__(device)
         self.batch_size = batch_size
-        self.S = S
         self._scaling_multiplier = LANGEVIN_SCALING_MULTIPLIER
         # Use the method selector to choose the problem-specific methods to use
         self._method_selector(problem_category)
@@ -77,7 +75,7 @@ class LangevinSolver(CCVMSolver):
     @parameter_key.setter
     def parameter_key(self, parameters):
         expected_lparameter_key_set = set(
-            ["dt", "iterations", "sigma", "feedback_scale"]
+            ["dt", "S", "iterations", "sigma", "feedback_scale"]
         )
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
@@ -107,14 +105,14 @@ class LangevinSolver(CCVMSolver):
             tensor: The calculated change in the variable amplitude.
         """
 
-        c_drift_1 = torch.einsum("bi,ij -> bj", c, self.q_matrix)
+        c_drift_1 = torch.einsum("bi,ij -> bj", (c + S) / (2 * S), self.q_matrix)
         c_drift_2 = self.v_vector
 
-        c_drift = -c_drift_1 - c_drift_2
+        c_drift = -(c_drift_1 + c_drift_2) / (2 * S)
 
         return c_drift
 
-    def _calculate_grads_boxqp(self, c):
+    def _calculate_grads_boxqp(self, c, S):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
@@ -127,10 +125,10 @@ class LangevinSolver(CCVMSolver):
             tensor: The calculated change in the variable amplitude.
         """
 
-        c_grad_1 = torch.einsum("bi,ij -> bj", c, self.q_matrix)
+        c_grad_1 = torch.einsum("bi,ij -> bj", (c + S) / (2 * S), self.q_matrix)
         c_grad_2 = self.v_vector
 
-        c_grads = -c_grad_1 - c_grad_2
+        c_grads = -(c_grad_1 + c_grad_2) / (2 * S)
 
         return c_grads
 
@@ -263,7 +261,7 @@ class LangevinSolver(CCVMSolver):
             c += dt * feedback_scale * c_drift + sigma * wiener_increment_c
             # Ensure variables are within any problem constraints
             # The lower bound is determined by ell=0, and upper bound by u=1
-            c = self.fit_to_constraints(c, 0, 1.0)
+            c = self.fit_to_constraints(c, -S, S)
 
             # If evolution_step_size is specified, save the values if this iteration
             # aligns with the step size or if this is the last iteration
@@ -353,7 +351,7 @@ class LangevinSolver(CCVMSolver):
         # Perform the solve with Adam over the specified number of iterations
         for i in range(iterations):
             # Calculate gradient
-            c_grads = self.calculate_grads(c)
+            c_grads = self.calculate_grads(c, S)
 
             # Update biased first moment estimate
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
@@ -443,13 +441,13 @@ class LangevinSolver(CCVMSolver):
         self.v_vector = instance.v_vector
 
         # Get solver setup variables
-        S = self.S
         batch_size = self.batch_size
         device = self.device
 
         # Get parameters from parameter_key
         try:
             dt = self.parameter_key[problem_size]["dt"]
+            S = self.parameter_key[problem_size]["S"]
             iterations = self.parameter_key[problem_size]["iterations"]
             sigma = self.parameter_key[problem_size]["sigma"]
             feedback_scale = self.parameter_key[problem_size]["feedback_scale"]
@@ -544,11 +542,11 @@ class LangevinSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                c, self.q_matrix, self.v_vector
+                (c + S) / (2 * S), self.q_matrix, self.v_vector
             )
             pp_time = post_processor_object.pp_time
         else:
-            problem_variables = c
+            problem_variables = (c + S) / (2 * S)
             pp_time = 0.0
 
         # Calculate the objective value

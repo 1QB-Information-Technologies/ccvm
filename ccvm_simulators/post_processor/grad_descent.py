@@ -17,7 +17,7 @@ class PostProcessorGradDescent(PostProcessor):
         v_vector,
         lower_clamp=0.0,
         upper_clamp=1.0,
-        num_iter_main=100,
+        num_iter_main=1000,
         num_iter_pp=None,
         step_size=0.1,
     ):
