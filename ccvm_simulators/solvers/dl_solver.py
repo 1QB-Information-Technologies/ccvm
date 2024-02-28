@@ -675,8 +675,8 @@ class DLSolver(CCVMSolver):
                 f"Solver option type {type(algorithm_parameters)} is not supported."
             )
 
-        # Stop the timer for the solve
-        solve_time = time.time() - solve_time_start
+        # Stop the timer for the solve to compute the solution time for solving an instance once
+        solve_time = (time.time() - solve_time_start) / batch_size
 
         # Run the post processor on the results, if specified
         if post_processor:
@@ -687,7 +687,8 @@ class DLSolver(CCVMSolver):
             problem_variables = post_processor_object.postprocess(
                 self.change_variables(c, S), self.q_matrix, self.v_vector
             )
-            pp_time = post_processor_object.pp_time
+            # Post-processing time for solving an instance once
+            pp_time = post_processor_object.pp_time / batch_size
         else:
             problem_variables = c
             pp_time = 0.0

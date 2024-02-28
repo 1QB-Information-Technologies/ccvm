@@ -288,9 +288,7 @@ class PumpedLangevinSolver(CCVMSolver):
             ):
                 # Update the record of the sample values with the values found at
                 # this iteration
-                self.c_sample[
-                    :, :, samples_taken
-                ] = c  
+                self.c_sample[:, :, samples_taken] = c
                 samples_taken += 1
 
         return c
@@ -442,8 +440,8 @@ class PumpedLangevinSolver(CCVMSolver):
         evolution_file=None,
         algorithm_parameters=None,
     ):
-        """Solves the box-constrained programming problem using the pumped Langevin solver using 
-        either Adam algorithm for the calculation of the gradient of the objective function or 
+        """Solves the box-constrained programming problem using the pumped Langevin solver using
+        either Adam algorithm for the calculation of the gradient of the objective function or
         the simple gradient descent method. This choice can be set in the argument of `algorithm_parameters`.
 
         Args:
@@ -578,8 +576,8 @@ class PumpedLangevinSolver(CCVMSolver):
                 f"Solver option type {type(algorithm_parameters)} is not supported."
             )
 
-        # Stop the timer for the solve
-        solve_time = time.time() - solve_time_start
+        # Stop the timer for the solve to compute the solution time for solving an instance once
+        solve_time = (time.time() - solve_time_start) / batch_size
 
         # Calibrate the variable
         c_prime = (c + S) / (2 * S)
@@ -593,7 +591,8 @@ class PumpedLangevinSolver(CCVMSolver):
             problem_variables = post_processor_object.postprocess(
                 c_prime, self.q_matrix, self.v_vector
             )
-            pp_time = post_processor_object.pp_time
+            # Post-processing time for solving an instance once
+            pp_time = post_processor_object.pp_time / batch_size
         else:
             problem_variables = c_prime
             pp_time = 0.0
