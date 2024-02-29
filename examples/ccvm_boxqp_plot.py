@@ -2,7 +2,7 @@ import glob
 import os
 from ccvm_simulators.ccvmplotlib import ccvmplotlib
 from ccvm_simulators.problem_classes.boxqp import ProblemInstance
-from ccvm_simulators.metadata_list import MetadataList
+from ccvm_simulators.metadata import Metadata
 from ccvm_simulators.solvers import DLSolver
 
 import matplotlib.pyplot as plt
@@ -32,7 +32,7 @@ if __name__ == "__main__":
         20: {"pump": 2.0, "dt": 0.005, "iterations": 15000, "noise_ratio": 10},
     }
 
-    metadata_list = MetadataList()
+    metadata_obj = Metadata(device=solver.device)
     # Load test instances to solve
     test_instances_files = [f for f in glob.glob(TEST_INSTANCES_PATH + "*.in")]
     for instance_file in test_instances_files:
@@ -52,10 +52,10 @@ if __name__ == "__main__":
             post_processor=None,
         )
         # Add metadata to list
-        metadata_list.add_metadata(solution.get_metadata_dict())
+        metadata_obj.add_to_result_metadata(solution.get_metadata_dict())
 
     # Save metadata to file
-    metadata_filepath = metadata_list.save_metadata_to_file(METADATA_DIR)
+    metadata_filepath = metadata_obj.save_metadata_to_file(METADATA_DIR)
 
     # If PLOT_OUTPUT_DIR not exists, create the path
     if not os.path.isdir(PLOT_OUTPUT_DIR):

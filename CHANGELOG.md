@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Breaking Changes
-- Removed the TrustConst post-processor from the codebase due to non-usage. This
+- Removed the `TrustConst` post-processor from the codebase due to non-usage. This
   change aims to streamline the code and eliminate unnecessary components.
+- Renamed the `MetadataList` class to `Metadata`, transforming metadata from a list
+  to a dictionary object. The metadata class now requires a device parameter
+  during initialization.
+- Restructured the metadata object to include a `device` field, a
+  `result_metadata` list, and a `metadata_dict`.
 
 ### Fixed 
 - Fixed issue where `s` was being updated incorrectly on each iteration  of `DLSolver._solve()`.
@@ -24,6 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Consolidated test organization by centralizing all tests under a unified
   `tests` folder, with subdirectories for unit, integration, and test data. This
   enhances accessibility and clarity in managing test-related resources.
+- Updated the `add_metadata` function in the Metadata class to
+  `add_to_result_metadata` for clarity.
 
 ## [1.0.1] - 2023-03-09
 ### Fixed
