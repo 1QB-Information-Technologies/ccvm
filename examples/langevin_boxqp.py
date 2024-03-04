@@ -16,7 +16,6 @@ if __name__ == "__main__":
     solver.parameter_key = {
         20: {
             "dt": 0.002,
-            "S": 0.5,
             "iterations": 1500,
             "sigma": 0.5,
             "feedback_scale": 1.0,

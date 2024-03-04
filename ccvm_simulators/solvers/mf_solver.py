@@ -680,6 +680,9 @@ class MFSolver(CCVMSolver):
             )
 
         # Stop the timer for the solve to compute the solution time for solving an instance once
+        # Due to the division by batch_size, the solve_time improves for larger batches
+        # when the solver is run on GPU. This is expected since GPU is hardware specifically
+        # deployed to improve the solution time of solving one single instance by using parallelization
         solve_time = (time.time() - solve_time_start) / batch_size
 
         # Run the post processor on the results, if specified

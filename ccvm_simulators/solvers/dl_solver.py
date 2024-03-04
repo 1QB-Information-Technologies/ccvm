@@ -124,9 +124,9 @@ class DLSolver(CCVMSolver):
         s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
         s_grad_3 = self.v_vector / 2 / S
 
-        l_fact = feedback_scale * (0.5 + rate)
-        c_drift = -l_fact * c_grad_1 + c_grad_2 - l_fact * c_grad_3
-        s_drift = -l_fact * s_grad_1 + s_grad_2 - l_fact * s_grad_3
+        feedback_scale_dynamic = feedback_scale * (0.5 + rate)
+        c_drift = -feedback_scale_dynamic * (c_grad_1 + c_grad_3) + c_grad_2
+        s_drift = -feedback_scale_dynamic * (s_grad_1 + s_grad_3) + s_grad_2
         return c_drift, s_drift
 
     def _calculate_grads_boxqp(self, c, s, S=1):
@@ -676,6 +676,9 @@ class DLSolver(CCVMSolver):
             )
 
         # Stop the timer for the solve to compute the solution time for solving an instance once
+        # Due to the division by batch_size, the solve_time improves for larger batches
+        # when the solver is run on GPU. This is expected since GPU is hardware specifically
+        # deployed to improve the solution time of solving one single instance by using parallelization
         solve_time = (time.time() - solve_time_start) / batch_size
 
         # Run the post processor on the results, if specified
