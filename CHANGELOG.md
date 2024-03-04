@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking Changes
 - Removed the TrustConst post-processor from the codebase due to non-usage. This
   change aims to streamline the code and eliminate unnecessary components.
+- Added a saturation parameter `S` as the input to the `langevin_solver` and removed this
+parameter from the `__init__` function. `S` now has to be provided by the user using
+`solver.parameter_key`.
 
 ### Fixed
 - Fixed issue where `s` was being updated incorrectly on each iteration  of `DLSolver._solve()`.
