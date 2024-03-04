@@ -114,7 +114,7 @@ class LangevinSolver(CCVMSolver):
 
         return c_drift
 
-    def _calculate_grads_boxqp(self, c, S):
+    def _calculate_grads_boxqp(self, c):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
