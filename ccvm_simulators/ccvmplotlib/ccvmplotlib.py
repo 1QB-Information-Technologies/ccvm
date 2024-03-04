@@ -166,6 +166,9 @@ class ccvmplotlib:
 
         (fig, ax) = ccvmplotlib.__plot_core(plotting_df, fig, ax)
 
+        # set y axis to log scale
+        plt.yscale("log")
+
         # Make sure x-axis only has integer values
         x_data = plotting_df.index
         ax.set_xticks(x_data)

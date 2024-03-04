@@ -237,17 +237,18 @@ class MFSolver(CCVMSolver):
 
     def _append_samples_to_file(self, mu_sample, sigma_sample, evolution_file_object):
         """Saves samples of the mean-field amplitudes and the variance of the in-phase
-        position operator to a file.
-        The end file will contain the values of the mu_sample followed by the sigma_sample.
-        Each line corresponds to a row in the tensor, with tab-delineated values.
+        position operator to a file. The end file will contain the values of the
+        mu_sample followed by the sigma_sample. Each line corresponds to a row in the
+        tensor, with tab-delineated values.
 
         Args:
-            mu_sample (torch.Tensor): The sample of mean-field amplitudes to add to the file.
-            Expected Dimensions: problem_size x num_samples.
-            sigma_sample (torch.Tensor): The sample of the variance of the in-phase position
-            operator to add to the file. Expected Dimensions: problem_size x num_samples.
-            evolution_file_object (io.TextIOWrapper): The file object of the file to save
-            the samples to.
+            mu_sample (torch.Tensor): The sample of mean-field amplitudes to add to the
+                file. Expected Dimensions: problem_size x num_samples.
+            sigma_sample (torch.Tensor): The sample of the variance of the in-phase
+                position operator to add to the file. Expected Dimensions: problem_size
+                x num_samples.
+            evolution_file_object (io.TextIOWrapper): The file object of the file to
+                save the samples to.
         """
         # Save the mu samples to the file
         mu_rows = mu_sample.shape[0]  # problem_size
@@ -324,7 +325,8 @@ class MFSolver(CCVMSolver):
             machine.
 
         Args:
-            machine_parameters (dict, optional): Parameters of the machine. Defaults to None.
+            machine_parameters (dict, optional): Parameters of the machine. Defaults to
+                None.
 
         Raises:
             ValueError: when the given machine parameters are not valid.
@@ -347,16 +349,18 @@ class MFSolver(CCVMSolver):
                 MF-CCVM machine.
 
             Args:
-                matching_df (DataFrame): The necessary data to calculate the average energy.
+                matching_df (DataFrame): The necessary data to calculate the average
+                    energy.
                 problem_size (int): The size of the problem.
 
             Raises:
-                ValueError: when the given dataframe does not contain the required columns.
+                ValueError: when the given dataframe does not contain the required
+                    columns.
 
             Returns:
                 float: The average energy consumption of the solver.
             """
-            self._validate_dataframe_columns(matching_df)
+            self._validate_machine_energy_dataframe_columns(matching_df)
 
             try:
                 pump = self.parameter_key[problem_size]["pump"]
@@ -366,7 +370,7 @@ class MFSolver(CCVMSolver):
                     f"The parameter '{e.args[0]}' for the given instance size: {problem_size} is not defined."
                 ) from e
 
-            iterations = matching_df["iterations"].values
+            iterations = np.mean(matching_df["iterations"].values)
             postprocessing_time = np.mean(matching_df["pp_time"].values)
             roundtrip_time = (
                 (
@@ -423,12 +427,13 @@ class MFSolver(CCVMSolver):
             iterations (int): number of steps.
             noise_ratio (float): noise ratio.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number.
+                iteration number.
             g (float): The nonlinearity coefficient.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
+                will be written to a file that can be specified by setting the
+                evolution_file parameter.
             samples_taken (int): sample slice.
 
         Returns:
@@ -510,8 +515,8 @@ class MFSolver(CCVMSolver):
         samples_taken,
         hyperparameters,
     ):
-        """Solves the given problem instance using the MF-CCVM solver with Adam algorithm
-        tuned or specified parameters in the parameter key.
+        """Solves the given problem instance using the MF-CCVM solver with Adam
+        algorithm tuned or specified parameters in the parameter key.
 
         Args:
             problem_size (int): instance size.
@@ -523,12 +528,13 @@ class MFSolver(CCVMSolver):
             iterations (int): number of steps.
             noise_ratio (float): noise ratio.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number.
+                iteration number.
             g (float): The nonlinearity coefficient.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
+                will be written to a file that can be specified by setting the
+                evolution_file parameter.
             samples_taken (int): sample slice.
             hyperparameters (dict): Hyperparameters for Adam algorithm.
 
@@ -683,18 +689,20 @@ class MFSolver(CCVMSolver):
             pump_rate_flag (bool, optional): Whether or not to scale the pump rate
                 based on the iteration number. If False, the pump rate will be 1.0.
                 Defaults to True.
-            evolution_step_size (int): If set, the mu/sigma values will be sampled once per number of
-                iterations equivalent to the value of this variable. At the end of the solve process,
-                the best batch of sampled values will be written to a file that can be specified by
-                setting the evolution_file parameter.Defaults to None, meaning no problem variables
-                will be written to the file.
-            evolution_file (str): The file to save the best set of mu/sigma samples to. Only revelant
-                when evolution_step_size is set. If a file already exists with the same name,
-                it will be overwritten. Defaults to None, which generates a filename based on
-                the problem instance name.
-            algorithm_parameters (None, AdamParameters): Specify for the solver to use a specialized algorithm by passing in
-                an instance of the algorithm's parameters class. Options include: AdamParameters.
-                Defaults to None, which uses the original MF solver.
+            evolution_step_size (int): If set, the mu/sigma values will be sampled once
+                per number of iterations equivalent to the value of this variable. At
+                the end of the solve process, the best batch of sampled values will be
+                written to a file that can be specified by setting the evolution_file
+                parameter.Defaults to None, meaning no problem variables will be written
+                to the file.
+            evolution_file (str): The file to save the best set of mu/sigma samples to.
+                Only revelant when evolution_step_size is set. If a file already exists
+                with the same name, it will be overwritten. Defaults to None, which
+                generates a filename based on the problem instance name.
+            algorithm_parameters (None, AdamParameters): Specify for the solver to use a
+                specialized algorithm by passing in an instance of the algorithm's
+                parameters class. Options include: AdamParameters. Defaults to None,
+                which uses the original MF solver.
 
         Returns:
             solution (Solution): The solution to the problem instance.

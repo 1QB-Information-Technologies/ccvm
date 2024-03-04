@@ -140,7 +140,8 @@ class CCVMSolver(ABC):
             q_matrix (torch.tensor): The Q matrix describing the BoxQP problem
 
         Returns:
-            float: The recommended scaling factor to be use to scale the problem for this solver
+            float: The recommended scaling factor to be use to scale the problem for
+                this solver.
         """
         # Calculate the scaling value from the problem's quadratic terms
         scaling_val = (
@@ -168,7 +169,7 @@ class CCVMSolver(ABC):
                 f" Given category: {problem_category}"
             )
 
-    def _validate_dataframe_columns(self, dataframe):
+    def _validate_machine_energy_dataframe_columns(self, dataframe):
         """Validates that the given dataframe contains the required columns when
         calculating optics machine energy on DL-CCVM and MF-CCVM solvers.
 
@@ -194,7 +195,7 @@ class CCVMSolver(ABC):
         solver simulating on a CPU machine.
 
         Args:
-            machine_parameters (dict, optional): Parameters of the. Defaults to None.
+            machine_parameters (dict, optional): Parameters of the CPU. Defaults to None.
 
         Raises:
             ValueError: when the given machine parameters are not valid.
@@ -214,16 +215,17 @@ class CCVMSolver(ABC):
                 )
 
         def _cpu_machine_energy_callable(matching_df: DataFrame, problem_size: int):
-            """Calculate the average energy consumption of the solver simulating on a cpu
-                machine.
+            """Calculate the average energy consumption of the solver simulating on a
+            cpu machine.
 
             Args:
                 matching_df (DataFrame): The necessary data to calculate the average
-                energy.
+                    energy.
                 problem_size (int): The size of the problem.
 
             Raises:
-                ValueError: when the given dataframe does not contain the required columns.
+                ValueError: when the given dataframe does not contain the required
+                    columns.
 
             Returns:
                 float: The average energy consumption of the solver.
@@ -244,7 +246,8 @@ class CCVMSolver(ABC):
         solver simulating on system equipped with CUDA-capable GPUs.
 
         Args:
-            machine_parameters (dict, optional): Parameters of the. Defaults to None.
+            machine_parameters (dict, optional): Parameters of the CUDA-capable GPUs.
+            Defaults to None.
 
         Raises:
             ValueError: when the given machine parameters are not valid.
@@ -268,11 +271,13 @@ class CCVMSolver(ABC):
             system equipped with CUDA-capable GPUs.
 
             Args:
-                matching_df (DataFrame): The necessary data to calculate the average energy.
+                matching_df (DataFrame): The necessary data to calculate the average
+                    energy.
                 problem_size (int): The size of the problem.
 
             Raises:
-                ValueError: when the given dataframe does not contain the required columns.
+                ValueError: when the given dataframe does not contain the required
+                    columns.
 
             Returns:
                 float: The average power consumption of the solver.
@@ -301,8 +306,8 @@ class CCVMSolver(ABC):
             ValueError: If the given machine is not a valid machine type.
             ValueError: If there is a mismatch between the solver and the machine type.
         Returns:
-            Callable: A callable function that calculates the average energy consumption of
-            the solver based on the given machine type.
+            Callable: A callable function that calculates the average energy consumption
+                of the solver based on the given machine type.
         """
         solver_energy_methods = {
             "cpu": self._cpu_machine_energy,

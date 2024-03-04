@@ -97,14 +97,16 @@ class TestCCVMSolver(TestCase):
         )
 
     def test_method_selector_valid(self):
-        """Test that method_selector set the correct methods when valid inputs are passed"""
+        """Test that method_selector set the correct methods when valid inputs are
+        passed."""
         self.solver._method_selector("boxqp")
         assert self.solver.calculate_grads == self.solver._calculate_grads_boxqp
         assert self.solver.change_variables == self.solver._change_variables_boxqp
         assert self.solver.fit_to_constraints == self.solver._fit_to_constraints_boxqp
 
     def test_method_selector_invalid(self):
-        """Test that method_selector raises a ValueError when an invalid input is passed"""
+        """Test that method_selector raises a ValueError when an invalid input is
+        passed."""
         invalid_problem_category = "invalid_problem_category"
         with self.assertRaises(ValueError) as error:
             self.solver._method_selector(invalid_problem_category)
@@ -114,19 +116,20 @@ class TestCCVMSolver(TestCase):
             == f"The given instance is not a valid problem category. Given category: {invalid_problem_category}"
         )
 
-    def test_validate_dataframe_columns_success(self):
-        """Test that _validate_dataframe_columns does not raise an error when the dataframe"""
+    def test_validate_machine_energy_dataframe_columns_success(self):
+        """Test that _validate_machine_energy_dataframe_columns does not raise an error
+        when the dataframe contains the expected column names"""
 
         dataframe = pd.DataFrame(
             {"pp_time": [0.5, 0.6, 0.7], "iterations": [100, 200, 300]}
         )
 
         # No exception should be raised
-        self.solver._validate_dataframe_columns(dataframe)
+        self.solver._validate_machine_energy_dataframe_columns(dataframe)
 
-    def test_validate_dataframe_columns_missing_columns(self):
-        """Test that _validate_dataframe_columns raises an error when the dataframe is
-        missing columns"""
+    def test_validate_machine_energy_dataframe_columns_missing_columns(self):
+        """Test that _validate_machine_energy_dataframe_columns raises an error when the
+        dataframe is missing columns"""
         # "iterations" column is missing
         dataframe = pd.DataFrame(
             {
@@ -135,10 +138,11 @@ class TestCCVMSolver(TestCase):
         )
 
         with self.assertRaises(ValueError):
-            self.solver._validate_dataframe_columns(dataframe)
+            self.solver._validate_machine_energy_dataframe_columns(dataframe)
 
     def test_extra_columns(self):
-        """Test that _validate_dataframe_columns ignores extra columns in the dataframe"""
+        """Test that _validate_machine_energy_dataframe_columns ignores extra columns in
+        the dataframe."""
 
         dataframe = pd.DataFrame(
             {
@@ -149,7 +153,7 @@ class TestCCVMSolver(TestCase):
         )
 
         # No exception should be raised
-        self.solver._validate_dataframe_columns(dataframe)
+        self.solver._validate_machine_energy_dataframe_columns(dataframe)
 
     def test_machine_energy_invalid_machine_type(self):
         """Test if ValueError is raised when machine type is invalid."""
@@ -177,7 +181,8 @@ class TestCCVMSolver(TestCase):
         self.dl_solver._cuda_machine_energy.assert_called_once_with(None)
 
     def test_machine_energy_dl_solver_with_dl_machine(self):
-        """Test if machine_energy works correctly when machine type is dl-ccvm for DLSolver."""
+        """Test if machine_energy works correctly when machine type is dl-ccvm for
+        DLSolver."""
         self.dl_solver._optics_machine_energy = MagicMock(return_value=42.0)
         machine_parameters = {
             "laser_power": 1200e-6,
@@ -219,7 +224,8 @@ class TestCCVMSolver(TestCase):
         self.mf_solver._cuda_machine_energy.assert_called_once_with(None)
 
     def test_machine_energy_mf_solver_with_mf_machine(self):
-        """Test if machine_energy works correctly when machine type is mf-ccvm for MFSolver."""
+        """Test if machine_energy works correctly when machine type is mf-ccvm for
+        MFSolver."""
         self.mf_solver._optics_machine_energy = MagicMock(return_value=43.0)
         machine_parameters = {
             "laser_clock": 100e-12,
@@ -254,21 +260,24 @@ class TestCCVMSolver(TestCase):
         )
 
     def test_machine_energy_langevin_solver_with_cpu_machine(self):
-        """Test if machine_energy works correctly when machine type is cpu for Langevin Solver."""
+        """Test if machine_energy works correctly when machine type is cpu for Langevin
+        Solver."""
         self.langevin_solver._cpu_machine_energy = MagicMock(return_value=40.0)
         machine_energy = self.langevin_solver.machine_energy(MachineType.CPU.value)
         self.assertEqual(machine_energy, 40.0)
         self.langevin_solver._cpu_machine_energy.assert_called_once_with(None)
 
     def test_machine_energy_mf_solver_with_gpu_machine(self):
-        """Test if machine_energy works correctly when machine type is gpu for Langevin Solver."""
+        """Test if machine_energy works correctly when machine type is gpu for Langevin
+        Solver."""
         self.langevin_solver._cuda_machine_energy = MagicMock(return_value=41.0)
         machine_energy = self.langevin_solver.machine_energy(MachineType.GPU.value)
         self.assertEqual(machine_energy, 41.0)
         self.langevin_solver._cuda_machine_energy.assert_called_once_with(None)
 
     def test_machine_energy_langevin_solver_with_fpga_machine(self):
-        """Test if machine_energy works correctly when machine type is fpga for LangevinSolver."""
+        """Test if machine_energy works correctly when machine type is fpga for
+        LangevinSolver."""
         self.langevin_solver._fpga_machine_energy = MagicMock(return_value=44.0)
 
         machine_parameters = {

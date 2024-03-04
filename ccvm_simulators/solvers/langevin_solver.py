@@ -85,7 +85,8 @@ class LangevinSolver(CCVMSolver):
             With values, the parameter key might look like this::
 
                 {
-                    20: {"dt": 0.005, "iterations": 15000, "sigma":0.02, "feedback_scale": 1.0}
+                    20: {"dt": 0.005, "iterations": 15000, "sigma":0.02,
+                    "feedback_scale": 1.0}
                 }
 
         Raises:
@@ -191,8 +192,8 @@ class LangevinSolver(CCVMSolver):
             file. Expected Dimensions: problem_size x num_samples
             s_sample (torch.Tensor): The sample of quadrature amplitudes to add to the
             file. Expected Dimensions: problem_size x num_samples
-            evolution_file_object (io.TextIOWrapper): The file object of the file to save
-            the samples to.
+            evolution_file_object (io.TextIOWrapper): The file object of the file to
+                save the samples to.
         """
         # Save the c samples to the file
         c_rows = c_sample.shape[0]  # problem_size
@@ -254,7 +255,8 @@ class LangevinSolver(CCVMSolver):
         solver simulating on a fpga machine.
 
         Args:
-            machine_parameters (dict, optional): Parameters of the machine. Defaults to None.
+            machine_parameters (dict, optional): Parameters of the fpga machine.
+                Defaults to None.
 
         Returns:
             Callable: a function that takes the problem size as input and returns the
@@ -310,8 +312,9 @@ class LangevinSolver(CCVMSolver):
             feedback_scale (float): feedback scale.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
-                At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
+                At the end of the solve process, the best batch of sampled values will
+                be written to a file that can be specified by setting the evolution_file
+                parameter.
             samples_taken (int): sample slice.
 
         Returns:
@@ -364,7 +367,8 @@ class LangevinSolver(CCVMSolver):
         samples_taken,
         hyperparameters,
     ):
-        """Solves the given problem instance using the Langevin solver with Adam algorithm.
+        """Solves the given problem instance using the Langevin solver with Adam
+            algorithm.
 
         Args:
             problem_size (int): instance size.
@@ -378,7 +382,8 @@ class LangevinSolver(CCVMSolver):
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
+                will be written to a file that can be specified by setting the
+                evolution_file parameter.
             samples_taken (int): sample slice.
             hyperparameters (dict): Hyperparameters for Adam algorithm.
 
@@ -480,24 +485,29 @@ class LangevinSolver(CCVMSolver):
         evolution_file=None,
         algorithm_parameters=None,
     ):
-        """Solves the given problem instance by choosing one of the available Langevin solvers.
+        """Solves the given problem instance by choosing one of the available Langevin
+            solvers.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            post_processor (str): The name of the post processor to use to process the results of the solver.
-                None if no post processing is desired. Defaults to None.
+            post_processor (str): The name of the post processor to use to process the
+                results of the solver. None if no post processing is desired. Defaults
+                to None.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
-                Defaults to None, meaning no problem variables will be written to the file.
+                will be written to a file that can be specified by setting the
+                evolution_file parameter. Defaults to None, meaning no problem variables
+                will be written to the file.
             evolution_file (str): The file to save the best set of c/s samples to.
                 Only revelant when evolution_step_size is set.
                 If a file already exists with the same name, it will be overwritten.
-                Defaults to None, which generates a filename based on the problem instance name.
-            algorithm_parameters (None, AdamParameters): Specify for the solver to use a specialized algorithm by passing in
-                an instance of the algorithm's parameters class. Options include: AdamParameters.
-                Defaults to None, which uses the original Langevin solver.
+                Defaults to None, which generates a filename based on the problem
+                instance name.
+            algorithm_parameters (None, AdamParameters): Specify for the solver to use a
+                specialized algorithm by passing in an instance of the algorithm's
+                parameters class. Options include: AdamParameters. Defaults to None,
+                which uses the original Langevin solver.
 
         Returns:
             solution (Solution): The solution to the problem instance.
