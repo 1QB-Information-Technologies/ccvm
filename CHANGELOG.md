@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Breaking Changes
-- Removed the TrustConst post-processor from the codebase due to non-usage. This
+- Removed the `TrustConst` post-processor from the codebase due to non-usage. This
   change aims to streamline the code and eliminate unnecessary components.
 - Added a saturation parameter `S` as the input to the `langevin_solver` and removed this
 parameter from the `__init__` function. `S` now has to be provided by the user using
 `solver.parameter_key`.
+- Renamed the `MetadataList` class to `Metadata`, transforming metadata from a list
+  to a dictionary object. The metadata class now requires a device parameter
+  during initialization.
+- Restructured the metadata object to include a `device` field, a
+  `result_metadata` list, and a `metadata_dict`.
 
 ### Fixed
 - Fixed issue where `s` was being updated incorrectly on each iteration  of `DLSolver._solve()`.
@@ -33,6 +38,8 @@ for a single calculation of an instance intead of the time to solve the full bat
 - Optimized default parameters of `dl-ccvm`, `mf-ccvm`, and `langevin_solver` to reflect the findings of our latest research
 - Changed the default value of `num_iter_main` in the `grad_descent` post-processor to produce
 better results for the default value.
+- Updated the `add_metadata` function in the Metadata class to
+  `add_to_result_metadata` for clarity.
 
 ## [1.0.1] - 2023-03-09
 ### Fixed
