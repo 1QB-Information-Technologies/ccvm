@@ -1,27 +1,31 @@
 import json
-import torch
 import os
-from dataclasses import dataclass, field, asdict
 
 
-class MetadataList:
-    """Define the metadata list class."""
+class Metadata:
+    """Define the metadata class."""
 
-    def __init__(self):
-        """The constructor for MetadataList."""
-        # Empty list to store metadata
-        self.metadata_list = []
+    def __init__(self, device):
+        """The constructor for metadata."""
+        self.result_metadata = []
+        self.metadata_dict = {
+            "device": device,
+            "result_metadata": self.result_metadata,
+        }
 
-    def add_metadata(self, metadata):
-        """Add metadata dict to the metadata list.
+    def add_to_result_metadata(self, result_dict):
+        """Add result dict to the result metadata list and update metadata dict.
 
         Args:
-            metadata (dict): The metadata dict to be added to the metadata list.
+            result_dict (dict): The result dict to be added to the result metadata list.
         """
-        self.metadata_list.append(metadata)
+        self.result_metadata.append(result_dict)
+
+        # Update the metadata dict result_metadata list
+        self.metadata_dict["result_metadata"] = self.result_metadata
 
     def save_metadata_to_file(self, file_dir="./metadata", file_name="metadata"):
-        """Save the metadata to the defined file.
+        """Save the metadata dict to the defined file.
 
         Args:
             file_dir (str, optional): The file directory where the
@@ -47,7 +51,7 @@ class MetadataList:
 
         try:
             with open(metadata_file_path, "w") as outfile:
-                json.dump(self.metadata_list, outfile)
+                json.dump(self.metadata_dict, outfile)
                 print(
                     f"Successfully saved metadata to metadata_file_path: {metadata_file_path}"
                 )

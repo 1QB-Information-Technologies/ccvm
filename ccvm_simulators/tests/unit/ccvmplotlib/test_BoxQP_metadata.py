@@ -74,10 +74,11 @@ class TestBoxQPMetadata(TestCase):
         boxqp_metadata.ingest_metadata(self.valid_metadata_filepath)
 
         valid_metadata_json = json.load(open(self.valid_metadata_filepath))
-        valid_batch_size = valid_metadata_json[0]["batch_size"]
+        result_metadata = valid_metadata_json["result_metadata"]
+        valid_batch_size = result_metadata[0]["batch_size"]
 
         problem_size_set: set = set()
-        for data in valid_metadata_json:
+        for data in result_metadata:
             problem_size_set.add(data["problem_size"])
         valid_problem_size_len = len(problem_size_set)
 
