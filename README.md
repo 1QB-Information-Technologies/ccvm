@@ -122,8 +122,8 @@ print(f"The best known solution to this problem is {solution.optimal_value}")
 print(f"The best objective value found by the solver was {solution.best_objective_value}")
 # The best objective value found by the solver was 798.1630859375
 
-print(f"The solving process took {solution.solve_time} seconds")
-# The solving process took 8.949262142181396 seconds
+print(f"The solving process took effectively {solution.solve_time} seconds to solve a single instance")
+# The solving process took 0.008949262142181396 seconds
 ```
 
 ## Documentation
@@ -144,7 +144,7 @@ Thank you for considering making a  contribution to our project! We appreciate y
 
 ## References
 
-This repository contains architectures and simulators presented in the paper ["Non-convex Quadratic Programming Using Coherent Optical Networks"](https://arxiv.org/abs/2209.04415) by Farhad Khosravi, Ugur Yildiz, Artur Scherer, and Pooya Ronagh.
+This repository contains architectures and simulators presented in the paper ["Non-convex Quadratic Programming Using Coherent Optical Networks"](https://arxiv.org/abs/2209.04415) by Farhad Khosravi, Ugur Yildiz, Martin Perreault, Artur Scherer, and Pooya Ronagh.
 
 
 ## License

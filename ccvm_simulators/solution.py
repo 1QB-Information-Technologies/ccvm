@@ -15,7 +15,7 @@ class Solution:
         objective_values (torch.Tensor): The objective values of the solutions
             found by the solver.
         iterations (int): The iteration number for this problem size.
-        solve_time (float): Time to solve the problem.
+        solve_time (float): The effective time to solve the problem instance only once.
         pp_time (float):  Time to post-process the problem.
         optimal_value (float): The optimal objective value for the given problem instance.
         best_value (float): The best objective value for the given problem instance.

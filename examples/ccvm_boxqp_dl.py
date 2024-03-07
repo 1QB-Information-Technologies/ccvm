@@ -14,7 +14,13 @@ if __name__ == "__main__":
 
     # Supply solver parameters for different problem sizes
     solver.parameter_key = {
-        20: {"pump": 2.0, "dt": 0.005, "iterations": 15000, "noise_ratio": 10},
+        20: {
+            "pump": 8.0,
+            "feedback_scale": 100,
+            "dt": 0.001,
+            "iterations": 1500,
+            "noise_ratio": 10,
+        },
     }
 
     # Load test instances to solve

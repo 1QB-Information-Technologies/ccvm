@@ -15,12 +15,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Restructured the metadata object to include a `device` field, a
   `result_metadata` list, and a `metadata_dict`.
 
-### Fixed 
+### Fixed
 - Fixed issue where `s` was being updated incorrectly on each iteration  of `DLSolver._solve()`.
+- Fixed the calculation of `solve_time` and `pp_time` for all solvers to reflect the time
+for a single calculation of an instance intead of the time to solve the full batch
 
 ### Added
 - Added `PumpedLangevinSolver`, which is an extension of `LangevinSolver` to simulate pumped Langevin dynamics with a demo script in the examples directory.
 - Implemented a simple gradient descent post-processing step, as described in the paper, similar to Langevin dynamics but without noise; uses the Euler method with box constraint imposition at each iteration.
+- Added a scaling coefficient for the feedback term in `dl-ccvm` as an input to the solver
 
 ### Changed
 - Streamlined README by relocating and optimizing architecture diagrams.
@@ -29,6 +32,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Consolidated test organization by centralizing all tests under a unified
   `tests` folder, with subdirectories for unit, integration, and test data. This
   enhances accessibility and clarity in managing test-related resources.
+- Optimized default parameters of `dl-ccvm`, `mf-ccvm`, and `langevin_solver` to reflect the findings of our latest research
+- Changed the default value of `num_iter_main` in the `grad_descent` post-processor to produce
+better results for the default value.
 - Updated the `add_metadata` function in the Metadata class to
   `add_to_result_metadata` for clarity.
 
