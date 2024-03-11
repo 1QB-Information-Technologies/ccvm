@@ -134,7 +134,7 @@ class ccvmplotlib:
     def plot_ETS(
         metadata_filepath: str,
         problem: str,
-        energy_max_func: callable,
+        machine_energy_func: callable,
         fig: matplotlib.figure.Figure = None,
         ax: matplotlib.axes.Axes = None,
     ) -> tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]:
@@ -144,7 +144,7 @@ class ccvmplotlib:
         Args:
             metadata_filepath (str): A file path to metadata.
             problem (str): A problem type.
-            energy_max_func (callable): A callback function that calculates the
+            machine_energy_func (callable): A callback function that calculates the
             energy max, which is used to compute the ETS.
             fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure.
             Defaults to None.
@@ -160,9 +160,14 @@ class ccvmplotlib:
         """
         problem_metadata = ProblemMetadataFactory.create_problem_metadata(problem)
         problem_metadata.ingest_metadata(metadata_filepath)
-        plotting_df = problem_metadata.generate_plot_data(metric_func=energy_max_func)
+        plotting_df = problem_metadata.generate_plot_data(
+            metric_func=machine_energy_func
+        )
 
         (fig, ax) = ccvmplotlib.__plot_core(plotting_df, fig, ax)
+
+        # set y axis to log scale
+        plt.yscale("log")
 
         # Make sure x-axis only has integer values
         x_data = plotting_df.index

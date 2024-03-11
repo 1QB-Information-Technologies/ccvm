@@ -1,11 +1,13 @@
-from ccvm_simulators.solvers.ccvm_solver import CCVMSolver
-from ccvm_simulators.solvers.algorithms import AdamParameters
-from ccvm_simulators.solution import Solution
-from ccvm_simulators.post_processor.factory import PostProcessorFactory
 import torch
 import numpy as np
 import torch.distributions as tdist
 import time
+from pandas import DataFrame
+
+from ccvm_simulators.solvers.ccvm_solver import CCVMSolver
+from ccvm_simulators.solvers.algorithms import AdamParameters
+from ccvm_simulators.solution import Solution
+from ccvm_simulators.post_processor.factory import PostProcessorFactory
 
 MF_SCALING_MULTIPLIER = 0.05
 """The value used by the MFSolver when calculating a scaling value in
@@ -37,6 +39,30 @@ class MFSolver(CCVMSolver):
         """
         super().__init__(device)
         self.batch_size = batch_size
+        self._default_optics_machine_parameters = {
+            "laser_clock": 100e-12,
+            "FPGA_clock": 3.33e-9,
+            "FPGA_fixed": 34,
+            "FPGA_var_fac": 0.1,
+            "FPGA_power": {
+                20: 15.74,
+                30: 16.97,
+                40: 18.54,
+                50: 20.25,
+                60: 22.08,
+                70: 24.01,
+            },
+            "buffer_time": 3.33e-9,
+            "laser_power": 1000e-6,
+            "postprocessing_power": {
+                20: 4.87,
+                30: 5.14,
+                40: 5.11,
+                50: 5.08,
+                60: 5.09,
+                70: 5.3,
+            },
+        }
         self._scaling_multiplier = MF_SCALING_MULTIPLIER
         # Use the method selector to choose the problem-specific methods to use
         self._method_selector(problem_category)
@@ -211,17 +237,18 @@ class MFSolver(CCVMSolver):
 
     def _append_samples_to_file(self, mu_sample, sigma_sample, evolution_file_object):
         """Saves samples of the mean-field amplitudes and the variance of the in-phase
-        position operator to a file.
-        The end file will contain the values of the mu_sample followed by the sigma_sample.
-        Each line corresponds to a row in the tensor, with tab-delineated values.
+        position operator to a file. The end file will contain the values of the
+        mu_sample followed by the sigma_sample. Each line corresponds to a row in the
+        tensor, with tab-delineated values.
 
         Args:
-            mu_sample (torch.Tensor): The sample of mean-field amplitudes to add to the file.
-            Expected Dimensions: problem_size x num_samples.
-            sigma_sample (torch.Tensor): The sample of the variance of the in-phase position
-            operator to add to the file. Expected Dimensions: problem_size x num_samples.
-            evolution_file_object (io.TextIOWrapper): The file object of the file to save
-            the samples to.
+            mu_sample (torch.Tensor): The sample of mean-field amplitudes to add to the
+                file. Expected Dimensions: problem_size x num_samples.
+            sigma_sample (torch.Tensor): The sample of the variance of the in-phase
+                position operator to add to the file. Expected Dimensions: problem_size
+                x num_samples.
+            evolution_file_object (io.TextIOWrapper): The file object of the file to
+                save the samples to.
         """
         # Save the mu samples to the file
         mu_rows = mu_sample.shape[0]  # problem_size
@@ -243,6 +270,35 @@ class MFSolver(CCVMSolver):
                     evolution_file_object.write("\t")
             evolution_file_object.write("\n")
 
+    def _is_valid_optics_machine_parameters(self, machine_parameters):
+        """Validates that the given optics machine parameters are valid for this solver.
+
+        Args:
+            machine_parameters (dict): The machine parameters to validate.
+
+        Raises:
+            ValueError: If the given machine parameters are invalid.
+        """
+
+        required_keys = [
+            "laser_clock",
+            "FPGA_clock",
+            "FPGA_fixed",
+            "FPGA_var_fac",
+            "FPGA_power",
+            "buffer_time",
+            "laser_power",
+            "postprocessing_power",
+        ]
+
+        # Check that all required keys are present
+        missing_keys = [key for key in required_keys if key not in machine_parameters]
+
+        if missing_keys:
+            raise ValueError(
+                f"Invalid optics_machine_parameters: Missing required keys - {missing_keys}"
+            )
+
     def tune(self, instances, post_processor, g=0.01):
         """Determines the best parameters for the solver to use by adjusting each
         parameter over a number of iterations on the problems in the given set of
@@ -259,6 +315,88 @@ class MFSolver(CCVMSolver):
         # TODO: This implementation is a placeholder; full implementation is a
         #       future consideration
         self.is_tuned = True
+
+    def _optics_machine_energy(
+        self,
+        machine_parameters=None,
+    ):
+        """The wrapper function of calculating the average energy consumption of the
+            solver, as if the solving process was to be performed on an optical DL-CCVM
+            machine.
+
+        Args:
+            machine_parameters (dict, optional): Parameters of the machine. Defaults to
+                None.
+
+        Raises:
+            ValueError: when the given machine parameters are not valid.
+            ValueError: when the given dataframe does not contain the required columns.
+
+        Returns:
+            Callable: A callable function that takes in a dataframe and problem size and
+                returns the average energy consumption of the solver.
+        """
+        if machine_parameters is None:
+            machine_parameters = self._default_optics_machine_parameters
+        else:
+            self._is_valid_optics_machine_parameters(machine_parameters)
+
+        def _optics_machine_energy_callable(
+            matching_df: DataFrame,
+            problem_size: int,
+        ):
+            """Calculate the average energy consumption of the solver simulating on a
+                MF-CCVM machine.
+
+            Args:
+                matching_df (DataFrame): The necessary data to calculate the average
+                    energy.
+                problem_size (int): The size of the problem.
+
+            Raises:
+                ValueError: when the given dataframe does not contain the required
+                    columns.
+
+            Returns:
+                float: The average energy consumption of the solver.
+            """
+            self._validate_machine_energy_dataframe_columns(matching_df)
+
+            try:
+                pump = self.parameter_key[problem_size]["pump"]
+                measure_strength = self.parameter_key[problem_size]["j"]
+            except KeyError as e:
+                raise KeyError(
+                    f"The parameter '{e.args[0]}' for the given instance size: {problem_size} is not defined."
+                ) from e
+
+            iterations = np.mean(matching_df["iterations"].values)
+            postprocessing_time = np.mean(matching_df["pp_time"].values)
+            roundtrip_time = (
+                (
+                    machine_parameters["FPGA_fixed"]
+                    + machine_parameters["FPGA_var_fac"] * float(problem_size)
+                )
+                * machine_parameters["FPGA_clock"]
+                + float(problem_size) * machine_parameters["laser_clock"]
+                + machine_parameters["buffer_time"]
+            )
+            optics_power = machine_parameters["FPGA_power"][
+                problem_size
+            ] + machine_parameters["laser_power"] * (pump + 1 + measure_strength)
+            optics_energy = (
+                roundtrip_time * optics_power
+                - machine_parameters["FPGA_power"][problem_size]
+                * machine_parameters["buffer_time"]
+            ) * iterations
+            postprocessing_energy = (
+                machine_parameters["postprocessing_power"][problem_size]
+                * postprocessing_time
+            )
+            machine_energy = optics_energy + postprocessing_energy
+            return machine_energy
+
+        return _optics_machine_energy_callable
 
     def _solve(
         self,
@@ -289,12 +427,13 @@ class MFSolver(CCVMSolver):
             iterations (int): number of steps.
             noise_ratio (float): noise ratio.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number.
+                iteration number.
             g (float): The nonlinearity coefficient.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
+                will be written to a file that can be specified by setting the
+                evolution_file parameter.
             samples_taken (int): sample slice.
 
         Returns:
@@ -376,8 +515,8 @@ class MFSolver(CCVMSolver):
         samples_taken,
         hyperparameters,
     ):
-        """Solves the given problem instance using the MF-CCVM solver with Adam algorithm
-        tuned or specified parameters in the parameter key.
+        """Solves the given problem instance using the MF-CCVM solver with Adam
+        algorithm tuned or specified parameters in the parameter key.
 
         Args:
             problem_size (int): instance size.
@@ -389,12 +528,13 @@ class MFSolver(CCVMSolver):
             iterations (int): number of steps.
             noise_ratio (float): noise ratio.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number.
+                iteration number.
             g (float): The nonlinearity coefficient.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
+                will be written to a file that can be specified by setting the
+                evolution_file parameter.
             samples_taken (int): sample slice.
             hyperparameters (dict): Hyperparameters for Adam algorithm.
 
@@ -549,18 +689,20 @@ class MFSolver(CCVMSolver):
             pump_rate_flag (bool, optional): Whether or not to scale the pump rate
                 based on the iteration number. If False, the pump rate will be 1.0.
                 Defaults to True.
-            evolution_step_size (int): If set, the mu/sigma values will be sampled once per number of
-                iterations equivalent to the value of this variable. At the end of the solve process,
-                the best batch of sampled values will be written to a file that can be specified by
-                setting the evolution_file parameter.Defaults to None, meaning no problem variables
-                will be written to the file.
-            evolution_file (str): The file to save the best set of mu/sigma samples to. Only revelant
-                when evolution_step_size is set. If a file already exists with the same name,
-                it will be overwritten. Defaults to None, which generates a filename based on
-                the problem instance name.
-            algorithm_parameters (None, AdamParameters): Specify for the solver to use a specialized algorithm by passing in
-                an instance of the algorithm's parameters class. Options include: AdamParameters.
-                Defaults to None, which uses the original MF solver.
+            evolution_step_size (int): If set, the mu/sigma values will be sampled once
+                per number of iterations equivalent to the value of this variable. At
+                the end of the solve process, the best batch of sampled values will be
+                written to a file that can be specified by setting the evolution_file
+                parameter.Defaults to None, meaning no problem variables will be written
+                to the file.
+            evolution_file (str): The file to save the best set of mu/sigma samples to.
+                Only revelant when evolution_step_size is set. If a file already exists
+                with the same name, it will be overwritten. Defaults to None, which
+                generates a filename based on the problem instance name.
+            algorithm_parameters (None, AdamParameters): Specify for the solver to use a
+                specialized algorithm by passing in an instance of the algorithm's
+                parameters class. Options include: AdamParameters. Defaults to None,
+                which uses the original MF solver.
 
         Returns:
             solution (Solution): The solution to the problem instance.

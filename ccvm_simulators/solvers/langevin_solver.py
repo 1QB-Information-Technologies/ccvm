@@ -1,11 +1,13 @@
-from ccvm_simulators.solvers import CCVMSolver
-from ccvm_simulators.solvers.algorithms import AdamParameters
-from ccvm_simulators.solution import Solution
-from ccvm_simulators.post_processor.factory import PostProcessorFactory
 import torch
 import numpy as np
 import torch.distributions as tdist
 import time
+from pandas import DataFrame
+
+from ccvm_simulators.solvers import CCVMSolver
+from ccvm_simulators.solvers.algorithms import AdamParameters
+from ccvm_simulators.solution import Solution
+from ccvm_simulators.post_processor.factory import PostProcessorFactory
 
 LANGEVIN_SCALING_MULTIPLIER = 0.05
 """The value used by the LangevinSolver when calculating a scaling value in
@@ -42,6 +44,24 @@ class LangevinSolver(CCVMSolver):
         self._scaling_multiplier = LANGEVIN_SCALING_MULTIPLIER
         # Use the method selector to choose the problem-specific methods to use
         self._method_selector(problem_category)
+        self._default_fpga_machine_parameters = {
+            "fpga_power": {
+                20: 17.18,
+                30: 18.13,
+                40: 18.45,
+                50: 19.03,
+                60: 19.22,
+                70: 19.32,
+            },
+            "fpga_runtimes": {
+                20: 133e-6,
+                30: 265e-6,
+                40: 327e-6,
+                50: 437e-6,
+                60: 511e-6,
+                70: 662e-6,
+            },
+        }
 
     @property
     def parameter_key(self):
@@ -63,7 +83,8 @@ class LangevinSolver(CCVMSolver):
             With values, the parameter key might look like this::
 
                 {
-                    20: {"dt": 0.005, "iterations": 15000, "sigma":0.02, "feedback_scale": 1.0}
+                    20: {"dt": 0.005, "iterations": 15000, "sigma":0.02,
+                    "feedback_scale": 1.0}
                 }
 
         Raises:
@@ -169,8 +190,8 @@ class LangevinSolver(CCVMSolver):
             file. Expected Dimensions: problem_size x num_samples
             s_sample (torch.Tensor): The sample of quadrature amplitudes to add to the
             file. Expected Dimensions: problem_size x num_samples
-            evolution_file_object (io.TextIOWrapper): The file object of the file to save
-            the samples to.
+            evolution_file_object (io.TextIOWrapper): The file object of the file to
+                save the samples to.
         """
         # Save the c samples to the file
         c_rows = c_sample.shape[0]  # problem_size
@@ -190,6 +211,24 @@ class LangevinSolver(CCVMSolver):
                 evolution_file_object.write("\t")
             evolution_file_object.write("\n")
 
+    def _validate_fpga_machine_parameters(self, machine_parameters):
+        """Validates that the given fpga machine parameters are valid for this solver.
+
+        Args:
+            machine_parameters (dict): The machine parameters to validate.
+
+        Raises:
+            ValueError: If the given machine parameters are invalid.
+        """
+        required_keys = ["fpga_power", "fpga_runtimes"]
+
+        missing_keys = [key for key in required_keys if key not in machine_parameters]
+
+        if missing_keys:
+            raise ValueError(
+                f"Invalid fpga_machine_parameters: Missing required keys - {missing_keys}"
+            )
+
     def tune(self, instances, post_processor=None, pump_rate_flag=True, g=0.05):
         """Determines the best parameters for the solver to use by adjusting each
         parameter over a number of iterations on the problems in the given set of
@@ -208,6 +247,42 @@ class LangevinSolver(CCVMSolver):
         # TODO: This implementation is a placeholder; full implementation is a
         #       future consideration
         self.is_tuned = True
+
+    def _fpga_machine_energy(self, machine_parameters=None):
+        """The wrapper function of calculating the average energy consumption of the
+        solver simulating on a fpga machine.
+
+        Args:
+            machine_parameters (dict, optional): Parameters of the fpga machine.
+                Defaults to None.
+
+        Returns:
+            Callable: a function that takes the problem size as input and returns the
+                average energy consumption.
+        """
+        # Set default machine parameters if none are given
+        if machine_parameters is None:
+            machine_parameters = self._default_fpga_machine_parameters
+        else:
+            self._validate_fpga_machine_parameters(machine_parameters)
+
+        def _fpga_machine_energy_callable(matching_df: DataFrame, problem_size: int):
+            """The function that takes the problem size as input and returns the average
+            energy consumption.
+
+            Args:
+                matching_df (DataFrame): The data to calculate the average energy.
+                problem_size (int): The problem size to calculate the average energy.
+
+            Returns:
+                float: The average energy consumption.
+            """
+            machine_time = machine_parameters["fpga_runtimes"][problem_size]
+            machine_power = machine_parameters["fpga_power"][problem_size]
+            machine_energy = machine_power * machine_time
+            return machine_energy
+
+        return _fpga_machine_energy_callable
 
     def _solve(
         self,
@@ -235,8 +310,9 @@ class LangevinSolver(CCVMSolver):
             feedback_scale (float): feedback scale.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
-                At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
+                At the end of the solve process, the best batch of sampled values will
+                be written to a file that can be specified by setting the evolution_file
+                parameter.
             samples_taken (int): sample slice.
 
         Returns:
@@ -289,7 +365,8 @@ class LangevinSolver(CCVMSolver):
         samples_taken,
         hyperparameters,
     ):
-        """Solves the given problem instance using the Langevin solver with Adam algorithm.
+        """Solves the given problem instance using the Langevin solver with Adam
+            algorithm.
 
         Args:
             problem_size (int): instance size.
@@ -303,7 +380,8 @@ class LangevinSolver(CCVMSolver):
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
+                will be written to a file that can be specified by setting the
+                evolution_file parameter.
             samples_taken (int): sample slice.
             hyperparameters (dict): Hyperparameters for Adam algorithm.
 
@@ -405,24 +483,29 @@ class LangevinSolver(CCVMSolver):
         evolution_file=None,
         algorithm_parameters=None,
     ):
-        """Solves the given problem instance by choosing one of the available Langevin solvers.
+        """Solves the given problem instance by choosing one of the available Langevin
+            solvers.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            post_processor (str): The name of the post processor to use to process the results of the solver.
-                None if no post processing is desired. Defaults to None.
+            post_processor (str): The name of the post processor to use to process the
+                results of the solver. None if no post processing is desired. Defaults
+                to None.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
-                Defaults to None, meaning no problem variables will be written to the file.
+                will be written to a file that can be specified by setting the
+                evolution_file parameter. Defaults to None, meaning no problem variables
+                will be written to the file.
             evolution_file (str): The file to save the best set of c/s samples to.
                 Only revelant when evolution_step_size is set.
                 If a file already exists with the same name, it will be overwritten.
-                Defaults to None, which generates a filename based on the problem instance name.
-            algorithm_parameters (None, AdamParameters): Specify for the solver to use a specialized algorithm by passing in
-                an instance of the algorithm's parameters class. Options include: AdamParameters.
-                Defaults to None, which uses the original Langevin solver.
+                Defaults to None, which generates a filename based on the problem
+                instance name.
+            algorithm_parameters (None, AdamParameters): Specify for the solver to use a
+                specialized algorithm by passing in an instance of the algorithm's
+                parameters class. Options include: AdamParameters. Defaults to None,
+                which uses the original Langevin solver.
 
         Returns:
             solution (Solution): The solution to the problem instance.

@@ -32,9 +32,9 @@ class TestBoxQPMetadata(TestCase):
                 "cpu_power": {20: 5.0, 30: 5.0, 40: 5.0, 50: 5.0, 60: 5.0, 70: 5.0}
             }
             machine_time = np.mean(matching_df["solve_time"].values)
-            power_max = machine_parameters["cpu_power"][problem_size]
-            energy_max = power_max * machine_time
-            return energy_max
+            machine_power = machine_parameters["cpu_power"][problem_size]
+            machine_energy = machine_power * machine_time
+            return machine_energy
 
         def invalid_func() -> float:
             return

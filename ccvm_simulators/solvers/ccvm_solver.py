@@ -1,6 +1,8 @@
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 import torch
 import enum
+import numpy as np
+from pandas import DataFrame
 
 
 class DeviceType(enum.Enum):
@@ -8,6 +10,16 @@ class DeviceType(enum.Enum):
 
     CPU_DEVICE = "cpu"
     CUDA_DEVICE = "cuda"
+
+
+class MachineType(enum.Enum):
+    """The type of machine we are simulating."""
+
+    CPU = "cpu"
+    GPU = "gpu"
+    FPGA = "fpga"
+    DL_CCVM = "dl-ccvm"
+    MF_CCVM = "mf-ccvm"
 
 
 class CCVMSolver(ABC):
@@ -25,6 +37,19 @@ class CCVMSolver(ABC):
         self._is_tuned = False
         self._scaling_multiplier = None
         self._parameter_key = None
+        self._default_cpu_machine_parameters = {
+            "cpu_power": {20: 4.93, 30: 5.19, 40: 5.0, 50: 5.01, 60: 5.0, 70: 5.22}
+        }
+        self._default_cuda_machine_parameters = {
+            "gpu_power": {
+                20: 28.93,
+                30: 29.8,
+                40: 31.09,
+                50: 31.29,
+                60: 31.49,
+                70: 32.28,
+            }
+        }
         self.calculate_grads = None
         self.change_variables = None
         self.fit_to_constraints = None
@@ -115,7 +140,8 @@ class CCVMSolver(ABC):
             q_matrix (torch.tensor): The Q matrix describing the BoxQP problem
 
         Returns:
-            float: The recommended scaling factor to be use to scale the problem for this solver
+            float: The recommended scaling factor to be use to scale the problem for
+                this solver.
         """
         # Calculate the scaling value from the problem's quadratic terms
         scaling_val = (
@@ -142,3 +168,173 @@ class CCVMSolver(ABC):
                 "The given instance is not a valid problem category."
                 f" Given category: {problem_category}"
             )
+
+    def _validate_machine_energy_dataframe_columns(self, dataframe):
+        """Validates that the given dataframe contains the required columns when
+        calculating optics machine energy on DL-CCVM and MF-CCVM solvers.
+
+        Args:
+            dataframe (DataFrame): The dataframe to validate.
+
+        Raises:
+            ValueError: If the given dataframe is missing any of the required columns.
+        """
+        required_columns = ["pp_time", "iterations"]
+
+        missing_columns = [
+            col for col in required_columns if col not in dataframe.columns
+        ]
+
+        if missing_columns:
+            raise ValueError(
+                f"The given dataframe is missing the following columns: {missing_columns}"
+            )
+
+    def _cpu_machine_energy(self, machine_parameters: dict = None):
+        """The wrapper function of calculating the average energy consumption of the
+        solver simulating on a CPU machine.
+
+        Args:
+            machine_parameters (dict, optional): Parameters of the CPU. Defaults to None.
+
+        Raises:
+            ValueError: when the given machine parameters are not valid.
+            ValueError: when the given dataframe does not contain the required columns.
+
+        Returns:
+            Callable: A callable function that takes in a dataframe and problem size and
+                returns the average energy consumption of the solver.
+        """
+        if machine_parameters is None:
+            machine_parameters = self._default_cpu_machine_parameters
+        else:
+            if "cpu_power" not in machine_parameters.keys():
+                raise ValueError(
+                    "The given machine parameters are not valid. "
+                    "The dictionary must contain the key 'cpu_power'"
+                )
+
+        def _cpu_machine_energy_callable(matching_df: DataFrame, problem_size: int):
+            """Calculate the average energy consumption of the solver simulating on a
+            cpu machine.
+
+            Args:
+                matching_df (DataFrame): The necessary data to calculate the average
+                    energy.
+                problem_size (int): The size of the problem.
+
+            Raises:
+                ValueError: when the given dataframe does not contain the required
+                    columns.
+
+            Returns:
+                float: The average energy consumption of the solver.
+            """
+            if "solve_time" not in matching_df.columns:
+                raise ValueError(
+                    "The given dataframe does not contain the column 'solve_time'"
+                )
+            machine_time = np.mean(matching_df["solve_time"].values)
+            machine_power = machine_parameters["cpu_power"][problem_size]
+            machine_energy = machine_power * machine_time
+            return machine_energy
+
+        return _cpu_machine_energy_callable
+
+    def _cuda_machine_energy(self, machine_parameters: dict = None):
+        """The wrapper function of calculating the average energy consumption of the
+        solver simulating on system equipped with CUDA-capable GPUs.
+
+        Args:
+            machine_parameters (dict, optional): Parameters of the CUDA-capable GPUs.
+            Defaults to None.
+
+        Raises:
+            ValueError: when the given machine parameters are not valid.
+            ValueError: when the given dataframe does not contain the required columns.
+
+        Returns:
+            Callable: A callable function that takes in a dataframe and problem size and
+                returns the average energy consumption of the solver.
+        """
+        if machine_parameters is None:
+            machine_parameters = self._default_cuda_machine_parameters
+        else:
+            if "gpu_power" not in machine_parameters.keys():
+                raise ValueError(
+                    "The given machine parameters are not valid. "
+                    "The dictionary must contain the key 'gpu_power'"
+                )
+
+        def _cuda_machine_energy_callable(matching_df: DataFrame, problem_size: int):
+            """Calculate the average energy consumption of the solver simulating on a
+            system equipped with CUDA-capable GPUs.
+
+            Args:
+                matching_df (DataFrame): The necessary data to calculate the average
+                    energy.
+                problem_size (int): The size of the problem.
+
+            Raises:
+                ValueError: when the given dataframe does not contain the required
+                    columns.
+
+            Returns:
+                float: The average power consumption of the solver.
+            """
+            if "solve_time" not in matching_df.columns:
+                raise ValueError(
+                    "The given dataframe does not contain the column 'solve_time'"
+                )
+
+            machine_time = np.mean(matching_df["solve_time"].values)
+            machine_power = machine_parameters["gpu_power"][problem_size]
+            machine_energy = machine_power * machine_time
+            return machine_energy
+
+        return _cuda_machine_energy_callable
+
+    def machine_energy(self, machine: str, machine_parameters: dict = None):
+        """Calculates the average energy consumed by the specified hardware for a given
+        problem size.
+
+        Args:
+            machine (str): The type of machine to calculate the average energy consumption.
+            machine_parameters (dict): Parameters of the machine. Defaults to None.
+
+        Raises:
+            ValueError: If the given machine is not a valid machine type.
+            ValueError: If there is a mismatch between the solver and the machine type.
+        Returns:
+            Callable: A callable function that calculates the average energy consumption
+                of the solver based on the given machine type.
+        """
+        solver_energy_methods = {
+            "cpu": self._cpu_machine_energy,
+            "gpu": self._cuda_machine_energy,
+            "dl-ccvm": self._optics_machine_energy
+            if self.__class__.__name__ == "DLSolver"
+            else None,
+            "mf-ccvm": self._optics_machine_energy
+            if self.__class__.__name__ == "MFSolver"
+            else None,
+            "fpga": self._fpga_machine_energy
+            if self.__class__.__name__ == "LangevinSolver"
+            else None,
+        }
+
+        if machine not in solver_energy_methods:
+            raise ValueError(
+                f"The given machine type is not valid. "
+                f"The machine type must be one of {', '.join(solver_energy_methods.keys())}"
+            )
+
+        energy_method = solver_energy_methods[machine]
+
+        if not energy_method:
+            raise ValueError(
+                f"Mismatch between the solver and the machine type. "
+                f"Provided machine type: {machine}, solver type: {self.__class__.__name__}"
+            )
+
+        return energy_method(machine_parameters)

@@ -89,7 +89,7 @@ class BoxQPMetadata(ProblemMetadata):
 
         Args:
             metric_func (callable): A callback function that is used when calculating
-            the metrics either to determine the `machine_time` or the `energy_max`,
+            the metrics either to determine the `machine_time` or the `machine_energy`,
             which are used when computing the TTS or ETS, respectively.
         Returns:
             (pd.Series): The time to solution for each problem size.
@@ -130,9 +130,9 @@ class BoxQPMetadata(ProblemMetadata):
                         R99 = np.mean(R99_distribution)
 
                     mean_metric = metric_value * R99
-                    plotting_df.at[problem_size, (percent_gap, percentile)] = (
-                        mean_metric
-                    )
+                    plotting_df.at[
+                        problem_size, (percent_gap, percentile)
+                    ] = mean_metric
 
         return plotting_df
 
@@ -162,8 +162,8 @@ class BoxQPMetadata(ProblemMetadata):
                     )
                 )
 
-                plotting_df.at[problem_size, (percent_gap, "success_prob")] = (
-                    mean_success_prob
-                )
+                plotting_df.at[
+                    problem_size, (percent_gap, "success_prob")
+                ] = mean_success_prob
 
         return plotting_df

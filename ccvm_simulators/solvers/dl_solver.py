@@ -1,11 +1,13 @@
-from ccvm_simulators.solvers import CCVMSolver
-from ccvm_simulators.solvers.algorithms import AdamParameters
-from ccvm_simulators.solution import Solution
-from ccvm_simulators.post_processor.factory import PostProcessorFactory
 import torch
 import numpy as np
 import torch.distributions as tdist
 import time
+from pandas import DataFrame
+
+from ccvm_simulators.solvers import CCVMSolver
+from ccvm_simulators.solvers.algorithms import AdamParameters
+from ccvm_simulators.solution import Solution
+from ccvm_simulators.post_processor.factory import PostProcessorFactory
 
 DL_SCALING_MULTIPLIER = 0.2
 """The value used by the DLSolver when calculating a scaling value in
@@ -41,6 +43,23 @@ class DLSolver(CCVMSolver):
         super().__init__(device)
         self.batch_size = batch_size
         self.S = S
+        self._default_optics_machine_parameters = {
+            "laser_power": 1200e-6,
+            "modulators_power": 10e-3,
+            "squeezing_power": 180e-3,
+            "electronics_power": 0.0,
+            "amplifiers_power": 222.2e-3,
+            "electronics_latency": 1e-9,
+            "laser_clock": 10e-12,
+            "postprocessing_power": {
+                20: 4.96,
+                30: 5.1,
+                40: 4.95,
+                50: 5.26,
+                60: 5.11,
+                70: 5.09,
+            },
+        }
         self._scaling_multiplier = DL_SCALING_MULTIPLIER
         # Use the method selector to choose the problem-specific methods to use
         self._method_selector(problem_category)
@@ -103,7 +122,8 @@ class DLSolver(CCVMSolver):
             c (torch.Tensor): In-phase amplitudes of the solver
             s (torch.Tensor): Quadrature amplitudes of the solver
             pump (float): The maximum pump field strength
-            rate (float): The multiplier for the pump field strength at a given instance of time.
+            rate (float): The multiplier for the pump field strength at a given instance
+            of time.
             S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
@@ -188,11 +208,11 @@ class DLSolver(CCVMSolver):
 
         Args:
             c_sample (torch.Tensor): The sample of in-phase amplitudes to add to the
-            file. Expected Dimensions: problem_size x num_samples
+                file. Expected Dimensions: problem_size x num_samples.
             s_sample (torch.Tensor): The sample of quadrature amplitudes to add to the
-            file. Expected Dimensions: problem_size x num_samples
-            evolution_file_object (io.TextIOWrapper): The file object of the file to save
-            the samples to.
+                file. Expected Dimensions: problem_size x num_samples.
+            evolution_file_object (io.TextIOWrapper): The file object of the file to
+                save the samples to.
         """
         # Save the c samples to the file
         c_rows = c_sample.shape[0]  # problem_size
@@ -212,6 +232,35 @@ class DLSolver(CCVMSolver):
                 evolution_file_object.write("\t")
             evolution_file_object.write("\n")
 
+    def _is_valid_optics_machine_parameters(self, machine_parameters):
+        """Validates that the given optics machine parameters are valid for this solver.
+
+        Args:
+            machine_parameters (dict): The machine parameters to validate.
+
+        Raises:
+            ValueError: If the given machine parameters are invalid.
+        """
+
+        required_keys = [
+            "laser_power",
+            "modulators_power",
+            "squeezing_power",
+            "electronics_power",
+            "amplifiers_power",
+            "electronics_latency",
+            "laser_clock",
+            "postprocessing_power",
+        ]
+
+        # Check that all required keys are present
+        missing_keys = [key for key in required_keys if key not in machine_parameters]
+
+        if missing_keys:
+            raise ValueError(
+                f"Invalid optics_machine_parameters: Missing required keys - {missing_keys}"
+            )
+
     def tune(self, instances, post_processor=None, pump_rate_flag=True, g=0.05):
         """Determines the best parameters for the solver to use by adjusting each
         parameter over a number of iterations on the problems in the given set of
@@ -230,6 +279,83 @@ class DLSolver(CCVMSolver):
         # TODO: This implementation is a placeholder; full implementation is a
         #       future consideration
         self.is_tuned = True
+
+    def _optics_machine_energy(self, machine_parameters=None):
+        """The wrapper function of calculating the average energy consumption of the
+            solver, as if the solving process was to be performed on an optical DL-CCVM
+            machine.
+
+        Args:
+            machine_parameters (dict, optional): Parameters of the optical DL-CCVM
+                machine. Defaults to None.
+
+        Raises:
+            ValueError: when the given machine parameters are not valid.
+            ValueError: when the given dataframe does not contain the required columns.
+
+        Returns:
+            Callable: A callable function that takes in a dataframe and problem size and
+                returns the average energy consumption of the solver.
+        """
+
+        if machine_parameters is None:
+            machine_parameters = self._default_optics_machine_parameters
+        else:
+            self._is_valid_optics_machine_parameters(machine_parameters)
+
+        def _optics_machine_energy_callable(matching_df: DataFrame, problem_size: int):
+            """Calculate the average energy consumption of the solver simulating on a
+                DL-CCVM machine.
+
+            Args:
+                matching_df (DataFrame): The necessary data to calculate the average
+                    energy.
+                problem_size (int): The size of the problem.
+
+            Raises:
+                ValueError: when the given dataframe does not contain the required
+                    columns.
+
+            Returns:
+                float: The average energy consumption of the solver.
+            """
+            self._validate_machine_energy_dataframe_columns(matching_df)
+
+            try:
+                pump = self.parameter_key[problem_size]["pump"]
+            except KeyError as e:
+                raise KeyError(
+                    f"Pump for the given instance size: {problem_size} is not defined."
+                )
+
+            T_clock = machine_parameters["laser_clock"]
+            P_opt = machine_parameters["laser_power"]
+            T_elec = machine_parameters["electronics_latency"]
+            P_mod = machine_parameters["modulators_power"]
+            P_sq = machine_parameters["squeezing_power"]
+            P_elec = machine_parameters["electronics_power"]
+            P_opa = machine_parameters["amplifiers_power"]
+            postprocessing_time = np.mean(matching_df["pp_time"].values)
+            iterations = np.mean(matching_df["iterations"].values)
+            optics_energy = (
+                pump * P_opt * T_elec
+                + pump * P_opt * T_clock * float(problem_size)
+                + 2 * P_mod * T_clock * float(problem_size) * (float(problem_size) - 1)
+                + P_sq * T_elec
+                + P_sq * T_clock * float(problem_size)
+                + P_elec * T_elec
+                + P_elec * T_clock * float(problem_size)
+                + P_opa * T_elec * (float(problem_size) - 1)
+                + P_opa * T_clock * float(problem_size) * (float(problem_size) - 1)
+            ) * iterations
+            postprocessing_energy = (
+                machine_parameters["postprocessing_power"][problem_size]
+                * postprocessing_time
+            )
+            machine_energy = optics_energy + postprocessing_energy
+            return machine_energy
+
+        return _optics_machine_energy_callable
 
     def _solve(
         self,
@@ -259,12 +385,13 @@ class DLSolver(CCVMSolver):
             iterations (int): number of steps.
             noise_ratio (float): noise ratio.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number.
+                iteration number.
             g (float): The nonlinearity coefficient.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
+                will be written to a file that can be specified by setting the
+                evolution_file parameter.
             samples_taken (int): sample slice.
 
         Returns:
@@ -343,7 +470,8 @@ class DLSolver(CCVMSolver):
         samples_taken,
         hyperparameters,
     ):
-        """Solves the given problem instance using the DL-CCVM solver with Adam algorithm.
+        """Solves the given problem instance using the DL-CCVM solver with Adam
+            algorithm.
 
         Args:
             problem_size (int): instance size.
@@ -355,12 +483,13 @@ class DLSolver(CCVMSolver):
             iterations (int): number of steps.
             noise_ratio (float): noise ratio.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
-            iteration number.
+                iteration number.
             g (float): The nonlinearity coefficient.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
+                will be written to a file that can be specified by setting the
+                evolution_file parameter.
             samples_taken (int): sample slice.
             hyperparameters (dict): Hyperparameters for Adam algorithm.
 
@@ -533,26 +662,31 @@ class DLSolver(CCVMSolver):
         evolution_file=None,
         algorithm_parameters=None,
     ):
-        """Solves the given problem instance choosing one of the available DL-CCVM solvers.
+        """Solves the given problem instance choosing one of the available DL-CCVM
+            solvers.
 
         Args:
             instance (ProblemInstance): The problem instance to solve.
-            post_processor (str): The name of the post processor to use to process the results of the solver.
-                None if no post processing is desired. Defaults to None.
+            post_processor (str): The name of the post processor to use to process the
+                results of the solver. None if no post processing is desired. Defaults
+                to None.
             pump_rate_flag (bool): Whether or not to scale the pump rate based on the
             iteration number. If False, the pump rate will be 1.0. Defaults to True.
             g (float): The nonlinearity coefficient. Defaults to 0.05.
             evolution_step_size (int): If set, the c/s values will be sampled once
                 per number of iterations equivalent to the value of this variable.
                 At the end of the solve process, the best batch of sampled values
-                will be written to a file that can be specified by setting the evolution_file parameter.
-                Defaults to None, meaning no problem variables will be written to the file.
+                will be written to a file that can be specified by setting the
+                evolution_file parameter. Defaults to None, meaning no problem variables
+                will be written to the file.
             evolution_file (str): The file to save the best set of c/s samples to.
                 Only revelant when evolution_step_size is set.
                 If a file already exists with the same name, it will be overwritten.
-                Defaults to None, which generates a filename based on the problem instance name.
-            algorithm_parameters (None, AdamParameters): Specify for the solver to use a specialized algorithm by passing in
-                an instance of the algorithm's parameters class. Options include: AdamParameters.
+                Defaults to None, which generates a filename based on the problem
+                instance name.
+            algorithm_parameters (None, AdamParameters): Specify for the solver to use a
+                specialized algorithm by passing in an instance of the algorithm's
+                parameters class. Options include: AdamParameters.
                 Defaults to None, which uses the original DL solver.
 
         Returns:
