@@ -20,7 +20,6 @@ class PumpedLangevinSolver(CCVMSolver):
         device,
         problem_category="boxqp",
         batch_size=1000,
-        S=1,
     ):
         """
         Args:
@@ -39,7 +38,6 @@ class PumpedLangevinSolver(CCVMSolver):
         """
         super().__init__(device)
         self.batch_size = batch_size
-        self.S = S
         self._scaling_multiplier = LANGEVIN_SCALING_MULTIPLIER
         # Use the method selector to choose the problem-specific methods to use
         self._method_selector(problem_category)
@@ -76,7 +74,7 @@ class PumpedLangevinSolver(CCVMSolver):
     @parameter_key.setter
     def parameter_key(self, parameters):
         expected_pl_parameter_key_set = set(
-            ["pump", "dt", "iterations", "sigma", "feedback_scale"]
+            ["pump", "dt", "S", "iterations", "sigma", "feedback_scale"]
         )
         parameter_key_list = parameters.values()
         # Iterate over the parameters for each given problem size
@@ -480,7 +478,6 @@ class PumpedLangevinSolver(CCVMSolver):
         self.v_vector = instance.v_vector
 
         # Get solver setup variables
-        S = self.S
         batch_size = self.batch_size
         device = self.device
 
@@ -488,6 +485,7 @@ class PumpedLangevinSolver(CCVMSolver):
         try:
             pump = self.parameter_key[problem_size]["pump"]
             dt = self.parameter_key[problem_size]["dt"]
+            S = self.parameter_key[problem_size]["S"]
             iterations = self.parameter_key[problem_size]["iterations"]
             sigma = self.parameter_key[problem_size]["sigma"]
             feedback_scale = self.parameter_key[problem_size]["feedback_scale"]
