@@ -49,25 +49,10 @@ class DummyConcreteSolver(CCVMSolver):
 
 
 class TestCCVMSolver(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.parameter_key = {
-            20: {
-                "pump": 2.5,
-                "feedback_scale": 400,
-                "j": 399,
-                "S": 20.0,
-                "dt": 0.0025,
-                "iterations": 15000,
-            }
-        }
 
     def setUp(self):
         self.device = DeviceType.CPU_DEVICE.value
         self.solver = DummyConcreteSolver(device=self.device)
-        self.dl_solver = DLSolver(device=self.device)
-        self.mf_solver = MFSolver(device=self.device)
-        self.langevin_solver = LangevinSolver(device=self.device)
 
     def test_constructor_with_invalid_device(self):
         """Test the CCVM solver constructor when pass in invalid device"""
@@ -115,6 +100,16 @@ class TestCCVMSolver(TestCase):
             str(error.exception)
             == f"The given instance is not a valid problem category. Given category: {invalid_problem_category}"
         )
+
+
+class TestCCVMSolverMachineEnergy(TestCase):
+
+    def setUp(self):
+        self.device = DeviceType.CPU_DEVICE.value
+        self.solver = DummyConcreteSolver(device=self.device)
+        self.dl_solver = DLSolver(device=self.device)
+        self.mf_solver = MFSolver(device=self.device)
+        self.langevin_solver = LangevinSolver(device=self.device)
 
     def test_validate_machine_energy_dataframe_columns_success(self):
         """Test that _validate_machine_energy_dataframe_columns does not raise an error
@@ -304,4 +299,56 @@ class TestCCVMSolver(TestCase):
         self.assertEqual(machine_energy, 44.0)
         self.langevin_solver._fpga_machine_energy.assert_called_once_with(
             machine_parameters
+        )
+
+
+class TestCCVMSolverMachineTime(TestCase):
+
+    def setUp(self):
+        self.device = DeviceType.CPU_DEVICE.value
+        self.solver = DummyConcreteSolver(device=self.device)
+        self.dl_solver = DLSolver(device=self.device)
+        self.mf_solver = MFSolver(device=self.device)
+        self.langevin_solver = LangevinSolver(device=self.device)
+
+    def test_machine_time_invalid_machine_type(self):
+        """Test if ValueError is raised when machine type is invalid."""
+        with self.assertRaises(ValueError):
+            self.dl_solver.machine_time("invalid_machine_type")
+
+    # def test_machine_time_mismatch_solver_machine_type(self):
+    #     """Test if ValueError is raised when machine type is not compatible with the solver."""
+    #     with self.assertRaises(ValueError):
+    #         self.langevin_solver.machine_time(MachineType.DL_CCVM.value)
+
+    def test_machine_time_dl_solver_with_cpu_machine(self):
+        """Test if machine_time works correctly when machine type is cpu for
+        DLSolver."""
+        machine_parameters = {}
+        cpu_callable = self.dl_solver.machine_time(
+            machine=MachineType.CPU.value, machine_parameters=machine_parameters
+        )
+
+        # Check that the returned callable outputs the expected value
+        dataframe = pd.DataFrame(data={"solve_time": [40.0, 20.0]})
+        # Size not used by CPU version of this function, but test it can still be passed
+        problem_size = 20
+        self.assertEqual(
+            cpu_callable(dataframe=dataframe, problem_size=problem_size), 30.0
+        )
+
+    def test_machine_time_dl_solver_with_gpu_machine(self):
+        """Test if machine_time works correctly when machine type is gpu for
+        DLSolver."""
+        machine_parameters = {}
+        gpu_callable = self.dl_solver.machine_time(
+            machine=MachineType.GPU.value, machine_parameters=machine_parameters
+        )
+
+        # Check that the returned callable outputs the expected value
+        dataframe = pd.DataFrame(data={"solve_time": [40.0, 20.0]})
+        # Size not used by GPU version of this function, but test it can still be passed
+        problem_size = 20
+        self.assertEqual(
+            gpu_callable(dataframe=dataframe, problem_size=problem_size), 30.0
         )
