@@ -458,7 +458,13 @@ class DLSolver(CCVMSolver):
             noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
 
             c_drift, s_drift = self.calculate_drift(
-                c, s, pump, pump_rate, feedback_scale
+                c,
+                s,
+                pump,
+                pump_rate,
+                feedback_scale,
+                self.solution_bounds[0],
+                self.solution_bounds[1],
             )
             wiener_increment_c = (
                 wiener_dist_c.sample((problem_size,)).transpose(0, 1)

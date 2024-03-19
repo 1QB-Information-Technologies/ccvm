@@ -148,6 +148,8 @@ class MFSolver(CCVMSolver):
         g,
         S,
         fs,
+        lower_limit=0,
+        upper_limit=1,
     ):
         """We treat the SDE that simulates the CIM of NTT as drift
         calculation.
@@ -160,7 +162,9 @@ class MFSolver(CCVMSolver):
             j (float): The measurement strength
             g (float): The nonlinearity coefficient
             S (float): The enforced saturation value
-            fs (float): The coefficient of the feedback term.
+            fs (float): The coefficient of the feedback term
+            lower_limit (float): The lower bound of the box constraint
+            upper_limit (float): The upper bound of the box constraint
 
         Returns:
             tuple: The gradients of the mean-field amplitudes and the variance.
@@ -168,12 +172,21 @@ class MFSolver(CCVMSolver):
         mu_pow = torch.pow(mu, 2)
 
         mu_term1 = (-(1 + j) + pump - g**2 * mu_pow) * mu
+
         mu_term2_1 = (
             -(1 / 4)
-            * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, self.q_matrix))
+            * (
+                torch.einsum(
+                    "bi,ij -> bj",
+                    mu_tilde * (upper_limit - lower_limit) / S
+                    + (upper_limit + lower_limit),
+                    self.q_matrix,
+                )
+            )
+            * (upper_limit - lower_limit)
             / S
         )
-        mu_term2_2 = -self.v_vector / S / 2
+        mu_term2_2 = -self.v_vector * (upper_limit - lower_limit) / (2 * S)
 
         sigma_term1 = 2 * (-(1 + j) + pump - 3 * g**2 * mu_pow) * sigma
         sigma_term2 = -2 * j * (sigma - 0.5).pow(2)
@@ -184,7 +197,7 @@ class MFSolver(CCVMSolver):
 
         return drift_mu, drift_sigma
 
-    def _calculate_grads_boxqp(self, mu_tilde, S, fs):
+    def _calculate_grads_boxqp(self, mu_tilde, S, fs, lower_limit=0, upper_limit=1):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
@@ -193,17 +206,27 @@ class MFSolver(CCVMSolver):
         Args:
             mu_tilde (torch.Tensor): Mean-field measured amplitudes
             S (float): The enforced saturation value
-            fs (float): The coefficient of the feedback term.
+            fs (float): The coefficient of the feedback term
+            lower_limit (float): The lower bound of the box constraints
+            upper_limit (float): The upper bound of the box constraints
 
         Returns:
             tensor: The gradients of the mean-field amplitude.
         """
         mu_term2_1 = (
             -(1 / 4)
-            * (torch.einsum("bi,ij -> bj", mu_tilde / S + 1, self.q_matrix))
+            * (
+                torch.einsum(
+                    "bi,ij -> bj",
+                    mu_tilde * (upper_limit - lower_limit) / S
+                    + (upper_limit + lower_limit),
+                    self.q_matrix,
+                )
+            )
+            * (upper_limit - lower_limit)
             / S
         )
-        mu_term2_2 = -self.v_vector / S / 2
+        mu_term2_2 = -self.v_vector * (upper_limit - lower_limit) / (2 * S)
 
         grads_mu = fs * (mu_term2_1 + mu_term2_2)
 
@@ -481,6 +504,8 @@ class MFSolver(CCVMSolver):
                 g,
                 S,
                 feedback_scale,
+                self.solution_bounds[0],
+                self.solution_bounds[1],
             )
 
             # mu_term3-> mu_diffusion
@@ -622,6 +647,8 @@ class MFSolver(CCVMSolver):
                 mu_tilde_c,
                 S,
                 feedback_scale,
+                self.solution_bounds[0],
+                self.solution_bounds[1],
             )
 
             # Update biased first moment estimate
