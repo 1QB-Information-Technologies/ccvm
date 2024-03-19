@@ -398,7 +398,6 @@ class MFSolver(CCVMSolver):
 
         return _optics_machine_energy_callable
 
-    # TODO before merge: fix wording here (single instance)
     def _optics_machine_time(self, machine_parameters: dict = None):
         """The wrapper function of calculating the average time spent by the
             solver on a single instance, as if the solving process was to be performed on
@@ -421,7 +420,6 @@ class MFSolver(CCVMSolver):
             machine_parameters = self._default_optics_machine_parameters
         else:
             self._is_valid_optics_machine_parameters(machine_parameters)
-            # TODO BEFORE MERGE: verify that the machine parameters here are the ones being used by the callable
 
         def _optics_machine_time_callable(dataframe: DataFrame, problem_size: int):
             """Calculate the average average time spent by the solver on a single instance,
