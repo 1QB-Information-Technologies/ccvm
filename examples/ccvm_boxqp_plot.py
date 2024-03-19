@@ -75,11 +75,6 @@ if __name__ == "__main__":
         os.makedirs(PLOT_OUTPUT_DIR)
         print("Plot folder doesn't exist yet. Creating: ", PLOT_OUTPUT_DIR)
 
-    # # Plotting TTS
-    # # Customize machine time calculating function
-    # def cpu_machine_func(matching_df: pd.DataFrame, **_: any) -> float:
-    #     return np.mean(matching_df["solve_time"].values)
-
     tts_plot_fig, tts_plot_ax = ccvmplotlib.plot_TTS(
         metadata_filepath=metadata_filepath,
         problem="BoxQP",
