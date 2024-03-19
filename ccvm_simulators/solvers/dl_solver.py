@@ -357,7 +357,6 @@ class DLSolver(CCVMSolver):
 
         return _optics_machine_energy_callable
 
-    # TODO before merge: fix wording here (single instance)
     def _optics_machine_time(self, machine_parameters: dict = None):
         """The wrapper function of calculating the average time spent by the
             solver on a single instance, as if the solving process was to be performed on
