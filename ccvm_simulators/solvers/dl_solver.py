@@ -184,7 +184,9 @@ class DLSolver(CCVMSolver):
         Returns:
             torch.Tensor: The changed variables.
         """
-        return 0.5 * (problem_variables / S + 1)
+        return 0.5 * problem_variables / S * (
+            self.solution_bounds[1] - self.solution_bounds[0]
+        ) + 0.5 * (self.solution_bounds[1] + self.solution_bounds[0])
 
     def _fit_to_constraints_boxqp(self, c, lower_clamp, upper_clamp):
         """Clamps the values of c to be within the box constraints
@@ -704,6 +706,7 @@ class DLSolver(CCVMSolver):
         problem_size = instance.problem_size
         self.q_matrix = instance.q_matrix
         self.v_vector = instance.v_vector
+        self.solution_bounds = instance.solution_bounds
 
         # Get solver setup variables
         S = self.S
