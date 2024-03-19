@@ -109,11 +109,13 @@ class PumpedLangevinSolver(CCVMSolver):
         c_pow = torch.pow(c, 2)
         c_drift_0 = torch.einsum("cj,cj -> cj", -1 + p - c_pow, c)
 
-        c_drift = c_drift_0 + feedback_scale * self._calculate_grads_boxqp(c, S)
+        c_drift = c_drift_0 + feedback_scale * self._calculate_grads_boxqp(
+            c, self.solution_bounds[0], self.solution_bounds[1], S
+        )
 
         return c_drift
 
-    def _calculate_grads_boxqp(self, c, S=1):
+    def _calculate_grads_boxqp(self, c, lower_limit=0, upper_limit=1, S=1):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
@@ -121,15 +123,24 @@ class PumpedLangevinSolver(CCVMSolver):
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
-
+            lower_limit (float): Lower limit of the box constraint. Defaults to 0.
+            upper_limit (float): Upper limit of the box constraint. Defaults to 1.
+            S (float): The saturation value of the amplitudes. Defaults to 1.
         Returns:
             tensor: The calculated change in the variable amplitude.
         """
 
-        c_grad_1 = torch.einsum("bi,ij -> bj", (c + S) / (2 * S), self.q_matrix) / (
-            2 * S
+        c_grad_1 = (
+            torch.einsum(
+                "bi,ij -> bj",
+                c * (upper_limit - lower_limit) / (2 * S)
+                + (upper_limit + lower_limit) / 2,
+                self.q_matrix,
+            )
+            * (upper_limit - lower_limit)
+            / (2 * S)
         )
-        c_grad_2 = self.v_vector / (2 * S)
+        c_grad_2 = self.v_vector * (upper_limit - lower_limit) / (2 * S)
 
         c_grads = -c_grad_1 - c_grad_2
 
@@ -383,7 +394,9 @@ class PumpedLangevinSolver(CCVMSolver):
         # Perform the solve with Adam over the specified number of iterations
         for i in range(iterations):
             # Calculate gradient
-            c_grads = self.calculate_grads(c, S)
+            c_grads = self.calculate_grads(
+                c, self.solution_bounds[0], self.solution_bounds[1], S
+            )
 
             # Update biased first moment estimate
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads

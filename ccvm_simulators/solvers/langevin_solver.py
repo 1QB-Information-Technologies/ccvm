@@ -346,7 +346,9 @@ class LangevinSolver(CCVMSolver):
 
         # Perform the solve over the specified number of iterations
         for i in range(iterations):
-            c_drift = self.calculate_drift(c, S)
+            c_drift = self.calculate_drift(
+                c, self.solution_bounds[0], self.solution_bounds[1], S
+            )
 
             wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(
                 0, 1
@@ -447,7 +449,9 @@ class LangevinSolver(CCVMSolver):
         # Perform the solve with Adam over the specified number of iterations
         for i in range(iterations):
             # Calculate gradient
-            c_grads = self.calculate_grads(c, S)
+            c_grads = self.calculate_grads(
+                c, self.solution_bounds[0], self.solution_bounds[1], S
+            )
 
             # Update biased first moment estimate
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
