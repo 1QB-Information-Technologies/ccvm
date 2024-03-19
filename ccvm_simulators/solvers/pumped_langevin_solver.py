@@ -142,8 +142,8 @@ class PumpedLangevinSolver(CCVMSolver):
 
         Args:
             problem_variables (torch.Tensor): The variables to change.
-            lower_limit (float or torch.Tensor): The lower bound of the box constraints. Defaults to 0.
-            upper_limit (float or torch.Tensor): The upper bound of the box constraints. Defaults to 1.
+            lower_limit (float): The lower bound of the box constraints. Defaults to 0.
+            upper_limit (float): The upper bound of the box constraints. Defaults to 1.
             S (float or torch.tensor): The enforced saturation value. Defaults to 1
 
         Returns:

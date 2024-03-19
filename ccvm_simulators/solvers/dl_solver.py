@@ -114,7 +114,9 @@ class DLSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-    def _calculate_drift_boxqp(self, c, s, pump, rate, feedback_scale=100, S=1):
+    def _calculate_drift_boxqp(
+        self, c, s, pump, rate, feedback_scale=100, lower_limit=0, upper_limit=1, S=1
+    ):
         """We treat the SDE that simulates the CIM of NTT as drift
         calculation.
 
@@ -124,6 +126,8 @@ class DLSolver(CCVMSolver):
             pump (float): The maximum pump field strength
             rate (float): The multiplier for the pump field strength at a given instance
             of time.
+            lower_limit (float): The lower bound of the box constraints. Defaults to 0.
+            upper_limit (float): The upper bound of the box constraints. Defaults to 1.
             S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
@@ -136,9 +140,18 @@ class DLSolver(CCVMSolver):
         if pump > 1:
             S = np.sqrt(pump - 1)
 
-        c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, self.q_matrix) / S
+        c_grad_1 = (
+            0.25
+            * torch.einsum(
+                "bi,ij -> bj",
+                c * (upper_limit - lower_limit) / S + (upper_limit + lower_limit),
+                self.q_matrix,
+            )
+            * (upper_limit - lower_limit)
+            / S
+        )
         c_grad_2 = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
-        c_grad_3 = self.v_vector / 2 / S
+        c_grad_3 = self.v_vector * (upper_limit - lower_limit) / (2 * S)
 
         s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, self.q_matrix) / S
         s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
@@ -181,8 +194,8 @@ class DLSolver(CCVMSolver):
 
         Args:
             problem_variables (torch.Tensor): The variables to change.
-            lower_limit (float or torch.Tensor): The lower bound of the box constraints. Defaults to 0.
-            upper_limit (float or torch.Tensor): The upper bound of the box constraints. Defaults to 1.
+            lower_limit (float): The lower bound of the box constraints. Defaults to 0.
+            upper_limit (float): The upper bound of the box constraints. Defaults to 1.
             S (float or torch.tensor): The enforced saturation value. Defaults to 1
 
         Returns:
