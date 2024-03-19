@@ -114,26 +114,31 @@ class LangevinSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-    def _calculate_drift_boxqp(self, c, S=1):
+    def _calculate_drift_boxqp(self, c, lower_limit=0, upper_limit=1, S=1):
         """We treat the SDE that simulates the CIM of NTT as drift
         calculation.
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
+            lower_limit (float): Lower bound of the amplitudes. Defaults to 0.
+            upper_limit (float): Upper bound of the amplitudes. Defaults to 1.
             S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
             tensor: The calculated change in the variable amplitude.
         """
 
-        c_drift_1 = torch.einsum("bi,ij -> bj", (c + S) / (2 * S), self.q_matrix)
+        c_drift_1 = torch.einsum(
+            "bi,ij -> bj",
+            c * (upper_limit - lower_limit) / (2 * S) + (upper_limit + lower_limit) / 2,
+            self.q_matrix,
+        )
         c_drift_2 = self.v_vector
-
-        c_drift = -(c_drift_1 + c_drift_2) / (2 * S)
+        c_drift = -(c_drift_1 + c_drift_2) * (upper_limit - lower_limit) / (2 * S)
 
         return c_drift
 
-    def _calculate_grads_boxqp(self, c, S):
+    def _calculate_grads_boxqp(self, c, lower_limit=0, upper_limit=1, S=1):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
@@ -141,15 +146,22 @@ class LangevinSolver(CCVMSolver):
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
+            lower_limit (float): Lower bound of the amplitudes. Defaults to 0.
+            upper_limit (float): Upper bound of the amplitudes. Defaults to 1.
+            S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
             tensor: The calculated change in the variable amplitude.
         """
 
-        c_grad_1 = torch.einsum("bi,ij -> bj", (c + S) / (2 * S), self.q_matrix)
+        c_grad_1 = torch.einsum(
+            "bi,ij -> bj",
+            c * (upper_limit - lower_limit) / (2 * S) + (upper_limit + lower_limit) / 2,
+            self.q_matrix,
+        )
         c_grad_2 = self.v_vector
 
-        c_grads = -(c_grad_1 + c_grad_2) / (2 * S)
+        c_grads = -(c_grad_1 + c_grad_2) * (upper_limit - lower_limit) / (2 * S)
 
         return c_grads
 
