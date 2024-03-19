@@ -141,6 +141,18 @@ class TestMFSolver(TestCase):
 
         assert torch.equal(changed_variables, expected_values)
 
+    def test_change_variables_boxqp_custom_bounds_valid(self):
+        """Test that change_variables returns correct data when valid parameters are
+        passed"""
+        problem_variables = torch.tensor([[4.0, 4.0], [4.0, 4.0]])
+        changed_variables = self.mf_solver._change_variables_boxqp(
+            problem_variables=problem_variables, lower_limit=0.2, upper_limit=0.8, S=2
+        )
+        # Expected values were manually calculated
+        expected_values = torch.tensor([[1.1, 1.1], [1.1, 1.1]])
+
+        assert torch.equal(changed_variables, expected_values)
+
     def test_fit_to_constraints_boxqp_already_constrained(self):
         """
         Test that fit_to_constraints returns correct data when input parameter to clamp

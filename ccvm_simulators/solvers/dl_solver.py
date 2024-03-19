@@ -174,19 +174,23 @@ class DLSolver(CCVMSolver):
         s_grads = -s_grad_1 - s_grad_3
         return c_grads, s_grads
 
-    def _change_variables_boxqp(self, problem_variables, S=1):
+    def _change_variables_boxqp(
+        self, problem_variables, lower_limit=0, upper_limit=1, S=1
+    ):
         """Perform a change of variables to enforce the box constraints.
 
         Args:
             problem_variables (torch.Tensor): The variables to change.
-            S (float): The saturation value of the amplitudes. Defaults to 1.
+            lower_limit (float or torch.Tensor): The lower bound of the box constraints. Defaults to 0.
+            upper_limit (float or torch.Tensor): The upper bound of the box constraints. Defaults to 1.
+            S (float or torch.tensor): The enforced saturation value. Defaults to 1
 
         Returns:
             torch.Tensor: The changed variables.
         """
-        return 0.5 * problem_variables / S * (
-            self.solution_bounds[1] - self.solution_bounds[0]
-        ) + 0.5 * (self.solution_bounds[1] + self.solution_bounds[0])
+        return 0.5 * problem_variables / S * (upper_limit - lower_limit) + 0.5 * (
+            upper_limit + lower_limit
+        )
 
     def _fit_to_constraints_boxqp(self, c, lower_clamp, upper_clamp):
         """Clamps the values of c to be within the box constraints
@@ -825,7 +829,11 @@ class DLSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                self.change_variables(c, S), self.q_matrix, self.v_vector
+                self.change_variables(
+                    c, self.solution_bounds[0], self.solution_bounds[1], S
+                ),
+                self.q_matrix,
+                self.v_vector,
             )
             # Post-processing time for solving an instance once
             pp_time = post_processor_object.pp_time / batch_size
@@ -835,7 +843,9 @@ class DLSolver(CCVMSolver):
 
         # Calculate the objective value
         # Perform a change of variables to enforce the box constraints
-        confs = self.change_variables(problem_variables, S)
+        confs = self.change_variables(
+            problem_variables, self.solution_bounds[0], self.solution_bounds[1], S
+        )
         objval = instance.compute_energy(confs)
 
         if evolution_step_size:

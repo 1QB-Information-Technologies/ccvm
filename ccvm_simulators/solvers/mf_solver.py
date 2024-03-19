@@ -209,19 +209,23 @@ class MFSolver(CCVMSolver):
 
         return grads_mu
 
-    def _change_variables_boxqp(self, problem_variables, S=1):
+    def _change_variables_boxqp(
+        self, problem_variables, lower_limit=0, upper_limit=1, S=1
+    ):
         """Perform a change of variables to enforce the box constraints.
 
         Args:
             problem_variables (torch.Tensor): The variables to change.
+            lower_limit (float or torch.Tensor): The lower bound of the box constraints. Defaults to 0.
+            upper_limit (float or torch.Tensor): The upper bound of the box constraints. Defaults to 1.
             S (float or torch.tensor): The enforced saturation value. Defaults to 1
 
         Returns:
             torch.Tensor: The changed variables.
         """
-        return 0.5 * problem_variables / S * (
-            self.solution_bounds[1] - self.solution_bounds[0]
-        ) + 0.5 * (self.solution_bounds[1] + self.solution_bounds[0])
+        return 0.5 * problem_variables / S * (upper_limit - lower_limit) + 0.5 * (
+            upper_limit + lower_limit
+        )
 
     def _fit_to_constraints_boxqp(self, mu_tilde, lower_clamp, upper_clamp):
         """Clamps the values of mu_tilde to be within the box constraints
@@ -837,12 +841,18 @@ class MFSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                self.change_variables(mu_tilde, S), self.q_matrix, self.v_vector
+                self.change_variables(
+                    mu_tilde, self.solution_bounds[0], self.solution_bounds[1], S
+                ),
+                self.q_matrix,
+                self.v_vector,
             )
             # Post-processing time for solving an instance once
             pp_time = post_processor_object.pp_time / batch_size
         else:
-            problem_variables = self.change_variables(mu_tilde, S)
+            problem_variables = self.change_variables(
+                mu_tilde, self.solution_bounds[0], self.solution_bounds[1], S
+            )
             pp_time = 0.0
 
         objval = instance.compute_energy(problem_variables)

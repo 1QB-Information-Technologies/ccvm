@@ -135,19 +135,23 @@ class PumpedLangevinSolver(CCVMSolver):
 
         return c_grads
 
-    def _change_variables_boxqp(self, problem_variables, S=1):
+    def _change_variables_boxqp(
+        self, problem_variables, lower_limit=0, upper_limit=1, S=1
+    ):
         """Perform a change of variables to enforce the box constraints.
 
         Args:
             problem_variables (torch.Tensor): The variables to change.
-            S (float): The saturation value of the amplitudes. Defaults to 1.
+            lower_limit (float or torch.Tensor): The lower bound of the box constraints. Defaults to 0.
+            upper_limit (float or torch.Tensor): The upper bound of the box constraints. Defaults to 1.
+            S (float or torch.tensor): The enforced saturation value. Defaults to 1
 
         Returns:
             torch.Tensor: The changed variables.
         """
-        return 0.5 * problem_variables / S * (
-            self.solution_bounds[1] - self.solution_bounds[0]
-        ) + 0.5 * (self.solution_bounds[1] + self.solution_bounds[0])
+        return 0.5 * problem_variables / S * (upper_limit - lower_limit) + 0.5 * (
+            upper_limit + lower_limit
+        )
 
     def _fit_to_constraints_boxqp(self, c, lower_clamp, upper_clamp):
         """Clamps the values of c to be within the box constraints
