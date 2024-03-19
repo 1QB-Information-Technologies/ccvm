@@ -347,3 +347,57 @@ class TestCCVMSolverMachineTime(TestCase):
         self.assertEqual(
             gpu_callable(dataframe=dataframe, problem_size=problem_size), 30.0
         )
+
+    def test_machine_time_langevin_solver_with_cpu_machine(self):
+        """Test if machine_time works correctly when machine type is cpu for
+        LangevinSolver."""
+        machine_parameters = {}
+        cpu_callable = self.langevin_solver.machine_time(
+            machine=MachineType.CPU.value, machine_parameters=machine_parameters
+        )
+
+        # Check that the returned callable outputs the expected value
+        dataframe = pd.DataFrame(data={"solve_time": [40.0, 20.0]})
+        # Size not used by CPU version of this function, but test it can still be passed
+        problem_size = 20
+        self.assertEqual(
+            cpu_callable(dataframe=dataframe, problem_size=problem_size), 30.0
+        )
+
+    def test_machine_time_langevin_solver_with_gpu_machine(self):
+        """Test if machine_time works correctly when machine type is gpu for
+        LangevinSolver."""
+        machine_parameters = {}
+        gpu_callable = self.langevin_solver.machine_time(
+            machine=MachineType.GPU.value, machine_parameters=machine_parameters
+        )
+
+        # Check that the returned callable outputs the expected value
+        dataframe = pd.DataFrame(data={"solve_time": [40.0, 20.0]})
+        # Size not used by GPU version of this function, but test it can still be passed
+        problem_size = 20
+        self.assertEqual(
+            gpu_callable(dataframe=dataframe, problem_size=problem_size), 30.0
+        )
+
+    def test_machine_time_langevin_solver_with_fpga_machine(self):
+        """Test if machine_time works correctly when machine type is FPGA for
+        LangevinSolver."""
+        machine_parameters = {
+            "fpga_power": {20: 17.18},
+            "fpga_runtimes": {
+                20: 7,
+            },
+        }
+
+        langevin_callable = self.langevin_solver.machine_time(
+            machine=MachineType.FPGA.value, machine_parameters=machine_parameters
+        )
+
+        # Check that the returned callable outputs the expected value
+        dataframe = pd.DataFrame(data={"pp_time": [16.0, 10.0]})
+        problem_size = 20
+        # Expected value was calculated manually based on the machine parameters and dataframe
+        self.assertEqual(
+            langevin_callable(dataframe=dataframe, problem_size=problem_size), 20.0
+        )

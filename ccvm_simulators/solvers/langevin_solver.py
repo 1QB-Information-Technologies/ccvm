@@ -284,6 +284,63 @@ class LangevinSolver(CCVMSolver):
 
         return _fpga_machine_energy_callable
 
+    def _fpga_machine_time(self, machine_parameters: dict = None):
+        """The wrapper function of calculating the average time spent by the
+            solver on a single instance, as if the solving process was to be performed on
+            an FPGA machine.
+
+        Args:
+            machine_parameters (dict, optional): Parameters of the FPGA machine.
+                Defaults to None.
+
+        Raises:
+            ValueError: when the given machine parameters are not valid.
+            ValueError: when the given dataframe does not contain the required columns.
+
+        Returns:
+            Callable: A callable function that takes in a dataframe and problem size and
+                returns the average time spent by the solver on a single instance.
+        """
+
+        if machine_parameters is None:
+            machine_parameters = self._default_fpga_machine_parameters
+        else:
+            self._validate_fpga_machine_parameters(machine_parameters)
+
+        def _fpga_machine_time_callable(dataframe: DataFrame, problem_size: int):
+            """Calculate the average time spent by the solver on a single instance,
+                simulating on an FPGA machine.
+
+            Args:
+                dataframe (DataFrame): The necessary data to calculate the average
+                    time.
+                problem_size (int): The size of the problem.
+
+            Raises:
+                ValueError: when the given dataframe does not contain the required
+                    columns.
+
+            Returns:
+                float: The average time spent by the solver on a single instance.
+            """
+            if "pp_time" not in dataframe:
+                raise ValueError(
+                    f"The given dataframe is missing the following columns: pp_time"
+                )
+
+            postprocessing_time = np.mean(dataframe["pp_time"].values)
+            if problem_size not in machine_parameters["fpga_runtimes"]:
+                raise ValueError(
+                    f"Problem size {problem_size} not supported by the given FPGA machine parameters."
+                )
+            machine_time = (
+                machine_parameters["fpga_runtimes"][problem_size] + postprocessing_time
+            )
+
+            return machine_time
+
+        return _fpga_machine_time_callable
+
     def _solve(
         self,
         problem_size,
