@@ -316,11 +316,6 @@ class TestCCVMSolverMachineTime(TestCase):
         with self.assertRaises(ValueError):
             self.dl_solver.machine_time("invalid_machine_type")
 
-    # def test_machine_time_mismatch_solver_machine_type(self):
-    #     """Test if ValueError is raised when machine type is not compatible with the solver."""
-    #     with self.assertRaises(ValueError):
-    #         self.langevin_solver.machine_time(MachineType.DL_CCVM.value)
-
     def test_machine_time_dl_solver_with_cpu_machine(self):
         """Test if machine_time works correctly when machine type is cpu for
         DLSolver."""

@@ -353,7 +353,6 @@ class CCVMSolver(ABC):
     ### MACHINE TIME FUNCTIONS ###
     ##############################
 
-    # TODO before merge: Check that this function gets used somewhere, then update or delete it
     def _validate_machine_time_dataframe_columns(self, dataframe):
         """Validates that the given dataframe contains the required columns when
         calculating optics machine time on DL-CCVM and MF-CCVM solvers.
@@ -387,8 +386,7 @@ class CCVMSolver(ABC):
                 returns the average time taken by the solver.
         """
 
-        # TODO before merge: change rpblen size to a **_
-        def _cpu_machine_time_callable(dataframe: DataFrame, problem_size: int):
+        def _cpu_machine_time_callable(dataframe: DataFrame, **_):
             """Calculate the average time taken by the solver during the simulation when
             using a CPU machine.
 
@@ -402,7 +400,8 @@ class CCVMSolver(ABC):
                     columns.
 
             Returns:
-                float: The average time taken by the solver during one simulation.
+                float: The average time taken by the solver during simulation of a single
+                    instance.
             """
             if "solve_time" not in dataframe.columns:
                 raise ValueError(
@@ -425,8 +424,7 @@ class CCVMSolver(ABC):
                 returns the average time taken by the solver.
         """
 
-        # TODO before merge: change rpblen size to a kwarg
-        def _cuda_machine_time_callable(dataframe: DataFrame, problem_size: int):
+        def _cuda_machine_time_callable(dataframe: DataFrame, **_):
             """Calculate the average time taken by the solver during the simulation when
             using a system equipped with CUDA-capable GPUs.
 
@@ -440,7 +438,8 @@ class CCVMSolver(ABC):
                     columns.
 
             Returns:
-                float: The average time taken by the solver during one simulation.
+                float: The average time taken by the solver during simulation of a single
+                    instance.
             """
             if "solve_time" not in dataframe.columns:
                 raise ValueError(
@@ -451,14 +450,13 @@ class CCVMSolver(ABC):
 
         return _cuda_machine_time_callable
 
-    # TODO before merge: I think "during one simulation" might be a miswording, so I gotta check on that.
     def machine_time(self, machine: str, machine_parameters: dict = None):
         """Calculates the average time spent during the simulation by the specified hardware
         for a given problem size.
 
         Args:
             machine (str): The type of machine for which to calculate the average time for
-                each simulation.
+                simulating a single instance.
             machine_parameters (dict): Parameters of the machine. Defaults to None.
 
         Raises:
@@ -466,7 +464,7 @@ class CCVMSolver(ABC):
             ValueError: If there is a mismatch between the solver and the machine type.
         Returns:
             Callable: A callable function that calculates the average time taken by the
-                solver during one simulation on the given machine type.
+                solver during simulation of a single instance on the given machine type.
         """
         solver_time_methods = {
             "cpu": self._cpu_machine_time,
