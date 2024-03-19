@@ -347,3 +347,61 @@ class TestCCVMSolverMachineTime(TestCase):
         self.assertEqual(
             gpu_callable(dataframe=dataframe, problem_size=problem_size), 30.0
         )
+
+    def test_machine_time_mf_solver_with_cpu_machine(self):
+        """Test if machine_time works correctly when machine type is cpu for
+        MFSolver."""
+        machine_parameters = {}
+        cpu_callable = self.mf_solver.machine_time(
+            machine=MachineType.CPU.value, machine_parameters=machine_parameters
+        )
+
+        # Check that the returned callable outputs the expected value
+        dataframe = pd.DataFrame(data={"solve_time": [40.0, 20.0]})
+        # Size not used by CPU version of this function, but test it can still be passed
+        problem_size = 20
+        self.assertEqual(
+            cpu_callable(dataframe=dataframe, problem_size=problem_size), 30.0
+        )
+
+    def test_machine_time_mf_solver_with_gpu_machine(self):
+        """Test if machine_time works correctly when machine type is gpu for
+        MFSolver."""
+        machine_parameters = {}
+        gpu_callable = self.mf_solver.machine_time(
+            machine=MachineType.GPU.value, machine_parameters=machine_parameters
+        )
+
+        # Check that the returned callable outputs the expected value
+        dataframe = pd.DataFrame(data={"solve_time": [40.0, 20.0]})
+        # Size not used by GPU version of this function, but test it can still be passed
+        problem_size = 20
+        self.assertEqual(
+            gpu_callable(dataframe=dataframe, problem_size=problem_size), 30.0
+        )
+
+    def test_machine_time_mf_solver_with_mf_machine(self):
+        """Test if machine_time works correctly when machine type is MF_CCVM for
+        MFSolver."""
+        machine_parameters = {
+            "laser_clock": 2,
+            "FPGA_clock": 5,
+            "FPGA_fixed": 7,
+            "FPGA_var_fac": 9,
+            "buffer_time": 15,
+            "FPGA_power": {20: 15.74},
+            "laser_power": 1000e-6,
+            "postprocessing_power": {20: 4.87},
+        }
+
+        mf_callable = self.mf_solver.machine_time(
+            machine=MachineType.MF_CCVM.value, machine_parameters=machine_parameters
+        )
+
+        # Check that the returned callable outputs the expected value
+        dataframe = pd.DataFrame(data={"iterations": [4, 2], "pp_time": [16.0, 10.0]})
+        problem_size = 20
+        # Expected value was calculated manually based on the machine parameters and dataframe
+        self.assertEqual(
+            mf_callable(dataframe=dataframe, problem_size=problem_size), 2983.0
+        )

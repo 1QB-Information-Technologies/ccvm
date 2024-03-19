@@ -413,9 +413,11 @@ class CCVMSolver(ABC):
             # "dl-ccvm": self._optics_machine_time
             # if self.__class__.__name__ == "DLSolver"
             # else None,
-            # "mf-ccvm": self._optics_machine_time
-            # if self.__class__.__name__ == "MFSolver"
-            # else None,
+            "mf-ccvm": (
+                self._optics_machine_time
+                if self.__class__.__name__ == "MFSolver"
+                else None
+            ),
             # "fpga": self._fpga_machine_time
             # if self.__class__.__name__ == "LangevinSolver"
             # else None,

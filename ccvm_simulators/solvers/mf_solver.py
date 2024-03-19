@@ -398,6 +398,67 @@ class MFSolver(CCVMSolver):
 
         return _optics_machine_energy_callable
 
+    # TODO before merge: fix wording here (single instance)
+    def _optics_machine_time(self, machine_parameters: dict = None):
+        """The wrapper function of calculating the average time spent by the
+            solver on a single instance, as if the solving process was to be performed on
+            an optical MF-CCVM machine.
+
+        Args:
+            machine_parameters (dict, optional): Parameters of the optical MF-CCVM
+                machine. Defaults to None.
+
+        Raises:
+            ValueError: when the given machine parameters are not valid.
+            ValueError: when the given dataframe does not contain the required columns.
+
+        Returns:
+            Callable: A callable function that takes in a dataframe and problem size and
+                returns the average average time spent by the solver on a single instance.
+        """
+
+        if machine_parameters is None:
+            machine_parameters = self._default_optics_machine_parameters
+        else:
+            self._is_valid_optics_machine_parameters(machine_parameters)
+            # TODO BEFORE MERGE: verify that the machine parameters here are the ones being used by the callable
+
+        def _optics_machine_time_callable(dataframe: DataFrame, problem_size: int):
+            """Calculate the average average time spent by the solver on a single instance,
+                simulating on a MF-CCVM machine.
+
+            Args:
+                dataframe (DataFrame): The necessary data to calculate the average
+                    time.
+                problem_size (int): The size of the problem.
+
+            Raises:
+                ValueError: when the given dataframe does not contain the required
+                    columns.
+
+            Returns:
+                float: The average average time spent by the solver on a single instance.
+            """
+            self._validate_machine_time_dataframe_columns(dataframe)
+
+            # TODO before merge: Ask Farhad if using mean was correct here
+            iterations = np.mean(dataframe["iterations"].values)
+            postprocessing_time = np.mean(dataframe["pp_time"].values)
+            roundtrip_time = (
+                (
+                    machine_parameters["FPGA_fixed"]
+                    + machine_parameters["FPGA_var_fac"] * float(problem_size)
+                )
+                * machine_parameters["FPGA_clock"]
+                + float(problem_size) * machine_parameters["laser_clock"]
+                + machine_parameters["buffer_time"]
+            )
+            machine_time = roundtrip_time * iterations + postprocessing_time
+
+            return machine_time
+
+        return _optics_machine_time_callable
+
     def _solve(
         self,
         problem_size,
