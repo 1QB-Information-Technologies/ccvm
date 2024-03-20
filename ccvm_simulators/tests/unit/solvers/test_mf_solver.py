@@ -254,6 +254,7 @@ class TestMFSolver(TestCase):
         instance.q_matrix = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
         instance.v_vector = torch.tensor([[5.0, 6.0]])
         instance.problem_size = 2
+        instance.solution_bounds = (0, 1)
         instance.compute_energy.return_value = torch.tensor([[7.0]])
         instance.optimal_sol = random.random()
         instance.device = "cpu"
