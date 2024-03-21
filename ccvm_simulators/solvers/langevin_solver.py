@@ -323,19 +323,25 @@ class LangevinSolver(CCVMSolver):
             Returns:
                 float: The average time spent by the solver on a single instance.
             """
-            if "pp_time" not in dataframe:
+            try:
+                postprocessing_time = np.mean(dataframe["pp_time"].values)
+            except KeyError as e:
+                missing_column = e.args[0]
                 raise ValueError(
-                    f"The given dataframe is missing the following columns: pp_time"
+                    f"The given dataframe is missing the {missing_column} column. Required columns are: ['pp_time']."
                 )
 
-            postprocessing_time = np.mean(dataframe["pp_time"].values)
-            if problem_size not in machine_parameters["fpga_runtimes"]:
-                raise ValueError(
-                    f"Problem size {problem_size} not supported by the given FPGA machine parameters."
+            # Machine parameters is pre-validated to contain the fpga_runtimes key,
+            # but the dict is not guaranteed to contain the problem size.
+            try:
+                machine_time = (
+                    machine_parameters["fpga_runtimes"][problem_size]
+                    + postprocessing_time
                 )
-            machine_time = (
-                machine_parameters["fpga_runtimes"][problem_size] + postprocessing_time
-            )
+            except KeyError:
+                raise ValueError(
+                    f"The fpga_runtimes dict in given machine_parameters does not have an entry for problem size {problem_size}."
+                )
 
             return machine_time
 

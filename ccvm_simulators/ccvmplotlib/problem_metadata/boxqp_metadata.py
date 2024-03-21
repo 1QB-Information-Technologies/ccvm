@@ -115,7 +115,7 @@ class BoxQPMetadata(ProblemMetadata):
                     )
 
                     metric_value = metric_func(
-                        matching_df=matching_df, problem_size=problem_size
+                        dataframe=matching_df, problem_size=problem_size
                     )
 
                     success_prob = matching_df[percent_gap].values
@@ -130,9 +130,9 @@ class BoxQPMetadata(ProblemMetadata):
                         R99 = np.mean(R99_distribution)
 
                     mean_metric = metric_value * R99
-                    plotting_df.at[
-                        problem_size, (percent_gap, percentile)
-                    ] = mean_metric
+                    plotting_df.at[problem_size, (percent_gap, percentile)] = (
+                        mean_metric
+                    )
 
         return plotting_df
 
@@ -162,8 +162,8 @@ class BoxQPMetadata(ProblemMetadata):
                     )
                 )
 
-                plotting_df.at[
-                    problem_size, (percent_gap, "success_prob")
-                ] = mean_success_prob
+                plotting_df.at[problem_size, (percent_gap, "success_prob")] = (
+                    mean_success_prob
+                )
 
         return plotting_df
