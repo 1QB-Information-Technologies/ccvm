@@ -399,7 +399,6 @@ class DLSolver(CCVMSolver):
             self._validate_machine_time_dataframe_columns(dataframe)
 
             laser_clock = machine_parameters["laser_clock"]
-            # TODO before merge: Ask Farhad if using mean was correct here
             iterations = np.mean(dataframe["iterations"].values)
             postprocessing_time = np.mean(dataframe["pp_time"].values)
             machine_time = (
