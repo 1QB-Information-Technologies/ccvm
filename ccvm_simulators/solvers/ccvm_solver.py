@@ -353,30 +353,9 @@ class CCVMSolver(ABC):
     ### MACHINE TIME FUNCTIONS ###
     ##############################
 
-    def _validate_machine_time_dataframe_columns(self, dataframe):
-        """Validates that the given dataframe contains the required columns when
-        calculating optics machine time on DL-CCVM and MF-CCVM solvers.
-
-        Args:
-            dataframe (DataFrame): The dataframe to validate.
-
-        Raises:
-            ValueError: If the given dataframe is missing any of the required columns.
-        """
-        required_columns = ["pp_time", "iterations"]
-
-        missing_columns = [
-            col for col in required_columns if col not in dataframe.columns
-        ]
-
-        if missing_columns:
-            raise ValueError(
-                f"The given dataframe is missing the following columns: {missing_columns}"
-            )
-
-    def _cpu_machine_time(self, **_):
+    def _cpu_gpu_machine_time(self, **_):
         """The wrapper function of calculating the average time taken by the solver during
-        the simulation when using a CPU machine.
+        the simulation when using a CPU or a CUDA-capable GPU machine.
 
         Raises:
             ValueError: when the given dataframe does not contain the required columns.
@@ -386,9 +365,9 @@ class CCVMSolver(ABC):
                 returns the average time taken by the solver.
         """
 
-        def _cpu_machine_time_callable(dataframe: DataFrame, **_):
+        def _cpu_gpu_machine_time_callable(dataframe: DataFrame, **_):
             """Calculate the average time taken by the solver during the simulation when
-            using a CPU machine.
+            using a CPU or a CUDA-capable GPU machine.
 
             Args:
                 dataframe (DataFrame): The necessary data to calculate the average
@@ -410,45 +389,7 @@ class CCVMSolver(ABC):
             machine_time = np.mean(dataframe["solve_time"].values)
             return machine_time
 
-        return _cpu_machine_time_callable
-
-    def _cuda_machine_time(self, **_):
-        """The wrapper function of calculating the average time taken by the solver during
-        the simulation when using a system equipped with CUDA-capable GPUs.
-
-        Raises:
-            ValueError: when the given dataframe does not contain the required columns.
-
-        Returns:
-            Callable: A callable function that takes in a dataframe and problem size and
-                returns the average time taken by the solver.
-        """
-
-        def _cuda_machine_time_callable(dataframe: DataFrame, **_):
-            """Calculate the average time taken by the solver during the simulation when
-            using a system equipped with CUDA-capable GPUs.
-
-            Args:
-                dataframe (DataFrame): The necessary data to calculate the average
-                    time spent during the simulation.
-                problem_size (int): The size of the problem.
-
-            Raises:
-                ValueError: when the given dataframe does not contain the required
-                    columns.
-
-            Returns:
-                float: The average time taken by the solver during simulation of a single
-                    instance.
-            """
-            if "solve_time" not in dataframe.columns:
-                raise ValueError(
-                    "The given dataframe does not contain the column 'solve_time'"
-                )
-            machine_time = np.mean(dataframe["solve_time"].values)
-            return machine_time
-
-        return _cuda_machine_time_callable
+        return _cpu_gpu_machine_time_callable
 
     def machine_time(self, machine: str, machine_parameters: dict = None):
         """Calculates the average time spent during the simulation by the specified hardware
@@ -467,8 +408,8 @@ class CCVMSolver(ABC):
                 solver during simulation of a single instance on the given machine type.
         """
         solver_time_methods = {
-            "cpu": self._cpu_machine_time,
-            "gpu": self._cuda_machine_time,
+            "cpu": self._cpu_gpu_machine_time,
+            "gpu": self._cpu_gpu_machine_time,
             # "dl-ccvm": self._optics_machine_time
             # if self.__class__.__name__ == "DLSolver"
             # else None,
