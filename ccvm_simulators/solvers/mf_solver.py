@@ -413,7 +413,7 @@ class MFSolver(CCVMSolver):
 
         Returns:
             Callable: A callable function that takes in a dataframe and problem size and
-                returns the average average time spent by the solver on a single instance.
+                returns the average time spent by the solver on a single instance.
         """
 
         if machine_parameters is None:
@@ -422,7 +422,7 @@ class MFSolver(CCVMSolver):
             self._is_valid_optics_machine_parameters(machine_parameters)
 
         def _optics_machine_time_callable(dataframe: DataFrame, problem_size: int):
-            """Calculate the average average time spent by the solver on a single instance,
+            """Calculate the average time spent by the solver on a single instance,
                 simulating on a MF-CCVM machine.
 
             Args:
@@ -435,13 +435,17 @@ class MFSolver(CCVMSolver):
                     columns.
 
             Returns:
-                float: The average average time spent by the solver on a single instance.
+                float: The average time spent by the solver on a single instance.
             """
-            self._validate_machine_time_dataframe_columns(dataframe)
+            try:
+                iterations = np.mean(dataframe["iterations"].values)
+                postprocessing_time = np.mean(dataframe["pp_time"].values)
+            except KeyError as e:
+                missing_column = e.args[0]
+                raise KeyError(
+                    f"The given dataframe is missing the {missing_column} column. Required columns are: ['iterations', 'pp_time']."
+                )
 
-            # TODO before merge: Ask Farhad if using mean was correct here
-            iterations = np.mean(dataframe["iterations"].values)
-            postprocessing_time = np.mean(dataframe["pp_time"].values)
             roundtrip_time = (
                 (
                     machine_parameters["FPGA_fixed"]
