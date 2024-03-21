@@ -64,6 +64,14 @@ class DLSolver(CCVMSolver):
         # Use the method selector to choose the problem-specific methods to use
         self._method_selector(problem_category)
 
+        # Compile einsum function during initialization
+        def _einsum_wrapper(
+            equation: str, operand_one: torch.Tensor, operand_two: torch.Tensor
+        ):
+            return torch.einsum(equation, operand_one, operand_two)
+
+        self._einsum_compiled = torch.compile(_einsum_wrapper)
+
     @property
     def parameter_key(self):
         """The parameters that will be used by the solver when solving the problem.
@@ -136,12 +144,28 @@ class DLSolver(CCVMSolver):
         if pump > 1:
             S = np.sqrt(pump - 1)
 
-        c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, self.q_matrix) / S
-        c_grad_2 = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
+        print("calculate torch.einsum time in drift using compiled")
+        start_time = time.time()
+        c_grad_1 = (
+            0.25 * self._einsum_compiled("bi,ij -> bj", c / S + 1, self.q_matrix) / S
+        )
+        c_grad_2 = self._einsum_compiled(
+            "cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c
+        )
+        end_time = time.time()
+
+        # Calculate time difference
+        time_used = end_time - start_time
+        print("Time used:", time_used, "seconds")
+
         c_grad_3 = self.v_vector / 2 / S
 
-        s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, self.q_matrix) / S
-        s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
+        s_grad_1 = (
+            0.25 * self._einsum_compiled("bi,ij -> bj", s / S + 1, self.q_matrix) / S
+        )
+        s_grad_2 = self._einsum_compiled(
+            "cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s
+        )
         s_grad_3 = self.v_vector / 2 / S
 
         feedback_scale_dynamic = feedback_scale * (0.5 + rate)
@@ -163,11 +187,16 @@ class DLSolver(CCVMSolver):
         Returns:
             tuple: The calculated change in the variable amplitudes.
         """
-
+        print("calculate inside grad")
+        start_time = time.time()
         c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, self.q_matrix) / S
         c_grad_3 = self.v_vector / 2 / S
 
         s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, self.q_matrix) / S
+        end_time = time.time()
+        # Calculate time difference
+        time_used = end_time - start_time
+        print("Time used:", time_used, "seconds")
         s_grad_3 = self.v_vector / 2 / S
 
         c_grads = -c_grad_1 - c_grad_3

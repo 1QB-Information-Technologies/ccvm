@@ -5,7 +5,7 @@ numpy==1.24.1
 pandas==1.5.2
 pytest==7.2.0
 scipy==1.10.0
-torch==1.13.1
+torch==2.2.1
 json-stream==1.5.2
 tqdm==4.64.1
 xmlrunner==1.7.7
