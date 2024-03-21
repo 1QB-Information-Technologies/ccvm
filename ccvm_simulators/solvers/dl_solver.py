@@ -396,11 +396,19 @@ class DLSolver(CCVMSolver):
             Returns:
                 float: The average average time spent by the solver on a single instance.
             """
-            self._validate_machine_time_dataframe_columns(dataframe)
+            try:
+                iterations = np.mean(dataframe["iterations"].values)
+                postprocessing_time = np.mean(dataframe["pp_time"].values)
+            except KeyError as e:
+                missing_column = e.args[0]
+                raise KeyError(
+                    f"The given dataframe is missing the {missing_column} "
+                    f"column. Required columns are: ['iterations', 'pp_time']."
+                )
 
+            # Machine parameters are pre-validated in the wrapper, so this is safe
             laser_clock = machine_parameters["laser_clock"]
-            iterations = np.mean(dataframe["iterations"].values)
-            postprocessing_time = np.mean(dataframe["pp_time"].values)
+
             machine_time = (
                 float(problem_size) * laser_clock * iterations + postprocessing_time
             )
