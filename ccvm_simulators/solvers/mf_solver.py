@@ -342,14 +342,14 @@ class MFSolver(CCVMSolver):
             self._is_valid_optics_machine_parameters(machine_parameters)
 
         def _optics_machine_energy_callable(
-            matching_df: DataFrame,
+            dataframe: DataFrame,
             problem_size: int,
         ):
             """Calculate the average energy consumption of the solver simulating on a
                 MF-CCVM machine.
 
             Args:
-                matching_df (DataFrame): The necessary data to calculate the average
+                dataframe (DataFrame): The necessary data to calculate the average
                     energy.
                 problem_size (int): The size of the problem.
 
@@ -360,7 +360,7 @@ class MFSolver(CCVMSolver):
             Returns:
                 float: The average energy consumption of the solver.
             """
-            self._validate_machine_energy_dataframe_columns(matching_df)
+            self._validate_machine_energy_dataframe_columns(dataframe)
 
             try:
                 pump = self.parameter_key[problem_size]["pump"]
@@ -370,8 +370,8 @@ class MFSolver(CCVMSolver):
                     f"The parameter '{e.args[0]}' for the given instance size: {problem_size} is not defined."
                 ) from e
 
-            iterations = np.mean(matching_df["iterations"].values)
-            postprocessing_time = np.mean(matching_df["pp_time"].values)
+            iterations = np.mean(dataframe["iterations"].values)
+            postprocessing_time = np.mean(dataframe["pp_time"].values)
             roundtrip_time = (
                 (
                     machine_parameters["FPGA_fixed"]
