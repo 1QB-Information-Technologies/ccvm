@@ -200,8 +200,17 @@ class DLSolver(CCVMSolver):
         )
         c_grad_3 = self.v_vector * (upper_limit - lower_limit) / (2 * S)
 
-        s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, self.q_matrix) / S
-        s_grad_3 = self.v_vector / 2 / S
+        s_grad_1 = (
+            0.25
+            * torch.einsum(
+                "bi,ij -> bj",
+                s * (upper_limit - lower_limit) / S + (upper_limit + lower_limit),
+                self.q_matrix,
+            )
+            * (upper_limit - lower_limit)
+            / S
+        )
+        s_grad_3 = self.v_vector * (upper_limit - lower_limit) / (2 * S)
 
         c_grads = -c_grad_1 - c_grad_3
         s_grads = -s_grad_1 - s_grad_3
