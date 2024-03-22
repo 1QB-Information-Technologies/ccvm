@@ -24,14 +24,14 @@ class TestBoxQPMetadata(TestCase):
             "ccvm_simulators/tests/data/metadata/invalid_incorrect_field_metadata.json"
         )
 
-        def valid_machine_func(matching_df: pd.DataFrame, **_: any) -> float:
-            return np.mean(matching_df["solve_time"].values, dtype=float)
+        def valid_machine_func(dataframe: pd.DataFrame, **_: any) -> float:
+            return np.mean(dataframe["solve_time"].values, dtype=float)
 
-        def valid_energy_func(matching_df: pd.DataFrame, problem_size: int) -> float:
+        def valid_energy_func(dataframe: pd.DataFrame, problem_size: int) -> float:
             machine_parameters = {
                 "cpu_power": {20: 5.0, 30: 5.0, 40: 5.0, 50: 5.0, 60: 5.0, 70: 5.0}
             }
-            machine_time = np.mean(matching_df["solve_time"].values)
+            machine_time = np.mean(dataframe["solve_time"].values)
             machine_power = machine_parameters["cpu_power"][problem_size]
             machine_energy = machine_power * machine_time
             return machine_energy

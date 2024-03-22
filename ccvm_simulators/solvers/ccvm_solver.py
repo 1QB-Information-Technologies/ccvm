@@ -410,17 +410,21 @@ class CCVMSolver(ABC):
         solver_time_methods = {
             "cpu": self._cpu_gpu_machine_time,
             "gpu": self._cpu_gpu_machine_time,
-            # "dl-ccvm": self._optics_machine_time
-            # if self.__class__.__name__ == "DLSolver"
-            # else None,
+            "dl-ccvm": (
+                self._optics_machine_time
+                if self.__class__.__name__ == "DLSolver"
+                else None
+            ),
             "mf-ccvm": (
                 self._optics_machine_time
                 if self.__class__.__name__ == "MFSolver"
                 else None
             ),
-            # "fpga": self._fpga_machine_time
-            # if self.__class__.__name__ == "LangevinSolver"
-            # else None,
+            "fpga": (
+                self._fpga_machine_time
+                if self.__class__.__name__ == "LangevinSolver"
+                else None
+            ),
         }
 
         if machine not in solver_time_methods:
