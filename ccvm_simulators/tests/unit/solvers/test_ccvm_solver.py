@@ -433,3 +433,4 @@ class TestCCVMSolverMachineTime(TestCase):
         # Expected value was calculated manually based on the machine parameters and dataframe
         self.assertEqual(
             langevin_callable(dataframe=dataframe, problem_size=problem_size), 20.0
+        )
