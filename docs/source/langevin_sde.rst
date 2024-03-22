@@ -15,9 +15,9 @@ where :math:`\lambda` and :math:`\sigma` are hyperparameters controlling the str
 Example script for solving a box-constrained quadratic programming problem using the Langevin solver
 -----------------------------------------------------------------------------------------------------
 
-The demo script, `ccvm_boxqp_langevin.py`, in the examples folder simulates the Langevin dynamics for an example problem instance. It can be run from the project's root directory using the following command in the terminal:
+The demo script, `langevin_boxqp.py`, in the examples folder simulates the Langevin dynamics for an example problem instance. It can be run from the project's root directory using the following command in the terminal:
 
-:code:`$ python ccvm/examples/ccvm_boxqp_langevin.py`
+:code:`$ python ccvm/examples/langevin_boxqp.py`
 
 The script will print the solution, similar to the example output below.
 
