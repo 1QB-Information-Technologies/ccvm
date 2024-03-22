@@ -303,12 +303,12 @@ class DLSolver(CCVMSolver):
         else:
             self._is_valid_optics_machine_parameters(machine_parameters)
 
-        def _optics_machine_energy_callable(matching_df: DataFrame, problem_size: int):
+        def _optics_machine_energy_callable(dataframe: DataFrame, problem_size: int):
             """Calculate the average energy consumption of the solver simulating on a
                 DL-CCVM machine.
 
             Args:
-                matching_df (DataFrame): The necessary data to calculate the average
+                dataframe (DataFrame): The necessary data to calculate the average
                     energy.
                 problem_size (int): The size of the problem.
 
@@ -319,7 +319,7 @@ class DLSolver(CCVMSolver):
             Returns:
                 float: The average energy consumption of the solver.
             """
-            self._validate_machine_energy_dataframe_columns(matching_df)
+            self._validate_machine_energy_dataframe_columns(dataframe)
 
             try:
                 pump = self.parameter_key[problem_size]["pump"]
@@ -335,8 +335,8 @@ class DLSolver(CCVMSolver):
             P_sq = machine_parameters["squeezing_power"]
             P_elec = machine_parameters["electronics_power"]
             P_opa = machine_parameters["amplifiers_power"]
-            postprocessing_time = np.mean(matching_df["pp_time"].values)
-            iterations = np.mean(matching_df["iterations"].values)
+            postprocessing_time = np.mean(dataframe["pp_time"].values)
+            iterations = np.mean(dataframe["iterations"].values)
             optics_energy = (
                 pump * P_opt * T_elec
                 + pump * P_opt * T_clock * float(problem_size)
@@ -356,6 +356,66 @@ class DLSolver(CCVMSolver):
             return machine_energy
 
         return _optics_machine_energy_callable
+
+    def _optics_machine_time(self, machine_parameters: dict = None):
+        """The wrapper function of calculating the average time spent by the
+            solver on a single instance, as if the solving process was to be performed on
+            an optical DL-CCVM machine.
+
+        Args:
+            machine_parameters (dict, optional): Parameters of the optical DL-CCVM
+                machine. Defaults to None.
+
+        Raises:
+            ValueError: when the given machine parameters are not valid.
+            ValueError: when the given dataframe does not contain the required columns.
+
+        Returns:
+            Callable: A callable function that takes in a dataframe and problem size and
+                returns the average average time spent by the solver on a single instance.
+        """
+
+        if machine_parameters is None:
+            machine_parameters = self._default_optics_machine_parameters
+        else:
+            self._is_valid_optics_machine_parameters(machine_parameters)
+
+        def _optics_machine_time_callable(dataframe: DataFrame, problem_size: int):
+            """Calculate the average average time spent by the solver on a single instance,
+                simulating on a DL-CCVM machine.
+
+            Args:
+                dataframe (DataFrame): The necessary data to calculate the average
+                    time.
+                problem_size (int): The size of the problem.
+
+            Raises:
+                ValueError: when the given dataframe does not contain the required
+                    columns.
+
+            Returns:
+                float: The average average time spent by the solver on a single instance.
+            """
+            try:
+                iterations = np.mean(dataframe["iterations"].values)
+                postprocessing_time = np.mean(dataframe["pp_time"].values)
+            except KeyError as e:
+                missing_column = e.args[0]
+                raise KeyError(
+                    f"The given dataframe is missing the {missing_column} "
+                    f"column. Required columns are: ['iterations', 'pp_time']."
+                )
+
+            # Machine parameters are pre-validated in the wrapper, so this is safe
+            laser_clock = machine_parameters["laser_clock"]
+
+            machine_time = (
+                float(problem_size) * laser_clock * iterations + postprocessing_time
+            )
+
+            return machine_time
+
+        return _optics_machine_time_callable
 
     def _solve(
         self,
