@@ -29,8 +29,20 @@ if __name__ == "__main__":
 
     # Supply solver parameters for different problem sizes
     solver.parameter_key = {
-        10: {"pump": 1.0, "dt": 0.001, "iterations": 10000, "noise_ratio": 15},
-        20: {"pump": 2.0, "dt": 0.005, "iterations": 15000, "noise_ratio": 10},
+        10: {
+            "pump": 8.0,
+            "dt": 0.001,
+            "iterations": 10000,
+            "noise_ratio": 15,
+            "feedback_scale": 95,
+        },
+        20: {
+            "pump": 8.0,
+            "dt": 0.005,
+            "iterations": 15000,
+            "noise_ratio": 10,
+            "feedback_scale": 100,
+        },
     }
 
     metadata_obj = Metadata(device=solver.device)
@@ -63,15 +75,10 @@ if __name__ == "__main__":
         os.makedirs(PLOT_OUTPUT_DIR)
         print("Plot folder doesn't exist yet. Creating: ", PLOT_OUTPUT_DIR)
 
-    # Plotting TTS
-    # Customize machine time calculating function
-    def cpu_machine_func(matching_df: pd.DataFrame, **_: any) -> float:
-        return np.mean(matching_df["solve_time"].values)
-
     tts_plot_fig, tts_plot_ax = ccvmplotlib.plot_TTS(
         metadata_filepath=metadata_filepath,
         problem="BoxQP",
-        machine_time_func=cpu_machine_func,
+        machine_time_func=solver.machine_time(machine="cpu"),
     )
 
     ccvmplotlib.apply_default_tts_styling(
