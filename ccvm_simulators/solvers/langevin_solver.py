@@ -328,7 +328,7 @@ class LangevinSolver(CCVMSolver):
             except KeyError as e:
                 missing_column = e.args[0]
                 raise ValueError(
-                    f"The given dataframe is missing the {missing_column} column. Required columns are: ['pp_time']."
+                    f"The given dataframe is missing required column: {missing_column}"
                 )
 
             # Machine parameters is pre-validated to contain the fpga_runtimes key,
