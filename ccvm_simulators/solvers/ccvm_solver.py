@@ -169,6 +169,10 @@ class CCVMSolver(ABC):
                 f" Given category: {problem_category}"
             )
 
+    ################################
+    ### MACHINE ENERGY FUNCTIONS ###
+    ################################
+
     def _validate_machine_energy_dataframe_columns(self, dataframe):
         """Validates that the given dataframe contains the required columns when
         calculating optics machine energy on DL-CCVM and MF-CCVM solvers.
@@ -214,12 +218,12 @@ class CCVMSolver(ABC):
                     "The dictionary must contain the key 'cpu_power'"
                 )
 
-        def _cpu_machine_energy_callable(matching_df: DataFrame, problem_size: int):
+        def _cpu_machine_energy_callable(dataframe: DataFrame, problem_size: int):
             """Calculate the average energy consumption of the solver simulating on a
             cpu machine.
 
             Args:
-                matching_df (DataFrame): The necessary data to calculate the average
+                dataframe (DataFrame): The necessary data to calculate the average
                     energy.
                 problem_size (int): The size of the problem.
 
@@ -230,11 +234,11 @@ class CCVMSolver(ABC):
             Returns:
                 float: The average energy consumption of the solver.
             """
-            if "solve_time" not in matching_df.columns:
+            if "solve_time" not in dataframe.columns:
                 raise ValueError(
                     "The given dataframe does not contain the column 'solve_time'"
                 )
-            machine_time = np.mean(matching_df["solve_time"].values)
+            machine_time = np.mean(dataframe["solve_time"].values)
             machine_power = machine_parameters["cpu_power"][problem_size]
             machine_energy = machine_power * machine_time
             return machine_energy
@@ -266,12 +270,12 @@ class CCVMSolver(ABC):
                     "The dictionary must contain the key 'gpu_power'"
                 )
 
-        def _cuda_machine_energy_callable(matching_df: DataFrame, problem_size: int):
+        def _cuda_machine_energy_callable(dataframe: DataFrame, problem_size: int):
             """Calculate the average energy consumption of the solver simulating on a
             system equipped with CUDA-capable GPUs.
 
             Args:
-                matching_df (DataFrame): The necessary data to calculate the average
+                dataframe (DataFrame): The necessary data to calculate the average
                     energy.
                 problem_size (int): The size of the problem.
 
@@ -282,12 +286,12 @@ class CCVMSolver(ABC):
             Returns:
                 float: The average power consumption of the solver.
             """
-            if "solve_time" not in matching_df.columns:
+            if "solve_time" not in dataframe.columns:
                 raise ValueError(
                     "The given dataframe does not contain the column 'solve_time'"
                 )
 
-            machine_time = np.mean(matching_df["solve_time"].values)
+            machine_time = np.mean(dataframe["solve_time"].values)
             machine_power = machine_parameters["gpu_power"][problem_size]
             machine_energy = machine_power * machine_time
             return machine_energy
@@ -312,15 +316,21 @@ class CCVMSolver(ABC):
         solver_energy_methods = {
             "cpu": self._cpu_machine_energy,
             "gpu": self._cuda_machine_energy,
-            "dl-ccvm": self._optics_machine_energy
-            if self.__class__.__name__ == "DLSolver"
-            else None,
-            "mf-ccvm": self._optics_machine_energy
-            if self.__class__.__name__ == "MFSolver"
-            else None,
-            "fpga": self._fpga_machine_energy
-            if self.__class__.__name__ == "LangevinSolver"
-            else None,
+            "dl-ccvm": (
+                self._optics_machine_energy
+                if self.__class__.__name__ == "DLSolver"
+                else None
+            ),
+            "mf-ccvm": (
+                self._optics_machine_energy
+                if self.__class__.__name__ == "MFSolver"
+                else None
+            ),
+            "fpga": (
+                self._fpga_machine_energy
+                if self.__class__.__name__ == "LangevinSolver"
+                else None
+            ),
         }
 
         if machine not in solver_energy_methods:
@@ -338,3 +348,97 @@ class CCVMSolver(ABC):
             )
 
         return energy_method(machine_parameters)
+
+    ##############################
+    ### MACHINE TIME FUNCTIONS ###
+    ##############################
+
+    def _cpu_gpu_machine_time(self, **_):
+        """The wrapper function of calculating the average time taken by the solver during
+        the simulation when using a CPU or a CUDA-capable GPU machine.
+
+        Raises:
+            ValueError: when the given dataframe does not contain the required columns.
+
+        Returns:
+            Callable: A callable function that takes in a dataframe and problem size and
+                returns the average time taken by the solver.
+        """
+
+        def _cpu_gpu_machine_time_callable(dataframe: DataFrame, **_):
+            """Calculate the average time taken by the solver during the simulation when
+            using a CPU or a CUDA-capable GPU machine.
+
+            Args:
+                dataframe (DataFrame): The necessary data to calculate the average
+                    time spent during the simulation.
+                problem_size (int): The size of the problem.
+
+            Raises:
+                ValueError: when the given dataframe does not contain the required
+                    columns.
+
+            Returns:
+                float: The average time taken by the solver during simulation of a single
+                    instance.
+            """
+            if "solve_time" not in dataframe.columns:
+                raise ValueError(
+                    "The given dataframe does not contain the column 'solve_time'"
+                )
+            machine_time = np.mean(dataframe["solve_time"].values)
+            return machine_time
+
+        return _cpu_gpu_machine_time_callable
+
+    def machine_time(self, machine: str, machine_parameters: dict = None):
+        """Calculates the average time spent during the simulation by the specified hardware
+        for a given problem size.
+
+        Args:
+            machine (str): The type of machine for which to calculate the average time for
+                simulating a single instance.
+            machine_parameters (dict): Parameters of the machine. Defaults to None.
+
+        Raises:
+            ValueError: If the given machine is not a valid machine type.
+            ValueError: If there is a mismatch between the solver and the machine type.
+        Returns:
+            Callable: A callable function that calculates the average time taken by the
+                solver during simulation of a single instance on the given machine type.
+        """
+        solver_time_methods = {
+            "cpu": self._cpu_gpu_machine_time,
+            "gpu": self._cpu_gpu_machine_time,
+            "dl-ccvm": (
+                self._optics_machine_time
+                if self.__class__.__name__ == "DLSolver"
+                else None
+            ),
+            "mf-ccvm": (
+                self._optics_machine_time
+                if self.__class__.__name__ == "MFSolver"
+                else None
+            ),
+            "fpga": (
+                self._fpga_machine_time
+                if self.__class__.__name__ == "LangevinSolver"
+                else None
+            ),
+        }
+
+        if machine not in solver_time_methods:
+            raise ValueError(
+                f"The given machine type is not valid. "
+                f"The machine type must be one of {', '.join(solver_time_methods.keys())}"
+            )
+
+        time_method = solver_time_methods[machine]
+
+        if not time_method:
+            raise ValueError(
+                f"Mismatch between the solver and the machine type. "
+                f"Provided machine type: {machine}, solver type: {self.__class__.__name__}"
+            )
+
+        return time_method(machine_parameters=machine_parameters)

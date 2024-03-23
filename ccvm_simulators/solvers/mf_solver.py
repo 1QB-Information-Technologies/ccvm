@@ -371,14 +371,14 @@ class MFSolver(CCVMSolver):
             self._is_valid_optics_machine_parameters(machine_parameters)
 
         def _optics_machine_energy_callable(
-            matching_df: DataFrame,
+            dataframe: DataFrame,
             problem_size: int,
         ):
             """Calculate the average energy consumption of the solver simulating on a
                 MF-CCVM machine.
 
             Args:
-                matching_df (DataFrame): The necessary data to calculate the average
+                dataframe (DataFrame): The necessary data to calculate the average
                     energy.
                 problem_size (int): The size of the problem.
 
@@ -389,7 +389,7 @@ class MFSolver(CCVMSolver):
             Returns:
                 float: The average energy consumption of the solver.
             """
-            self._validate_machine_energy_dataframe_columns(matching_df)
+            self._validate_machine_energy_dataframe_columns(dataframe)
 
             try:
                 pump = self.parameter_key[problem_size]["pump"]
@@ -399,8 +399,8 @@ class MFSolver(CCVMSolver):
                     f"The parameter '{e.args[0]}' for the given instance size: {problem_size} is not defined."
                 ) from e
 
-            iterations = np.mean(matching_df["iterations"].values)
-            postprocessing_time = np.mean(matching_df["pp_time"].values)
+            iterations = np.mean(dataframe["iterations"].values)
+            postprocessing_time = np.mean(dataframe["pp_time"].values)
             roundtrip_time = (
                 (
                     machine_parameters["FPGA_fixed"]
@@ -426,6 +426,69 @@ class MFSolver(CCVMSolver):
             return machine_energy
 
         return _optics_machine_energy_callable
+
+    def _optics_machine_time(self, machine_parameters: dict = None):
+        """The wrapper function of calculating the average time spent by the
+            solver on a single instance, as if the solving process was to be performed on
+            an optical MF-CCVM machine.
+
+        Args:
+            machine_parameters (dict, optional): Parameters of the optical MF-CCVM
+                machine. Defaults to None.
+
+        Raises:
+            ValueError: when the given machine parameters are not valid.
+            ValueError: when the given dataframe does not contain the required columns.
+
+        Returns:
+            Callable: A callable function that takes in a dataframe and problem size and
+                returns the average time spent by the solver on a single instance.
+        """
+
+        if machine_parameters is None:
+            machine_parameters = self._default_optics_machine_parameters
+        else:
+            self._is_valid_optics_machine_parameters(machine_parameters)
+
+        def _optics_machine_time_callable(dataframe: DataFrame, problem_size: int):
+            """Calculate the average time spent by the solver on a single instance,
+                simulating on a MF-CCVM machine.
+
+            Args:
+                dataframe (DataFrame): The necessary data to calculate the average
+                    time.
+                problem_size (int): The size of the problem.
+
+            Raises:
+                ValueError: when the given dataframe does not contain the required
+                    columns.
+
+            Returns:
+                float: The average time spent by the solver on a single instance.
+            """
+            try:
+                iterations = np.mean(dataframe["iterations"].values)
+                postprocessing_time = np.mean(dataframe["pp_time"].values)
+            except KeyError as e:
+                missing_column = e.args[0]
+                raise KeyError(
+                    f"The given dataframe is missing the {missing_column} column. Required columns are: ['iterations', 'pp_time']."
+                )
+
+            roundtrip_time = (
+                (
+                    machine_parameters["FPGA_fixed"]
+                    + machine_parameters["FPGA_var_fac"] * float(problem_size)
+                )
+                * machine_parameters["FPGA_clock"]
+                + float(problem_size) * machine_parameters["laser_clock"]
+                + machine_parameters["buffer_time"]
+            )
+            machine_time = roundtrip_time * iterations + postprocessing_time
+
+            return machine_time
+
+        return _optics_machine_time_callable
 
     def _solve(
         self,
