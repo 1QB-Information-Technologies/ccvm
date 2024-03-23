@@ -114,26 +114,31 @@ class LangevinSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-    def _calculate_drift_boxqp(self, c, S=1):
+    def _calculate_drift_boxqp(self, c, lower_limit=0, upper_limit=1, S=1):
         """We treat the SDE that simulates the CIM of NTT as drift
         calculation.
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
+            lower_limit (float): Lower bound of the amplitudes. Defaults to 0.
+            upper_limit (float): Upper bound of the amplitudes. Defaults to 1.
             S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
             tensor: The calculated change in the variable amplitude.
         """
 
-        c_drift_1 = torch.einsum("bi,ij -> bj", (c + S) / (2 * S), self.q_matrix)
+        c_drift_1 = torch.einsum(
+            "bi,ij -> bj",
+            c * (upper_limit - lower_limit) / (2 * S) + (upper_limit + lower_limit) / 2,
+            self.q_matrix,
+        )
         c_drift_2 = self.v_vector
-
-        c_drift = -(c_drift_1 + c_drift_2) / (2 * S)
+        c_drift = -(c_drift_1 + c_drift_2) * (upper_limit - lower_limit) / (2 * S)
 
         return c_drift
 
-    def _calculate_grads_boxqp(self, c, S):
+    def _calculate_grads_boxqp(self, c, lower_limit=0, upper_limit=1, S=1):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
@@ -141,29 +146,42 @@ class LangevinSolver(CCVMSolver):
 
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
+            lower_limit (float): Lower bound of the amplitudes. Defaults to 0.
+            upper_limit (float): Upper bound of the amplitudes. Defaults to 1.
+            S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
             tensor: The calculated change in the variable amplitude.
         """
 
-        c_grad_1 = torch.einsum("bi,ij -> bj", (c + S) / (2 * S), self.q_matrix)
+        c_grad_1 = torch.einsum(
+            "bi,ij -> bj",
+            c * (upper_limit - lower_limit) / (2 * S) + (upper_limit + lower_limit) / 2,
+            self.q_matrix,
+        )
         c_grad_2 = self.v_vector
 
-        c_grads = -(c_grad_1 + c_grad_2) / (2 * S)
+        c_grads = -(c_grad_1 + c_grad_2) * (upper_limit - lower_limit) / (2 * S)
 
         return c_grads
 
-    def _change_variables_boxqp(self, problem_variables, S=1):
+    def _change_variables_boxqp(
+        self, problem_variables, lower_limit=0, upper_limit=1, S=1
+    ):
         """Perform a change of variables to enforce the box constraints.
 
         Args:
             problem_variables (torch.Tensor): The variables to change.
-            S (float): The saturation value of the amplitudes. Defaults to 1.
+            lower_limit (float): The lower bound of the box constraints. Defaults to 0.
+            upper_limit (float): The upper bound of the box constraints. Defaults to 1.
+            S (float or torch.tensor): The enforced saturation value. Defaults to 1
 
         Returns:
             torch.Tensor: The changed variables.
         """
-        return 0.5 * (problem_variables / S + 1)
+        return 0.5 * problem_variables / S * (upper_limit - lower_limit) + 0.5 * (
+            upper_limit + lower_limit
+        )
 
     def _fit_to_constraints_boxqp(self, c, lower_clamp, upper_clamp):
         """Clamps the values of c to be within the box constraints
@@ -391,7 +409,9 @@ class LangevinSolver(CCVMSolver):
 
         # Perform the solve over the specified number of iterations
         for i in range(iterations):
-            c_drift = self.calculate_drift(c, S)
+            c_drift = self.calculate_drift(
+                c, self.solution_bounds[0], self.solution_bounds[1], S
+            )
 
             wiener_increment_c = wiener_dist_c.sample((problem_size,)).transpose(
                 0, 1
@@ -492,7 +512,9 @@ class LangevinSolver(CCVMSolver):
         # Perform the solve with Adam over the specified number of iterations
         for i in range(iterations):
             # Calculate gradient
-            c_grads = self.calculate_grads(c, S)
+            c_grads = self.calculate_grads(
+                c, self.solution_bounds[0], self.solution_bounds[1], S
+            )
 
             # Update biased first moment estimate
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
@@ -585,6 +607,7 @@ class LangevinSolver(CCVMSolver):
         problem_size = instance.problem_size
         self.q_matrix = instance.q_matrix
         self.v_vector = instance.v_vector
+        self.solution_bounds = instance.solution_bounds
 
         # Get solver setup variables
         batch_size = self.batch_size

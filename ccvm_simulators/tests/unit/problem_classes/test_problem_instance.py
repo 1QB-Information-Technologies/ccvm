@@ -206,6 +206,67 @@ class TestProblemInstance(TestCase):
 
         assert torch.equal(problem_instance.scaled_by, expected_scaled_by)
 
+    def test_solution_bounds_valid(self):
+        """Test that valid solution bounds can be set"""
+        lower_bound = 1
+        upper_bound = 10
+        try:
+            problem_instance = ProblemInstance(
+                device=self.device,
+                instance_type=self.instance_type,
+                file_path=self.file_path,
+                solution_bounds=(lower_bound, upper_bound),
+            )
+        except ValueError:
+            self.fail("Solution bounds should be valid, unexpected value error")
+
+    def test_solution_bounds_too_many_values(self):
+        """Test that too many solution bounds values are rejected with the correct error message"""
+        lower_bound = 1
+        upper_bound = 10
+        with self.assertRaises(ValueError) as context:
+            ProblemInstance(
+                device=self.device,
+                instance_type=self.instance_type,
+                file_path=self.file_path,
+                solution_bounds=(lower_bound, upper_bound, 10),
+            )
+        self.assertEqual(
+            str(context.exception),
+            "solution_bounds must be a tuple of size 2, containing the minimum and maximum bounds (inclusive)",
+        )
+
+    def test_solution_bounds_too_few_values(self):
+        """Test that too few solution bounds values are rejected with the correct error message"""
+        lower_bound = 1
+        with self.assertRaises(ValueError) as context:
+            ProblemInstance(
+                device=self.device,
+                instance_type=self.instance_type,
+                file_path=self.file_path,
+                solution_bounds=(lower_bound,),
+            )
+        self.assertEqual(
+            str(context.exception),
+            "solution_bounds must be a tuple of size 2, containing the minimum and maximum bounds (inclusive)",
+        )
+
+    def test_solution_bounds_max_smaller_than_min(self):
+        """Test that a solution bounds max value smaller than the min value is rejected with the correct error message"""
+        lower_bound = 10
+        upper_bound = 1
+        with self.assertRaises(ValueError) as context:
+            ProblemInstance(
+                device=self.device,
+                instance_type=self.instance_type,
+                file_path=self.file_path,
+                solution_bounds=(lower_bound, upper_bound),
+            )
+        self.assertEqual(
+            str(context.exception),
+            "Minimum solution bound must be less than maximum solution bound",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

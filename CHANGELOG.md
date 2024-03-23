@@ -27,6 +27,7 @@ for a single calculation of an instance intead of the time to solve the full bat
 - Added `PumpedLangevinSolver`, which is an extension of `LangevinSolver` to simulate pumped Langevin dynamics with a demo script in the examples directory.
 - Implemented a simple gradient descent post-processing step, as described in the paper, similar to Langevin dynamics but without noise; uses the Euler method with box constraint imposition at each iteration.
 - Added a scaling coefficient for the feedback term in `dl-ccvm` as an input to the solver
+- Added `solution_bounds` to the BoxQP `ProblemInstance` class to allow users to specify the lower and upper bounds of the solution vector.
 
 ### Changed
 - Streamlined README by relocating and optimizing architecture diagrams.

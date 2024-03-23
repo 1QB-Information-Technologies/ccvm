@@ -114,7 +114,9 @@ class DLSolver(CCVMSolver):
         self._parameter_key = parameters
         self._is_tuned = False
 
-    def _calculate_drift_boxqp(self, c, s, pump, rate, feedback_scale=100, S=1):
+    def _calculate_drift_boxqp(
+        self, c, s, pump, rate, feedback_scale=100, lower_limit=0, upper_limit=1, S=1
+    ):
         """We treat the SDE that simulates the CIM of NTT as drift
         calculation.
 
@@ -124,6 +126,8 @@ class DLSolver(CCVMSolver):
             pump (float): The maximum pump field strength
             rate (float): The multiplier for the pump field strength at a given instance
             of time.
+            lower_limit (float): The lower bound of the box constraints. Defaults to 0.
+            upper_limit (float): The upper bound of the box constraints. Defaults to 1.
             S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
@@ -136,20 +140,38 @@ class DLSolver(CCVMSolver):
         if pump > 1:
             S = np.sqrt(pump - 1)
 
-        c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, self.q_matrix) / S
+        c_grad_1 = (
+            0.25
+            * torch.einsum(
+                "bi,ij -> bj",
+                c * (upper_limit - lower_limit) / S + (upper_limit + lower_limit),
+                self.q_matrix,
+            )
+            * (upper_limit - lower_limit)
+            / S
+        )
         c_grad_2 = torch.einsum("cj,cj -> cj", -1 + (pump * rate) - c_pow - s_pow, c)
-        c_grad_3 = self.v_vector / 2 / S
+        c_grad_3 = self.v_vector * (upper_limit - lower_limit) / (2 * S)
 
-        s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, self.q_matrix) / S
+        s_grad_1 = (
+            0.25
+            * torch.einsum(
+                "bi,ij -> bj",
+                s * (upper_limit - lower_limit) / S + (upper_limit + lower_limit),
+                self.q_matrix,
+            )
+            * (upper_limit - lower_limit)
+            / S
+        )
         s_grad_2 = torch.einsum("cj,cj -> cj", -1 - (pump * rate) - c_pow - s_pow, s)
-        s_grad_3 = self.v_vector / 2 / S
+        s_grad_3 = self.v_vector * (upper_limit - lower_limit) / (2 * S)
 
         feedback_scale_dynamic = feedback_scale * (0.5 + rate)
         c_drift = -feedback_scale_dynamic * (c_grad_1 + c_grad_3) + c_grad_2
         s_drift = -feedback_scale_dynamic * (s_grad_1 + s_grad_3) + s_grad_2
         return c_drift, s_drift
 
-    def _calculate_grads_boxqp(self, c, s, S=1):
+    def _calculate_grads_boxqp(self, c, s, lower_limit=0, upper_limit=1, S=1):
         """We treat the SDE that simulates the CIM of NTT as gradient
         calculation. Original SDE considers only quadratic part of the objective
         function. Therefore, we need to modify and add linear part of the QP to
@@ -158,33 +180,59 @@ class DLSolver(CCVMSolver):
         Args:
             c (torch.Tensor): In-phase amplitudes of the solver
             s (torch.Tensor): Quadrature amplitudes of the solver
+            lower_limit (float): The lower bound of the box constraints. Defaults to 0.
+            upper_limit (float): The upper bound of the box constraints. Defaults to 1.
             S (float): The saturation value of the amplitudes. Defaults to 1.
 
         Returns:
             tuple: The calculated change in the variable amplitudes.
         """
 
-        c_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", c / S + 1, self.q_matrix) / S
-        c_grad_3 = self.v_vector / 2 / S
+        c_grad_1 = (
+            0.25
+            * torch.einsum(
+                "bi,ij -> bj",
+                c * (upper_limit - lower_limit) / S + (upper_limit + lower_limit),
+                self.q_matrix,
+            )
+            * (upper_limit - lower_limit)
+            / S
+        )
+        c_grad_3 = self.v_vector * (upper_limit - lower_limit) / (2 * S)
 
-        s_grad_1 = 0.25 * torch.einsum("bi,ij -> bj", s / S + 1, self.q_matrix) / S
-        s_grad_3 = self.v_vector / 2 / S
+        s_grad_1 = (
+            0.25
+            * torch.einsum(
+                "bi,ij -> bj",
+                s * (upper_limit - lower_limit) / S + (upper_limit + lower_limit),
+                self.q_matrix,
+            )
+            * (upper_limit - lower_limit)
+            / S
+        )
+        s_grad_3 = self.v_vector * (upper_limit - lower_limit) / (2 * S)
 
         c_grads = -c_grad_1 - c_grad_3
         s_grads = -s_grad_1 - s_grad_3
         return c_grads, s_grads
 
-    def _change_variables_boxqp(self, problem_variables, S=1):
+    def _change_variables_boxqp(
+        self, problem_variables, lower_limit=0, upper_limit=1, S=1
+    ):
         """Perform a change of variables to enforce the box constraints.
 
         Args:
             problem_variables (torch.Tensor): The variables to change.
-            S (float): The saturation value of the amplitudes. Defaults to 1.
+            lower_limit (float): The lower bound of the box constraints. Defaults to 0.
+            upper_limit (float): The upper bound of the box constraints. Defaults to 1.
+            S (float or torch.tensor): The enforced saturation value. Defaults to 1
 
         Returns:
             torch.Tensor: The changed variables.
         """
-        return 0.5 * (problem_variables / S + 1)
+        return 0.5 * problem_variables / S * (upper_limit - lower_limit) + 0.5 * (
+            upper_limit + lower_limit
+        )
 
     def _fit_to_constraints_boxqp(self, c, lower_clamp, upper_clamp):
         """Clamps the values of c to be within the box constraints
@@ -479,7 +527,13 @@ class DLSolver(CCVMSolver):
             noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
 
             c_drift, s_drift = self.calculate_drift(
-                c, s, pump, pump_rate, feedback_scale
+                c,
+                s,
+                pump,
+                pump_rate,
+                feedback_scale,
+                self.solution_bounds[0],
+                self.solution_bounds[1],
             )
             wiener_increment_c = (
                 wiener_dist_c.sample((problem_size,)).transpose(0, 1)
@@ -638,7 +692,9 @@ class DLSolver(CCVMSolver):
             noise_ratio_i = (noise_ratio - 1) * np.exp(-(i + 1) / iterations * 3) + 1
 
             # Calculate gradient
-            c_grads, s_grads = self.calculate_grads(c, s, S)
+            c_grads, s_grads = self.calculate_grads(
+                c, s, self.solution_bounds[0], self.solution_bounds[1], S
+            )
 
             # Update biased first moment estimate
             m_c = beta1 * m_c + (1.0 - beta1) * c_grads
@@ -764,6 +820,7 @@ class DLSolver(CCVMSolver):
         problem_size = instance.problem_size
         self.q_matrix = instance.q_matrix
         self.v_vector = instance.v_vector
+        self.solution_bounds = instance.solution_bounds
 
         # Get solver setup variables
         S = self.S
@@ -882,7 +939,11 @@ class DLSolver(CCVMSolver):
             )
 
             problem_variables = post_processor_object.postprocess(
-                self.change_variables(c, S), self.q_matrix, self.v_vector
+                self.change_variables(
+                    c, self.solution_bounds[0], self.solution_bounds[1], S
+                ),
+                self.q_matrix,
+                self.v_vector,
             )
             # Post-processing time for solving an instance once
             pp_time = post_processor_object.pp_time / batch_size
@@ -892,7 +953,9 @@ class DLSolver(CCVMSolver):
 
         # Calculate the objective value
         # Perform a change of variables to enforce the box constraints
-        confs = self.change_variables(problem_variables, S)
+        confs = self.change_variables(
+            problem_variables, self.solution_bounds[0], self.solution_bounds[1], S
+        )
         objval = instance.compute_energy(confs)
 
         if evolution_step_size:
