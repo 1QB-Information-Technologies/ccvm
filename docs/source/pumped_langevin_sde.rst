@@ -6,7 +6,6 @@ Stochastic differential equations
 
 Pumped Langevin dynamics, which is a modification of a typical Langevin dynamics (Khosravi et al 2022), can be described by the stochastic differential equations (SDE)
 .. math::
-
     d c_{i} = \\Big[\\big(-1+p-c_i^2\\big)c_i-\\lambda\\partial_{i} f(\\mathbf{c}) \\Big]dt + \\sigma dW_{i}\;\;\text{with}\;\;c_{i}(0)=0\;\;\\forall i=1,\\ldots,N
 
 where, :math:`p(t) = p_0 t/T` and :math:`\\lambda` and :math:`\\sigma` are hyperparameters controlling the strength of the gradient and the diffusion terms, respectively. Apart from typical Langevin equation, the preceding equation is augmented with additional term :math:`
