@@ -52,5 +52,6 @@ For further discussion on specific equations and their respective parameters, re
    :maxdepth: 3
 
    langevin_sde
+   pumped_langevin_sde
    dl_ccvm_sde
    mf_ccvm_sde
