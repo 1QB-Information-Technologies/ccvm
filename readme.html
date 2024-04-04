@@ -1,0 +1,498 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>Coherent Continous-Variable Machine Simulators - ccvm_simulators documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=89731a12" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">ccvm_simulators  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">ccvm_simulators  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="ccvm_simulators_api_reference.html">ccvm_simulators - API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of ccvm_simulators - API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ccvm.ccvmplotlib.html">ccvmplotlib</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of ccvmplotlib</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="ccvm.ccvmplotlib.problem_metadata.html">problem_metadata</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of problem_metadata</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.ccvmplotlib.problem_metadata.boxqp_metadata.html">boxqp_metadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.ccvmplotlib.problem_metadata.problem_metadata.html">problem_metadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.ccvmplotlib.problem_metadata.problem_metadata_factory.html">problem_metadata_factory</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="ccvm.ccvmplotlib.utils.html">utils</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of utils</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.ccvmplotlib.utils.metric.html">metric</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.ccvmplotlib.utils.mixins.html">mixins</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.ccvmplotlib.utils.sampleTTSmetric.html">sampleTTSmetric</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.ccvmplotlib.utils.utilities.html">utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.ccvmplotlib.ccvmplotlib.html">ccvmplotlib</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ccvm.post_processor.html">post_processor</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of post_processor</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.post_processor.adam.html">adam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.post_processor.asgd.html"><code class="docutils literal notranslate"><span class="pre">PostProcessorASGD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.post_processor.bfgs.html"><code class="docutils literal notranslate"><span class="pre">PostProcessorBFGS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.post_processor.box_qp_model.html"><code class="docutils literal notranslate"><span class="pre">BoxQPModel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.post_processor.factory.html">factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.post_processor.lbfgs.html">lbfgs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.post_processor.post_processor.html">post_processor</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ccvm.problem_classes.html">problem_classes</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of problem_classes</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="ccvm.problem_classes.boxqp.html">boxqp</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of boxqp</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.problem_classes.boxqp.problem_instance.html">problem_instance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ccvm.solvers.html">solvers</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of solvers</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.solvers.ccvm_solver.html">ccvm_solver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.solvers.dl_solver.html">dl_solver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.solvers.mf_solver.html">mf_solver</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ccvm.metadata_list.html">metadata_list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ccvm.solution.html">solution</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="ccvm_equations_of_motion.html">Coherent Continuous-Variable Machine Simulator - Equations of Motion</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Coherent Continuous-Variable Machine Simulator - Equations of Motion</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="langevin_sde.html">The Langevin Dynamics Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pumped_langevin_sde.html">The Pumped Langevin Dynamics Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dl_ccvm_sde.html">The Delay-Line Coherent Continuous-Variable Machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mf_ccvm_sde.html">The Measurement-Feedback Coherent Continuous-Variable Machine</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="coherent-continous-variable-machine-simulators">
+<h1>Coherent Continous-Variable Machine Simulators<a class="headerlink" href="#coherent-continous-variable-machine-simulators" title="Link to this heading">#</a></h1>
+<p><a class="reference external" href="https://www.gnu.org/licenses/agpl-3.0"><img alt="License: AGPL v3" src="https://img.shields.io/badge/License-AGPL%20v3-green.svg" /></a>
+<a class="reference external" href="http://1qbit.com/"><img alt="Maintainer" src="https://img.shields.io/badge/Maintainer-1QBit-blue" /></a>
+<a class="reference external" href="https://arxiv.org/abs/2209.04415"><img alt="Paper" src="https://img.shields.io/badge/Paper-arxiv-red" /></a>
+<a class="reference external" href="https://1qb-information-technologies.github.io/ccvm/"><img alt="Docs" src="https://img.shields.io/badge/Docs-Link-yellow" /></a></p>
+<p>This software package includes solvers for continuous optimization problems. The solvers are simulators of coherent continuous-variable machines (CCVM), which are novel coherent network computing architectures based on NTT Research’s coherent Ising machines (CIM). In CCVMs, the physical properties of optical pulses (e.g., mean-field quadrature amplitudes and phase) represent the continuous variables of a given optimization problem. Various features of CCVMs can be used along with programming techniques to implement the constraints imposed by such an optimization problem. Included are methods for solving box-constrained quadratic programming (BoxQP) problems using CCVM simulators by mapping the variables of the problems into the random variables of CCVMs.</p>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">#</a></h2>
+<ol class="arabic simple" start="0">
+<li><p><a class="reference internal" href="#requirements"><span class="xref myst">Requirements</span></a></p></li>
+<li><p><a class="reference internal" href="#quickstart"><span class="xref myst">Quickstart</span></a></p></li>
+<li><p><a class="reference internal" href="#usage"><span class="xref myst">Usage</span></a></p></li>
+<li><p><a class="reference internal" href="#docs"><span class="xref myst">Documentation</span></a></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#ccvm_simulators/problem_classes/README.md"><span class="xref myst">BoxQP Problem Definition</span></a></p></li>
+<li><p><a class="reference internal" href="#ccvm_simulators/ccvmplotlib/README.md"><span class="xref myst">ccvmplotlib</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#contributing"><span class="xref myst">Contributing</span></a></p></li>
+<li><p><a class="reference internal" href="#references"><span class="xref myst">References</span></a></p></li>
+<li><p><a class="reference internal" href="#license"><span class="xref myst">License</span></a></p></li>
+</ol>
+</section>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Python (supported version: 3.10)</p></li>
+</ul>
+<section id="supported-operating-systems">
+<h3>Supported operating systems<a class="headerlink" href="#supported-operating-systems" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>macOS (Monterey, Big Sur)</p></li>
+<li><p>Ubuntu (20.04)</p></li>
+</ul>
+</section>
+</section>
+<section id="quickstart">
+<h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Once you have cloned the repository, install the package using <code class="docutils literal notranslate"><span class="pre">pip</span></code>.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">pip</span> <span class="n">install</span> <span class="n">ccvm</span><span class="o">-</span><span class="n">simulators</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Go into <code class="docutils literal notranslate"><span class="pre">examples/</span></code> and run the demo scripts.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ccvm_boxqp_dl.py</span></code>: Solve a BoxQP problem using a CCVM simulator, w/o plotting</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ccvm_boxqp_plot.py</span></code>: Solve a BoxQP problem using a CCVM simulator, w/ time-to-solution (TTS) plotting</p></li>
+<li><p>For more demo scripts see <code class="docutils literal notranslate"><span class="pre">examples/README.md</span></code></p></li>
+</ul>
+</li>
+<li><p>View the generated plot.</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ccvm_boxqp_plot.py</span></code> script solves a single problem instance, and will create an image of the resulting TTS plot in a <code class="docutils literal notranslate"><span class="pre">plots/</span></code> directory. The resulting output image, <code class="docutils literal notranslate"><span class="pre">DL-CCVM_TTS_cpu_plot.png</span></code>, will look something like this:</p></li>
+</ul>
+</li>
+</ol>
+<p align="center">
+    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/ccvm_simulators/ccvmplotlib/images/single_instance_TTS_plot.png?raw=true" width="250" >
+</p>
+<section id="extending-the-example">
+<h3>Extending the Example<a class="headerlink" href="#extending-the-example" title="Link to this heading">#</a></h3>
+<ol class="arabic simple" start="4">
+<li><p>Plotting larger datasets</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ccvm_boxqp_plot.py</span></code> script is a toy example that plots the TTS for only a single problem instance.</p></li>
+<li><p>It can be extended to solve multiple problems over a range of problem sizes.</p></li>
+<li><p>When solution metadata is saved for multiple problems, the graph becomes more informative, for example:</p></li>
+</ul>
+</li>
+</ol>
+<p align="center">
+    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/ccvm_simulators/ccvmplotlib/images/tts_plot_example.png?raw=true" width="250" >
+</p>
+<ol class="arabic simple" start="5">
+<li><p>Other types of plots</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ccvmplotlib</span></code> can also plot the success probability data, for example:</p></li>
+</ul>
+</li>
+</ol>
+<p align="center">
+    <img src="https://github.com/1QB-Information-Technologies/ccvm/blob/main/ccvm_simulators/ccvmplotlib/images/success_prob_plot_example.png?raw=true" width="250">
+</p>
+</section>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
+<section id="solving-a-boxqp-problem">
+<h3>Solving a BoxQP Problem<a class="headerlink" href="#solving-a-boxqp-problem" title="Link to this heading">#</a></h3>
+<section id="import-modules">
+<h4>1. Import Modules<a class="headerlink" href="#import-modules" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ccvm_simulators.problem_classes.boxqp</span> <span class="kn">import</span> <span class="n">ProblemInstance</span>
+<span class="kn">from</span> <span class="nn">ccvm_simulators.solvers</span> <span class="kn">import</span> <span class="n">DLSolver</span>
+</pre></div>
+</div>
+</section>
+<section id="define-a-solver">
+<h4>2. Define a Solver<a class="headerlink" href="#define-a-solver" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">DLSolver</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>  <span class="c1"># or &quot;cuda&quot;</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">parameter_key</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">20</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;pump&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dt&quot;</span><span class="p">:</span> <span class="mf">0.005</span><span class="p">,</span> <span class="s2">&quot;iterations&quot;</span><span class="p">:</span> <span class="mi">15000</span><span class="p">,</span> <span class="s2">&quot;noise_ratio&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="load-a-problem-instance">
+<h4>3. Load a Problem Instance<a class="headerlink" href="#load-a-problem-instance" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">boxqp_instance</span> <span class="o">=</span> <span class="n">ProblemInstance</span><span class="p">(</span>
+    <span class="n">instance_type</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
+    <span class="n">file_path</span><span class="o">=</span><span class="s2">&quot;./examples/benchmarking_instances/single_test_instance/test020-100-10.in&quot;</span><span class="p">,</span>
+    <span class="n">device</span><span class="o">=</span><span class="n">solver</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="scale-the-coefficients">
+<h4>4. Scale the Coefficients<a class="headerlink" href="#scale-the-coefficients" title="Link to this heading">#</a></h4>
+<p>The BoxQP problem matrix Q and vector V are normalized to obtain a uniform
+performance across different problem sizes and densities. The ideal range depends on the
+solver. For best results, Q should be passed to the solver’s <code class="docutils literal notranslate"><span class="pre">get_scaling_factor()</span></code>
+method to determine the best scaling value for the problem–solver combination.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">boxqp_instance</span><span class="o">.</span><span class="n">scale_coefs</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">get_scaling_factor</span><span class="p">(</span><span class="n">boxqp_instance</span><span class="o">.</span><span class="n">q_matrix</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="solve-the-problem-instance">
+<h4>5. Solve the Problem Instance<a class="headerlink" href="#solve-the-problem-instance" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solution</span> <span class="o">=</span> <span class="n">solver</span><span class="p">(</span>
+    <span class="n">instance</span><span class="o">=</span><span class="n">boxqp_instance</span><span class="p">,</span>
+    <span class="n">post_processor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The best known solution to this problem is </span><span class="si">{</span><span class="n">solution</span><span class="o">.</span><span class="n">optimal_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># The best known solution to this problem is 799.560976</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The best objective value found by the solver was </span><span class="si">{</span><span class="n">solution</span><span class="o">.</span><span class="n">best_objective_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># The best objective value found by the solver was 798.1630859375</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The solving process took effectively </span><span class="si">{</span><span class="n">solution</span><span class="o">.</span><span class="n">solve_time</span><span class="si">}</span><span class="s2"> seconds to solve a single instance&quot;</span><span class="p">)</span>
+<span class="c1"># The solving process took 0.008949262142181396 seconds</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">#</a></h2>
+<p>The package documentation can be found <a class="reference external" href="https://1qb-information-technologies.github.io/ccvm/">here</a>.</p>
+<p>Additional links:</p>
+<ul class="simple">
+<li><p>Problem definition: <a class="reference internal" href="#ccvm/ccvm_simulators/problem_classes/README.md"><span class="xref myst">BoxQP problem class</span></a></p></li>
+<li><p>Plotting library: <a class="reference internal" href="#ccvm/ccvm_simulators/ccvmplotlib/README.md"><span class="xref myst">ccvmplotlib</span></a></p></li>
+</ul>
+</section>
+<section id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">#</a></h2>
+<p>We appreciate your pull requests and welcome opportunities to discuss new ideas. Check out our <a class="reference internal" href="#CONTRIBUTING.md"><span class="xref myst">contribution guide</span></a> and feel free to improve the <code class="docutils literal notranslate"><span class="pre">ccvm_simulators</span></code> package. For major changes, please open an issue first to discuss any suggestions for changes you might have.</p>
+<p>Thank you for considering making a  contribution to our project! We appreciate your help and support.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<p>This repository contains architectures and simulators presented in the paper <a class="reference external" href="https://arxiv.org/abs/2209.04415">“Non-convex Quadratic Programming Using Coherent Optical Networks”</a> by Farhad Khosravi, Ugur Yildiz, Martin Perreault, Artur Scherer, and Pooya Ronagh.</p>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://github.com/1QB-Information-Technologies/ccvm/blob/main/LICENSE">APGLv3</a></p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, 1QBit
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Coherent Continous-Variable Machine Simulators</a><ul>
+<li><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a><ul>
+<li><a class="reference internal" href="#supported-operating-systems">Supported operating systems</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#quickstart">Quickstart</a><ul>
+<li><a class="reference internal" href="#extending-the-example">Extending the Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#solving-a-boxqp-problem">Solving a BoxQP Problem</a><ul>
+<li><a class="reference internal" href="#import-modules">1. Import Modules</a></li>
+<li><a class="reference internal" href="#define-a-solver">2. Define a Solver</a></li>
+<li><a class="reference internal" href="#load-a-problem-instance">3. Load a Problem Instance</a></li>
+<li><a class="reference internal" href="#scale-the-coefficients">4. Scale the Coefficients</a></li>
+<li><a class="reference internal" href="#solve-the-problem-instance">5. Solve the Problem Instance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#contributing">Contributing</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+<li><a class="reference internal" href="#license">License</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

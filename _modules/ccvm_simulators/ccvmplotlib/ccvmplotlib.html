@@ -1,0 +1,727 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>ccvm_simulators.ccvmplotlib.ccvmplotlib - ccvm_simulators documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=89731a12" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">ccvm_simulators  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">ccvm_simulators  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../ccvm_simulators_api_reference.html">ccvm_simulators - API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of ccvm_simulators - API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../ccvm.ccvmplotlib.html">ccvmplotlib</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of ccvmplotlib</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../ccvm.ccvmplotlib.problem_metadata.html">problem_metadata</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of problem_metadata</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.ccvmplotlib.problem_metadata.boxqp_metadata.html">boxqp_metadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.ccvmplotlib.problem_metadata.problem_metadata.html">problem_metadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.ccvmplotlib.problem_metadata.problem_metadata_factory.html">problem_metadata_factory</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../ccvm.ccvmplotlib.utils.html">utils</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of utils</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.ccvmplotlib.utils.metric.html">metric</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.ccvmplotlib.utils.mixins.html">mixins</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.ccvmplotlib.utils.sampleTTSmetric.html">sampleTTSmetric</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.ccvmplotlib.utils.utilities.html">utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html">ccvmplotlib</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../ccvm.post_processor.html">post_processor</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of post_processor</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.post_processor.adam.html">adam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.post_processor.asgd.html"><code class="docutils literal notranslate"><span class="pre">PostProcessorASGD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.post_processor.bfgs.html"><code class="docutils literal notranslate"><span class="pre">PostProcessorBFGS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.post_processor.box_qp_model.html"><code class="docutils literal notranslate"><span class="pre">BoxQPModel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.post_processor.factory.html">factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.post_processor.lbfgs.html">lbfgs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.post_processor.post_processor.html">post_processor</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../ccvm.problem_classes.html">problem_classes</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of problem_classes</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../ccvm.problem_classes.boxqp.html">boxqp</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of boxqp</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.problem_classes.boxqp.problem_instance.html">problem_instance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../ccvm.solvers.html">solvers</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of solvers</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.solvers.ccvm_solver.html">ccvm_solver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.solvers.dl_solver.html">dl_solver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.solvers.mf_solver.html">mf_solver</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ccvm.metadata_list.html">metadata_list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ccvm.solution.html">solution</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../ccvm_equations_of_motion.html">Coherent Continuous-Variable Machine Simulator - Equations of Motion</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Coherent Continuous-Variable Machine Simulator - Equations of Motion</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../langevin_sde.html">The Langevin Dynamics Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../pumped_langevin_sde.html">The Pumped Langevin Dynamics Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../dl_ccvm_sde.html">The Delay-Line Coherent Continuous-Variable Machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../mf_ccvm_sde.html">The Measurement-Feedback Coherent Continuous-Variable Machine</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for ccvm_simulators.ccvmplotlib.ccvmplotlib</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
+<span class="kn">import</span> <span class="nn">pandas</span>
+
+<span class="kn">from</span> <span class="nn">ccvm_simulators.ccvmplotlib.problem_metadata</span> <span class="kn">import</span> <span class="n">ProblemMetadataFactory</span>
+
+
+<span class="n">TTS_UPPER_LIMIT</span> <span class="o">=</span> <span class="mf">1e20</span>  <span class="c1"># Approximate age of the universe in sec.</span>
+<span class="n">PERC_GAP_LABEL_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;optimal&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;0.1</span><span class="si">% g</span><span class="s2">ap&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;one_percent&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;1</span><span class="si">% g</span><span class="s2">ap&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;two_percent&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;2</span><span class="si">% g</span><span class="s2">ap&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;three_percent&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;3</span><span class="si">% g</span><span class="s2">ap&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;four_percent&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;4</span><span class="si">% g</span><span class="s2">ap&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;five_percent&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;5</span><span class="si">% g</span><span class="s2">ap&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ten_percent&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;10</span><span class="si">% g</span><span class="s2">ap&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="ccvmplotlib">
+<a class="viewcode-back" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib">[docs]</a>
+<span class="k">class</span> <span class="nc">ccvmplotlib</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A generic plotting library for a problem solved by a CCVM solver.&quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__plot_core</span><span class="p">(</span>
+        <span class="n">plotting_df</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">fig</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]:</span>
+        <span class="n">x_data</span> <span class="o">=</span> <span class="n">plotting_df</span><span class="o">.</span><span class="n">index</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">fig</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+        <span class="n">color_iter</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">rainbow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">plotting_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+        <span class="k">for</span> <span class="n">lvl0_column_name</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">plotting_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color_iter</span><span class="p">):</span>
+            <span class="c1"># Plotting IQR</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span>
+                <span class="n">x_data</span><span class="p">,</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">plotting_df</span><span class="p">[</span><span class="n">lvl0_column_name</span><span class="p">,</span> <span class="s2">&quot;25&quot;</span><span class="p">]),</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">plotting_df</span><span class="p">[</span><span class="n">lvl0_column_name</span><span class="p">,</span> <span class="s2">&quot;75&quot;</span><span class="p">]),</span>
+                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="c1"># Plotting Median</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                <span class="n">x_data</span><span class="p">,</span>
+                <span class="n">plotting_df</span><span class="p">[</span><span class="n">lvl0_column_name</span><span class="p">,</span> <span class="s2">&quot;50&quot;</span><span class="p">],</span>
+                <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span>
+                <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">,</span>
+                <span class="n">label</span><span class="o">=</span><span class="p">(</span>
+                    <span class="n">PERC_GAP_LABEL_MAP</span><span class="p">[</span><span class="n">lvl0_column_name</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">lvl0_column_name</span> <span class="ow">in</span> <span class="n">PERC_GAP_LABEL_MAP</span>
+                    <span class="k">else</span> <span class="n">lvl0_column_name</span>
+                <span class="p">),</span>
+                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                <span class="n">linewidth</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="p">[],</span>
+            <span class="p">[],</span>
+            <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;(median)&quot;</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span>
+            <span class="n">linewidth</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;(IQR)&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ccvmplotlib.plot_TTS">
+<a class="viewcode-back" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.plot_TTS">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">plot_TTS</span><span class="p">(</span>
+        <span class="n">metadata_filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">problem</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">machine_time_func</span><span class="p">:</span> <span class="nb">callable</span><span class="p">,</span>
+        <span class="n">fig</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot a problem-specific Time-To-Solution metadata solved by a CCVM</span>
+<span class="sd">        solver.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            metadata_filepath (str): A file path to metadata.</span>
+<span class="sd">            problem (str): A problem type.</span>
+<span class="sd">            machine_time_func (callable): A callback function that calculates the</span>
+<span class="sd">            machine time, which is used to compute the TTS.</span>
+<span class="sd">            fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure. Defaults to None.</span>
+<span class="sd">            ax (matplotlib.axes.Axes, optional): A pre-generated pyplot axis. Defaults to None.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Raises a ValueError when the plotting data is not valid.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and axis that has</span>
+<span class="sd">                the TTS plot with minimal styling.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">problem_metadata</span> <span class="o">=</span> <span class="n">ProblemMetadataFactory</span><span class="o">.</span><span class="n">create_problem_metadata</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+        <span class="n">problem_metadata</span><span class="o">.</span><span class="n">ingest_metadata</span><span class="p">(</span><span class="n">metadata_filepath</span><span class="p">)</span>
+        <span class="n">plotting_df</span> <span class="o">=</span> <span class="n">problem_metadata</span><span class="o">.</span><span class="n">generate_plot_data</span><span class="p">(</span><span class="n">metric_func</span><span class="o">=</span><span class="n">machine_time_func</span><span class="p">)</span>
+
+        <span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span> <span class="o">=</span> <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">__plot_core</span><span class="p">(</span><span class="n">plotting_df</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+
+        <span class="c1"># Get max &amp; min median TTS values</span>
+        <span class="n">min_median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="n">max_median</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="k">for</span> <span class="n">lvl0_column</span> <span class="ow">in</span> <span class="n">plotting_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">min_median</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">min_median</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">plotting_df</span><span class="p">[</span><span class="n">lvl0_column</span><span class="p">,</span> <span class="s2">&quot;50&quot;</span><span class="p">]))</span>
+            <span class="n">max_median</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_median</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">plotting_df</span><span class="p">[</span><span class="n">lvl0_column</span><span class="p">,</span> <span class="s2">&quot;50&quot;</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="n">min_median</span> <span class="o">&gt;=</span> <span class="n">TTS_UPPER_LIMIT</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;TTS values are too large to plot. Please check the result data. Minimum TTS median value: </span><span class="si">{</span><span class="n">min_median</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">upper_lim</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span>
+                <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">min_median</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1e6</span><span class="p">),</span> <span class="n">max_median</span><span class="p">)))</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="p">)</span>
+            <span class="n">lower_lim</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">min_median</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">lower_lim</span><span class="p">,</span> <span class="n">upper_lim</span><span class="p">)</span>  <span class="c1"># limit on y values</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>  <span class="c1"># log scale</span>
+
+        <span class="c1"># Make sure x-axis only has integer values</span>
+        <span class="n">x_data</span> <span class="o">=</span> <span class="n">plotting_df</span><span class="o">.</span><span class="n">index</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x_data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ccvmplotlib.plot_ETS">
+<a class="viewcode-back" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.plot_ETS">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">plot_ETS</span><span class="p">(</span>
+        <span class="n">metadata_filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">problem</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">machine_energy_func</span><span class="p">:</span> <span class="nb">callable</span><span class="p">,</span>
+        <span class="n">fig</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot a problem-specific Time-To-Solution metadata solved by a CCVM</span>
+<span class="sd">        solver.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            metadata_filepath (str): A file path to metadata.</span>
+<span class="sd">            problem (str): A problem type.</span>
+<span class="sd">            machine_energy_func (callable): A callback function that calculates the</span>
+<span class="sd">            energy max, which is used to compute the ETS.</span>
+<span class="sd">            fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure.</span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">            ax (matplotlib.axes.Axes, optional): A pre-generated pyplot axis.</span>
+<span class="sd">            Defaults to None.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Raises a ValueError when the plotting data is not valid.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and axis that has</span>
+<span class="sd">                the TTS plot with minimal styling.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">problem_metadata</span> <span class="o">=</span> <span class="n">ProblemMetadataFactory</span><span class="o">.</span><span class="n">create_problem_metadata</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+        <span class="n">problem_metadata</span><span class="o">.</span><span class="n">ingest_metadata</span><span class="p">(</span><span class="n">metadata_filepath</span><span class="p">)</span>
+        <span class="n">plotting_df</span> <span class="o">=</span> <span class="n">problem_metadata</span><span class="o">.</span><span class="n">generate_plot_data</span><span class="p">(</span>
+            <span class="n">metric_func</span><span class="o">=</span><span class="n">machine_energy_func</span>
+        <span class="p">)</span>
+
+        <span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span> <span class="o">=</span> <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">__plot_core</span><span class="p">(</span><span class="n">plotting_df</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+
+        <span class="c1"># set y axis to log scale</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Make sure x-axis only has integer values</span>
+        <span class="n">x_data</span> <span class="o">=</span> <span class="n">plotting_df</span><span class="o">.</span><span class="n">index</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x_data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ccvmplotlib.plot_success_prob">
+<a class="viewcode-back" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.plot_success_prob">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">plot_success_prob</span><span class="p">(</span>
+        <span class="n">metadata_filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">problem</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">fig</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot a problem-specific success probability result data solved by a</span>
+<span class="sd">        CCVM solver.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            metadata_filepath (str): A file path to solution data.</span>
+<span class="sd">            problem (str): A problem type.</span>
+<span class="sd">            fig (matplotlib.figure.Figure, optional): A pre-generated pyplot figure. Defaults to None.</span>
+<span class="sd">            ax (matplotlib.axes.Axes, optional): A pre-generated pyplot axis. Defaults to None.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Raises a ValueError when the plotting data is invalid.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]: Returns a figure and axis that has</span>
+<span class="sd">                the success probability plot with minimal styling.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">problem_metadata</span> <span class="o">=</span> <span class="n">ProblemMetadataFactory</span><span class="o">.</span><span class="n">create_problem_metadata</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+        <span class="n">problem_metadata</span><span class="o">.</span><span class="n">ingest_metadata</span><span class="p">(</span><span class="n">metadata_filepath</span><span class="p">)</span>
+        <span class="n">plotting_df</span> <span class="o">=</span> <span class="n">problem_metadata</span><span class="o">.</span><span class="n">generate_success_prob_plot_data</span><span class="p">()</span>
+        <span class="n">x_data</span> <span class="o">=</span> <span class="n">plotting_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">fig</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+        <span class="n">color_iter</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">rainbow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">plotting_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+        <span class="n">max_succ_prob</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="k">for</span> <span class="n">lvl0_column_name</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">plotting_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color_iter</span><span class="p">):</span>
+            <span class="n">max_succ_prob</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                <span class="n">max_succ_prob</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">plotting_df</span><span class="p">[</span><span class="n">lvl0_column_name</span><span class="p">,</span> <span class="s2">&quot;success_prob&quot;</span><span class="p">])</span>
+            <span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                <span class="n">x_data</span><span class="p">,</span>
+                <span class="n">plotting_df</span><span class="p">[</span><span class="n">lvl0_column_name</span><span class="p">,</span> <span class="s2">&quot;success_prob&quot;</span><span class="p">],</span>
+                <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span>
+                <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">,</span>
+                <span class="n">label</span><span class="o">=</span><span class="p">(</span>
+                    <span class="n">PERC_GAP_LABEL_MAP</span><span class="p">[</span><span class="n">lvl0_column_name</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">lvl0_column_name</span> <span class="ow">in</span> <span class="n">PERC_GAP_LABEL_MAP</span>
+                    <span class="k">else</span> <span class="n">lvl0_column_name</span>
+                <span class="p">),</span>
+                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">max_succ_prob</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Success Probability values are all 0.0. Please check the result data.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Make sure x-axis only has integer values</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x_data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ccvmplotlib.set_default_figsize">
+<a class="viewcode-back" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.set_default_figsize">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_default_figsize</span><span class="p">(</span><span class="n">fig</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A method to set the figure size with default width and height values.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fig (matplotlib.figure.Figure): A pyplot figure to be resized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">set_figwidth</span><span class="p">(</span><span class="mf">8.0</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">set_figheight</span><span class="p">(</span><span class="mf">7.0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ccvmplotlib.set_default_xlabel">
+<a class="viewcode-back" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.set_default_xlabel">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_default_xlabel</span><span class="p">(</span><span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A method to set the x-label text. Also, it sets font and font size</span>
+<span class="sd">        with default values.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ax (matplotlib.axes.Axes): A pyplot axis to be set.</span>
+<span class="sd">            xlabel (str): x-label text.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="n">xlabel</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;family&quot;</span><span class="p">:</span> <span class="s2">&quot;serif&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">36</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="ccvmplotlib.set_default_ylabel">
+<a class="viewcode-back" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.set_default_ylabel">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_default_ylabel</span><span class="p">(</span><span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A method to set the y-label text. Also, it sets font and font size</span>
+<span class="sd">        with default values.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ax (matplotlib.axes.Axes): A pyplot axis to be set.</span>
+<span class="sd">            ylabel (str): y-label text.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="n">ylabel</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;family&quot;</span><span class="p">:</span> <span class="s2">&quot;serif&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">36</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="ccvmplotlib.set_default_ticks">
+<a class="viewcode-back" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.set_default_ticks">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_default_ticks</span><span class="p">(</span><span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A method to set the x&amp;y ticks with default font size.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ax (matplotlib.axes.Axes): A pyplot axis to be set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ccvmplotlib.set_default_legend">
+<a class="viewcode-back" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.set_default_legend">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_default_legend</span><span class="p">(</span><span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A method to set the legen with default configuration.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ax (matplotlib.axes.Axes): A pyplot axis to be set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">handles</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
+        <span class="n">label_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">PERC_GAP_LABEL_MAP</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">label_list</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;(median)&quot;</span><span class="p">,</span> <span class="s2">&quot;(IQR)&quot;</span><span class="p">])</span>
+        <span class="n">legend_orders</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">label_list</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">legend_orders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">handles</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">legend_orders</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">labels</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">legend_orders</span><span class="p">],</span>
+            <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">,</span>
+            <span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ccvmplotlib.set_default_grid">
+<a class="viewcode-back" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.set_default_grid">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_default_grid</span><span class="p">(</span><span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A method to set the grid with default configuration.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ax (matplotlib.axes.Axes): A pyplot axis to be set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span>
+            <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">which</span><span class="o">=</span><span class="s2">&quot;major&quot;</span><span class="p">,</span>
+            <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#666666&quot;</span><span class="p">,</span>
+            <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ccvmplotlib.apply_default_tts_styling">
+<a class="viewcode-back" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.apply_default_tts_styling">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">apply_default_tts_styling</span><span class="p">(</span>
+        <span class="n">fig</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A method to apply the default styling to a TTS plot.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fig (matplotlib.figure.Figure): A pyplot figure to be set.</span>
+<span class="sd">            ax (matplotlib.axes.Axes): A pyplot axis to be set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># set figure size</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_figsize</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
+        <span class="c1"># set x &amp; y labels</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_xlabel</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;Problem Size, $N$&quot;</span><span class="p">)</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_ylabel</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;TTS (seconds)&quot;</span><span class="p">)</span>
+
+        <span class="c1"># set x &amp; y ticks</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_ticks</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+        <span class="c1"># set legend</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_legend</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+        <span class="c1"># set grid</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_grid</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+        <span class="c1"># call tight layout</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ccvmplotlib.apply_default_ets_styling">
+<a class="viewcode-back" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.apply_default_ets_styling">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">apply_default_ets_styling</span><span class="p">(</span>
+        <span class="n">fig</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A method to apply the default styling to a ETS plot.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fig (matplotlib.figure.Figure): A pyplot figure to be set.</span>
+<span class="sd">            ax (matplotlib.axes.Axes): A pyplot axis to be set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># set figure size</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_figsize</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
+        <span class="c1"># set x &amp; y labels</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_xlabel</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;Problem Size, $N$&quot;</span><span class="p">)</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_ylabel</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;ETS (joules)&quot;</span><span class="p">)</span>
+
+        <span class="c1"># set x &amp; y ticks</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_ticks</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+        <span class="c1"># set legend</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_legend</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+        <span class="c1"># set grid</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_grid</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+        <span class="c1"># call tight layout</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ccvmplotlib.apply_default_succ_prob_styling">
+<a class="viewcode-back" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.apply_default_succ_prob_styling">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">apply_default_succ_prob_styling</span><span class="p">(</span>
+        <span class="n">fig</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A method to apply the default styling to a success probability plot.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fig (matplotlib.figure.Figure): A pyplot figure to be set.</span>
+<span class="sd">            ax (matplotlib.axes.Axes): A pyplot axis to be set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># set figure size</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_figsize</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
+        <span class="c1"># set x &amp; y labels</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_xlabel</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;Problem Size, $N$&quot;</span><span class="p">)</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_ylabel</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;Success Probability&quot;</span><span class="p">)</span>
+
+        <span class="c1"># set x &amp; y ticks</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_ticks</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+        <span class="c1"># set legend</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_legend</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+        <span class="c1"># set grid</span>
+        <span class="n">ccvmplotlib</span><span class="o">.</span><span class="n">set_default_grid</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+        <span class="c1"># call tight layout</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, 1QBit
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

@@ -1,0 +1,1011 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 --><title>Index - ccvm_simulators documentation</title>
+<link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=89731a12" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">ccvm_simulators  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">ccvm_simulators  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="ccvm_simulators_api_reference.html">ccvm_simulators - API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of ccvm_simulators - API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ccvm.ccvmplotlib.html">ccvmplotlib</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of ccvmplotlib</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="ccvm.ccvmplotlib.problem_metadata.html">problem_metadata</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of problem_metadata</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.ccvmplotlib.problem_metadata.boxqp_metadata.html">boxqp_metadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.ccvmplotlib.problem_metadata.problem_metadata.html">problem_metadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.ccvmplotlib.problem_metadata.problem_metadata_factory.html">problem_metadata_factory</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="ccvm.ccvmplotlib.utils.html">utils</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of utils</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.ccvmplotlib.utils.metric.html">metric</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.ccvmplotlib.utils.mixins.html">mixins</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.ccvmplotlib.utils.sampleTTSmetric.html">sampleTTSmetric</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.ccvmplotlib.utils.utilities.html">utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.ccvmplotlib.ccvmplotlib.html">ccvmplotlib</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ccvm.post_processor.html">post_processor</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of post_processor</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.post_processor.adam.html">adam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.post_processor.asgd.html"><code class="docutils literal notranslate"><span class="pre">PostProcessorASGD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.post_processor.bfgs.html"><code class="docutils literal notranslate"><span class="pre">PostProcessorBFGS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.post_processor.box_qp_model.html"><code class="docutils literal notranslate"><span class="pre">BoxQPModel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.post_processor.factory.html">factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.post_processor.lbfgs.html">lbfgs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.post_processor.post_processor.html">post_processor</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ccvm.problem_classes.html">problem_classes</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of problem_classes</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="ccvm.problem_classes.boxqp.html">boxqp</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of boxqp</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="ccvm.problem_classes.boxqp.problem_instance.html">problem_instance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ccvm.solvers.html">solvers</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of solvers</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.solvers.ccvm_solver.html">ccvm_solver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.solvers.dl_solver.html">dl_solver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ccvm.solvers.mf_solver.html">mf_solver</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ccvm.metadata_list.html">metadata_list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ccvm.solution.html">solution</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="ccvm_equations_of_motion.html">Coherent Continuous-Variable Machine Simulator - Equations of Motion</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Coherent Continuous-Variable Machine Simulator - Equations of Motion</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="langevin_sde.html">The Langevin Dynamics Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pumped_langevin_sde.html">The Pumped Langevin Dynamics Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dl_ccvm_sde.html">The Delay-Line Coherent Continuous-Variable Machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mf_ccvm_sde.html">The Measurement-Feedback Coherent Continuous-Variable Machine</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          
+<section class="genindex-section">
+  <h1 id="index">Index</h1>
+  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a></div>
+</section>
+<section id="A" class="genindex-section">
+  <h2>A</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.post_processor.post_processor.html#ccvm_simulators.post_processor.post_processor.MethodType.Adam">Adam (MethodType attribute)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.apply_default_ets_styling">apply_default_ets_styling() (ccvmplotlib static method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.apply_default_succ_prob_styling">apply_default_succ_prob_styling() (ccvmplotlib static method)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.apply_default_tts_styling">apply_default_tts_styling() (ccvmplotlib static method)</a>
+</li>
+        <li><a href="ccvm.post_processor.post_processor.html#ccvm_simulators.post_processor.post_processor.MethodType.ASGD">ASGD (MethodType attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.batch_size">batch_size (Solution attribute)</a>
+</li>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.best_objective_value">best_objective_value (Solution attribute)</a>, <a href="ccvm.solution.html#id0">[1]</a>
+</li>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.best_sol">best_sol (ProblemInstance attribute)</a>
+</li>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.best_value">best_value (Solution attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.post_processor.post_processor.html#ccvm_simulators.post_processor.post_processor.MethodType.BFGS">BFGS (MethodType attribute)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata.html#ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata.ProblemType.BoxQP">BoxQP (ProblemType attribute)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.problem_metadata.boxqp_metadata.html#ccvm_simulators.ccvmplotlib.problem_metadata.boxqp_metadata.BoxQPMetadata">BoxQPMetadata (class in ccvm_simulators.ccvmplotlib.problem_metadata.boxqp_metadata)</a>
+</li>
+        <li><a href="ccvm.post_processor.box_qp_model.html#ccvm_simulators.post_processor.box_qp_model.BoxQPModel">BoxQPModel (class in ccvm_simulators.post_processor.box_qp_model)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="C" class="genindex-section">
+  <h2>C</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.ccvmplotlib.utils.metric.html#ccvm_simulators.ccvmplotlib.utils.metric.Metric.calc">calc() (Metric method)</a>
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.utils.sampleTTSmetric.html#ccvm_simulators.ccvmplotlib.utils.sampleTTSmetric.SampleTTSMetric.calc">(SampleTTSMetric method)</a>
+</li>
+        </ul></li>
+        <li><a href="ccvm.ccvmplotlib.utils.sampleTTSmetric.html#ccvm_simulators.ccvmplotlib.utils.sampleTTSmetric.SampleTTSMetric.calc_R99">calc_R99() (SampleTTSMetric method)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.utils.sampleTTSmetric.html#ccvm_simulators.ccvmplotlib.utils.sampleTTSmetric.SampleTTSMetric.calc_R99_distribution">calc_R99_distribution() (SampleTTSMetric method)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.utils.sampleTTSmetric.html#ccvm_simulators.ccvmplotlib.utils.sampleTTSmetric.SampleTTSMetric.calc_success_probabilities">calc_success_probabilities() (SampleTTSMetric method)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.utils.sampleTTSmetric.html#ccvm_simulators.ccvmplotlib.utils.sampleTTSmetric.SampleTTSMetric.calc_success_probability">calc_success_probability() (SampleTTSMetric method)</a>
+</li>
+        <li>
+    ccvm_simulators
+
+        <ul>
+          <li><a href="ccvm_simulators_api_reference.html#module-ccvm_simulators">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.ccvmplotlib
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.html#module-ccvm_simulators.ccvmplotlib">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.ccvmplotlib.ccvmplotlib
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#module-ccvm_simulators.ccvmplotlib.ccvmplotlib">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.ccvmplotlib.problem_metadata
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.problem_metadata.html#module-ccvm_simulators.ccvmplotlib.problem_metadata">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.ccvmplotlib.problem_metadata.boxqp_metadata
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.problem_metadata.boxqp_metadata.html#module-ccvm_simulators.ccvmplotlib.problem_metadata.boxqp_metadata">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata.html#module-ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata_factory
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata_factory.html#module-ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata_factory">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.ccvmplotlib.utils
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.utils.html#module-ccvm_simulators.ccvmplotlib.utils">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.ccvmplotlib.utils.metric
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.utils.metric.html#module-ccvm_simulators.ccvmplotlib.utils.metric">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.ccvmplotlib.utils.mixins
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.utils.mixins.html#module-ccvm_simulators.ccvmplotlib.utils.mixins">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.ccvmplotlib.utils.sampleTTSmetric
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.utils.sampleTTSmetric.html#module-ccvm_simulators.ccvmplotlib.utils.sampleTTSmetric">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.ccvmplotlib.utils.utilities
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.utils.utilities.html#module-ccvm_simulators.ccvmplotlib.utils.utilities">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.post_processor
+
+        <ul>
+          <li><a href="ccvm.post_processor.html#module-ccvm_simulators.post_processor">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.post_processor.adam
+
+        <ul>
+          <li><a href="ccvm.post_processor.adam.html#module-ccvm_simulators.post_processor.adam">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.post_processor.asgd
+
+        <ul>
+          <li><a href="ccvm.post_processor.asgd.html#module-ccvm_simulators.post_processor.asgd">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    ccvm_simulators.post_processor.bfgs
+
+        <ul>
+          <li><a href="ccvm.post_processor.bfgs.html#module-ccvm_simulators.post_processor.bfgs">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.post_processor.box_qp_model
+
+        <ul>
+          <li><a href="ccvm.post_processor.box_qp_model.html#module-ccvm_simulators.post_processor.box_qp_model">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.post_processor.factory
+
+        <ul>
+          <li><a href="ccvm.post_processor.factory.html#module-ccvm_simulators.post_processor.factory">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.post_processor.lbfgs
+
+        <ul>
+          <li><a href="ccvm.post_processor.lbfgs.html#module-ccvm_simulators.post_processor.lbfgs">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.post_processor.post_processor
+
+        <ul>
+          <li><a href="ccvm.post_processor.post_processor.html#module-ccvm_simulators.post_processor.post_processor">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.problem_classes
+
+        <ul>
+          <li><a href="ccvm.problem_classes.html#module-ccvm_simulators.problem_classes">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.problem_classes.boxqp
+
+        <ul>
+          <li><a href="ccvm.problem_classes.boxqp.html#module-ccvm_simulators.problem_classes.boxqp">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.problem_classes.boxqp.problem_instance
+
+        <ul>
+          <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#module-ccvm_simulators.problem_classes.boxqp.problem_instance">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.solution
+
+        <ul>
+          <li><a href="ccvm.solution.html#module-ccvm_simulators.solution">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.solvers
+
+        <ul>
+          <li><a href="ccvm.solvers.html#module-ccvm_simulators.solvers">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.solvers.ccvm_solver
+
+        <ul>
+          <li><a href="ccvm.solvers.ccvm_solver.html#module-ccvm_simulators.solvers.ccvm_solver">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.solvers.dl_solver
+
+        <ul>
+          <li><a href="ccvm.solvers.dl_solver.html#module-ccvm_simulators.solvers.dl_solver">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.solvers.mf_solver
+
+        <ul>
+          <li><a href="ccvm.solvers.mf_solver.html#module-ccvm_simulators.solvers.mf_solver">module</a>
+</li>
+        </ul></li>
+        <li>
+    ccvm_simulators.tests
+
+        <ul>
+          <li><a href="ccvm.tests.html#module-ccvm_simulators.tests">module</a>
+</li>
+        </ul></li>
+        <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib">ccvmplotlib (class in ccvm_simulators.ccvmplotlib.ccvmplotlib)</a>
+</li>
+        <li><a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.CCVMSolver">CCVMSolver (class in ccvm_simulators.solvers.ccvm_solver)</a>
+</li>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.compute_energy">compute_energy() (ProblemInstance method)</a>
+</li>
+        <li><a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.MachineType.CPU">CPU (MachineType attribute)</a>
+</li>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.DeviceType.CPU_DEVICE">CPU_DEVICE (DeviceType attribute)</a>, <a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.DeviceType.CPU_DEVICE">[1]</a>
+</li>
+        <li><a href="ccvm.post_processor.factory.html#ccvm_simulators.post_processor.factory.PostProcessorFactory.create_postprocessor">create_postprocessor() (PostProcessorFactory static method)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata_factory.html#ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata_factory.ProblemMetadataFactory.create_problem_metadata">create_problem_metadata() (ProblemMetadataFactory static method)</a>
+</li>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.DeviceType.CUDA_DEVICE">CUDA_DEVICE (DeviceType attribute)</a>, <a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.DeviceType.CUDA_DEVICE">[1]</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.device">device (Solution attribute)</a>
+</li>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.DeviceType">DeviceType (class in ccvm_simulators.problem_classes.boxqp.problem_instance)</a>
+
+        <ul>
+          <li><a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.DeviceType">(class in ccvm_simulators.solvers.ccvm_solver)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.MachineType.DL_CCVM">DL_CCVM (MachineType attribute)</a>
+</li>
+        <li><a href="ccvm.solvers.dl_solver.html#ccvm_simulators.solvers.dl_solver.DL_SCALING_MULTIPLIER">DL_SCALING_MULTIPLIER (in module ccvm_simulators.solvers.dl_solver)</a>
+</li>
+        <li><a href="ccvm.solvers.dl_solver.html#ccvm_simulators.solvers.dl_solver.DLSolver">DLSolver (class in ccvm_simulators.solvers.dl_solver)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.evolution_file">evolution_file (Solution attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.ccvmplotlib.utils.metric.html#ccvm_simulators.ccvmplotlib.utils.metric.Metric.fill_in_value">fill_in_value() (Metric static method)</a>
+</li>
+        <li><a href="ccvm.post_processor.box_qp_model.html#ccvm_simulators.post_processor.box_qp_model.BoxQPModel.forward">forward() (BoxQPModel method)</a>
+</li>
+        <li><a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.MachineType.FPGA">FPGA (MachineType attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.post_processor.post_processor.html#ccvm_simulators.post_processor.post_processor.PostProcessor.func_post">func_post() (PostProcessor method)</a>
+</li>
+        <li><a href="ccvm.post_processor.post_processor.html#ccvm_simulators.post_processor.post_processor.PostProcessor.func_post_jac">func_post_jac() (PostProcessor method)</a>
+</li>
+        <li><a href="ccvm.post_processor.box_qp_model.html#ccvm_simulators.post_processor.box_qp_model.BoxQPModel.func_post_LBFGS">func_post_LBFGS() (BoxQPModel method)</a>
+</li>
+        <li><a href="ccvm.post_processor.box_qp_model.html#ccvm_simulators.post_processor.box_qp_model.BoxQPModel.func_post_torch">func_post_torch() (BoxQPModel method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="G" class="genindex-section">
+  <h2>G</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.ccvmplotlib.problem_metadata.boxqp_metadata.html#ccvm_simulators.ccvmplotlib.problem_metadata.boxqp_metadata.BoxQPMetadata.generate_plot_data">generate_plot_data() (BoxQPMetadata method)</a>
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata.html#ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata.ProblemMetadata.generate_plot_data">(ProblemMetadata method)</a>
+</li>
+        </ul></li>
+        <li><a href="ccvm.ccvmplotlib.problem_metadata.boxqp_metadata.html#ccvm_simulators.ccvmplotlib.problem_metadata.boxqp_metadata.BoxQPMetadata.generate_success_prob_plot_data">generate_success_prob_plot_data() (BoxQPMetadata method)</a>
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata.html#ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata.ProblemMetadata.generate_success_prob_plot_data">(ProblemMetadata method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.get_metadata_dict">get_metadata_dict() (Solution method)</a>
+</li>
+        <li><a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.CCVMSolver.get_scaling_factor">get_scaling_factor() (CCVMSolver method)</a>
+</li>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.get_solution_stats">get_solution_stats() (Solution method)</a>
+</li>
+        <li><a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.MachineType.GPU">GPU (MachineType attribute)</a>
+</li>
+        <li><a href="ccvm.post_processor.post_processor.html#ccvm_simulators.post_processor.post_processor.MethodType.GradDescent">GradDescent (MethodType attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="I" class="genindex-section">
+  <h2>I</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.ccvmplotlib.utils.utilities.html#ccvm_simulators.ccvmplotlib.utils.utilities.imean">imean() (in module ccvm_simulators.ccvmplotlib.utils.utilities)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.problem_metadata.boxqp_metadata.html#ccvm_simulators.ccvmplotlib.problem_metadata.boxqp_metadata.BoxQPMetadata.ingest_metadata">ingest_metadata() (BoxQPMetadata method)</a>
+
+        <ul>
+          <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata.html#ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata.ProblemMetadata.ingest_metadata">(ProblemMetadata method)</a>
+</li>
+        </ul></li>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.instance_name">instance_name (Solution attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.InstanceType">InstanceType (class in ccvm_simulators.problem_classes.boxqp.problem_instance)</a>
+</li>
+        <li><a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.CCVMSolver.is_tuned">is_tuned (CCVMSolver property)</a>
+</li>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.iterations">iterations (Solution attribute)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.utils.utilities.html#ccvm_simulators.ccvmplotlib.utils.utilities.ivariance">ivariance() (in module ccvm_simulators.ccvmplotlib.utils.utilities)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.post_processor.post_processor.html#ccvm_simulators.post_processor.post_processor.MethodType.LBFGS">LBFGS (MethodType attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.load_instance">load_instance() (ProblemInstance method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="M" class="genindex-section">
+  <h2>M</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.CCVMSolver.machine_energy">machine_energy() (CCVMSolver method)</a>
+</li>
+        <li><a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.CCVMSolver.machine_time">machine_time() (CCVMSolver method)</a>
+</li>
+        <li><a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.MachineType">MachineType (class in ccvm_simulators.solvers.ccvm_solver)</a>
+</li>
+        <li><a href="ccvm.post_processor.post_processor.html#ccvm_simulators.post_processor.post_processor.MethodType">MethodType (class in ccvm_simulators.post_processor.post_processor)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.utils.metric.html#ccvm_simulators.ccvmplotlib.utils.metric.Metric">Metric (class in ccvm_simulators.ccvmplotlib.utils.metric)</a>
+</li>
+        <li><a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.MachineType.MF_CCVM">MF_CCVM (MachineType attribute)</a>
+</li>
+        <li><a href="ccvm.solvers.mf_solver.html#ccvm_simulators.solvers.mf_solver.MF_SCALING_MULTIPLIER">MF_SCALING_MULTIPLIER (in module ccvm_simulators.solvers.mf_solver)</a>
+</li>
+        <li><a href="ccvm.solvers.mf_solver.html#ccvm_simulators.solvers.mf_solver.MFSolver">MFSolver (class in ccvm_simulators.solvers.mf_solver)</a>
+</li>
+        <li>
+    module
+
+        <ul>
+          <li><a href="ccvm_simulators_api_reference.html#module-ccvm_simulators">ccvm_simulators</a>
+</li>
+          <li><a href="ccvm.ccvmplotlib.html#module-ccvm_simulators.ccvmplotlib">ccvm_simulators.ccvmplotlib</a>
+</li>
+          <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#module-ccvm_simulators.ccvmplotlib.ccvmplotlib">ccvm_simulators.ccvmplotlib.ccvmplotlib</a>
+</li>
+          <li><a href="ccvm.ccvmplotlib.problem_metadata.html#module-ccvm_simulators.ccvmplotlib.problem_metadata">ccvm_simulators.ccvmplotlib.problem_metadata</a>
+</li>
+          <li><a href="ccvm.ccvmplotlib.problem_metadata.boxqp_metadata.html#module-ccvm_simulators.ccvmplotlib.problem_metadata.boxqp_metadata">ccvm_simulators.ccvmplotlib.problem_metadata.boxqp_metadata</a>
+</li>
+          <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata.html#module-ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata">ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata</a>
+</li>
+          <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata_factory.html#module-ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata_factory">ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata_factory</a>
+</li>
+          <li><a href="ccvm.ccvmplotlib.utils.html#module-ccvm_simulators.ccvmplotlib.utils">ccvm_simulators.ccvmplotlib.utils</a>
+</li>
+          <li><a href="ccvm.ccvmplotlib.utils.metric.html#module-ccvm_simulators.ccvmplotlib.utils.metric">ccvm_simulators.ccvmplotlib.utils.metric</a>
+</li>
+          <li><a href="ccvm.ccvmplotlib.utils.mixins.html#module-ccvm_simulators.ccvmplotlib.utils.mixins">ccvm_simulators.ccvmplotlib.utils.mixins</a>
+</li>
+          <li><a href="ccvm.ccvmplotlib.utils.sampleTTSmetric.html#module-ccvm_simulators.ccvmplotlib.utils.sampleTTSmetric">ccvm_simulators.ccvmplotlib.utils.sampleTTSmetric</a>
+</li>
+          <li><a href="ccvm.ccvmplotlib.utils.utilities.html#module-ccvm_simulators.ccvmplotlib.utils.utilities">ccvm_simulators.ccvmplotlib.utils.utilities</a>
+</li>
+          <li><a href="ccvm.post_processor.html#module-ccvm_simulators.post_processor">ccvm_simulators.post_processor</a>
+</li>
+          <li><a href="ccvm.post_processor.adam.html#module-ccvm_simulators.post_processor.adam">ccvm_simulators.post_processor.adam</a>
+</li>
+          <li><a href="ccvm.post_processor.asgd.html#module-ccvm_simulators.post_processor.asgd">ccvm_simulators.post_processor.asgd</a>
+</li>
+          <li><a href="ccvm.post_processor.bfgs.html#module-ccvm_simulators.post_processor.bfgs">ccvm_simulators.post_processor.bfgs</a>
+</li>
+          <li><a href="ccvm.post_processor.box_qp_model.html#module-ccvm_simulators.post_processor.box_qp_model">ccvm_simulators.post_processor.box_qp_model</a>
+</li>
+          <li><a href="ccvm.post_processor.factory.html#module-ccvm_simulators.post_processor.factory">ccvm_simulators.post_processor.factory</a>
+</li>
+          <li><a href="ccvm.post_processor.lbfgs.html#module-ccvm_simulators.post_processor.lbfgs">ccvm_simulators.post_processor.lbfgs</a>
+</li>
+          <li><a href="ccvm.post_processor.post_processor.html#module-ccvm_simulators.post_processor.post_processor">ccvm_simulators.post_processor.post_processor</a>
+</li>
+          <li><a href="ccvm.problem_classes.html#module-ccvm_simulators.problem_classes">ccvm_simulators.problem_classes</a>
+</li>
+          <li><a href="ccvm.problem_classes.boxqp.html#module-ccvm_simulators.problem_classes.boxqp">ccvm_simulators.problem_classes.boxqp</a>
+</li>
+          <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#module-ccvm_simulators.problem_classes.boxqp.problem_instance">ccvm_simulators.problem_classes.boxqp.problem_instance</a>
+</li>
+          <li><a href="ccvm.solution.html#module-ccvm_simulators.solution">ccvm_simulators.solution</a>
+</li>
+          <li><a href="ccvm.solvers.html#module-ccvm_simulators.solvers">ccvm_simulators.solvers</a>
+</li>
+          <li><a href="ccvm.solvers.ccvm_solver.html#module-ccvm_simulators.solvers.ccvm_solver">ccvm_simulators.solvers.ccvm_solver</a>
+</li>
+          <li><a href="ccvm.solvers.dl_solver.html#module-ccvm_simulators.solvers.dl_solver">ccvm_simulators.solvers.dl_solver</a>
+</li>
+          <li><a href="ccvm.solvers.mf_solver.html#module-ccvm_simulators.solvers.mf_solver">ccvm_simulators.solvers.mf_solver</a>
+</li>
+          <li><a href="ccvm.tests.html#module-ccvm_simulators.tests">ccvm_simulators.tests</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.num_frac_values">num_frac_values (ProblemInstance attribute)</a>
+
+        <ul>
+          <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.num_frac_values">(Solution attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.ccvmplotlib.utils.metric.html#ccvm_simulators.ccvmplotlib.utils.metric.Metric.num_solutions_per_result">num_solutions_per_result() (Metric static method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="O" class="genindex-section">
+  <h2>O</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.objective_values">objective_values (Solution attribute)</a>
+</li>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.optimal_sol">optimal_sol (ProblemInstance attribute)</a>
+</li>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.optimal_value">optimal_value (Solution attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.optimality">optimality (ProblemInstance attribute)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.utils.metric.html#ccvm_simulators.ccvmplotlib.utils.metric.Metric.overall_mean">overall_mean() (Metric static method)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.utils.metric.html#ccvm_simulators.ccvmplotlib.utils.metric.Metric.overall_variance">overall_variance() (Metric static method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.CCVMSolver.parameter_key">parameter_key (CCVMSolver property)</a>
+
+        <ul>
+          <li><a href="ccvm.solvers.dl_solver.html#ccvm_simulators.solvers.dl_solver.DLSolver.parameter_key">(DLSolver property)</a>
+</li>
+          <li><a href="ccvm.solvers.mf_solver.html#ccvm_simulators.solvers.mf_solver.MFSolver.parameter_key">(MFSolver property)</a>
+</li>
+        </ul></li>
+        <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata.html#ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata.TTSType.physical">physical (TTSType attribute)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.plot_ETS">plot_ETS() (ccvmplotlib static method)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.plot_success_prob">plot_success_prob() (ccvmplotlib static method)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.plot_TTS">plot_TTS() (ccvmplotlib static method)</a>
+</li>
+        <li><a href="ccvm.post_processor.post_processor.html#ccvm_simulators.post_processor.post_processor.PostProcessor.postprocess">postprocess() (PostProcessor method)</a>
+
+        <ul>
+          <li><a href="ccvm.post_processor.adam.html#ccvm_simulators.post_processor.adam.PostProcessorAdam.postprocess">(PostProcessorAdam method)</a>
+</li>
+          <li><a href="ccvm.post_processor.asgd.html#ccvm_simulators.post_processor.asgd.PostProcessorASGD.postprocess">(PostProcessorASGD method)</a>
+</li>
+          <li><a href="ccvm.post_processor.bfgs.html#ccvm_simulators.post_processor.bfgs.PostProcessorBFGS.postprocess">(PostProcessorBFGS method)</a>
+</li>
+          <li><a href="ccvm.post_processor.lbfgs.html#ccvm_simulators.post_processor.lbfgs.PostProcessorLBFGS.postprocess">(PostProcessorLBFGS method)</a>
+</li>
+        </ul></li>
+        <li><a href="ccvm.post_processor.post_processor.html#ccvm_simulators.post_processor.post_processor.PostProcessor">PostProcessor (class in ccvm_simulators.post_processor.post_processor)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.post_processor.adam.html#ccvm_simulators.post_processor.adam.PostProcessorAdam">PostProcessorAdam (class in ccvm_simulators.post_processor.adam)</a>
+</li>
+        <li><a href="ccvm.post_processor.asgd.html#ccvm_simulators.post_processor.asgd.PostProcessorASGD">PostProcessorASGD (class in ccvm_simulators.post_processor.asgd)</a>
+</li>
+        <li><a href="ccvm.post_processor.bfgs.html#ccvm_simulators.post_processor.bfgs.PostProcessorBFGS">PostProcessorBFGS (class in ccvm_simulators.post_processor.bfgs)</a>
+</li>
+        <li><a href="ccvm.post_processor.factory.html#ccvm_simulators.post_processor.factory.PostProcessorFactory">PostProcessorFactory (class in ccvm_simulators.post_processor.factory)</a>
+</li>
+        <li><a href="ccvm.post_processor.lbfgs.html#ccvm_simulators.post_processor.lbfgs.PostProcessorLBFGS">PostProcessorLBFGS (class in ccvm_simulators.post_processor.lbfgs)</a>
+</li>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.pp_time">pp_time (Solution attribute)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata.html#ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata.ProblemMetadata.problem">problem (ProblemMetadata property)</a>
+</li>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.problem_size">problem_size (ProblemInstance attribute)</a>
+
+        <ul>
+          <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.problem_size">(Solution attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance">ProblemInstance (class in ccvm_simulators.problem_classes.boxqp.problem_instance)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata.html#ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata.ProblemMetadata">ProblemMetadata (class in ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata_factory.html#ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata_factory.ProblemMetadataFactory">ProblemMetadataFactory (class in ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata_factory)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata.html#ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata.ProblemType">ProblemType (class in ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Q" class="genindex-section">
+  <h2>Q</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.q_matrix">q_matrix (ProblemInstance attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="S" class="genindex-section">
+  <h2>S</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.ccvmplotlib.utils.sampleTTSmetric.html#ccvm_simulators.ccvmplotlib.utils.sampleTTSmetric.SampleTTSMetric">SampleTTSMetric (class in ccvm_simulators.ccvmplotlib.utils.sampleTTSmetric)</a>
+</li>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.save_tensor_to_file">save_tensor_to_file() (Solution method)</a>
+</li>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.scale_coefs">scale_coefs() (ProblemInstance method)</a>
+</li>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.scaled_by">scaled_by (ProblemInstance attribute)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.set_default_figsize">set_default_figsize() (ccvmplotlib static method)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.set_default_grid">set_default_grid() (ccvmplotlib static method)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.set_default_legend">set_default_legend() (ccvmplotlib static method)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.set_default_ticks">set_default_ticks() (ccvmplotlib static method)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.set_default_xlabel">set_default_xlabel() (ccvmplotlib static method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.ccvmplotlib.ccvmplotlib.html#ccvm_simulators.ccvmplotlib.ccvmplotlib.ccvmplotlib.set_default_ylabel">set_default_ylabel() (ccvmplotlib static method)</a>
+</li>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.sol_time_bfgs">sol_time_bfgs (ProblemInstance attribute)</a>
+</li>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.sol_time_gb">sol_time_gb (ProblemInstance attribute)</a>
+</li>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution">Solution (class in ccvm_simulators.solution)</a>
+</li>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.solution_bounds">solution_bounds (ProblemInstance property)</a>
+</li>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.solution_performance">solution_performance (Solution attribute)</a>, <a href="ccvm.solution.html#id1">[1]</a>
+</li>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.solution_vector">solution_vector (ProblemInstance attribute)</a>
+
+        <ul>
+          <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.solution_vector">(Solution attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.solve_time">solve_time (Solution attribute)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.utils.mixins.html#ccvm_simulators.ccvmplotlib.utils.mixins.StrDictMixIn">StrDictMixIn (class in ccvm_simulators.ccvmplotlib.utils.mixins)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.InstanceType.TEST">TEST (InstanceType attribute)</a>
+</li>
+        <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata.html#ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata.TTSType">TTSType (class in ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata)</a>
+</li>
+        <li><a href="ccvm.solvers.ccvm_solver.html#ccvm_simulators.solvers.ccvm_solver.CCVMSolver.tune">tune() (CCVMSolver method)</a>
+
+        <ul>
+          <li><a href="ccvm.solvers.dl_solver.html#ccvm_simulators.solvers.dl_solver.DLSolver.tune">(DLSolver method)</a>
+</li>
+          <li><a href="ccvm.solvers.mf_solver.html#ccvm_simulators.solvers.mf_solver.MFSolver.tune">(MFSolver method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.InstanceType.TUNING">TUNING (InstanceType attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="V" class="genindex-section">
+  <h2>V</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.problem_classes.boxqp.problem_instance.html#ccvm_simulators.problem_classes.boxqp.problem_instance.ProblemInstance.v_vector">v_vector (ProblemInstance attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.solution.html#ccvm_simulators.solution.Solution.variables">variables (Solution attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="W" class="genindex-section">
+  <h2>W</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="ccvm.ccvmplotlib.problem_metadata.problem_metadata.html#ccvm_simulators.ccvmplotlib.problem_metadata.problem_metadata.TTSType.wallclock">wallclock (TTSType attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, 1QBit
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

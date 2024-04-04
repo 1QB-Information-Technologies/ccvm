@@ -1,0 +1,1279 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>ccvm_simulators.solvers.mf_solver - ccvm_simulators documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=89731a12" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">ccvm_simulators  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">ccvm_simulators  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../ccvm_simulators_api_reference.html">ccvm_simulators - API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of ccvm_simulators - API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../ccvm.ccvmplotlib.html">ccvmplotlib</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of ccvmplotlib</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../ccvm.ccvmplotlib.problem_metadata.html">problem_metadata</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of problem_metadata</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.ccvmplotlib.problem_metadata.boxqp_metadata.html">boxqp_metadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.ccvmplotlib.problem_metadata.problem_metadata.html">problem_metadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.ccvmplotlib.problem_metadata.problem_metadata_factory.html">problem_metadata_factory</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../ccvm.ccvmplotlib.utils.html">utils</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of utils</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.ccvmplotlib.utils.metric.html">metric</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.ccvmplotlib.utils.mixins.html">mixins</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.ccvmplotlib.utils.sampleTTSmetric.html">sampleTTSmetric</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.ccvmplotlib.utils.utilities.html">utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.ccvmplotlib.ccvmplotlib.html">ccvmplotlib</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../ccvm.post_processor.html">post_processor</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of post_processor</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.post_processor.adam.html">adam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.post_processor.asgd.html"><code class="docutils literal notranslate"><span class="pre">PostProcessorASGD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.post_processor.bfgs.html"><code class="docutils literal notranslate"><span class="pre">PostProcessorBFGS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.post_processor.box_qp_model.html"><code class="docutils literal notranslate"><span class="pre">BoxQPModel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.post_processor.factory.html">factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.post_processor.lbfgs.html">lbfgs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.post_processor.post_processor.html">post_processor</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../ccvm.problem_classes.html">problem_classes</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of problem_classes</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../ccvm.problem_classes.boxqp.html">boxqp</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of boxqp</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../ccvm.problem_classes.boxqp.problem_instance.html">problem_instance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../ccvm.solvers.html">solvers</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of solvers</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.solvers.ccvm_solver.html">ccvm_solver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.solvers.dl_solver.html">dl_solver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../ccvm.solvers.mf_solver.html">mf_solver</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ccvm.metadata_list.html">metadata_list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../ccvm.solution.html">solution</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../ccvm_equations_of_motion.html">Coherent Continuous-Variable Machine Simulator - Equations of Motion</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Coherent Continuous-Variable Machine Simulator - Equations of Motion</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../langevin_sde.html">The Langevin Dynamics Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../pumped_langevin_sde.html">The Pumped Langevin Dynamics Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../dl_ccvm_sde.html">The Delay-Line Coherent Continuous-Variable Machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../mf_ccvm_sde.html">The Measurement-Feedback Coherent Continuous-Variable Machine</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for ccvm_simulators.solvers.mf_solver</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch.distributions</span> <span class="k">as</span> <span class="nn">tdist</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+
+<span class="kn">from</span> <span class="nn">ccvm_simulators.solvers.ccvm_solver</span> <span class="kn">import</span> <span class="n">CCVMSolver</span>
+<span class="kn">from</span> <span class="nn">ccvm_simulators.solvers.algorithms</span> <span class="kn">import</span> <span class="n">AdamParameters</span>
+<span class="kn">from</span> <span class="nn">ccvm_simulators.solution</span> <span class="kn">import</span> <span class="n">Solution</span>
+<span class="kn">from</span> <span class="nn">ccvm_simulators.post_processor.factory</span> <span class="kn">import</span> <span class="n">PostProcessorFactory</span>
+
+<span class="n">MF_SCALING_MULTIPLIER</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="sd">&quot;&quot;&quot;The value used by the MFSolver when calculating a scaling value in</span>
+<span class="sd">super.get_scaling_factor()&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="MFSolver">
+<a class="viewcode-back" href="../../../ccvm.solvers.mf_solver.html#ccvm_simulators.solvers.mf_solver.MFSolver">[docs]</a>
+<span class="k">class</span> <span class="nc">MFSolver</span><span class="p">(</span><span class="n">CCVMSolver</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Constructor method&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">,</span>
+        <span class="n">problem_category</span><span class="o">=</span><span class="s2">&quot;boxqp&quot;</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            device (str): The device to use for the solver. Can be &quot;cpu&quot; or &quot;cuda&quot;.</span>
+<span class="sd">            problem_category (str): The category of problem to solve. Can be one</span>
+<span class="sd">                of &quot;boxqp&quot;. Defaults to &quot;boxqp&quot;.</span>
+<span class="sd">            batch_size (int): The number of times to solve a problem instance</span>
+<span class="sd">                simultaneously. Defaults to 1000.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If the problem category is not supported by the solver.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DLSolver: The DLSolver object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_optics_machine_parameters</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;laser_clock&quot;</span><span class="p">:</span> <span class="mf">100e-12</span><span class="p">,</span>
+            <span class="s2">&quot;FPGA_clock&quot;</span><span class="p">:</span> <span class="mf">3.33e-9</span><span class="p">,</span>
+            <span class="s2">&quot;FPGA_fixed&quot;</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span>
+            <span class="s2">&quot;FPGA_var_fac&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+            <span class="s2">&quot;FPGA_power&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="mi">20</span><span class="p">:</span> <span class="mf">15.74</span><span class="p">,</span>
+                <span class="mi">30</span><span class="p">:</span> <span class="mf">16.97</span><span class="p">,</span>
+                <span class="mi">40</span><span class="p">:</span> <span class="mf">18.54</span><span class="p">,</span>
+                <span class="mi">50</span><span class="p">:</span> <span class="mf">20.25</span><span class="p">,</span>
+                <span class="mi">60</span><span class="p">:</span> <span class="mf">22.08</span><span class="p">,</span>
+                <span class="mi">70</span><span class="p">:</span> <span class="mf">24.01</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;buffer_time&quot;</span><span class="p">:</span> <span class="mf">3.33e-9</span><span class="p">,</span>
+            <span class="s2">&quot;laser_power&quot;</span><span class="p">:</span> <span class="mf">1000e-6</span><span class="p">,</span>
+            <span class="s2">&quot;postprocessing_power&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="mi">20</span><span class="p">:</span> <span class="mf">4.87</span><span class="p">,</span>
+                <span class="mi">30</span><span class="p">:</span> <span class="mf">5.14</span><span class="p">,</span>
+                <span class="mi">40</span><span class="p">:</span> <span class="mf">5.11</span><span class="p">,</span>
+                <span class="mi">50</span><span class="p">:</span> <span class="mf">5.08</span><span class="p">,</span>
+                <span class="mi">60</span><span class="p">:</span> <span class="mf">5.09</span><span class="p">,</span>
+                <span class="mi">70</span><span class="p">:</span> <span class="mf">5.3</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scaling_multiplier</span> <span class="o">=</span> <span class="n">MF_SCALING_MULTIPLIER</span>
+        <span class="c1"># Use the method selector to choose the problem-specific methods to use</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_method_selector</span><span class="p">(</span><span class="n">problem_category</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parameter_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The parameters that will be used by the solver when solving the problem.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Setting this parameter after calling tune() will overwrite tuned parameters.</span>
+
+<span class="sd">        The parameter_key must match the following format:</span>
+
+<span class="sd">            * key: problem size (the number of variables in the problem).</span>
+<span class="sd">            * value: dict with these keys:</span>
+<span class="sd">                * pump (float)</span>
+<span class="sd">                * feedback_scale (float)</span>
+<span class="sd">                * j (float)</span>
+<span class="sd">                    * The measurement strength</span>
+<span class="sd">                * S (float or vector of float with size &#39;problem_size&#39;)</span>
+<span class="sd">                    * The enforced saturation value</span>
+<span class="sd">                * dt (float)</span>
+<span class="sd">                    * The time step or the learning rate (old name was lr)</span>
+<span class="sd">                * noise_ratio (float)</span>
+
+<span class="sd">            With values, the parameter key might look like this::</span>
+
+<span class="sd">                {</span>
+<span class="sd">                    20:</span>
+<span class="sd">                        {</span>
+<span class="sd">                            &quot;pump&quot;: 2.5,</span>
+<span class="sd">                            &quot;feedback_scale&quot;: 400,</span>
+<span class="sd">                            &quot;j&quot;: 399,</span>
+<span class="sd">                            &quot;S&quot;: 20.0,</span>
+<span class="sd">                            &quot;dt&quot;: 0.0025,</span>
+<span class="sd">                            &quot;iterations&quot;: 15000</span>
+<span class="sd">                        },</span>
+<span class="sd">                    30:</span>
+<span class="sd">                        {</span>
+<span class="sd">                            &quot;pump&quot;: 3.0,</span>
+<span class="sd">                            &quot;feedback_scale&quot;: 250,</span>
+<span class="sd">                            &quot;j&quot;: 399,</span>
+<span class="sd">                            &quot;S&quot;: 20.0,</span>
+<span class="sd">                            &quot;dt&quot;: 0.0025,</span>
+<span class="sd">                            &quot;iterations&quot;: 15000</span>
+<span class="sd">                        },</span>
+<span class="sd">                }</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If the parameter key does not contain the solver-specific</span>
+<span class="sd">                combination of keys described above.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_key</span>
+
+    <span class="nd">@parameter_key</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">parameter_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+        <span class="n">expected_mfparameter_key_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;pump&quot;</span><span class="p">,</span> <span class="s2">&quot;feedback_scale&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;dt&quot;</span><span class="p">,</span> <span class="s2">&quot;iterations&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">parameter_key_list</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="c1"># Iterate over the parameters for each given problem size</span>
+        <span class="k">for</span> <span class="n">parameter_key</span> <span class="ow">in</span> <span class="n">parameter_key_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">parameter_key</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">!=</span> <span class="n">expected_mfparameter_key_set</span><span class="p">:</span>
+                <span class="c1"># The parameter key is not valid for this solver</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;The parameter key is not valid for this solver. Expected keys: &quot;</span>
+                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">expected_mfparameter_key_set</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="s2">&quot; Given keys: &quot;</span>
+                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameter_key</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="p">)</span>
+
+        <span class="c1"># If we get here, the parameter key is valid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_key</span> <span class="o">=</span> <span class="n">parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_tuned</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_calculate_drift_boxqp</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mu</span><span class="p">,</span>
+        <span class="n">mu_tilde</span><span class="p">,</span>
+        <span class="n">sigma</span><span class="p">,</span>
+        <span class="n">pump</span><span class="p">,</span>
+        <span class="n">j</span><span class="p">,</span>
+        <span class="n">g</span><span class="p">,</span>
+        <span class="n">S</span><span class="p">,</span>
+        <span class="n">fs</span><span class="p">,</span>
+        <span class="n">lower_limit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">upper_limit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;We treat the SDE that simulates the CIM of NTT as drift</span>
+<span class="sd">        calculation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mu (torch.Tensor): Mean-field amplitudes</span>
+<span class="sd">            mu_tilde (torch.Tensor): Mean-field measured amplitudes</span>
+<span class="sd">            sigma (torch.Tensor): Variance of the in-phase position operator</span>
+<span class="sd">            pump (float): Instantaneous pump value</span>
+<span class="sd">            j (float): The measurement strength</span>
+<span class="sd">            g (float): The nonlinearity coefficient</span>
+<span class="sd">            S (float): The enforced saturation value</span>
+<span class="sd">            fs (float): The coefficient of the feedback term</span>
+<span class="sd">            lower_limit (float): The lower bound of the box constraint</span>
+<span class="sd">            upper_limit (float): The upper bound of the box constraint</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: The gradients of the mean-field amplitudes and the variance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mu_pow</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">mu_term1</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">j</span><span class="p">)</span> <span class="o">+</span> <span class="n">pump</span> <span class="o">-</span> <span class="n">g</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">mu_pow</span><span class="p">)</span> <span class="o">*</span> <span class="n">mu</span>
+
+        <span class="n">mu_term2_1</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="o">*</span> <span class="p">(</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span>
+                    <span class="s2">&quot;bi,ij -&gt; bj&quot;</span><span class="p">,</span>
+                    <span class="n">mu_tilde</span> <span class="o">*</span> <span class="p">(</span><span class="n">upper_limit</span> <span class="o">-</span> <span class="n">lower_limit</span><span class="p">)</span> <span class="o">/</span> <span class="n">S</span>
+                    <span class="o">+</span> <span class="p">(</span><span class="n">upper_limit</span> <span class="o">+</span> <span class="n">lower_limit</span><span class="p">),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">q_matrix</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="o">*</span> <span class="p">(</span><span class="n">upper_limit</span> <span class="o">-</span> <span class="n">lower_limit</span><span class="p">)</span>
+            <span class="o">/</span> <span class="n">S</span>
+        <span class="p">)</span>
+        <span class="n">mu_term2_2</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">v_vector</span> <span class="o">*</span> <span class="p">(</span><span class="n">upper_limit</span> <span class="o">-</span> <span class="n">lower_limit</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">S</span><span class="p">)</span>
+
+        <span class="n">sigma_term1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">j</span><span class="p">)</span> <span class="o">+</span> <span class="n">pump</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">g</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">mu_pow</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma</span>
+        <span class="n">sigma_term2</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">j</span> <span class="o">*</span> <span class="p">(</span><span class="n">sigma</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">sigma_term3</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">j</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">g</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">mu_pow</span>
+
+        <span class="n">drift_mu</span> <span class="o">=</span> <span class="n">mu_term1</span> <span class="o">+</span> <span class="n">fs</span> <span class="o">*</span> <span class="p">(</span><span class="n">mu_term2_1</span> <span class="o">+</span> <span class="n">mu_term2_2</span><span class="p">)</span>
+        <span class="n">drift_sigma</span> <span class="o">=</span> <span class="n">sigma_term1</span> <span class="o">+</span> <span class="n">sigma_term2</span> <span class="o">+</span> <span class="n">sigma_term3</span>
+
+        <span class="k">return</span> <span class="n">drift_mu</span><span class="p">,</span> <span class="n">drift_sigma</span>
+
+    <span class="k">def</span> <span class="nf">_calculate_grads_boxqp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu_tilde</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;We treat the SDE that simulates the CIM of NTT as gradient</span>
+<span class="sd">        calculation. Original SDE considers only quadratic part of the objective</span>
+<span class="sd">        function. Therefore, we need to modify and add linear part of the QP to</span>
+<span class="sd">        the SDE.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mu_tilde (torch.Tensor): Mean-field measured amplitudes</span>
+<span class="sd">            S (float): The enforced saturation value</span>
+<span class="sd">            fs (float): The coefficient of the feedback term</span>
+<span class="sd">            lower_limit (float): The lower bound of the box constraints</span>
+<span class="sd">            upper_limit (float): The upper bound of the box constraints</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tensor: The gradients of the mean-field amplitude.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mu_term2_1</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="o">*</span> <span class="p">(</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span>
+                    <span class="s2">&quot;bi,ij -&gt; bj&quot;</span><span class="p">,</span>
+                    <span class="n">mu_tilde</span> <span class="o">*</span> <span class="p">(</span><span class="n">upper_limit</span> <span class="o">-</span> <span class="n">lower_limit</span><span class="p">)</span> <span class="o">/</span> <span class="n">S</span>
+                    <span class="o">+</span> <span class="p">(</span><span class="n">upper_limit</span> <span class="o">+</span> <span class="n">lower_limit</span><span class="p">),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">q_matrix</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="o">*</span> <span class="p">(</span><span class="n">upper_limit</span> <span class="o">-</span> <span class="n">lower_limit</span><span class="p">)</span>
+            <span class="o">/</span> <span class="n">S</span>
+        <span class="p">)</span>
+        <span class="n">mu_term2_2</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">v_vector</span> <span class="o">*</span> <span class="p">(</span><span class="n">upper_limit</span> <span class="o">-</span> <span class="n">lower_limit</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">S</span><span class="p">)</span>
+
+        <span class="n">grads_mu</span> <span class="o">=</span> <span class="n">fs</span> <span class="o">*</span> <span class="p">(</span><span class="n">mu_term2_1</span> <span class="o">+</span> <span class="n">mu_term2_2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">grads_mu</span>
+
+    <span class="k">def</span> <span class="nf">_change_variables_boxqp</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">problem_variables</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform a change of variables to enforce the box constraints.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            problem_variables (torch.Tensor): The variables to change.</span>
+<span class="sd">            lower_limit (float): The lower bound of the box constraints. Defaults to 0.</span>
+<span class="sd">            upper_limit (float): The upper bound of the box constraints. Defaults to 1.</span>
+<span class="sd">            S (float or torch.tensor): The enforced saturation value. Defaults to 1</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: The changed variables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">problem_variables</span> <span class="o">/</span> <span class="n">S</span> <span class="o">*</span> <span class="p">(</span><span class="n">upper_limit</span> <span class="o">-</span> <span class="n">lower_limit</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="n">upper_limit</span> <span class="o">+</span> <span class="n">lower_limit</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_fit_to_constraints_boxqp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu_tilde</span><span class="p">,</span> <span class="n">lower_clamp</span><span class="p">,</span> <span class="n">upper_clamp</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clamps the values of mu_tilde to be within the box constraints</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mu_tilde (torch.Tensor): The mean-field measured amplitudes.</span>
+<span class="sd">            lower_clamp (float or torch.tensor): The lower bound of the box constraints.</span>
+<span class="sd">            upper_clamp (float or torch.tensor): The upper bound of the box constraints.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: The clamped values of mu_tilde, now within the box constraints.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mu_tilde_clamped</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">mu_tilde</span><span class="p">,</span> <span class="n">lower_clamp</span><span class="p">,</span> <span class="n">upper_clamp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mu_tilde_clamped</span>
+
+    <span class="k">def</span> <span class="nf">_append_samples_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu_sample</span><span class="p">,</span> <span class="n">sigma_sample</span><span class="p">,</span> <span class="n">evolution_file_object</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Saves samples of the mean-field amplitudes and the variance of the in-phase</span>
+<span class="sd">        position operator to a file. The end file will contain the values of the</span>
+<span class="sd">        mu_sample followed by the sigma_sample. Each line corresponds to a row in the</span>
+<span class="sd">        tensor, with tab-delineated values.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mu_sample (torch.Tensor): The sample of mean-field amplitudes to add to the</span>
+<span class="sd">                file. Expected Dimensions: problem_size x num_samples.</span>
+<span class="sd">            sigma_sample (torch.Tensor): The sample of the variance of the in-phase</span>
+<span class="sd">                position operator to add to the file. Expected Dimensions: problem_size</span>
+<span class="sd">                x num_samples.</span>
+<span class="sd">            evolution_file_object (io.TextIOWrapper): The file object of the file to</span>
+<span class="sd">                save the samples to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Save the mu samples to the file</span>
+        <span class="n">mu_rows</span> <span class="o">=</span> <span class="n">mu_sample</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># problem_size</span>
+        <span class="n">mu_columns</span> <span class="o">=</span> <span class="n">mu_sample</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># num_samples</span>
+        <span class="k">for</span> <span class="n">nn</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mu_rows</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mu_columns</span><span class="p">):</span>
+                <span class="n">evolution_file_object</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">mu_sample</span><span class="p">[</span><span class="n">nn</span><span class="p">,</span> <span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="mi">4</span><span class="p">)))</span>
+                <span class="k">if</span> <span class="n">ii</span> <span class="o">!=</span> <span class="n">mu_columns</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">evolution_file_object</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">evolution_file_object</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Save the sigma samples to the file</span>
+        <span class="n">sigma_rows</span> <span class="o">=</span> <span class="n">sigma_sample</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># problem_size</span>
+        <span class="n">sigma_columns</span> <span class="o">=</span> <span class="n">sigma_sample</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># num_samples</span>
+        <span class="k">for</span> <span class="n">nn</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sigma_rows</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sigma_columns</span><span class="p">):</span>
+                <span class="n">evolution_file_object</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">sigma_sample</span><span class="p">[</span><span class="n">nn</span><span class="p">,</span> <span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="mi">4</span><span class="p">)))</span>
+                <span class="k">if</span> <span class="n">ii</span> <span class="o">!=</span> <span class="n">sigma_columns</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">evolution_file_object</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">evolution_file_object</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_is_valid_optics_machine_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">machine_parameters</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validates that the given optics machine parameters are valid for this solver.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            machine_parameters (dict): The machine parameters to validate.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If the given machine parameters are invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">required_keys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;laser_clock&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;FPGA_clock&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;FPGA_fixed&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;FPGA_var_fac&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;FPGA_power&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;buffer_time&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;laser_power&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;postprocessing_power&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Check that all required keys are present</span>
+        <span class="n">missing_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">required_keys</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">machine_parameters</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">missing_keys</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid optics_machine_parameters: Missing required keys - </span><span class="si">{</span><span class="n">missing_keys</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="MFSolver.tune">
+<a class="viewcode-back" href="../../../ccvm.solvers.mf_solver.html#ccvm_simulators.solvers.mf_solver.MFSolver.tune">[docs]</a>
+    <span class="k">def</span> <span class="nf">tune</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instances</span><span class="p">,</span> <span class="n">post_processor</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determines the best parameters for the solver to use by adjusting each</span>
+<span class="sd">        parameter over a number of iterations on the problems in the given set of</span>
+<span class="sd">        problems instances. The `parameter_key` attribute of the solver will be</span>
+<span class="sd">        updated with the best parameters found.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            instances (list): A list of problem instances to tune the solver on.</span>
+<span class="sd">            post_processor (str): The name of the post processor to use to process the</span>
+<span class="sd">                results of the solver. None if no post processing is desired.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            g (float): The nonlinearity coefficient. Defaults to 0.01.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: This implementation is a placeholder; full implementation is a</span>
+        <span class="c1">#       future consideration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_tuned</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_optics_machine_energy</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">machine_parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The wrapper function of calculating the average energy consumption of the</span>
+<span class="sd">            solver, as if the solving process was to be performed on an optical DL-CCVM</span>
+<span class="sd">            machine.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            machine_parameters (dict, optional): Parameters of the machine. Defaults to</span>
+<span class="sd">                None.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: when the given machine parameters are not valid.</span>
+<span class="sd">            ValueError: when the given dataframe does not contain the required columns.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Callable: A callable function that takes in a dataframe and problem size and</span>
+<span class="sd">                returns the average energy consumption of the solver.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">machine_parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">machine_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_optics_machine_parameters</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid_optics_machine_parameters</span><span class="p">(</span><span class="n">machine_parameters</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">_optics_machine_energy_callable</span><span class="p">(</span>
+            <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span>
+            <span class="n">problem_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Calculate the average energy consumption of the solver simulating on a</span>
+<span class="sd">                MF-CCVM machine.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                dataframe (DataFrame): The necessary data to calculate the average</span>
+<span class="sd">                    energy.</span>
+<span class="sd">                problem_size (int): The size of the problem.</span>
+
+<span class="sd">            Raises:</span>
+<span class="sd">                ValueError: when the given dataframe does not contain the required</span>
+<span class="sd">                    columns.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                float: The average energy consumption of the solver.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_machine_energy_dataframe_columns</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pump</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_key</span><span class="p">[</span><span class="n">problem_size</span><span class="p">][</span><span class="s2">&quot;pump&quot;</span><span class="p">]</span>
+                <span class="n">measure_strength</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_key</span><span class="p">[</span><span class="n">problem_size</span><span class="p">][</span><span class="s2">&quot;j&quot;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;The parameter &#39;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; for the given instance size: </span><span class="si">{</span><span class="n">problem_size</span><span class="si">}</span><span class="s2"> is not defined.&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+            <span class="n">iterations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s2">&quot;iterations&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+            <span class="n">postprocessing_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s2">&quot;pp_time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+            <span class="n">roundtrip_time</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;FPGA_fixed&quot;</span><span class="p">]</span>
+                    <span class="o">+</span> <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;FPGA_var_fac&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">problem_size</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="o">*</span> <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;FPGA_clock&quot;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">problem_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;laser_clock&quot;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;buffer_time&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">optics_power</span> <span class="o">=</span> <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;FPGA_power&quot;</span><span class="p">][</span>
+                <span class="n">problem_size</span>
+            <span class="p">]</span> <span class="o">+</span> <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;laser_power&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">pump</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">measure_strength</span><span class="p">)</span>
+            <span class="n">optics_energy</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">roundtrip_time</span> <span class="o">*</span> <span class="n">optics_power</span>
+                <span class="o">-</span> <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;FPGA_power&quot;</span><span class="p">][</span><span class="n">problem_size</span><span class="p">]</span>
+                <span class="o">*</span> <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;buffer_time&quot;</span><span class="p">]</span>
+            <span class="p">)</span> <span class="o">*</span> <span class="n">iterations</span>
+            <span class="n">postprocessing_energy</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;postprocessing_power&quot;</span><span class="p">][</span><span class="n">problem_size</span><span class="p">]</span>
+                <span class="o">*</span> <span class="n">postprocessing_time</span>
+            <span class="p">)</span>
+            <span class="n">machine_energy</span> <span class="o">=</span> <span class="n">optics_energy</span> <span class="o">+</span> <span class="n">postprocessing_energy</span>
+            <span class="k">return</span> <span class="n">machine_energy</span>
+
+        <span class="k">return</span> <span class="n">_optics_machine_energy_callable</span>
+
+    <span class="k">def</span> <span class="nf">_optics_machine_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">machine_parameters</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The wrapper function of calculating the average time spent by the</span>
+<span class="sd">            solver on a single instance, as if the solving process was to be performed on</span>
+<span class="sd">            an optical MF-CCVM machine.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            machine_parameters (dict, optional): Parameters of the optical MF-CCVM</span>
+<span class="sd">                machine. Defaults to None.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: when the given machine parameters are not valid.</span>
+<span class="sd">            ValueError: when the given dataframe does not contain the required columns.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Callable: A callable function that takes in a dataframe and problem size and</span>
+<span class="sd">                returns the average time spent by the solver on a single instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">machine_parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">machine_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_optics_machine_parameters</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid_optics_machine_parameters</span><span class="p">(</span><span class="n">machine_parameters</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">_optics_machine_time_callable</span><span class="p">(</span><span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">problem_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Calculate the average time spent by the solver on a single instance,</span>
+<span class="sd">                simulating on a MF-CCVM machine.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                dataframe (DataFrame): The necessary data to calculate the average</span>
+<span class="sd">                    time.</span>
+<span class="sd">                problem_size (int): The size of the problem.</span>
+
+<span class="sd">            Raises:</span>
+<span class="sd">                ValueError: when the given dataframe does not contain the required</span>
+<span class="sd">                    columns.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                float: The average time spent by the solver on a single instance.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">iterations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s2">&quot;iterations&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+                <span class="n">postprocessing_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s2">&quot;pp_time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">missing_column</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;The given dataframe is missing the </span><span class="si">{</span><span class="n">missing_column</span><span class="si">}</span><span class="s2"> column. Required columns are: [&#39;iterations&#39;, &#39;pp_time&#39;].&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">roundtrip_time</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;FPGA_fixed&quot;</span><span class="p">]</span>
+                    <span class="o">+</span> <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;FPGA_var_fac&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">problem_size</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="o">*</span> <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;FPGA_clock&quot;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">problem_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;laser_clock&quot;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="n">machine_parameters</span><span class="p">[</span><span class="s2">&quot;buffer_time&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">machine_time</span> <span class="o">=</span> <span class="n">roundtrip_time</span> <span class="o">*</span> <span class="n">iterations</span> <span class="o">+</span> <span class="n">postprocessing_time</span>
+
+            <span class="k">return</span> <span class="n">machine_time</span>
+
+        <span class="k">return</span> <span class="n">_optics_machine_time_callable</span>
+
+    <span class="k">def</span> <span class="nf">_solve</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">problem_size</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">,</span>
+        <span class="n">S</span><span class="p">,</span>
+        <span class="n">pump</span><span class="p">,</span>
+        <span class="n">dt</span><span class="p">,</span>
+        <span class="n">iterations</span><span class="p">,</span>
+        <span class="n">j</span><span class="p">,</span>
+        <span class="n">feedback_scale</span><span class="p">,</span>
+        <span class="n">pump_rate_flag</span><span class="p">,</span>
+        <span class="n">g</span><span class="p">,</span>
+        <span class="n">evolution_step_size</span><span class="p">,</span>
+        <span class="n">samples_taken</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Solves the given problem instance using the original MF-CCVM solver with</span>
+<span class="sd">        tuned or specified parameters in the parameter key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            problem_size (int): instance size.</span>
+<span class="sd">            batch_size (int): The number of times to solve a problem instance</span>
+<span class="sd">            device (str): The device to use for the solver. Can be &quot;cpu&quot; or &quot;cuda&quot;.</span>
+<span class="sd">            S (float): Saturation bound.</span>
+<span class="sd">            pump (float): Pump field strength.</span>
+<span class="sd">            dt (float): Simulation time step.</span>
+<span class="sd">            iterations (int): number of steps.</span>
+<span class="sd">            noise_ratio (float): noise ratio.</span>
+<span class="sd">            pump_rate_flag (bool): Whether or not to scale the pump rate based on the</span>
+<span class="sd">                iteration number.</span>
+<span class="sd">            g (float): The nonlinearity coefficient.</span>
+<span class="sd">            evolution_step_size (int): If set, the c/s values will be sampled once</span>
+<span class="sd">                per number of iterations equivalent to the value of this variable.</span>
+<span class="sd">                At the end of the solve process, the best batch of sampled values</span>
+<span class="sd">                will be written to a file that can be specified by setting the</span>
+<span class="sd">                evolution_file parameter.</span>
+<span class="sd">            samples_taken (int): sample slice.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            mu, mu_tilde, sigma (tensor): random variables</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize tensor variables on the device that will be used to perform</span>
+        <span class="c1"># the calculations</span>
+
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">problem_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">problem_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+        <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">wiener_dist</span> <span class="o">=</span> <span class="n">tdist</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Perform the solve over the specified number of iterations</span>
+        <span class="n">pump_rate</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+            <span class="n">j_i</span> <span class="o">=</span> <span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">iterations</span> <span class="o">*</span> <span class="mf">3.0</span><span class="p">)</span>
+            <span class="n">wiener</span> <span class="o">=</span> <span class="n">wiener_dist</span><span class="o">.</span><span class="n">sample</span><span class="p">((</span><span class="n">problem_size</span><span class="p">,))</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">wiener_increment</span> <span class="o">=</span> <span class="n">wiener</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+            <span class="n">mu_tilde</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">j_i</span><span class="p">))</span> <span class="o">*</span> <span class="n">wiener_increment</span>
+            <span class="n">mu_tilde_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_to_constraints</span><span class="p">(</span><span class="n">mu_tilde</span><span class="p">,</span> <span class="o">-</span><span class="n">S</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">pump_rate_flag</span><span class="p">:</span>
+                <span class="n">pump_rate</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">iterations</span>
+
+            <span class="n">instantaneous_pump</span> <span class="o">=</span> <span class="n">pump</span> <span class="o">*</span> <span class="n">pump_rate</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">j_i</span>
+
+            <span class="p">(</span><span class="n">drift_mu</span><span class="p">,</span> <span class="n">drift_sigma</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_drift</span><span class="p">(</span>
+                <span class="n">mu</span><span class="p">,</span>
+                <span class="n">mu_tilde_c</span><span class="p">,</span>
+                <span class="n">sigma</span><span class="p">,</span>
+                <span class="n">instantaneous_pump</span><span class="p">,</span>
+                <span class="n">j_i</span><span class="p">,</span>
+                <span class="n">g</span><span class="p">,</span>
+                <span class="n">S</span><span class="p">,</span>
+                <span class="n">feedback_scale</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">solution_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">solution_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="p">)</span>
+
+            <span class="c1"># mu_term3-&gt; mu_diffusion</span>
+            <span class="n">mu_diffusion</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">j_i</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">sigma</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">wiener_increment</span>
+
+            <span class="n">mu</span> <span class="o">+=</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="n">drift_mu</span> <span class="o">+</span> <span class="n">mu_diffusion</span><span class="p">)</span>
+            <span class="n">sigma</span> <span class="o">+=</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">drift_sigma</span>
+
+            <span class="c1"># If evolution_step_size is specified, save the values if this iteration</span>
+            <span class="c1"># aligns with the step size or if this is the last iteration</span>
+            <span class="k">if</span> <span class="n">evolution_step_size</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="n">i</span> <span class="o">%</span> <span class="n">evolution_step_size</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="n">iterations</span>
+            <span class="p">):</span>
+                <span class="c1"># Update the record of the sample values with the values found at</span>
+                <span class="c1"># this iteration</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mu_sample</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">samples_taken</span><span class="p">]</span> <span class="o">=</span> <span class="n">mu</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sigma_sample</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">samples_taken</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
+                <span class="n">samples_taken</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">mu_tilde</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_to_constraints</span><span class="p">(</span><span class="n">mu_tilde</span><span class="p">,</span> <span class="o">-</span><span class="n">S</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">mu</span><span class="p">,</span> <span class="n">mu_tilde</span><span class="p">,</span> <span class="n">sigma</span>
+
+    <span class="k">def</span> <span class="nf">_solve_adam</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">problem_size</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">,</span>
+        <span class="n">S</span><span class="p">,</span>
+        <span class="n">pump</span><span class="p">,</span>
+        <span class="n">dt</span><span class="p">,</span>
+        <span class="n">iterations</span><span class="p">,</span>
+        <span class="n">j</span><span class="p">,</span>
+        <span class="n">feedback_scale</span><span class="p">,</span>
+        <span class="n">pump_rate_flag</span><span class="p">,</span>
+        <span class="n">g</span><span class="p">,</span>
+        <span class="n">evolution_step_size</span><span class="p">,</span>
+        <span class="n">samples_taken</span><span class="p">,</span>
+        <span class="n">hyperparameters</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Solves the given problem instance using the MF-CCVM solver with Adam</span>
+<span class="sd">        algorithm tuned or specified parameters in the parameter key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            problem_size (int): instance size.</span>
+<span class="sd">            batch_size (int): The number of times to solve a problem instance</span>
+<span class="sd">            device (str): The device to use for the solver. Can be &quot;cpu&quot; or &quot;cuda&quot;.</span>
+<span class="sd">            S (float): Saturation bound.</span>
+<span class="sd">            pump (float): Pump field strength.</span>
+<span class="sd">            dt (float): Simulation time step.</span>
+<span class="sd">            iterations (int): number of steps.</span>
+<span class="sd">            noise_ratio (float): noise ratio.</span>
+<span class="sd">            pump_rate_flag (bool): Whether or not to scale the pump rate based on the</span>
+<span class="sd">                iteration number.</span>
+<span class="sd">            g (float): The nonlinearity coefficient.</span>
+<span class="sd">            evolution_step_size (int): If set, the c/s values will be sampled once</span>
+<span class="sd">                per number of iterations equivalent to the value of this variable.</span>
+<span class="sd">                At the end of the solve process, the best batch of sampled values</span>
+<span class="sd">                will be written to a file that can be specified by setting the</span>
+<span class="sd">                evolution_file parameter.</span>
+<span class="sd">            samples_taken (int): sample slice.</span>
+<span class="sd">            hyperparameters (dict): Hyperparameters for Adam algorithm.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            mu, mu_tilde, sigma (tensor): random variables</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize tensor variables on the device that will be used to perform</span>
+        <span class="c1"># the calculations</span>
+
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">problem_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">problem_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+        <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">wiener_dist</span> <span class="o">=</span> <span class="n">tdist</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Pump rate update selection: time-dependent</span>
+        <span class="n">pump_rate_i</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">iterations</span>
+        <span class="n">pump_rate_c</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">pump_rate_flag</span><span class="p">:</span>
+            <span class="n">pump_rate</span> <span class="o">=</span> <span class="n">pump_rate_i</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pump_rate</span> <span class="o">=</span> <span class="n">pump_rate_c</span>
+
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">hyperparameters</span><span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">]</span>
+        <span class="n">beta1</span> <span class="o">=</span> <span class="n">hyperparameters</span><span class="p">[</span><span class="s2">&quot;beta1&quot;</span><span class="p">]</span>
+        <span class="n">beta2</span> <span class="o">=</span> <span class="n">hyperparameters</span><span class="p">[</span><span class="s2">&quot;beta2&quot;</span><span class="p">]</span>
+        <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1e-8</span>
+
+        <span class="c1"># Compute bias corrected grads using 1st and 2nd moments</span>
+        <span class="c1"># with element-wise division</span>
+        <span class="k">def</span> <span class="nf">update_grads_with_moment2_assign</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">mhat</span><span class="p">,</span> <span class="n">vhat</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">mhat</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">vhat</span><span class="p">)</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">update_grads_with_moment2_addassign</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">mhat</span><span class="p">,</span> <span class="n">vhat</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">grads</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">mhat</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">vhat</span><span class="p">)</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">)</span>
+
+        <span class="c1"># Compute bias corrected grads using only 1st moment</span>
+        <span class="k">def</span> <span class="nf">update_grads_without_moment2_assign</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">mhat</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">mhat</span>
+
+        <span class="k">def</span> <span class="nf">update_grads_without_moment2_addassign</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">mhat</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">grads</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">mhat</span>
+
+        <span class="c1"># Choose desired update method.</span>
+        <span class="k">if</span> <span class="n">hyperparameters</span><span class="p">[</span><span class="s2">&quot;add_assign&quot;</span><span class="p">]:</span>
+            <span class="n">update_grads_with_moment2</span> <span class="o">=</span> <span class="n">update_grads_with_moment2_addassign</span>
+            <span class="n">update_grads_without_moment2</span> <span class="o">=</span> <span class="n">update_grads_without_moment2_addassign</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">update_grads_with_moment2</span> <span class="o">=</span> <span class="n">update_grads_with_moment2_assign</span>
+            <span class="n">update_grads_without_moment2</span> <span class="o">=</span> <span class="n">update_grads_without_moment2_assign</span>
+
+        <span class="c1"># Initialize first moment vector</span>
+        <span class="n">m_mu</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">problem_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="c1"># Initialize second moment vector conditionally</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">beta2</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">v_mu</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">problem_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">v_mu</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Perform the solve over the specified number of iterations</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+            <span class="n">j_i</span> <span class="o">=</span> <span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">iterations</span> <span class="o">*</span> <span class="mf">3.0</span><span class="p">)</span>
+            <span class="n">wiener</span> <span class="o">=</span> <span class="n">wiener_dist</span><span class="o">.</span><span class="n">sample</span><span class="p">((</span><span class="n">problem_size</span><span class="p">,))</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">wiener_increment</span> <span class="o">=</span> <span class="n">wiener</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+            <span class="n">mu_tilde</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">j_i</span><span class="p">))</span> <span class="o">*</span> <span class="n">wiener_increment</span>
+            <span class="n">mu_tilde_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_to_constraints</span><span class="p">(</span><span class="n">mu_tilde</span><span class="p">,</span> <span class="o">-</span><span class="n">S</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
+
+            <span class="n">rate</span> <span class="o">=</span> <span class="n">pump_rate</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>  <span class="c1"># t/T</span>
+
+            <span class="n">pump_i</span> <span class="o">=</span> <span class="n">pump</span> <span class="o">*</span> <span class="n">rate</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">j_i</span>
+
+            <span class="n">grads_mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_grads</span><span class="p">(</span>
+                <span class="n">mu_tilde_c</span><span class="p">,</span>
+                <span class="n">S</span><span class="p">,</span>
+                <span class="n">feedback_scale</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">solution_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">solution_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Update biased first moment estimate</span>
+            <span class="n">m_mu</span> <span class="o">=</span> <span class="n">beta1</span> <span class="o">*</span> <span class="n">m_mu</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">beta1</span><span class="p">)</span> <span class="o">*</span> <span class="n">grads_mu</span>
+
+            <span class="c1"># Compute bias correction in 1st moment</span>
+            <span class="n">beta1i</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">beta1</span> <span class="o">**</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">mhat_mu</span> <span class="o">=</span> <span class="n">m_mu</span> <span class="o">/</span> <span class="n">beta1i</span>
+
+            <span class="c1"># Conditional second moment estimation</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">beta2</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
+                <span class="c1"># Update biased 2nd moment estimate</span>
+                <span class="n">v_mu</span> <span class="o">=</span> <span class="n">beta2</span> <span class="o">*</span> <span class="n">v_mu</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">beta2</span><span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">grads_mu</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+                <span class="c1"># Compute bias correction in 2nd moment</span>
+                <span class="n">beta2i</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">beta2</span> <span class="o">**</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">vhat_mu</span> <span class="o">=</span> <span class="n">v_mu</span> <span class="o">/</span> <span class="n">beta2i</span>
+
+                <span class="c1"># Compute bias corrected grad using 1st and 2nd moments</span>
+                <span class="c1"># in the form of element-wise division</span>
+                <span class="n">grads_mu</span> <span class="o">=</span> <span class="n">update_grads_with_moment2</span><span class="p">(</span><span class="n">grads_mu</span><span class="p">,</span> <span class="n">mhat_mu</span><span class="p">,</span> <span class="n">vhat_mu</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Compute bias corrected grad only with 1st moment</span>
+                <span class="n">grads_mu</span> <span class="o">=</span> <span class="n">update_grads_without_moment2</span><span class="p">(</span><span class="n">grads_mu</span><span class="p">,</span> <span class="n">mhat_mu</span><span class="p">)</span>
+
+            <span class="c1"># Calculate drift and diffusion terms of mf-ccvm</span>
+            <span class="n">mu_pow</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">mu_drift</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">j_i</span><span class="p">)</span> <span class="o">+</span> <span class="n">pump_i</span> <span class="o">-</span> <span class="n">g</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">mu_pow</span><span class="p">)</span> <span class="o">*</span> <span class="n">mu</span>
+            <span class="n">mu_drift</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">j_i</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">sigma</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">wiener_increment</span>
+            <span class="n">mu</span> <span class="o">+=</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="n">grads_mu</span> <span class="o">+</span> <span class="n">mu_drift</span><span class="p">)</span>
+
+            <span class="n">sigma_drift</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">j_i</span><span class="p">)</span> <span class="o">+</span> <span class="n">pump_i</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">g</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">mu_pow</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma</span>
+            <span class="n">sigma_drift</span> <span class="o">+=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">j_i</span> <span class="o">*</span> <span class="p">(</span><span class="n">sigma</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">sigma_drift</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">j_i</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">g</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">mu_pow</span>
+            <span class="n">sigma</span> <span class="o">+=</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">sigma_drift</span>
+
+            <span class="c1"># If evolution_step_size is specified, save the values if this iteration</span>
+            <span class="c1"># aligns with the step size or if this is the last iteration</span>
+            <span class="k">if</span> <span class="n">evolution_step_size</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="n">i</span> <span class="o">%</span> <span class="n">evolution_step_size</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="n">iterations</span>
+            <span class="p">):</span>
+                <span class="c1"># Update the record of the sample values with the values found at</span>
+                <span class="c1"># this iteration</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mu_sample</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">samples_taken</span><span class="p">]</span> <span class="o">=</span> <span class="n">mu</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sigma_sample</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">samples_taken</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
+                <span class="n">samples_taken</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">mu_tilde</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_to_constraints</span><span class="p">(</span><span class="n">mu_tilde</span><span class="p">,</span> <span class="o">-</span><span class="n">S</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">mu</span><span class="p">,</span> <span class="n">mu_tilde</span><span class="p">,</span> <span class="n">sigma</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">instance</span><span class="p">,</span>
+        <span class="n">post_processor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">g</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">pump_rate_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">evolution_step_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">evolution_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">algorithm_parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Solves the given problem instance by choosing one of the available</span>
+<span class="sd">        MF-CCVM solvers tuned or specified parameters in the parameter key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            instance (boxqp.boxqp.ProblemInstance): The problem to solve.</span>
+<span class="sd">            solve_type (str): Flag to choose one of the available solve methods</span>
+<span class="sd">            post_processor (str): The name of the post processor to use to process</span>
+<span class="sd">                the results of the solver. None if no post processing is desired.</span>
+<span class="sd">            g (float, optional): The nonlinearity coefficient. Defaults to 0.01</span>
+<span class="sd">            pump_rate_flag (bool, optional): Whether or not to scale the pump rate</span>
+<span class="sd">                based on the iteration number. If False, the pump rate will be 1.0.</span>
+<span class="sd">                Defaults to True.</span>
+<span class="sd">            evolution_step_size (int): If set, the mu/sigma values will be sampled once</span>
+<span class="sd">                per number of iterations equivalent to the value of this variable. At</span>
+<span class="sd">                the end of the solve process, the best batch of sampled values will be</span>
+<span class="sd">                written to a file that can be specified by setting the evolution_file</span>
+<span class="sd">                parameter.Defaults to None, meaning no problem variables will be written</span>
+<span class="sd">                to the file.</span>
+<span class="sd">            evolution_file (str): The file to save the best set of mu/sigma samples to.</span>
+<span class="sd">                Only revelant when evolution_step_size is set. If a file already exists</span>
+<span class="sd">                with the same name, it will be overwritten. Defaults to None, which</span>
+<span class="sd">                generates a filename based on the problem instance name.</span>
+<span class="sd">            algorithm_parameters (None, AdamParameters): Specify for the solver to use a</span>
+<span class="sd">                specialized algorithm by passing in an instance of the algorithm&#39;s</span>
+<span class="sd">                parameters class. Options include: AdamParameters. Defaults to None,</span>
+<span class="sd">                which uses the original MF solver.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            solution (Solution): The solution to the problem instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If the instance and the solver don&#39;t specify the same device type, raise an</span>
+        <span class="c1"># error</span>
+        <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The device type of the instance (</span><span class="si">{</span><span class="n">instance</span><span class="o">.</span><span class="n">device</span><span class="si">}</span><span class="s2">) and the solver&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="si">}</span><span class="s2">) must match.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Get problem from problem instance</span>
+        <span class="n">problem_size</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">problem_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_matrix</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">q_matrix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v_vector</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">v_vector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solution_bounds</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">solution_bounds</span>
+
+        <span class="c1"># Get solver setup variables</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span>
+
+        <span class="c1"># Get parameters from parameter_key</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pump</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_key</span><span class="p">[</span><span class="n">problem_size</span><span class="p">][</span><span class="s2">&quot;pump&quot;</span><span class="p">]</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_key</span><span class="p">[</span><span class="n">problem_size</span><span class="p">][</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span>
+            <span class="n">iterations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_key</span><span class="p">[</span><span class="n">problem_size</span><span class="p">][</span><span class="s2">&quot;iterations&quot;</span><span class="p">]</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_key</span><span class="p">[</span><span class="n">problem_size</span><span class="p">][</span><span class="s2">&quot;j&quot;</span><span class="p">]</span>
+            <span class="n">feedback_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_key</span><span class="p">[</span><span class="n">problem_size</span><span class="p">][</span><span class="s2">&quot;feedback_scale&quot;</span><span class="p">]</span>
+            <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_key</span><span class="p">[</span><span class="n">problem_size</span><span class="p">][</span><span class="s2">&quot;S&quot;</span><span class="p">]</span>
+
+            <span class="c1"># If S is a 1-D tensor, convert it to to a 2-D tensor</span>
+            <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">S</span><span class="p">)</span> <span class="ow">and</span> <span class="n">S</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># Dimension indexing in pytorch starts at 0</span>
+                <span class="k">if</span> <span class="n">S</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">problem_size</span><span class="p">:</span>
+                    <span class="n">S</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">batch_size</span><span class="p">),</span> <span class="n">S</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tensor S size should be equal to problem size.&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The parameter &#39;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; for the given instance size is not&quot;</span>
+                <span class="s2">&quot; defined.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+        <span class="c1"># Start timing the solve process</span>
+        <span class="n">solve_time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">samples_taken</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mu_sample</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigma_sample</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">evolution_step_size</span><span class="p">:</span>
+            <span class="c1"># Check that the value is valid</span>
+            <span class="k">if</span> <span class="n">evolution_step_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;The evolution step size must be greater than or equal to 1.&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Generate evolution file name</span>
+            <span class="k">if</span> <span class="n">evolution_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">evolution_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;./</span><span class="si">{</span><span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_evolution.txt&quot;</span>
+
+            <span class="c1"># Get the number of samples to save</span>
+            <span class="c1"># Find the number of full steps that will be taken</span>
+            <span class="n">num_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iterations</span> <span class="o">/</span> <span class="n">evolution_step_size</span><span class="p">)</span>
+            <span class="c1"># We will also capture the first iteration through</span>
+            <span class="n">num_samples</span> <span class="o">=</span> <span class="n">num_steps</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="c1"># And capture the last iteration if the step size doesn&#39;t evenly divide</span>
+            <span class="k">if</span> <span class="n">iterations</span> <span class="o">%</span> <span class="n">evolution_step_size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">num_samples</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># Initialize tensors</span>
+            <span class="c1"># Store on CPU to keep the memory usage lower on the GPU</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mu_sample</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">problem_size</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sigma_sample</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">problem_size</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span>
+            <span class="p">)</span>
+            <span class="n">samples_taken</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">algorithm_parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Use the original MF solver</span>
+            <span class="n">mu</span><span class="p">,</span> <span class="n">mu_tilde</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solve</span><span class="p">(</span>
+                <span class="n">problem_size</span><span class="p">,</span>
+                <span class="n">batch_size</span><span class="p">,</span>
+                <span class="n">device</span><span class="p">,</span>
+                <span class="n">S</span><span class="p">,</span>
+                <span class="n">pump</span><span class="p">,</span>
+                <span class="n">dt</span><span class="p">,</span>
+                <span class="n">iterations</span><span class="p">,</span>
+                <span class="n">j</span><span class="p">,</span>
+                <span class="n">feedback_scale</span><span class="p">,</span>
+                <span class="n">pump_rate_flag</span><span class="p">,</span>
+                <span class="n">g</span><span class="p">,</span>
+                <span class="n">evolution_step_size</span><span class="p">,</span>
+                <span class="n">samples_taken</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">algorithm_parameters</span><span class="p">,</span> <span class="n">AdamParameters</span><span class="p">):</span>
+            <span class="c1"># Use the MF solver with Adam algorithm</span>
+            <span class="n">mu</span><span class="p">,</span> <span class="n">mu_tilde</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solve_adam</span><span class="p">(</span>
+                <span class="n">problem_size</span><span class="p">,</span>
+                <span class="n">batch_size</span><span class="p">,</span>
+                <span class="n">device</span><span class="p">,</span>
+                <span class="n">S</span><span class="p">,</span>
+                <span class="n">pump</span><span class="p">,</span>
+                <span class="n">dt</span><span class="p">,</span>
+                <span class="n">iterations</span><span class="p">,</span>
+                <span class="n">j</span><span class="p">,</span>
+                <span class="n">feedback_scale</span><span class="p">,</span>
+                <span class="n">pump_rate_flag</span><span class="p">,</span>
+                <span class="n">g</span><span class="p">,</span>
+                <span class="n">evolution_step_size</span><span class="p">,</span>
+                <span class="n">samples_taken</span><span class="p">,</span>
+                <span class="n">algorithm_parameters</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Solver option type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">algorithm_parameters</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not supported.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Stop the timer for the solve to compute the solution time for solving an instance once</span>
+        <span class="c1"># Due to the division by batch_size, the solve_time improves for larger batches</span>
+        <span class="c1"># when the solver is run on GPU. This is expected since GPU is hardware specifically</span>
+        <span class="c1"># deployed to improve the solution time of solving one single instance by using parallelization</span>
+        <span class="n">solve_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">solve_time_start</span><span class="p">)</span> <span class="o">/</span> <span class="n">batch_size</span>
+
+        <span class="c1"># Run the post processor on the results, if specified</span>
+        <span class="k">if</span> <span class="n">post_processor</span><span class="p">:</span>
+            <span class="n">post_processor_object</span> <span class="o">=</span> <span class="n">PostProcessorFactory</span><span class="o">.</span><span class="n">create_postprocessor</span><span class="p">(</span>
+                <span class="n">post_processor</span>
+            <span class="p">)</span>
+
+            <span class="n">problem_variables</span> <span class="o">=</span> <span class="n">post_processor_object</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">change_variables</span><span class="p">(</span>
+                    <span class="n">mu_tilde</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">S</span>
+                <span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">q_matrix</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">v_vector</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="c1"># Post-processing time for solving an instance once</span>
+            <span class="n">pp_time</span> <span class="o">=</span> <span class="n">post_processor_object</span><span class="o">.</span><span class="n">pp_time</span> <span class="o">/</span> <span class="n">batch_size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">problem_variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_variables</span><span class="p">(</span>
+                <span class="n">mu_tilde</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">S</span>
+            <span class="p">)</span>
+            <span class="n">pp_time</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="n">objval</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">compute_energy</span><span class="p">(</span><span class="n">problem_variables</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">evolution_step_size</span><span class="p">:</span>
+            <span class="c1"># Write samples to file</span>
+            <span class="c1"># Overwrite file if it exists</span>
+            <span class="nb">open</span><span class="p">(</span><span class="n">evolution_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Get the indices of the best objective values over the sampled iterations</span>
+            <span class="c1"># to use to get and save the best sampled values of mu and sigma</span>
+            <span class="n">batch_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="o">-</span><span class="n">objval</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">evolution_file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">evolution_file_obj</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_append_samples_to_file</span><span class="p">(</span>
+                    <span class="n">mu_sample</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mu_sample</span><span class="p">[</span><span class="n">batch_index</span><span class="p">],</span>
+                    <span class="n">sigma_sample</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma_sample</span><span class="p">[</span><span class="n">batch_index</span><span class="p">],</span>
+                    <span class="n">evolution_file_object</span><span class="o">=</span><span class="n">evolution_file_obj</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="n">solution</span> <span class="o">=</span> <span class="n">Solution</span><span class="p">(</span>
+            <span class="n">problem_size</span><span class="o">=</span><span class="n">instance</span><span class="o">.</span><span class="n">problem_size</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="n">instance_name</span><span class="o">=</span><span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">iterations</span><span class="o">=</span><span class="n">iterations</span><span class="p">,</span>
+            <span class="n">objective_values</span><span class="o">=</span><span class="n">objval</span><span class="p">,</span>
+            <span class="n">solve_time</span><span class="o">=</span><span class="n">solve_time</span><span class="p">,</span>
+            <span class="n">pp_time</span><span class="o">=</span><span class="n">pp_time</span><span class="p">,</span>
+            <span class="n">optimal_value</span><span class="o">=</span><span class="n">instance</span><span class="o">.</span><span class="n">optimal_sol</span><span class="p">,</span>
+            <span class="n">best_value</span><span class="o">=</span><span class="n">instance</span><span class="o">.</span><span class="n">best_sol</span><span class="p">,</span>
+            <span class="n">num_frac_values</span><span class="o">=</span><span class="n">instance</span><span class="o">.</span><span class="n">num_frac_values</span><span class="p">,</span>
+            <span class="n">solution_vector</span><span class="o">=</span><span class="n">instance</span><span class="o">.</span><span class="n">solution_vector</span><span class="p">,</span>
+            <span class="n">variables</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;problem_variables&quot;</span><span class="p">:</span> <span class="n">problem_variables</span><span class="p">,</span>
+                <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="n">mu</span><span class="p">,</span>
+                <span class="s2">&quot;sigma&quot;</span><span class="p">:</span> <span class="n">sigma</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Add evolution filename to solution if it was generated</span>
+        <span class="k">if</span> <span class="n">evolution_step_size</span><span class="p">:</span>
+            <span class="n">solution</span><span class="o">.</span><span class="n">evolution_file</span> <span class="o">=</span> <span class="n">evolution_file</span>
+
+        <span class="k">return</span> <span class="n">solution</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, 1QBit
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>
